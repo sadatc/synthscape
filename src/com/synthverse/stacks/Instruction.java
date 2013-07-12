@@ -1302,7 +1302,7 @@ public enum Instruction {
 	ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getBooleanStack().push(
-					virtualMachine.getAgent().operationDetectHome());
+					virtualMachine.getAgent().operationDetectCollectionSite());
 			virtualMachine.incrementIP();
 		}
 
