@@ -29,7 +29,7 @@ public class Statistics extends StatisticsManager implements Constants {
 
 	public final void aggregateStepData() {
 
-		simData.homeHits += stepData.homeHits;
+		simData.collectionSiteHits += stepData.collectionSiteHits;
 		simData.numberOfCellsDiscovered += stepData.numberOfCellsDiscovered;
 
 		simData.resourceHits += stepData.resourceHits;
@@ -40,7 +40,7 @@ public class Statistics extends StatisticsManager implements Constants {
 
 		simData.trailDrops += stepData.trailDrops;
 
-		simData.primaryHomeHits += stepData.primaryHomeHits;
+		simData.primaryCollectionSiteHits += stepData.primaryCollectionSiteHits;
 		simData.resourceLoads += stepData.resourceLoads;
 
 		simData.resourceUnloads += stepData.resourceUnloads;

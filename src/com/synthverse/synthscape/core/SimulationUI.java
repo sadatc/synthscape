@@ -24,7 +24,7 @@ import sim.util.gui.SimpleColorMap;
 
 /**
  * @author sadat
- * 
+ *  
  * 
  */
 public class SimulationUI extends GUIState {

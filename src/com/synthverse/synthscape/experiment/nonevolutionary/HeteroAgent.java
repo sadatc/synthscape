@@ -65,7 +65,7 @@ public class HeteroAgent extends Agent {
 				carryingResource = false;
 				this.operationRandomMove();
 			} else {
-				this.operationMoveToClosestHome();
+				this.operationMoveToClosestCollectionSite();
 			}
 		}
 

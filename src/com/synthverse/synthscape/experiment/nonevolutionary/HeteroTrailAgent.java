@@ -82,7 +82,7 @@ public class HeteroTrailAgent extends Agent {
 				carryingResource = false;
 				this.operationFollowTrail();
 			} else {
-				this.operationMoveToClosestHome();
+				this.operationMoveToClosestCollectionSite();
 			}
 		}
 

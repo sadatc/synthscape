@@ -152,35 +152,35 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		_operationMoveAbsolute(newX, newY);
 	}
 
-	public final void _operationMoveToLocationAt(int homeX, int homeY) {
+	public final void _operationMoveToLocationAt(int newX, int newY) {
 
-		if (!(this.x == homeX && this.y == homeY)) {
+		if (!(this.x == newX && this.y == newY)) {
 			int deltaX = 0;
 			int deltaY = 0;
 
-			if (this.x < homeX) {
+			if (this.x < newX) {
 				deltaX++;
 			}
 
-			if (this.x > homeX) {
+			if (this.x > newX) {
 				deltaX--;
 			}
 
-			if (this.y < homeY) {
+			if (this.y < newY) {
 				deltaY++;
 			}
 
-			if (this.y > homeY) {
+			if (this.y > newY) {
 				deltaY--;
 			}
 
 			if (deltaX != 0 || deltaY != 0) {
-				int newX = this.x + deltaX;
-				int newY = this.y + deltaY;
+				int adjustedX = this.x + deltaX;
+				int adjustedY = this.y + deltaY;
 				if (hasObstacle(newX, newY)) {
 					_operationRandomMove();
 				} else {
-					_operationMoveAbsolute(newX, newY);
+					_operationMoveAbsolute(adjustedX, adjustedY);
 				}
 			}
 		}
@@ -361,28 +361,28 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		;
 	}
 
-	public final void operationMoveToPrimaryHome() {
+	public final void operationMoveToPrimaryCollectionSite() {
 		_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
 				Simulation.PRIMARY_COLLECTION_SITE_Y);
 		;
 	}
 
-	public final void operationMoveToClosestHome() {
+	public final void operationMoveToClosestCollectionSite() {
 
 		if (traits.contains(Trait.HOMING)) {
-			// first let's find out the closest home
-			Int2D closestHome = null;
+			// first let's find out the closest collection site
+			Int2D closestCollectionSite = null;
 			double closestDistance = Double.MAX_VALUE;
 
-			for (Int2D home : this.sim.collectionSiteList) {
-				double distance = home.distance(this.x, this.y);
-				if (home.distance(this.x, this.y) < closestDistance) {
-					closestHome = home;
+			for (Int2D collectionSite : this.sim.collectionSiteList) {
+				double distance = collectionSite.distance(this.x, this.y);
+				if (collectionSite.distance(this.x, this.y) < closestDistance) {
+					closestCollectionSite = collectionSite;
 					closestDistance = distance;
 				}
 			}
 
-			_operationMoveToLocationAt(closestHome.x, closestHome.y);
+			_operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
 			;
 		}
 	}
@@ -434,7 +434,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		}
 	}
 
-	public final boolean operationDetectHome() {
+	public final boolean operationDetectCollectionSite() {
 		if (traits.contains(Trait.HOMING)) {
 			;
 			return this.locationIsCollectionSite;
@@ -600,12 +600,12 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		if (sim.collectionSiteGrid.field[x][y] > 0) {
 			this.locationIsCollectionSite = true;
 			if (locationIsChanging) {
-				sim.statistics.stepData.homeHits++;
-				stats.homeHits++;
+				sim.statistics.stepData.collectionSiteHits++;
+				stats.collectionSiteHits++;
 
 				if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
-					sim.statistics.stepData.primaryHomeHits++;
-					stats.primaryHomeHits++;
+					sim.statistics.stepData.primaryCollectionSiteHits++;
+					stats.primaryCollectionSiteHits++;
 				}
 			}
 		} else {

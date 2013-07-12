@@ -1255,7 +1255,7 @@ public enum Instruction {
 
 	ACTION_MOVE_TO_PRIMARY_HOME("ACTION.MOVE_TO_PRIMARY_HOME") {
 		public void execute(VirtualMachine virtualMachine) {
-			virtualMachine.getAgent().operationMoveToPrimaryHome();
+			virtualMachine.getAgent().operationMoveToPrimaryCollectionSite();
 			virtualMachine.incrementIP();
 		}
 
@@ -1263,7 +1263,7 @@ public enum Instruction {
 
 	ACTION_MOVE_TO_CLOSEST_HOME("ACTION.MOVE_TO_CLOSEST_HOME") {
 		public void execute(VirtualMachine virtualMachine) {
-			virtualMachine.getAgent().operationMoveToClosestHome();
+			virtualMachine.getAgent().operationMoveToClosestCollectionSite();
 			virtualMachine.incrementIP();
 		}
 

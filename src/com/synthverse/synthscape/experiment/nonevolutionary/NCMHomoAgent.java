@@ -53,7 +53,7 @@ public class NCMHomoAgent extends Agent {
 				carryingResource = false;
 				this.operationRandomMove();
 			} else {
-				this.operationMoveToClosestHome();
+				this.operationMoveToClosestCollectionSite();
 			}
 		}
 

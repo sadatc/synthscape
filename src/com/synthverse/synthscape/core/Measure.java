@@ -5,8 +5,8 @@ public class Measure {
 	public long numberOfSteps = 0;
 	public long numberOfCellsDiscovered = 0;
 
-	public long homeHits = 0;
-	public long primaryHomeHits = 0;
+	public long collectionSiteHits = 0;
+	public long primaryCollectionSiteHits = 0;
 
 	public long resourceHits = 0;
 
@@ -33,7 +33,7 @@ public class Measure {
 
 	public void zeroAll() {
 		numberOfCellsDiscovered = 0;
-		homeHits = 0;
+		collectionSiteHits = 0;
 
 		resourceHits = 0;
 
@@ -43,7 +43,7 @@ public class Measure {
 
 		trailDrops = 0;
 
-		primaryHomeHits = 0;
+		primaryCollectionSiteHits = 0;
 		resourceLoads = 0;
 
 		resourceUnloads = 0;
