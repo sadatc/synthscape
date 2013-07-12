@@ -16,86 +16,55 @@ import com.synthverse.stacks.VirtualMachine;
 
 public abstract class Agent implements Constants, Steppable, Valuable,
 		Comparable<Agent> {
+
+	private static final long serialVersionUID = -5129827193602692370L;
+
 	Simulation sim;
 
 	long agentId;
 
 	protected long stepCounter;
 
-	protected int energy;
+	protected long maxSteps;
 
 	protected int x;
 
 	protected int y;
 
-	protected double communicationCapability;
+	protected Set<InteractionMechanism> interactionMechanisms = EnumSet
+			.noneOf(InteractionMechanism.class);
 
-	protected double visionCapability;
+	protected Set<Trait> traits = EnumSet.noneOf(Trait.class);
 
-	protected double extractionCapability;
+	protected int resourcesLoaded;
 
-	protected double transportationCapability;
-
-	protected boolean isCharging;
-
-	protected int quantityOfResourceA;
-
-	protected int maxResourceACapacity = 1;
-
-	protected int quantityOfResourceB;
-
-	protected int maxResourceBCapacity = 1;
-
-	protected int quantityOfResourceC;
-
-	protected int maxResourceCCapacity = 1;
-
-	protected int maxEnergy;
+	protected int loadCapacity = 1;
 
 	protected int previousX;
 
 	protected int previousY;
 
-	protected boolean locationIsHome;
+	protected boolean locationIsCollectionSite;
 
-	protected boolean locationHasResourceA;
+	protected boolean locationHasResource;
 
-	protected boolean locationHasResourceB;
+	protected boolean locationHasExtractedResource;
 
-	protected boolean locationHasResourceC;
+	protected boolean locationHasProcessedResource;
 
-	protected boolean locationHasExtractA;
-
-	protected boolean locationHasExtractB;
-
-	protected boolean locationHasExtractC;
-
-	protected boolean locationHasTrailA;
-
-	protected boolean locationHasTrailB;
-
-	protected boolean locationHasTrailC;
-
-	protected BroadcastSignal signalA = new BroadcastSignal();
-
-	protected BroadcastSignal signalB = new BroadcastSignal();
-
-	protected BroadcastSignal signalC = new BroadcastSignal();
-
-	protected Set<OperationType> allowedOperations = EnumSet
-			.noneOf(OperationType.class);
-
-	protected VirtualMachine virtualMachine;
-
-	protected Program program;
+	protected boolean locationHasTrail;
 
 	protected double fitness;
 
 	protected long generation;
 
-	protected IntGrid2D visitedCells = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT, 0);
+	protected VirtualMachine virtualMachine;
 
-	protected Data myStats = new Data();
+	protected Program program;
+
+	protected IntGrid2D visitedCells = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, 0);
+
+	protected Measure stats = new Measure();
 
 	public Agent randomizeGenotype() {
 		if (program != null) {
@@ -104,98 +73,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		return this;
 	}
 
-	public boolean isOperationAllowed(OperationType operationType) {
-		boolean isAllowed = false;
-
-		if (Simulation.CAPABILITY_BASED_OPERATIONS_ONLY) {
-			switch (operationType) {
-			case VISION:
-				isAllowed = (this.visionCapability > 0.0);
-				break;
-
-			case EXTRACTION:
-				isAllowed = (this.extractionCapability > 0.0);
-				break;
-
-			case COMMUNICATION:
-				isAllowed = (this.communicationCapability > 0.0);
-				break;
-
-			case TRANSPORTATION:
-				isAllowed = (this.transportationCapability > 0.0);
-				break;
-
-			case GENERIC:
-				isAllowed = true;
-				break;
-			default:
-				isAllowed = false;
-			}
-		} else {
-			isAllowed = true;
-		}
-		return isAllowed;
-	}
-
-	public final void spendEnergy(OperationType operationType) {
-		// how much energy each instruction costs, depends on the capability
-		// of the agent for that particular type of operation
-
-		if (Simulation.ROLE_BASED_ENERGY_ACCOUNTING) {
-
-			double drain = 0.0;
-
-			switch (operationType) {
-			case VISION:
-				if (this.visionCapability > 0.0) {
-					drain = 1.0 / this.visionCapability;
-				} else {
-					drain = Simulation.UNSKILLED_ENERGY_DRAIN;
-				}
-				break;
-
-			case EXTRACTION:
-				if (this.extractionCapability > 0.0) {
-					drain = 1.0 / this.extractionCapability;
-				} else {
-					drain = Simulation.UNSKILLED_ENERGY_DRAIN;
-				}
-				break;
-
-			case TRANSPORTATION:
-				if (this.transportationCapability > 0.0) {
-					drain = 1.0 / this.transportationCapability;
-				} else {
-					drain = Simulation.UNSKILLED_ENERGY_DRAIN;
-				}
-				break;
-
-			case COMMUNICATION:
-				if (this.communicationCapability > 0.0) {
-					drain = 1.0 / this.communicationCapability;
-				} else {
-					drain = Simulation.GENERIC_ENERGY_DRAIN;
-				}
-				break;
-			default:
-				drain = Simulation.GENERIC_ENERGY_DRAIN;
-			}
-
-			energy -= drain;
-
-		} else {
-			energy -= Simulation.GENERIC_ENERGY_DRAIN;
-
-		}
-
-		if (energy < 0) {
-			energy = 0;
-		}
-
-	}
-
 	public final boolean hasObstacle(int x, int y) {
-		return (sim.obstacleGrid.field[x][y] == Simulation.OBSTACLE_TRUE);
+		return (sim.obstacleGrid.field[x][y] == PRESENT);
 	}
 
 	/*
@@ -212,7 +91,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != Simulation.OBSTACLE_TRUE) {
+			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -234,7 +113,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != Simulation.OBSTACLE_TRUE) {
+			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -260,12 +139,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			int xMod = sim.agentGrid.stx(x + xDelta);
 			int yMod = sim.agentGrid.sty(y + yDelta);
 
-			if (!(xDelta == 0 && yDelta == 0)
-					&& xMod >= 0
-					&& xMod < Simulation.GRID_WIDTH
-					&& yMod >= 0
-					&& yMod < Simulation.GRID_HEIGHT
-					&& sim.obstacleGrid.field[xMod][yMod] == Simulation.OBSTACLE_FALSE) {
+			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
+					&& xMod < Simulation.WORLD_WIDTH && yMod >= 0
+					&& yMod < Simulation.WORLD_LENGTH
+					&& sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 				newX = xMod;
 				newY = yMod;
 				foundNewUblockedLocation = true;
@@ -309,12 +186,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		}
 	}
 
-	public final void _operationFollowBroadcast(BroadcastSignal signal) {
-		if (signal.senderAgentId != -1 && signal.senderAgentId != this.agentId) {
-			_operationMoveToLocationAt(signal.x, signal.y);
-		}
-	}
-
 	public void _operationLeaveTrail(DoubleGrid2D grid) {
 		Int2D location = sim.agentGrid.getObjectLocation(this);
 		int x = location.x;
@@ -331,7 +202,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 				resourceGrid.field[x][y]--;
 				extractGrid.field[x][y]++;
 				actuallyExtracted = true;
-				this.sim.setNumberOfExtractedResources(this.sim.getNumberOfExtractedResources()+1);
+				this.sim.setNumberOfExtractedResources(this.sim
+						.getNumberOfExtractedResources() + 1);
 			}
 		}
 		return actuallyExtracted;
@@ -419,49 +291,49 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	/*
 	 * public final void operationMove(int newX, int newY) {
 	 * 
-	 * _operationMove(newX, newY); spendEnergy(OperationType.GENERIC);
+	 * _operationMove(newX, newY); spendEnergy(Trait.GENERIC);
 	 * 
 	 * }
 	 */
 
 	public final void operationMoveNorth() {
 		_operationMoveRelative(0, -1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveNorthEast() {
 		_operationMoveRelative(1, -1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveNorthWest() {
 		_operationMoveRelative(-1, -1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveSouth() {
 		_operationMoveRelative(0, 1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveSouthEast() {
 		_operationMoveRelative(1, 1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveSouthWest() {
 		_operationMoveRelative(-1, 1);
-		spendEnergy(OperationType.GENERIC);
+
 	}
 
 	public final void operationMoveEast() {
 		_operationMoveRelative(1, 0);
-		spendEnergy(OperationType.GENERIC);
+		;
 	}
 
 	public final void operationMoveWest() {
 		_operationMoveRelative(-1, 0);
-		spendEnergy(OperationType.GENERIC);
+		;
 	}
 
 	public final void operationMoveRelative(int deltaX, int deltaY) {
@@ -480,29 +352,29 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			deltaY = 1;
 		}
 		_operationMoveRelative(deltaX, deltaY);
-		spendEnergy(OperationType.GENERIC);
+		;
 
 	}
 
 	public final void operationRandomMove() {
 		_operationRandomMove();
-		spendEnergy(OperationType.GENERIC);
+		;
 	}
 
 	public final void operationMoveToPrimaryHome() {
-		_operationMoveToLocationAt(Simulation.PRIMARY_HOME_X,
-				Simulation.PRIMARY_HOME_Y);
-		spendEnergy(OperationType.GENERIC);
+		_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
+				Simulation.PRIMARY_COLLECTION_SITE_Y);
+		;
 	}
 
 	public final void operationMoveToClosestHome() {
 
-		if (isOperationAllowed(OperationType.VISION)) {
+		if (traits.contains(Trait.HOMING)) {
 			// first let's find out the closest home
 			Int2D closestHome = null;
 			double closestDistance = Double.MAX_VALUE;
 
-			for (Int2D home : this.sim.homeList) {
+			for (Int2D home : this.sim.collectionSiteList) {
 				double distance = home.distance(this.x, this.y);
 				if (home.distance(this.x, this.y) < closestDistance) {
 					closestHome = home;
@@ -511,12 +383,12 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			}
 
 			_operationMoveToLocationAt(closestHome.x, closestHome.y);
-			spendEnergy(OperationType.VISION);
+			;
 		}
 	}
 
 	public final void operationMoveToClosestAgent() {
-		if (isOperationAllowed(OperationType.VISION)) {
+		if (traits.contains(Trait.FLOCKING)) {
 
 			// first let's find out the closest agent
 			Int2D closestAgentLocation = null;
@@ -538,610 +410,117 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			}
 			_operationMoveToLocationAt(closestAgentLocation.x,
 					closestAgentLocation.y);
-			spendEnergy(OperationType.VISION);
-		}
-	}
-
-	public final void operationFollowBroadcastA() {
-		if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationFollowBroadcast(signalA);
-			spendEnergy(OperationType.COMMUNICATION);
-			sim.statistics.stepData.aBroadcastMoves++;
-			sim.statistics.stepData.broadcastMoves++;
-		}
-	}
-
-	public final void operationFollowBroadcastB() {
-		if (Constants.SINGLE_BROADCAST_MODEL) {
-			operationFollowBroadcastA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationFollowBroadcast(signalB);
-			spendEnergy(OperationType.COMMUNICATION);
-			sim.statistics.stepData.bBroadcastMoves++;
-			sim.statistics.stepData.broadcastMoves++;
-		}
-	}
-
-	public final void operationFollowBroadcastC() {
-		if (Constants.SINGLE_BROADCAST_MODEL) {
-			operationFollowBroadcastA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationFollowBroadcast(signalC);
-			spendEnergy(OperationType.COMMUNICATION);
-			sim.statistics.stepData.cBroadcastMoves++;
-			sim.statistics.stepData.broadcastMoves++;
-		}
-	}
-
-	public final void operationFollowBroadcast() {
-		operationFollowBroadcastA();
-	}
-
-	public final void operationFollowBroadcastAny() {
-		if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			if (Constants.SINGLE_BROADCAST_MODEL) {
-				operationFollowBroadcastA();
-			} else
-
-			if (signalA.senderAgentId != -1
-					&& signalA.senderAgentId != this.agentId) {
-				_operationMoveToLocationAt(signalA.x, signalA.y);
-				sim.statistics.stepData.aBroadcastMoves++;
-				sim.statistics.stepData.broadcastMoves++;
-			} else if (signalB.senderAgentId != -1
-					&& signalB.senderAgentId != this.agentId) {
-				_operationMoveToLocationAt(signalB.x, signalB.y);
-				sim.statistics.stepData.bBroadcastMoves++;
-				sim.statistics.stepData.broadcastMoves++;
-			} else if (signalC.senderAgentId != -1
-					&& signalC.senderAgentId != this.agentId) {
-				_operationMoveToLocationAt(signalC.x, signalC.y);
-				sim.statistics.stepData.cBroadcastMoves++;
-				sim.statistics.stepData.broadcastMoves++;
-			}
-			spendEnergy(OperationType.COMMUNICATION);
-		}
-	}
-
-	public final void operationFollowTrailA() {
-		if (isOperationAllowed(OperationType.VISION)) {
-			_operationFollowTrail(sim.trailAGrid);
-			spendEnergy(OperationType.VISION);
-			sim.statistics.stepData.trailFollows++;
-			sim.statistics.stepData.trailAFollows++;
-		}
-	}
-
-	public final void operationFollowTrailB() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationFollowTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			_operationFollowTrail(sim.trailBGrid);
-			spendEnergy(OperationType.VISION);
-			sim.statistics.stepData.trailFollows++;
-			sim.statistics.stepData.trailBFollows++;
-		}
-	}
-
-	public final void operationFollowTrailC() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationFollowTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			_operationFollowTrail(sim.trailCGrid);
-			spendEnergy(OperationType.VISION);
-			sim.statistics.stepData.trailFollows++;
-			sim.statistics.stepData.trailCFollows++;
+			;
 		}
 	}
 
 	public final void operationFollowTrail() {
-		operationFollowTrailA();
-	}
-
-	public final void operationFollowTrailAny() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationFollowTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			_operationFollowTrail(sim.trailAGrid, sim.trailBGrid,
-					sim.trailCGrid);
-			spendEnergy(OperationType.VISION);
+		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+			_operationFollowTrail(sim.trailGrid);
+			;
 			sim.statistics.stepData.trailFollows++;
-			sim.statistics.stepData.trailRandomFollows++;
+
 		}
 	}
 
-	public final void operationLeaveTrail() {
-		operationLeaveTrailA();
-	}
-
-	public final void operationLeaveTrailsAll() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationLeaveTrailA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			operationLeaveTrailA();
-			operationLeaveTrailB();
-			operationLeaveTrailC();
-		}
-	}
-
-	public void operationLeaveTrailA() {
-		if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationLeaveTrail(sim.trailAGrid);
-			spendEnergy(OperationType.COMMUNICATION);
+	public void operationLeaveTrail() {
+		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+			_operationLeaveTrail(sim.trailGrid);
+			;
 			sim.statistics.stepData.trailDrops++;
-			sim.statistics.stepData.trailADrops++;
+
 			updateLocationStatus(this.x, this.y);
 
-		}
-	}
-
-	public void operationLeaveTrailB() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationLeaveTrailA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationLeaveTrail(sim.trailBGrid);
-			spendEnergy(OperationType.COMMUNICATION);
-			sim.statistics.stepData.trailDrops++;
-			sim.statistics.stepData.trailBDrops++;
-			updateLocationStatus(this.x, this.y);
-		}
-	}
-
-	public void operationLeaveTrailC() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			operationLeaveTrailA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			_operationLeaveTrail(sim.trailBGrid);
-			spendEnergy(OperationType.COMMUNICATION);
-			sim.statistics.stepData.trailDrops++;
-			sim.statistics.stepData.trailCDrops++;
-			updateLocationStatus(this.x, this.y);
 		}
 	}
 
 	public final boolean operationDetectHome() {
-		spendEnergy(OperationType.GENERIC);
-		return this.locationIsHome;
-	}
-
-	public final boolean operationDetectResourceAny() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return (this.locationHasResourceA || this.locationHasResourceB || this.locationHasResourceC);
+		if (traits.contains(Trait.HOMING)) {
+			;
+			return this.locationIsCollectionSite;
 		} else {
 			return false;
 		}
-
 	}
 
 	public final boolean operationDetectResource() {
-		if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return (this.locationHasResourceA);
+		if (traits.contains(Trait.DETECTION)) {
+			;
+			return (this.locationHasResource);
 		} else {
 			return false;
 		}
 
-	}
-
-	public final boolean operationDetectResourceA() {
-		if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasResourceA;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectResourceB() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasResourceB;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectResourceC() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasResourceC;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectExtractedResourceA() {
-		if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasExtractA;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectExtractedResourceB() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectExtractedResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasExtractB;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectExtractedResourceC() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectExtractedResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasExtractC;
-		} else {
-			return false;
-		}
 	}
 
 	public final boolean operationDetectExtractedResource() {
-		return operationDetectExtractedResourceA();
-	}
-
-	public final boolean operationDetectExtractedResourceAny() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			return operationDetectExtractedResourceA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return (this.locationHasExtractC || this.locationHasExtractB || this.locationHasExtractA);
-		} else {
-			return false;
-		}
-
-	}
-
-	public final boolean operationDetectTrailA() {
-		if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasTrailA;
-		} else {
-			return false;
-		}
-	}
-
-	public final boolean operationDetectTrailB() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			return operationDetectTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasTrailB;
-		} else {
-			return false;
-
-		}
-	}
-
-	public final boolean operationDetectTrailC() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			return operationDetectTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-
-			spendEnergy(OperationType.VISION);
-			return this.locationHasTrailC;
-		} else {
-			return false;
-
-		}
-	}
-
-	public final boolean operationDetectTrailAny() {
-		if (Constants.SINGLE_TRAIL_MODEL) {
-			return operationDetectTrailA();
-		} else if (isOperationAllowed(OperationType.VISION)) {
-
-			spendEnergy(OperationType.VISION);
-			return (this.locationHasTrailA || this.locationHasTrailB || this.locationHasTrailC);
+		if (traits.contains(Trait.DETECTION)) {
+			;
+			return this.locationHasExtractedResource;
 		} else {
 			return false;
 		}
 	}
 
 	public final boolean operationDetectTrail() {
-
-		if (isOperationAllowed(OperationType.VISION)) {
-			spendEnergy(OperationType.VISION);
-			return this.locationHasTrailA;
+		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+			;
+			return this.locationHasTrail;
 		} else {
 			return false;
-		}
-
-	}
-
-	public final void operationExtractResourceA() {
-		if (isOperationAllowed(OperationType.EXTRACTION)) {
-			if (_operationExtractResource(locationHasResourceA,
-					this.sim.resourceAGrid, this.sim.extractAGrid)) {
-				sim.statistics.stepData.resourceAExtracts++;
-				sim.statistics.stepData.resourceExtracts++;
-
-			}
-
-			spendEnergy(OperationType.EXTRACTION);
-			updateLocationStatus(this.x, this.y);
-		}
-	}
-
-	public final void operationExtractResourceB() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationExtractResourceA();
-		} else
-
-		if (isOperationAllowed(OperationType.EXTRACTION)) {
-			if (_operationExtractResource(locationHasResourceB,
-					this.sim.resourceBGrid, this.sim.extractBGrid)) {
-				sim.statistics.stepData.resourceBExtracts++;
-				sim.statistics.stepData.resourceExtracts++;
-			}
-
-			spendEnergy(OperationType.EXTRACTION);
-
-			updateLocationStatus(this.x, this.y);
-		}
-	}
-
-	public final void operationExtractResourceC() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationExtractResourceA();
-		} else
-
-		if (isOperationAllowed(OperationType.EXTRACTION)) {
-			if (_operationExtractResource(locationHasResourceC,
-					this.sim.resourceCGrid, this.sim.extractCGrid)) {
-				sim.statistics.stepData.resourceCExtracts++;
-				sim.statistics.stepData.resourceExtracts++;
-			}
-
-			spendEnergy(OperationType.EXTRACTION);
-			updateLocationStatus(this.x, this.y);
 		}
 	}
 
 	public final void operationExtractResource() {
-		operationExtractResourceA();
-	}
+		if (traits.contains(Trait.EXTRACTION)) {
+			if (_operationExtractResource(locationHasResource,
+					this.sim.resourceGrid, this.sim.extractedResourceGrid)) {
 
-	public final void operationExtractResourceAny() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationExtractResourceA();
-		} else
+				sim.statistics.stepData.resourceExtracts++;
 
-		if (isOperationAllowed(OperationType.EXTRACTION)) {
-			operationExtractResourceA();
-			operationExtractResourceB();
-			operationExtractResourceC();
-		}
-	}
-
-	public final void operationLoadResourceA() {
-
-		if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			if (this.locationHasExtractA
-					&& this.quantityOfResourceA < this.maxResourceACapacity) {
-				if (this.sim.extractAGrid.field[x][y] > 0) {
-					this.sim.extractAGrid.field[x][y]--;
-					this.quantityOfResourceA++;
-					sim.statistics.stepData.resourceLoads++;
-					sim.statistics.stepData.resourceALoads++;
-					updateLocationStatus(this.x, this.y);
-				}
-			}
-			spendEnergy(OperationType.TRANSPORTATION);
-		}
-	}
-
-	public final void operationLoadResourceB() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationLoadResourceA();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-
-			if (this.locationHasExtractB
-					&& this.quantityOfResourceB < this.maxResourceBCapacity) {
-				if (this.sim.extractBGrid.field[x][y] > 0) {
-					this.sim.extractBGrid.field[x][y]--;
-					this.quantityOfResourceB++;
-					sim.statistics.stepData.resourceLoads++;
-					sim.statistics.stepData.resourceBLoads++;
-					updateLocationStatus(this.x, this.y);
-				}
-			}
-			spendEnergy(OperationType.TRANSPORTATION);
-		}
-	}
-
-	public final void operationLoadResourceC() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationLoadResourceC();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-
-			if (this.locationHasExtractC
-					&& this.quantityOfResourceC < this.maxResourceCCapacity) {
-				if (this.sim.extractCGrid.field[x][y] > 0) {
-					this.sim.extractCGrid.field[x][y]--;
-					this.quantityOfResourceC++;
-					sim.statistics.stepData.resourceLoads++;
-					sim.statistics.stepData.resourceCLoads++;
-					updateLocationStatus(this.x, this.y);
-				}
 			}
 
-			spendEnergy(OperationType.TRANSPORTATION);
+			;
+			updateLocationStatus(this.x, this.y);
 		}
 	}
 
 	public final void operationLoadResource() {
-		operationLoadResourceA();
-	}
 
-	public final void operationLoadResourceAny() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationLoadResourceA();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			operationLoadResourceA();
-			operationLoadResourceB();
-			operationLoadResourceC();
-		}
-	}
+		if (traits.contains(Trait.TRANSPORTATION)) {
+			if (this.locationHasExtractedResource
+					&& this.resourcesLoaded < this.loadCapacity) {
+				if (this.sim.extractedResourceGrid.field[x][y] > 0) {
+					this.sim.extractedResourceGrid.field[x][y]--;
+					this.resourcesLoaded++;
+					sim.statistics.stepData.resourceLoads++;
 
-	public final void operationUnLoadResourceA() {
-		if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			if (this.quantityOfResourceA > 0) {
-
-				this.quantityOfResourceA--;
-
-				sim.statistics.stepData.resourceAUnloads++;
-				sim.statistics.stepData.resourceUnloads++;
-
-				if (this.locationIsHome) {
-					sim.statistics.stepData.resourceCaptures++;
-					sim.statistics.stepData.resourceACaptures++;
-				} else {
-					this.sim.extractAGrid.field[x][y]++;
+					updateLocationStatus(this.x, this.y);
 				}
-
-				updateLocationStatus(this.x, this.y);
-
 			}
-			spendEnergy(OperationType.TRANSPORTATION);
-		}
-	}
-
-	public final void operationUnLoadResourceB() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationUnLoadResourceA();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			if (this.quantityOfResourceB > 0) {
-				this.sim.extractBGrid.field[x][y]++;
-				this.quantityOfResourceB--;
-				sim.statistics.stepData.resourceBUnloads++;
-				sim.statistics.stepData.resourceUnloads++;
-				if (this.locationIsHome) {
-					sim.statistics.stepData.resourceCaptures++;
-					sim.statistics.stepData.resourceBCaptures++;
-				}
-				updateLocationStatus(this.x, this.y);
-			}
-			spendEnergy(OperationType.TRANSPORTATION);
-		}
-	}
-
-	public final void operationUnLoadResourceC() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationUnLoadResourceA();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			if (this.quantityOfResourceC > 0) {
-				this.sim.extractCGrid.field[x][y]++;
-				this.quantityOfResourceC--;
-				sim.statistics.stepData.resourceCUnloads++;
-				sim.statistics.stepData.resourceUnloads++;
-				if (this.locationIsHome) {
-					sim.statistics.stepData.resourceCaptures++;
-					sim.statistics.stepData.resourceCCaptures++;
-				}
-				updateLocationStatus(this.x, this.y);
-			}
-			spendEnergy(OperationType.TRANSPORTATION);
+			;
 		}
 	}
 
 	public final void operationUnLoadResource() {
-		operationUnLoadResourceA();
-	}
+		if (traits.contains(Trait.TRANSPORTATION)) {
+			if (this.resourcesLoaded > 0) {
 
-	public final void operationUnLoadResourceAny() {
-		if (Constants.SINGLE_RESOURCE_MODEL) {
-			operationUnLoadResourceA();
-		} else if (isOperationAllowed(OperationType.TRANSPORTATION)) {
-			operationUnLoadResourceA();
-			operationUnLoadResourceB();
-			operationUnLoadResourceC();
-		}
-	}
+				this.resourcesLoaded--;
 
-	public final void operationBroadcastA() {
-		if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			sim.signalALevel = Simulation.SIGNAL_LEVEL_MAX;
-			for (Agent agent : sim.agents) {
-				agent.signalA.senderAgentId = this.agentId;
-				agent.signalA.x = this.x;
-				agent.signalA.y = this.y;
+				sim.statistics.stepData.resourceUnloads++;
+
+				if (this.locationIsCollectionSite) {
+					sim.statistics.stepData.resourceCaptures++;
+
+				} else {
+					this.sim.extractedResourceGrid.field[x][y]++;
+				}
+
+				updateLocationStatus(this.x, this.y);
+
 			}
-			sim.statistics.stepData.aBroadcasts++;
-			sim.statistics.stepData.broadcasts++;
-			spendEnergy(OperationType.COMMUNICATION);
-		}
-	}
-
-	public final void operationBroadcastB() {
-		if (Constants.SINGLE_BROADCAST_MODEL) {
-			operationBroadcastA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			sim.signalBLevel = Simulation.SIGNAL_LEVEL_MAX;
-			for (Agent agent : sim.agents) {
-				agent.signalB.senderAgentId = this.agentId;
-				agent.signalB.x = this.x;
-				agent.signalB.y = this.y;
-			}
-			sim.statistics.stepData.bBroadcasts++;
-			sim.statistics.stepData.broadcasts++;
-			spendEnergy(OperationType.COMMUNICATION);
-		}
-	}
-
-	public final void operationBroadcastC() {
-		if (Constants.SINGLE_BROADCAST_MODEL) {
-			operationBroadcastA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-
-			sim.signalCLevel = Simulation.SIGNAL_LEVEL_MAX;
-			for (Agent agent : sim.agents) {
-				agent.signalC.senderAgentId = this.agentId;
-				agent.signalC.x = this.x;
-				agent.signalA.y = this.y;
-			}
-			sim.statistics.stepData.cBroadcasts++;
-			sim.statistics.stepData.broadcasts++;
-			spendEnergy(OperationType.COMMUNICATION);
-		}
-	}
-
-	public final void operationBroadcast() {
-		operationBroadcastA();
-	}
-
-	public final void operationBroadcastAll() {
-		if (Constants.SINGLE_BROADCAST_MODEL) {
-			operationBroadcastA();
-		} else if (isOperationAllowed(OperationType.COMMUNICATION)) {
-			operationBroadcastA();
-			operationBroadcastB();
-			operationBroadcastC();
-		}
-	}
-
-	public final void operationRecharge() {
-		handleRecharge();
-	}
-
-	public void handleRecharge() {
-		if (isCharging) {
-			energy++;
-			if (energy == maxEnergy) {
-				isCharging = false;
-			}
+			;
 		}
 	}
 
@@ -1149,61 +528,18 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 		stepCounter = 0;
 
-		quantityOfResourceA = 0;
-		quantityOfResourceB = 0;
-		quantityOfResourceC = 0;
-
-		signalA.senderAgentId = -1;
-		signalA.x = -1;
-		signalA.y = -1;
-		signalB.senderAgentId = -1;
-		signalB.x = -1;
-		signalB.y = -1;
-		signalC.senderAgentId = -1;
-		signalC.x = -1;
-		signalC.y = -1;
+		resourcesLoaded = 0;
 
 		fitness = 0.0;
 
 		visitedCells.setTo(0);
 
-		isCharging = false;
-
-		myStats.zeroAll();
+		stats.zeroAll();
 
 	}
 
-	protected void reset(long generation, long agentId, int energy,
-			int maxEnergy, double visionCapability,
-			double extractionCapability, double transportationCapability,
-			double communicationCapability, int startX, int startY) {
+	protected Agent() {
 
-		reset();
-
-		this.agentId = agentId;
-
-		this.generation = generation;
-
-		this.maxEnergy = maxEnergy;
-		this.energy = energy;
-		this.visionCapability = visionCapability;
-		this.extractionCapability = extractionCapability;
-		this.transportationCapability = transportationCapability;
-		this.communicationCapability = communicationCapability;
-
-		updateLocationStatus(startX, startY);
-	}
-
-	protected Agent(Simulation sim, long generation, long agentId, int energy,
-			int maxEnergy, double visionCapability,
-			double extractionCapability, double transportationCapability,
-			double communicationCapability, int startX, int startY) {
-
-		this.sim = sim;
-
-		reset(generation, agentId, energy, maxEnergy, visionCapability,
-				extractionCapability, transportationCapability,
-				communicationCapability, startX, startY);
 	}
 
 	public void updateLocationStatus(int x, int y) {
@@ -1216,137 +552,64 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		// this captures visited cell statistics for this agent
 		if (visitedCells.field[x][y] == 0) {
 			visitedCells.field[x][y] = 1;
-			myStats.numberOfCellsDiscovered++;
+			stats.numberOfCellsDiscovered++;
 		}
 
 		// this captures visited cell statistics for the entire environment
-		if (sim.visitedCells.field[x][y] == 0) {
-			sim.visitedCells.field[x][y] = 1;
+		if (sim.refactorGrid.field[x][y] == 0) {
+			sim.refactorGrid.field[x][y] = 1;
 			sim.statistics.stepData.numberOfCellsDiscovered++;
 		}
 
-		if (sim.resourceAGrid.field[x][y] > 0) {
-			this.locationHasResourceA = true;
+		if (sim.resourceGrid.field[x][y] > 0) {
+			this.locationHasResource = true;
 			if (locationIsChanging) {
 				sim.statistics.stepData.resourceHits++;
-				sim.statistics.stepData.resourceAHits++;
-				myStats.resourceHits++;
-				myStats.resourceAHits++;
+
+				stats.resourceHits++;
+
 			}
 		} else {
-			this.locationHasResourceA = false;
+			this.locationHasResource = false;
 		}
 
-		if (sim.resourceBGrid.field[x][y] > 0) {
-			this.locationHasResourceB = true;
+		if (sim.extractedResourceGrid.field[x][y] > 0) {
+			this.locationHasExtractedResource = true;
 			if (locationIsChanging) {
-				sim.statistics.stepData.resourceHits++;
-				sim.statistics.stepData.resourceBHits++;
-				myStats.resourceHits++;
-				myStats.resourceBHits++;
+				sim.statistics.stepData.extractedResourceHits++;
+
+				stats.extractedResourceHits++;
+
 			}
 		} else {
-			this.locationHasResourceB = false;
+			this.locationHasExtractedResource = false;
 		}
 
-		if (sim.resourceCGrid.field[x][y] > 0) {
-			this.locationHasResourceC = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.resourceHits++;
-				sim.statistics.stepData.resourceCHits++;
-				myStats.resourceHits++;
-				myStats.resourceCHits++;
-			}
-
-		} else {
-			this.locationHasResourceC = false;
-		}
-
-		if (sim.extractAGrid.field[x][y] > 0) {
-			this.locationHasExtractA = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.extractHits++;
-				sim.statistics.stepData.extractAHits++;
-				myStats.extractHits++;
-				myStats.extractAHits++;
-			}
-		} else {
-			this.locationHasExtractA = false;
-		}
-
-		if (sim.extractBGrid.field[x][y] > 0) {
-			this.locationHasExtractB = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.extractHits++;
-				sim.statistics.stepData.extractBHits++;
-				myStats.extractHits++;
-				myStats.extractBHits++;
-			}
-		} else {
-			this.locationHasExtractB = false;
-		}
-
-		if (sim.extractCGrid.field[x][y] > 0) {
-			this.locationHasExtractC = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.extractHits++;
-				sim.statistics.stepData.extractCHits++;
-				myStats.extractHits++;
-				myStats.extractCHits++;
-			}
-		} else {
-			this.locationHasExtractC = false;
-		}
-
-		if (sim.trailAGrid.field[x][y] > 0) {
-			this.locationHasTrailA = true;
+		if (sim.trailGrid.field[x][y] > 0) {
+			this.locationHasTrail = true;
 			if (locationIsChanging) {
 				sim.statistics.stepData.trailHits++;
-				sim.statistics.stepData.trailAHits++;
-				myStats.trailHits++;
-				myStats.trailAHits++;
+
+				stats.trailHits++;
+
 			}
 		} else {
-			this.locationHasTrailA = false;
+			this.locationHasTrail = false;
 		}
 
-		if (sim.trailBGrid.field[x][y] > 0) {
-			this.locationHasTrailB = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.trailHits++;
-				sim.statistics.stepData.trailBHits++;
-				myStats.trailHits++;
-				myStats.trailBHits++;
-			}
-		} else {
-			this.locationHasTrailB = false;
-		}
-
-		if (sim.trailCGrid.field[x][y] > 0) {
-			this.locationHasTrailC = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.trailHits++;
-				sim.statistics.stepData.trailCHits++;
-				myStats.trailHits++;
-				myStats.trailCHits++;
-			}
-		} else {
-			this.locationHasTrailC = false;
-		}
-
-		if (sim.homeGrid.field[x][y] > 0) {
-			this.locationIsHome = true;
+		if (sim.collectionSiteGrid.field[x][y] > 0) {
+			this.locationIsCollectionSite = true;
 			if (locationIsChanging) {
 				sim.statistics.stepData.homeHits++;
-				myStats.homeHits++;
+				stats.homeHits++;
 
-				if (x == sim.PRIMARY_HOME_X && y == sim.PRIMARY_HOME_Y) {
+				if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
 					sim.statistics.stepData.primaryHomeHits++;
-					myStats.primaryHomeHits++;
+					stats.primaryHomeHits++;
 				}
 			}
 		} else {
-			this.locationIsHome = false;
+			this.locationIsCollectionSite = false;
 		}
 
 	}
@@ -1355,25 +618,20 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	/**
 	 * Inherited classes should override this
+	 * 
 	 * @param state
 	 */
 	abstract public void stepAction(SimState state);
 
-	public void step(SimState state) {
+	public boolean hasStepsRemaining() {
+		return stepCounter < maxSteps;
+	}
 
-		if (!Constants.USE_ENERGY_ACCOUNTING) {
+	public void step(SimState state) {
+		if (hasStepsRemaining()) {
 			stepAction(state);
-		} else {
-			if (!isCharging && energy > 0) {
-				stepAction(state);
-				if (energy == 0) {
-					isCharging = true;
-				}
-			} else {
-				handleRecharge();
-			}
+			stepCounter++;
 		}
-		stepCounter++;
 	}
 
 	public double getFitness() {

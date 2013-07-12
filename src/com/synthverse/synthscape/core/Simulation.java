@@ -17,60 +17,104 @@ import sim.util.Int2D;
  * @author sadat
  * 
  */
-@SuppressWarnings("serial")
+
 public abstract class Simulation extends SimState implements Constants {
 
-	protected IntGrid2D obstacleGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			OBSTACLE_FALSE);
+	private static final long serialVersionUID = 2700375028430112699L;
 
-	protected IntGrid2D homeGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			HOME_FALSE);
+	protected IntGrid2D obstacleGrid;
 
-	protected ArrayList<Int2D> homeList = new ArrayList<Int2D>();
+	protected IntGrid2D collectionSiteGrid;
 
-	protected IntGrid2D objectGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT, 0);
+	protected ArrayList<Int2D> collectionSiteList;
 
-	protected IntGrid2D resourceAGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected IntGrid2D objectGrid;
 
-	protected IntGrid2D resourceBGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected IntGrid2D resourceGrid;
 
-	protected IntGrid2D resourceCGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected IntGrid2D extractedResourceGrid;
 
-	protected IntGrid2D extractAGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected IntGrid2D processedResourceGrid;
 
-	protected IntGrid2D extractBGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected DoubleGrid2D trailGrid;
 
-	protected IntGrid2D extractCGrid = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT,
-			RESOURCE_EMPTY);
+	protected SparseGrid2D agentGrid;
 
-	protected DoubleGrid2D trailAGrid = new DoubleGrid2D(GRID_WIDTH,
-			GRID_HEIGHT, 0);
+	protected IntGrid2D refactorGrid;
 
-	protected DoubleGrid2D trailBGrid = new DoubleGrid2D(GRID_WIDTH,
-			GRID_HEIGHT, 0);
+	protected ArrayList<Agent> agents;
 
-	protected DoubleGrid2D trailCGrid = new DoubleGrid2D(GRID_WIDTH,
-			GRID_HEIGHT, 0);
+	protected boolean isToroidalWorld;
 
-	protected SparseGrid2D agentGrid = new SparseGrid2D(GRID_WIDTH, GRID_HEIGHT);
+	protected int numberOfExtractedResources;
+
+	protected int numberOfAgents;
+
+	protected int numberOfObstacles;
+
+	protected int numberOfResources;
+
+	protected int numberOfHomes;
+
+	protected double trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
+
+	protected static Statistics statistics;
+
+	protected long generation;
 	
-	protected IntGrid2D visitedCells = new IntGrid2D(GRID_WIDTH, GRID_HEIGHT, 0);
 	
 
-	protected int signalALevel = DEFAULT_SIGNAL_LEVEL_A;
-	protected int signalBLevel = DEFAULT_SIGNAL_LEVEL_B;
-	protected int signalCLevel = DEFAULT_SIGNAL_LEVEL_C;
+	static {
+		statistics = new Statistics();
+	}
 
-	protected ArrayList<Agent> agents = new ArrayList<Agent>();
+	public Simulation(long seed) {
+		super(seed);
+		initStructures();
 
-	protected boolean isToroidalWorld = DEFAULT_IS_TOROIDAL;
-	
-	protected int numberOfExtractedResources = 0;
+	}
+
+	private void initStructures() {
+
+		obstacleGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, ABSENT);
+
+		collectionSiteGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, ABSENT);
+
+		collectionSiteList = new ArrayList<Int2D>();
+
+		objectGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, 0);
+
+		resourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, ABSENT);
+
+		extractedResourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, ABSENT);
+
+		processedResourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, ABSENT);
+
+		trailGrid = new DoubleGrid2D(WORLD_WIDTH, WORLD_LENGTH, 0);
+
+		agentGrid = new SparseGrid2D(WORLD_WIDTH, WORLD_LENGTH);
+
+		refactorGrid = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, 0);
+
+		agents = new ArrayList<Agent>();
+
+		isToroidalWorld = DEFAULT_IS_TOROIDAL;
+
+		numberOfExtractedResources = 0;
+
+		numberOfAgents = DEFAULT_NUMBER_OF_AGENTS;
+
+		numberOfObstacles = DEFAULT_NUMBER_OF_OBSTACLES;
+
+		numberOfResources = DEFAULT_NUMBER_OF_RESOURCES;
+
+		numberOfHomes = DEFAULT_NUMBER_OF_HOMES;
+
+		trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
+
+		generation = 0;
+
+	}
 
 	public int getNumberOfExtractedResources() {
 		return numberOfExtractedResources;
@@ -80,49 +124,18 @@ public abstract class Simulation extends SimState implements Constants {
 		this.numberOfExtractedResources = numberOfExtractedResources;
 	}
 
-	protected int numberOfAgents = DEFAULT_NUMBER_OF_AGENTS;
-
-	protected int numberOfObstacles = DEFAULT_NUMBER_OF_OBSTACLES;
-
-	protected int numberOfResourceA = DEFAULT_NUMBER_OF_RESOURCES_A;
-
-	protected int numberOfResourceB = DEFAULT_NUMBER_OF_RESOURCES_B;
-
-	protected int numberOfResourceC = DEFAULT_NUMBER_OF_RESOURCES_C;
-
-	protected int numberOfResources = numberOfResourceA + numberOfResourceB
-			+ numberOfResourceC;
-
-	protected int numberOfHomes = DEFAULT_NUMBER_OF_HOMES;
-
-	protected double broadcastSignalEvaporationConstant = DEFAULT_BROADCAST_EVAPORATION_CONSTANT;
-
-	protected double trailAEvaporationConstant = DEFAULT_TRAIL_A_EVAPORATION_CONSTANT;
-
-	protected double trailBEvaporationConstant = DEFAULT_TRAIL_B_EVAPORATION_CONSTANT;
-
-	protected double trailCEvaporationConstant = DEFAULT_TRAIL_C_EVAPORATION_CONSTANT;
-
-	protected static Statistics statistics = new Statistics();
-
-	protected long generation = 0;
-
 	private void clearEnvironmentDataStructures() {
-		obstacleGrid.setTo(OBSTACLE_FALSE);
-		homeGrid.setTo(HOME_FALSE);
-		homeList.clear();
+		obstacleGrid.setTo(ABSENT);
+		collectionSiteGrid.setTo(ABSENT);
+		collectionSiteList.clear();
 		objectGrid.setTo(0);
-		resourceAGrid.setTo(RESOURCE_EMPTY);
-		resourceBGrid.setTo(RESOURCE_EMPTY);
-		resourceCGrid.setTo(RESOURCE_EMPTY);
 
-		extractAGrid.setTo(RESOURCE_EMPTY);
-		extractBGrid.setTo(RESOURCE_EMPTY);
-		extractCGrid.setTo(RESOURCE_EMPTY);
+		resourceGrid.setTo(ABSENT);
+		extractedResourceGrid.setTo(ABSENT);
+		processedResourceGrid.setTo(ABSENT);
 
-		trailAGrid.setTo(RESOURCE_EMPTY);
-		trailBGrid.setTo(RESOURCE_EMPTY);
-		trailCGrid.setTo(RESOURCE_EMPTY);
+		trailGrid.setTo(ABSENT);
+
 		D.p("environment cleared...");
 	}
 
@@ -130,30 +143,6 @@ public abstract class Simulation extends SimState implements Constants {
 		clearEnvironmentDataStructures();
 		agentGrid.clear();
 		D.p("agents cleared...");
-	}
-
-	public int getSignalALevel() {
-		return signalALevel;
-	}
-
-	public void setSignalALevel(int signalALevel) {
-		this.signalALevel = signalALevel;
-	}
-
-	public int getSignalBLevel() {
-		return signalBLevel;
-	}
-
-	public void setSignalBLevel(int signalBLevel) {
-		this.signalBLevel = signalBLevel;
-	}
-
-	public int getSignalCLevel() {
-		return signalCLevel;
-	}
-
-	public void setSignalCLevel(int signalCLevel) {
-		this.signalCLevel = signalCLevel;
 	}
 
 	public boolean isToroidalWorld() {
@@ -172,38 +161,9 @@ public abstract class Simulation extends SimState implements Constants {
 		this.numberOfObstacles = numberOfObstacles;
 	}
 
-	public int getNumberOfResourceA() {
-		return numberOfResourceA;
-	}
-
-	public void setNumberOfResourceA(int numberOfResourceA) {
-		this.numberOfResourceA = numberOfResourceA;
-		numberOfResources = numberOfResourceA + numberOfResourceB
-				+ numberOfResourceC;
-	}
-
 	public void setNumberOfResources(int numberOfResources) {
 		this.numberOfResources = numberOfResources;
-	}
 
-	public int getNumberOfResourceB() {
-		return numberOfResourceB;
-	}
-
-	public void setNumberOfResourceB(int numberOfResourceB) {
-		this.numberOfResourceB = numberOfResourceB;
-		numberOfResources = numberOfResourceA + numberOfResourceB
-				+ numberOfResourceC;
-	}
-
-	public int getNumberOfResourceC() {
-		return numberOfResourceC;
-	}
-
-	public void setNumberOfResourceC(int numberOfResourceC) {
-		this.numberOfResourceC = numberOfResourceC;
-		numberOfResources = numberOfResourceA + numberOfResourceB
-				+ numberOfResourceC;
 	}
 
 	public int getNumberOfHomes() {
@@ -214,21 +174,8 @@ public abstract class Simulation extends SimState implements Constants {
 		this.numberOfHomes = numberOfHomes;
 	}
 
-	public double getBroadcastSignalEvaporationConstant() {
-		return broadcastSignalEvaporationConstant;
-	}
-
-	public void setBroadcastSignalEvaporationConstant(
-			double broadcastSignalEvaporationConstant) {
-		this.broadcastSignalEvaporationConstant = broadcastSignalEvaporationConstant;
-	}
-
 	public int getNumberOfResources() {
 		return numberOfResources;
-	}
-
-	public Simulation(long seed) {
-		super(seed);
 	}
 
 	public int getNumberOfAgents() {
@@ -244,46 +191,45 @@ public abstract class Simulation extends SimState implements Constants {
 
 	private void setupEnvironmentGrids() {
 		// we will create one fixed home location in the center
-		homeGrid.field[PRIMARY_HOME_X][PRIMARY_HOME_Y] = HOME_TRUE;
-		objectGrid.field[PRIMARY_HOME_X][PRIMARY_HOME_Y] = 1;
-		homeList.add(new Int2D(PRIMARY_HOME_X, PRIMARY_HOME_Y));
+		collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
+		objectGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = 1;
+		collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
+				PRIMARY_COLLECTION_SITE_Y));
 
 		// create the rest randomly
 		for (int i = 0; i < (numberOfHomes - 1); i++) {
-			int randomX = random.nextInt(GRID_WIDTH);
-			int randomY = random.nextInt(GRID_HEIGHT);
+			int randomX = random.nextInt(WORLD_WIDTH);
+			int randomY = random.nextInt(WORLD_LENGTH);
 			// make sure there isn't an obstacle there already...
-			while (homeGrid.field[randomX][randomY] == HOME_TRUE) {
-				randomX = random.nextInt(GRID_WIDTH);
-				randomY = random.nextInt(GRID_HEIGHT);
+			while (collectionSiteGrid.field[randomX][randomY] == PRESENT) {
+				randomX = random.nextInt(WORLD_WIDTH);
+				randomY = random.nextInt(WORLD_LENGTH);
 
 			}
-			homeGrid.field[randomX][randomY] = HOME_TRUE;
+			collectionSiteGrid.field[randomX][randomY] = PRESENT;
 			objectGrid.field[randomX][randomY] = 1;
-			homeList.add(new Int2D(randomX, randomY));
+			collectionSiteList.add(new Int2D(randomX, randomY));
 
 		}
 
 		// create obstacles in random locations
 		for (int i = 0; i < numberOfObstacles; i++) {
 
-			int randomX = random.nextInt(GRID_WIDTH);
-			int randomY = random.nextInt(GRID_HEIGHT);
+			int randomX = random.nextInt(WORLD_WIDTH);
+			int randomY = random.nextInt(WORLD_LENGTH);
 			// make sure there isn't an obstacle there already...
 			while (objectGrid.field[randomX][randomY] == 1) {
-				randomX = random.nextInt(GRID_WIDTH);
-				randomY = random.nextInt(GRID_HEIGHT);
+				randomX = random.nextInt(WORLD_WIDTH);
+				randomY = random.nextInt(WORLD_LENGTH);
 			}
 			objectGrid.field[randomX][randomY] = 1;
-			obstacleGrid.field[randomX][randomY] = OBSTACLE_TRUE;
+			obstacleGrid.field[randomX][randomY] = ABSENT;
 
 		}
 
 		// create resources in random locations
-		populateRandomResource(numberOfResourceA, resourceAGrid, extractAGrid);
-
-		populateRandomResource(numberOfResourceB, resourceBGrid, extractBGrid);
-		populateRandomResource(numberOfResourceC, resourceCGrid, extractCGrid);
+		populateRandomResource(numberOfResources, resourceGrid,
+				extractedResourceGrid, processedResourceGrid);
 
 	}
 
@@ -292,17 +238,16 @@ public abstract class Simulation extends SimState implements Constants {
 
 		for (int i = 0; i < numberOfAgents; i++) {
 
-			int randomX = random.nextInt(GRID_WIDTH);
-			int randomY = random.nextInt(GRID_HEIGHT);
+			int randomX = random.nextInt(WORLD_WIDTH);
+			int randomY = random.nextInt(WORLD_LENGTH);
 
 			while (objectGrid.field[randomX][randomY] == 1) {
-				randomX = random.nextInt(GRID_WIDTH);
-				randomY = random.nextInt(GRID_HEIGHT);
+				randomX = random.nextInt(WORLD_WIDTH);
+				randomY = random.nextInt(WORLD_LENGTH);
 			}
 			objectGrid.field[randomX][randomY] = 1;
 
-			Agent agent = generateAgent(SEED_GENERATION, i, randomX,
-					randomY);
+			Agent agent = generateAgent(SEED_GENERATION, i, randomX, randomY);
 
 			agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 
@@ -320,12 +265,12 @@ public abstract class Simulation extends SimState implements Constants {
 		generation++;
 		for (int i = 0; i < numberOfAgents; i++) {
 
-			int randomX = random.nextInt(GRID_WIDTH);
-			int randomY = random.nextInt(GRID_HEIGHT);
+			int randomX = random.nextInt(WORLD_WIDTH);
+			int randomY = random.nextInt(WORLD_LENGTH);
 
 			while (objectGrid.field[randomX][randomY] == 1) {
-				randomX = random.nextInt(GRID_WIDTH);
-				randomY = random.nextInt(GRID_HEIGHT);
+				randomX = random.nextInt(WORLD_WIDTH);
+				randomY = random.nextInt(WORLD_LENGTH);
 			}
 			objectGrid.field[randomX][randomY] = 1;
 
@@ -354,44 +299,8 @@ public abstract class Simulation extends SimState implements Constants {
 				// D.p("sim loop");
 
 				// this fades the trails at the appropriate rates
-				trailAGrid.lowerBound(0.0);
-				trailAGrid.multiply(trailAEvaporationConstant);
-				trailBGrid.lowerBound(0.0);
-				trailBGrid.multiply(trailBEvaporationConstant);
-				trailCGrid.lowerBound(0.0);
-				trailCGrid.multiply(trailCEvaporationConstant);
-
-				// this fades the broadcast signals
-				if (signalALevel > 0) {
-					signalALevel = (int) ((double) signalALevel * broadcastSignalEvaporationConstant);
-				}
-
-				if (signalBLevel > 0) {
-					signalBLevel = (int) ((double) signalBLevel * broadcastSignalEvaporationConstant);
-				}
-
-				if (signalCLevel > 0) {
-					signalCLevel = (int) ((double) signalCLevel * broadcastSignalEvaporationConstant);
-				}
-
-				for (Agent agent : agents) {
-					if (signalALevel <= 0) {
-						agent.signalA.senderAgentId = -1;
-						agent.signalA.x = -1;
-						agent.signalA.y = -1;
-
-					}
-					if (signalBLevel <= 0) {
-						agent.signalB.senderAgentId = -1;
-						agent.signalB.x = -1;
-						agent.signalB.y = -1;
-					}
-					if (signalCLevel <= 0) {
-						agent.signalC.senderAgentId = -1;
-						agent.signalC.x = -1;
-						agent.signalC.y = -1;
-					}
-				}
+				trailGrid.lowerBound(0.0);
+				trailGrid.multiply(trailEvaporationConstant);
 
 				// this handles statistics
 				doEndOfStepTasks();
@@ -410,8 +319,8 @@ public abstract class Simulation extends SimState implements Constants {
 	protected void debugArray(String string, int[][] array) {
 		D.p(string);
 		int nonZeroCounter = 0;
-		for (int x = 0; x < Constants.GRID_WIDTH; x++) {
-			for (int y = 0; y < Constants.GRID_HEIGHT; y++) {
+		for (int x = 0; x < Constants.WORLD_WIDTH; x++) {
+			for (int y = 0; y < Constants.WORLD_LENGTH; y++) {
 				int value = array[x][y];
 				System.out.print(value);
 				if (value > 0) {
@@ -442,7 +351,8 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	private void populateRandomResource(int numberOfResource,
-			IntGrid2D resourceGrid, IntGrid2D extractGrid) {
+			IntGrid2D resourceGrid, IntGrid2D extractGrid,
+			IntGrid2D processedGrid) {
 
 		for (int i = 0; i < numberOfResource; i++) {
 
@@ -451,11 +361,12 @@ public abstract class Simulation extends SimState implements Constants {
 
 			// make sure there are no resources, homes, and obstacles here
 			do {
-				randomX = random.nextInt(GRID_WIDTH);
-				randomY = random.nextInt(GRID_HEIGHT);
+				randomX = random.nextInt(WORLD_WIDTH);
+				randomY = random.nextInt(WORLD_LENGTH);
 			} while (objectGrid.field[randomX][randomY] == 1);
-			resourceGrid.field[randomX][randomY] = RESOURCE_MAX;
-			extractGrid.field[randomX][randomY] = RESOURCE_EMPTY;
+			resourceGrid.field[randomX][randomY] = PRESENT;
+			extractGrid.field[randomX][randomY] = ABSENT;
+			processedGrid.field[randomX][randomY] = ABSENT;
 			objectGrid.field[randomX][randomY] = 1;
 
 		}

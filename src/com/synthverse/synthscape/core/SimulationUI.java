@@ -25,18 +25,47 @@ import sim.util.gui.SimpleColorMap;
 /**
  * @author sadat
  * 
- *         color codes:
- * 
- *         resources: red, green, blue extracts: hollow? red, green, blue?
- *         trails: lighter shades of all the above home: triangle/image
- * 
  * 
  */
 public class SimulationUI extends GUIState {
 
-	private Class agentClass;
+	protected Class agentClass;
 
-	private Simulation sim;
+	protected Simulation sim;
+
+	protected Display2D display;
+
+	protected JFrame displayFrame;
+
+	protected FastValueGridPortrayal2D collectionSitePortrayal;
+
+	protected FastValueGridPortrayal2D resourcePortrayal;
+
+	protected FastValueGridPortrayal2D extractedResourcePortrayal;
+	
+	protected FastValueGridPortrayal2D processedResourcePortrayal;
+
+	protected FastValueGridPortrayal2D obstaclesPortrayal;
+
+	protected SparseGridPortrayal2D agentPortrayal;
+
+	protected FastValueGridPortrayal2D trailPortrayal;
+
+	private void initStructures() {
+		collectionSitePortrayal = new FastValueGridPortrayal2D(
+				"CollectionSite", true);
+
+		resourcePortrayal = new FastValueGridPortrayal2D("Resource", false);
+
+		extractedResourcePortrayal = new FastValueGridPortrayal2D(
+				"ExtractedResource", false);
+
+		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);
+
+		agentPortrayal = new SparseGridPortrayal2D();
+
+		trailPortrayal = new FastValueGridPortrayal2D("Trail");
+	}
 
 	public Simulation getSim() {
 		return sim;
@@ -49,50 +78,6 @@ public class SimulationUI extends GUIState {
 	public Class getAgentClass() {
 		return agentClass;
 	}
-
-	/*
-	 * public void setAgentClass(Class agentClass) { this.agentClass =
-	 * agentClass; }
-	 */
-	// main 2D display object
-	public Display2D display;
-
-	public JFrame displayFrame;
-
-	FastValueGridPortrayal2D homePortrayal = new FastValueGridPortrayal2D(
-			"Home", true);
-
-	FastValueGridPortrayal2D resourceAPortrayal = new FastValueGridPortrayal2D(
-			"ResourceA", false);
-
-	FastValueGridPortrayal2D resourceBPortrayal = new FastValueGridPortrayal2D(
-			"ResourceB", false);
-
-	FastValueGridPortrayal2D resourceCPortrayal = new FastValueGridPortrayal2D(
-			"ResourceC", false);
-
-	FastValueGridPortrayal2D extractAPortrayal = new FastValueGridPortrayal2D(
-			"ExtractA", false);
-
-	FastValueGridPortrayal2D extractBPortrayal = new FastValueGridPortrayal2D(
-			"ExtractB", false);
-
-	FastValueGridPortrayal2D extractCPortrayal = new FastValueGridPortrayal2D(
-			"ExtractC", false);
-
-	FastValueGridPortrayal2D obstaclesPortrayal = new FastValueGridPortrayal2D(
-			"Obstacle", true);
-
-	SparseGridPortrayal2D agentPortrayal = new SparseGridPortrayal2D();
-
-	FastValueGridPortrayal2D trailAPortrayal = new FastValueGridPortrayal2D(
-			"TrailA");
-
-	FastValueGridPortrayal2D trailBPortrayal = new FastValueGridPortrayal2D(
-			"TrailB");
-
-	FastValueGridPortrayal2D trailCPortrayal = new FastValueGridPortrayal2D(
-			"TrailC");
 
 	public Object getSimulationInspectedObject() {
 		return state;
@@ -116,19 +101,13 @@ public class SimulationUI extends GUIState {
 		displayFrame.setVisible(true);
 
 		// attach the portrayals from bottom to top
-		display.attach(homePortrayal, "Home Locations");
-		display.attach(resourceAPortrayal, "Resource A Locations");
-		display.attach(resourceBPortrayal, "Resource B Locations");
-		display.attach(resourceCPortrayal, "Resource C Locations");
-		display.attach(extractAPortrayal, "Extract A Locations");
-		display.attach(extractBPortrayal, "Extract B Locations");
-		display.attach(extractCPortrayal, "Extract C Locations");
-		display.attach(trailAPortrayal, "TrailA");
-		display.attach(trailBPortrayal, "TrailB");
-		display.attach(trailCPortrayal, "TrailC");
-
-		display.attach(obstaclesPortrayal, "Obstacle Locations");
-		display.attach(agentPortrayal, "Agent Locations");
+		display.attach(collectionSitePortrayal, "Collection Sites");
+		display.attach(resourcePortrayal, "Resources");
+		display.attach(extractedResourcePortrayal, "Extracts");
+		display.attach(processedResourcePortrayal, "Products");
+		display.attach(trailPortrayal, "Trails");
+		display.attach(obstaclesPortrayal, "Obstacles");
+		display.attach(agentPortrayal, "Agents");
 
 		// specify the backdrop color -- what gets painted behind the displays
 		display.setBackdrop(Color.WHITE);
@@ -160,7 +139,7 @@ public class SimulationUI extends GUIState {
 		Simulation theState = (Simulation) state;
 		// tell the portrayals what to portray and how to portray them
 
-		setupPortrayal(trailAPortrayal, theState.trailAGrid,
+		setupPortrayal(trailPortrayal, theState.trailAGrid,
 				new sim.util.gui.SimpleColorMap(sim.TRAIL_LEVEL_MIN,
 						sim.TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
@@ -195,17 +174,17 @@ public class SimulationUI extends GUIState {
 				new sim.util.gui.SimpleColorMap(sim.OBSTACLE_FALSE,
 						sim.OBSTACLE_TRUE, new Color(0, 0, 0, 0), Color.BLACK));
 
-		setupPortrayal(homePortrayal, theState.homeGrid,
+		setupPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
 				new sim.util.gui.SimpleColorMap(sim.HOME_FALSE, sim.HOME_TRUE,
 						new Color(0, 0, 0, 0), Color.GREEN));
 
-		setupPortrayal(extractAPortrayal, theState.extractAGrid,
+		setupPortrayal(extractedResourcePortrayal, theState.extractAGrid,
 				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
 						Color.PINK));
 
 		setupPortrayal(resourceAPortrayal, theState.resourceAGrid,
 				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.RESOURCE_MAX, new Color(0, 0, 0, 0), Color.BLUE));
+						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
 
 		/*
 		 * setupPortrayal(resourceAPortrayal, theState.resourceAGrid, new
@@ -215,19 +194,18 @@ public class SimulationUI extends GUIState {
 
 		setupPortrayal(resourceAPortrayal, theState.resourceAGrid,
 				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.RESOURCE_MAX, new Color(0, 0, 0, 0), Color.BLUE));
+						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
 
 		setupPortrayal(resourceBPortrayal, theState.resourceBGrid,
 				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.RESOURCE_MAX, new Color(0, 0, 0, 0), Color.BLUE));
+						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
 
 		setupPortrayal(resourceCPortrayal, theState.resourceCGrid,
 				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.RESOURCE_MAX, new Color(0, 0, 0, 0), Color.BLUE));
+						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
 
 		agentPortrayal.setField(theState.agentGrid);
 
-		
 		agentPortrayal.setPortrayalForClass(getAgentClass(),
 				new FacetedPortrayal2D(new SimplePortrayal2D[] {
 						new OvalPortrayal2D(Color.PINK, 1.5, false),

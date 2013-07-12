@@ -15,7 +15,7 @@ public abstract class EvolvableAgent extends Agent {
 	}
 	
 	public double getFitness() {
-		return myStats.numberOfCellsDiscovered;
+		return stats.numberOfCellsDiscovered;
 	}
 
 }
