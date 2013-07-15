@@ -21,10 +21,11 @@ public class HomogenousAgent extends Agent {
 			double extractionCapability, double transportationCapability,
 			double communicationCapability, int startX, int startY) {
 
+		/*
 		super(sim, generation, agentId, energy, maxEnergy, visionCapability,
 				extractionCapability, transportationCapability,
 				communicationCapability, startX, startY);
-
+		*/
 		virtualMachine = VirtualMachine.Factory.createDefault(sim, this,
 				sim.random);
 		virtualMachine.setCpuCycles(energy);

@@ -19,7 +19,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	private static final long serialVersionUID = -5129827193602692370L;
 
-	Simulation sim;
+	Simulation sim ;
 
 	long agentId;
 
@@ -62,7 +62,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	protected Program program;
 
-	protected IntGrid2D visitedCells = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH, 0);
+	protected IntGrid2D visitedCells = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH,
+			0);
 
 	protected Measure stats = new Measure();
 
@@ -328,12 +329,12 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public final void operationMoveEast() {
 		_operationMoveRelative(1, 0);
-		;
+
 	}
 
 	public final void operationMoveWest() {
 		_operationMoveRelative(-1, 0);
-		;
+
 	}
 
 	public final void operationMoveRelative(int deltaX, int deltaY) {
@@ -352,19 +353,18 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			deltaY = 1;
 		}
 		_operationMoveRelative(deltaX, deltaY);
-		;
 
 	}
 
 	public final void operationRandomMove() {
 		_operationRandomMove();
-		;
+
 	}
 
 	public final void operationMoveToPrimaryCollectionSite() {
 		_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
 				Simulation.PRIMARY_COLLECTION_SITE_Y);
-		;
+
 	}
 
 	public final void operationMoveToClosestCollectionSite() {
@@ -382,8 +382,9 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 				}
 			}
 
-			_operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
-			;
+			_operationMoveToLocationAt(closestCollectionSite.x,
+					closestCollectionSite.y);
+
 		}
 	}
 
@@ -410,14 +411,14 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			}
 			_operationMoveToLocationAt(closestAgentLocation.x,
 					closestAgentLocation.y);
-			;
+
 		}
 	}
 
 	public final void operationFollowTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 			_operationFollowTrail(sim.trailGrid);
-			;
+
 			sim.statistics.stepData.trailFollows++;
 
 		}
@@ -426,7 +427,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	public void operationLeaveTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 			_operationLeaveTrail(sim.trailGrid);
-			;
+
 			sim.statistics.stepData.trailDrops++;
 
 			updateLocationStatus(this.x, this.y);
@@ -436,7 +437,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public final boolean operationDetectCollectionSite() {
 		if (traits.contains(Trait.HOMING)) {
-			;
+
 			return this.locationIsCollectionSite;
 		} else {
 			return false;
@@ -445,7 +446,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public final boolean operationDetectResource() {
 		if (traits.contains(Trait.DETECTION)) {
-			;
+
 			return (this.locationHasResource);
 		} else {
 			return false;
@@ -455,7 +456,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public final boolean operationDetectExtractedResource() {
 		if (traits.contains(Trait.DETECTION)) {
-			;
+
 			return this.locationHasExtractedResource;
 		} else {
 			return false;
@@ -464,7 +465,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public final boolean operationDetectTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-			;
+
 			return this.locationHasTrail;
 		} else {
 			return false;
@@ -480,7 +481,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 			}
 
-			;
 			updateLocationStatus(this.x, this.y);
 		}
 	}
@@ -498,7 +498,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 					updateLocationStatus(this.x, this.y);
 				}
 			}
-			;
+
 		}
 	}
 
@@ -520,26 +520,19 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 				updateLocationStatus(this.x, this.y);
 
 			}
-			;
+
 		}
 	}
 
 	protected void reset() {
-
 		stepCounter = 0;
-
 		resourcesLoaded = 0;
-
 		fitness = 0.0;
-
 		visitedCells.setTo(0);
-
 		stats.zeroAll();
-
 	}
 
 	protected Agent() {
-
 	}
 
 	public void updateLocationStatus(int x, int y) {
@@ -603,7 +596,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 				sim.statistics.stepData.collectionSiteHits++;
 				stats.collectionSiteHits++;
 
-				if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
+				if (x == sim.PRIMARY_COLLECTION_SITE_X
+						&& y == sim.PRIMARY_COLLECTION_SITE_Y) {
 					sim.statistics.stepData.primaryCollectionSiteHits++;
 					stats.primaryCollectionSiteHits++;
 				}

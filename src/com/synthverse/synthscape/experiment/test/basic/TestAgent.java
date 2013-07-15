@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.tests;
+package com.synthverse.synthscape.experiment.test.basic;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Simulation;
@@ -9,17 +9,15 @@ import com.synthverse.synthscape.core.Simulation;
 import sim.engine.SimState;
 
 @SuppressWarnings("serial")
-public class NCMHomoAgent extends Agent {
+public class TestAgent extends Agent {
 
 	boolean carryingResource = false;
 
-	NCMHomoAgent(Simulation sim, long generation, long agentId, int energy,
+	TestAgent(Simulation sim, long generation, long agentId, int energy,
 			int maxEnergy, double visionCapability,
 			double extractionCapability, double transportationCapability,
 			double communicationCapability, int startX, int startY) {
-		super(sim, generation, agentId, energy, maxEnergy, visionCapability,
-				extractionCapability, transportationCapability,
-				communicationCapability, startX, startY);
+		
 
 	}
 

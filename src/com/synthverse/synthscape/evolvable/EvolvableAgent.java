@@ -5,6 +5,7 @@ import com.synthverse.synthscape.core.Simulation;
 
 public abstract class EvolvableAgent extends Agent {
 
+	/*
 	protected EvolvableAgent(Simulation sim, long generation, long agentId,
 			int energy, int maxEnergy, double visionCapability,
 			double extractionCapability, double transportationCapability,
@@ -13,7 +14,7 @@ public abstract class EvolvableAgent extends Agent {
 				extractionCapability, transportationCapability,
 				communicationCapability, startX, startY);
 	}
-	
+	*/
 	public double getFitness() {
 		return stats.numberOfCellsDiscovered;
 	}

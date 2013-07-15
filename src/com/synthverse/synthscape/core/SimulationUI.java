@@ -24,10 +24,10 @@ import sim.util.gui.SimpleColorMap;
 
 /**
  * @author sadat
- *  
+ * 
  * 
  */
-public class SimulationUI extends GUIState {
+public class SimulationUI extends GUIState implements Constants {
 
 	protected Class agentClass;
 
@@ -42,7 +42,7 @@ public class SimulationUI extends GUIState {
 	protected FastValueGridPortrayal2D resourcePortrayal;
 
 	protected FastValueGridPortrayal2D extractedResourcePortrayal;
-	
+
 	protected FastValueGridPortrayal2D processedResourcePortrayal;
 
 	protected FastValueGridPortrayal2D obstaclesPortrayal;
@@ -139,9 +139,9 @@ public class SimulationUI extends GUIState {
 		Simulation theState = (Simulation) state;
 		// tell the portrayals what to portray and how to portray them
 
-		setupPortrayal(trailPortrayal, theState.trailAGrid,
-				new sim.util.gui.SimpleColorMap(sim.TRAIL_LEVEL_MIN,
-						sim.TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
+		setupPortrayal(trailPortrayal, theState.trailGrid,
+				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
+						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
 					public double filterLevel(double level) {
 						return Math.sqrt(Math.sqrt(level));
@@ -149,60 +149,22 @@ public class SimulationUI extends GUIState {
 
 				});
 
-		setupPortrayal(trailBPortrayal, theState.trailBGrid,
-				new sim.util.gui.SimpleColorMap(sim.TRAIL_LEVEL_MIN,
-						sim.TRAIL_LEVEL_MAX, new Color(0, 0, 0, 0),
-						Color.ORANGE) {
-					public double filterLevel(double level) {
-						return Math.sqrt(Math.sqrt(level));
-					}
-
-				});
-
-		setupPortrayal(
-				trailCPortrayal,
-				theState.trailCGrid,
-				new sim.util.gui.SimpleColorMap(sim.TRAIL_LEVEL_MIN,
-						sim.TRAIL_LEVEL_MAX, new Color(0, 0, 0, 0), Color.PINK) {
-					public double filterLevel(double level) {
-						return Math.sqrt(Math.sqrt(level));
-					}
-
-				});
-
 		setupPortrayal(obstaclesPortrayal, theState.obstacleGrid,
-				new sim.util.gui.SimpleColorMap(sim.OBSTACLE_FALSE,
-						sim.OBSTACLE_TRUE, new Color(0, 0, 0, 0), Color.BLACK));
+				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+						0, 0, 0), Color.BLACK));
 
 		setupPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
-				new sim.util.gui.SimpleColorMap(sim.HOME_FALSE, sim.HOME_TRUE,
-						new Color(0, 0, 0, 0), Color.GREEN));
+				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+						0, 0, 0), Color.GREEN));
 
-		setupPortrayal(extractedResourcePortrayal, theState.extractAGrid,
+		setupPortrayal(extractedResourcePortrayal,
+				theState.extractedResourceGrid,
 				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
 						Color.PINK));
 
-		setupPortrayal(resourceAPortrayal, theState.resourceAGrid,
-				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
-
-		/*
-		 * setupPortrayal(resourceAPortrayal, theState.resourceAGrid, new
-		 * sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY, sim.RESOURCE_MAX, new
-		 * Color(0, 0, 0, 0), Color.RED));
-		 */
-
-		setupPortrayal(resourceAPortrayal, theState.resourceAGrid,
-				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
-
-		setupPortrayal(resourceBPortrayal, theState.resourceBGrid,
-				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
-
-		setupPortrayal(resourceCPortrayal, theState.resourceCGrid,
-				new sim.util.gui.SimpleColorMap(sim.RESOURCE_EMPTY,
-						sim.PRESENT, new Color(0, 0, 0, 0), Color.BLUE));
+		setupPortrayal(resourcePortrayal, theState.resourceGrid,
+				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+						0, 0, 0), Color.BLUE));
 
 		agentPortrayal.setField(theState.agentGrid);
 
@@ -235,11 +197,13 @@ public class SimulationUI extends GUIState {
 
 	public SimulationUI() {
 		super(null);
+		initStructures();
 
 	}
 
 	public SimulationUI(SimState state) {
 		super(state);
+		initStructures();
 		this.sim = (Simulation) state;
 	}
 

@@ -190,7 +190,7 @@ public abstract class Simulation extends SimState implements Constants {
 			int y);
 
 	private void setupEnvironmentGrids() {
-		// we will create one fixed home location in the center
+		// we will create one fixed collectionSite location in the center
 		collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 		objectGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = 1;
 		collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
@@ -359,7 +359,7 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = 0;
 			int randomY = 0;
 
-			// make sure there are no resources, homes, and obstacles here
+			// make sure there are no resources, collectionSites, and obstacles here
 			do {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_LENGTH);

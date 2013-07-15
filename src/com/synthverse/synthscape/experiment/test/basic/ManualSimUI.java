@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.experiment.nonevolutionary;
+package com.synthverse.synthscape.experiment.test.basic;
 
 import sim.display.Console;
 import sim.engine.SimState;

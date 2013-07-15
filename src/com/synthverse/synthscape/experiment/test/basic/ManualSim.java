@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.experiment.tests;
+package com.synthverse.synthscape.experiment.test.basic;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Simulation;
@@ -11,14 +11,11 @@ public class ManualSim extends Simulation {
 		this.setNumberOfHomes(0);
 		this.setNumberOfObstacles(0);
 		this.setNumberOfAgents(50);
-		this.setNumberOfResourceA(50);
-		this.setNumberOfResourceB(0);
-		this.setNumberOfResourceC(0);
-
+		
 	}
 
 	public Agent generateAgent(long generation, long agentId, int x, int y) {
-		NCMHomoAgent nCMHomoAgent = new NCMHomoAgent(this, generation,
+		TestAgent nCMHomoAgent = new TestAgent(this, generation,
 				agentId, 150, 150, 1.0, 1.0, 1.0, 1.0, x, y);
 		return nCMHomoAgent;
 	}
