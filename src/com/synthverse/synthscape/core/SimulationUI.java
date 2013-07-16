@@ -29,8 +29,6 @@ import sim.util.gui.SimpleColorMap;
  */
 public class SimulationUI extends GUIState implements Constants {
 
-	protected Class agentClass;
-
 	protected Simulation sim;
 
 	protected Display2D display;
@@ -75,10 +73,6 @@ public class SimulationUI extends GUIState implements Constants {
 		this.sim = sim;
 	}
 
-	public Class getAgentClass() {
-		return agentClass;
-	}
-
 	public Object getSimulationInspectedObject() {
 		return state;
 	}
@@ -89,15 +83,15 @@ public class SimulationUI extends GUIState implements Constants {
 		return i;
 	}
 
-	public void init(Controller c) {
-		super.init(c);
+	public void init(Controller controller) {
+		
+		super.init(controller);
 
 		display = new Display2D(300, 300, this);
+		display.setClipping(false);
 
 		displayFrame = display.createFrame();
-
-		c.registerFrame(displayFrame);
-
+		controller.registerFrame(displayFrame);
 		displayFrame.setVisible(true);
 
 		// attach the portrayals from bottom to top
@@ -137,7 +131,7 @@ public class SimulationUI extends GUIState implements Constants {
 
 	public void setupPortrayals() {
 		Simulation theState = (Simulation) state;
-		// tell the portrayals what to portray and how to portray them
+		
 
 		setupPortrayal(trailPortrayal, theState.trailGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
@@ -167,20 +161,15 @@ public class SimulationUI extends GUIState implements Constants {
 						0, 0, 0), Color.BLUE));
 
 		agentPortrayal.setField(theState.agentGrid);
-
-		agentPortrayal.setPortrayalForClass(getAgentClass(),
+		
+		
+		/*
+		agentPortrayal.setPortrayalForClass(Agent.class,
 				new FacetedPortrayal2D(new SimplePortrayal2D[] {
 						new OvalPortrayal2D(Color.PINK, 1.5, false),
 						new OvalPortrayal2D(Color.PINK, 1.5, true),
 						new OvalPortrayal2D(Color.PINK, 1) }));
-
-		/*
-		 * agentPortrayal.setPortrayalForClass(Agent.class, new
-		 * FacetedPortrayal2D(new SimplePortrayal2D[] { new
-		 * ImagePortrayal2D(this.getClass(), "/tmp/blinkyu.png", 2), new
-		 * ImagePortrayal2D(this.getClass(), "/tmp/blinkyu.png", 2), new
-		 * ImagePortrayal2D(this.getClass(), "/tmp/blinkyl.png", 2), }));
-		 */
+		*/
 		display.reset();
 		display.repaint();
 	}

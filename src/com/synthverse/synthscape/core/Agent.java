@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.core;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -7,6 +9,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
+import sim.portrayal.DrawInfo2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
@@ -19,7 +22,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	private static final long serialVersionUID = -5129827193602692370L;
 
-	Simulation sim ;
+	Simulation sim;
 
 	long agentId;
 
@@ -38,7 +41,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	protected int resourcesLoaded;
 
-	protected int loadCapacity = 1;
+	protected int loadCapacity;
 
 	protected int previousX;
 
@@ -62,9 +65,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	protected Program program;
 
-	protected IntGrid2D visitedCells = new IntGrid2D(WORLD_WIDTH, WORLD_LENGTH,
-			0);
-
 	protected Measure stats = new Measure();
 
 	public Agent randomizeGenotype() {
@@ -74,7 +74,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		return this;
 	}
 
-	public final boolean hasObstacle(int x, int y) {
+	public final boolean locationHasObstacle(int x, int y) {
 		return (sim.obstacleGrid.field[x][y] == PRESENT);
 	}
 
@@ -142,7 +142,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
 					&& xMod < Simulation.WORLD_WIDTH && yMod >= 0
-					&& yMod < Simulation.WORLD_LENGTH
+					&& yMod < Simulation.WORLD_HEIGHT
 					&& sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 				newX = xMod;
 				newY = yMod;
@@ -178,7 +178,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (deltaX != 0 || deltaY != 0) {
 				int adjustedX = this.x + deltaX;
 				int adjustedY = this.y + deltaY;
-				if (hasObstacle(newX, newY)) {
+				if (locationHasObstacle(newX, newY)) {
 					_operationRandomMove();
 				} else {
 					_operationMoveAbsolute(adjustedX, adjustedY);
@@ -528,7 +528,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		stepCounter = 0;
 		resourcesLoaded = 0;
 		fitness = 0.0;
-		visitedCells.setTo(0);
 		stats.zeroAll();
 	}
 
@@ -541,18 +540,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		this.y = y;
 
 		boolean locationIsChanging = (x != previousX || y != previousY);
-
-		// this captures visited cell statistics for this agent
-		if (visitedCells.field[x][y] == 0) {
-			visitedCells.field[x][y] = 1;
-			stats.numberOfCellsDiscovered++;
-		}
-
-		// this captures visited cell statistics for the entire environment
-		if (sim.refactorGrid.field[x][y] == 0) {
-			sim.refactorGrid.field[x][y] = 1;
-			sim.statistics.stepData.numberOfCellsDiscovered++;
-		}
 
 		if (sim.resourceGrid.field[x][y] > 0) {
 			this.locationHasResource = true;
@@ -661,6 +648,104 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			return -1;
 		}
 		return 0;
+	}
+
+	public Simulation getSim() {
+		return sim;
+	}
+
+	public void setSim(Simulation sim) {
+		this.sim = sim;
+	}
+
+	public long getAgentId() {
+		return agentId;
+	}
+
+	public void setAgentId(long agentId) {
+		this.agentId = agentId;
+	}
+
+	public long getStepCounter() {
+		return stepCounter;
+	}
+
+	public void setStepCounter(long stepCounter) {
+		this.stepCounter = stepCounter;
+	}
+
+	public long getMaxSteps() {
+		return maxSteps;
+	}
+
+	public void setMaxSteps(long maxSteps) {
+		this.maxSteps = maxSteps;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public Set<InteractionMechanism> getInteractionMechanisms() {
+		return interactionMechanisms;
+	}
+
+	public void setInteractionMechanisms(
+			Set<InteractionMechanism> interactionMechanisms) {
+		this.interactionMechanisms = interactionMechanisms;
+	}
+
+	public Set<Trait> getTraits() {
+		return traits;
+	}
+
+	public void setTraits(Set<Trait> traits) {
+		this.traits = traits;
+	}
+
+	public int getLoadCapacity() {
+		return loadCapacity;
+	}
+
+	public void setLoadCapacity(int loadCapacity) {
+		this.loadCapacity = loadCapacity;
+	}
+
+	public VirtualMachine getVirtualMachine() {
+		return virtualMachine;
+	}
+
+	public void setFitness(double fitness) {
+		this.fitness = fitness;
+	}
+
+	public void setGeneration(long generation) {
+		this.generation = generation;
+	}
+
+	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
+
+		graphics.setColor(Color.PINK);
+
+		// this code was stolen from OvalPortrayal2D
+		int x = (int) (info.draw.x - info.draw.width / 2.0);
+		int y = (int) (info.draw.y - info.draw.height / 2.0);
+		int width = (int) (info.draw.width);
+		int height = (int) (info.draw.height);
+		graphics.fillOval(x, y, width, height);
+
 	}
 
 }

@@ -4,11 +4,11 @@ public interface Constants {
 
 	public static final int WORLD_WIDTH = 50;
 
-	public static final int WORLD_LENGTH = 50;
+	public static final int WORLD_HEIGHT = 50;
 
 	public static final int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
-	public static final int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_LENGTH * 0.90);
+	public static final int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 
 	public static final int PRESENT = 1;
 

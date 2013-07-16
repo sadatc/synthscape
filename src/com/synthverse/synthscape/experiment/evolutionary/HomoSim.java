@@ -8,7 +8,7 @@ public class HomoSim extends Simulation {
 
 	public HomoSim(long seed) {
 		super(seed);
-		this.setNumberOfHomes(0);
+		this.setNumberOfCollectionSites(0);
 		this.setNumberOfObstacles(0);
 		this.setNumberOfAgents(50);
 		//this.setNumberOfResourceA(50);

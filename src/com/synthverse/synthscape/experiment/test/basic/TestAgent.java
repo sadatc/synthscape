@@ -3,58 +3,60 @@
  */
 package com.synthverse.synthscape.experiment.test.basic;
 
-import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.Simulation;
+import java.util.HashSet;
+import java.util.Set;
 
 import sim.engine.SimState;
+
+import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.InteractionMechanism;
+import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Trait;
 
 @SuppressWarnings("serial")
 public class TestAgent extends Agent {
 
 	boolean carryingResource = false;
 
-	TestAgent(Simulation sim, long generation, long agentId, int energy,
-			int maxEnergy, double visionCapability,
-			double extractionCapability, double transportationCapability,
-			double communicationCapability, int startX, int startY) {
+	TestAgent(Simulation sim, long agentId, int maxSteps, int startX, int startY) {
+		super();
+		
+		// set the basic stuff:
+		setSim(sim);
+		setAgentId(agentId);
+		setMaxSteps(maxSteps);
+		setX(startX);
+		setY(startY);
+		
+		// set the traits:		
+		Set<Trait> traits = new HashSet<Trait>();
+		traits.add(Trait.DETECTION);
+		traits.add(Trait.EXTRACTION);
+		traits.add(Trait.HOMING);
+		traits.add(Trait.PROCESSING);
+		traits.add(Trait.TRANSPORTATION);
+		traits.add(Trait.FLOCKING);
+		setTraits(traits);
+		
+		// set the interaction mechanisms:
+		Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
+		interactionMechanisms.add(InteractionMechanism.BROADCAST);
+		interactionMechanisms.add(InteractionMechanism.TRAIL);
+		interactionMechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+		interactionMechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);		
+		setInteractionMechanisms(interactionMechanisms);
 		
 
 	}
 
-	public double doubleValue() {
-		return 0;
+	public void stepAction(SimState state) {
+		this.operationRandomMove();
 	}
 
-	// 
-	// if it's carrying resources, carry it back to home
-	// if it's not carrying resources, go find extracted resources
-	// if found, carry it, else go find resources to extract
-	// else just randomly move
-	// NO COMMUNICATION
-	//
-	public void stepAction(SimState state) {
-
-		if (!carryingResource) {
-			if (this.operationDetectExtractedResource()) {
-				this.operationLoadResource();
-				carryingResource = true;
-			} else if (this.operationDetectResource()) {
-				this.operationExtractResource();
-			}
-
-			else {
-				this.operationRandomMove();
-			}
-		} else {
-			if (this.operationDetectHome()) {
-				this.operationUnLoadResource();
-				carryingResource = false;
-				this.operationRandomMove();
-			} else {
-				this.operationMoveToClosestCollectionSite();
-			}
-		}
-
+	@Override
+	public double doubleValue() {
+		// TODO: value will determine color
+		return 0;
 	}
 
 }
