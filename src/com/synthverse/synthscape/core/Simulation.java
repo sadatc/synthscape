@@ -60,14 +60,20 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected long generation;
 
+	protected AgentFactory agentFactory;
+
 	static {
 		statistics = new Statistics();
 	}
 
-	public Simulation(long seed) {
+	public Simulation(AgentFactory agentFactory, long seed) {
 		super(seed);
+		setAgentFactory(agentFactory);
 		createDataStructures();
-		// initDefaultStartupValues();
+	}
+
+	public void setAgentFactory(AgentFactory agentFactory) {
+		this.agentFactory = agentFactory;
 	}
 
 	private void createDataStructures() {
@@ -180,9 +186,6 @@ public abstract class Simulation extends SimState implements Constants {
 		this.numberOfAgents = numberOfAgents;
 	}
 
-	public abstract Agent generateAgent(long generation, long agentId, int x,
-			int y);
-
 	private void setupPrimaryCollectionSite() {
 		// set the primary collection site
 		collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
@@ -268,7 +271,8 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 			collisionGrid.field[randomX][randomY] = 1;
 
-			Agent agent = generateAgent(SEED_GENERATION, i, randomX, randomY);
+			Agent agent = agentFactory.create(this, SEED_GENERATION_NUMBER, i,
+					randomX, randomY);
 
 			agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 

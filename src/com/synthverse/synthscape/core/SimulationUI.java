@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
+import sim.app.antsforage.AntsForageWithUI;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -28,26 +29,18 @@ import sim.util.gui.SimpleColorMap;
  * 
  */
 public class SimulationUI extends GUIState implements Constants {
-
 	protected Simulation sim;
-
 	protected Display2D display;
-
 	protected JFrame displayFrame;
 
 	protected FastValueGridPortrayal2D collectionSitePortrayal;
-
 	protected FastValueGridPortrayal2D resourcePortrayal;
-
 	protected FastValueGridPortrayal2D extractedResourcePortrayal;
-
 	protected FastValueGridPortrayal2D processedResourcePortrayal;
-
 	protected FastValueGridPortrayal2D obstaclesPortrayal;
+	protected FastValueGridPortrayal2D trailPortrayal;
 
 	protected SparseGridPortrayal2D agentPortrayal;
-
-	protected FastValueGridPortrayal2D trailPortrayal;
 
 	private void initStructures() {
 		collectionSitePortrayal = new FastValueGridPortrayal2D(
@@ -57,6 +50,9 @@ public class SimulationUI extends GUIState implements Constants {
 
 		extractedResourcePortrayal = new FastValueGridPortrayal2D(
 				"ExtractedResource", false);
+
+		processedResourcePortrayal = new FastValueGridPortrayal2D(
+				"ProcessedResource", false);
 
 		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);
 
@@ -84,10 +80,10 @@ public class SimulationUI extends GUIState implements Constants {
 	}
 
 	public void init(Controller controller) {
-		
+
 		super.init(controller);
 
-		display = new Display2D(300, 300, this);
+		display = new Display2D(600, 600, this);
 		display.setClipping(false);
 
 		displayFrame = display.createFrame();
@@ -131,7 +127,6 @@ public class SimulationUI extends GUIState implements Constants {
 
 	public void setupPortrayals() {
 		Simulation theState = (Simulation) state;
-		
 
 		setupPortrayal(trailPortrayal, theState.trailGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
@@ -156,20 +151,24 @@ public class SimulationUI extends GUIState implements Constants {
 				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
 						Color.PINK));
 
+		setupPortrayal(processedResourcePortrayal,
+				theState.extractedResourceGrid,
+				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
+						Color.PINK));
+
 		setupPortrayal(resourcePortrayal, theState.resourceGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.BLUE));
 
 		agentPortrayal.setField(theState.agentGrid);
-		
-		
+
 		/*
-		agentPortrayal.setPortrayalForClass(Agent.class,
-				new FacetedPortrayal2D(new SimplePortrayal2D[] {
-						new OvalPortrayal2D(Color.PINK, 1.5, false),
-						new OvalPortrayal2D(Color.PINK, 1.5, true),
-						new OvalPortrayal2D(Color.PINK, 1) }));
-		*/
+		 * agentPortrayal.setPortrayalForClass(Agent.class, new
+		 * FacetedPortrayal2D(new SimplePortrayal2D[] { new
+		 * OvalPortrayal2D(Color.PINK, 1.5, false), new
+		 * OvalPortrayal2D(Color.PINK, 1.5, true), new
+		 * OvalPortrayal2D(Color.PINK, 1) }));
+		 */
 		display.reset();
 		display.repaint();
 	}
@@ -198,6 +197,10 @@ public class SimulationUI extends GUIState implements Constants {
 
 	public static String getName() {
 		return "Synthscape Simulation";
+	}
+
+	public static void main(String[] args) {
+		new SimulationUI().createController();
 	}
 
 }

@@ -16,13 +16,8 @@ import com.synthverse.synthscape.core.SimulationUI;
 public class TestSimUI extends SimulationUI {
 
 	public TestSimUI() {
-		super(new TestSim(Constants.SIMULATION_RNG_SEED));
-
-	}
-
-	public TestSimUI(SimState state) {
-		super(state);
-
+		super(new TestSim(TestAgentFactory.getInstance(),
+				Constants.SIMULATION_RNG_SEED));
 	}
 
 	public static void main(String[] args) {

@@ -10,6 +10,7 @@ import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
 import sim.portrayal.DrawInfo2D;
+import sim.portrayal.simple.OvalPortrayal2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
@@ -17,8 +18,8 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent implements Constants, Steppable, Valuable,
-		Comparable<Agent> {
+public abstract class Agent extends OvalPortrayal2D implements Constants,
+		Steppable, Valuable, Comparable<Agent> {
 
 	private static final long serialVersionUID = -5129827193602692370L;
 
@@ -610,6 +611,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	public void step(SimState state) {
 		if (hasStepsRemaining()) {
+
 			stepAction(state);
 			stepCounter++;
 		}
@@ -746,6 +748,11 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		int height = (int) (info.draw.height);
 		graphics.fillOval(x, y, width, height);
 
+	}
+
+	protected static Agent generateAgent(long generation, long agentId, int x,
+			int y) {
+		return null;
 	}
 
 }

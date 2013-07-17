@@ -32,7 +32,7 @@ public interface Constants {
 
 	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.85;
 
-	public static final long SEED_GENERATION = -1;
+	public static final long SEED_GENERATION_NUMBER = 0;
 
 	public static final long SIMULATION_RNG_SEED = 2;
 
