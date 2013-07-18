@@ -7,6 +7,7 @@ import sim.display.Console;
 import sim.engine.SimState;
 
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.SimulationUI;
 
 /**
@@ -17,6 +18,7 @@ public class TestSimUI extends SimulationUI {
 
 	public TestSimUI() {
 		super(new TestSim(TestAgentFactory.getInstance(),
+				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}
 

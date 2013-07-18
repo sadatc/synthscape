@@ -1,6 +1,7 @@
+
 package com.synthverse.synthscape.core;
 
-public enum Tasks {
+public enum Task {
 	DETECTION, EXTRACTION, PROCESSING, TRANSPORTATION;
 
 }

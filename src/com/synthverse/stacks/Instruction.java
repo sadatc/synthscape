@@ -1173,7 +1173,7 @@ public enum Instruction {
 	},
 
 	// ---------- MOVEMENT RELATED INSTRUCTIONS --------
-	
+
 	ACTION_MOVE_N("ACTION.MOVE_N") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationMoveNorth();
@@ -1277,8 +1277,6 @@ public enum Instruction {
 
 	},
 
-	
-
 	ACTION_FOLLOW_TRAIL("ACTION.FOLLOW_TRAIL") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationFollowTrail();
@@ -1287,8 +1285,6 @@ public enum Instruction {
 
 	},
 
-	
-
 	ACTION_LEAVE_TRAIL("ACTION.LEAVE_TRAIL") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationLeaveTrail();
@@ -1296,8 +1292,6 @@ public enum Instruction {
 		}
 
 	},
-
-	
 
 	ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
 		public void execute(VirtualMachine virtualMachine) {
@@ -1308,7 +1302,7 @@ public enum Instruction {
 
 	},
 
-	ACTION_DETECT_RESOURCE("ACTION.DETECT_RESOURCE") {
+	ACTION_DETECT_RAW_RESOURCE("ACTION.DETECT_RAW_RESOURCE") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getBooleanStack().push(
 					virtualMachine.getAgent()
@@ -1318,9 +1312,8 @@ public enum Instruction {
 
 	},
 
-	
-
-	ACTION_DETECT_EXTRACT("ACTION.DETECT_EXTRACT") {
+	ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE(
+			"ACTION.DETECT_EXTRACTED_RESOURCE") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getBooleanStack().push(
 					virtualMachine.getAgent()
@@ -1330,7 +1323,16 @@ public enum Instruction {
 
 	},
 
-	
+	ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE(
+			"ACTION.DETECT_PROCESSED_RESOURCE") {
+		public void execute(VirtualMachine virtualMachine) {
+			virtualMachine.getBooleanStack().push(
+					virtualMachine.getAgent()
+							.operationDetectProcessedResource());
+			virtualMachine.incrementIP();
+		}
+
+	},
 
 	ACTION_DETECT_TRAIL("ACTION.DETECT_TRAIL") {
 		public void execute(VirtualMachine virtualMachine) {
@@ -1341,9 +1343,7 @@ public enum Instruction {
 
 	},
 
-	
-
-	ACTION_EXTRACT_RESOURCE("ACTION.EXTRACT_RESOURCE") {
+	ACTION_RESOURCE_EXTRACT("ACTION.RESOURCE_EXTRACT") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationExtractResource();
 			virtualMachine.incrementIP();
@@ -1351,9 +1351,15 @@ public enum Instruction {
 
 	},
 
+	ACTION_RESOURCE_PROCESS("ACTION.RESOURCE_PROCESS") {
+		public void execute(VirtualMachine virtualMachine) {
+			virtualMachine.getAgent().operationProcessResource();
+			virtualMachine.incrementIP();
+		}
 
+	},
 
-	ACTION_LOAD_RESOURCE("ACTION.LOAD_RESOURCE") {
+	ACTION_RESOURCE_LOAD("ACTION.RESOURCE_LOAD") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationLoadResource();
 			virtualMachine.incrementIP();
@@ -1361,9 +1367,7 @@ public enum Instruction {
 
 	},
 
-	
-
-	ACTION_UNLOAD_RESOURCE("ACTION.UNLOAD_RESOURCE") {
+	ACTION_RESOURCE_UNLOAD("ACTION.RESOURCE_UNLOAD") {
 		public void execute(VirtualMachine virtualMachine) {
 			virtualMachine.getAgent().operationUnLoadResource();
 			virtualMachine.incrementIP();
@@ -1371,20 +1375,13 @@ public enum Instruction {
 
 	},
 
-	
-
-	
-
 	/*
-	ACTION_RECHARGE("ACTION.RECHARGE") {
-		public void execute(VirtualMachine virtualMachine) {
-			virtualMachine.getAgent().operationRecharge();
-			virtualMachine.incrementIP();
-		}
-
-	},
-
-	*/
+	 * ACTION_RECHARGE("ACTION.RECHARGE") { public void execute(VirtualMachine
+	 * virtualMachine) { virtualMachine.getAgent().operationRecharge();
+	 * virtualMachine.incrementIP(); }
+	 * 
+	 * },
+	 */
 
 	INSTRUCTION_REVERSE("INSTRUCTION.REVERSE") {
 		public void execute(VirtualMachine virtualMachine) {

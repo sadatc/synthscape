@@ -35,8 +35,6 @@ public class SimulationUI extends GUIState implements Constants {
 
 	protected FastValueGridPortrayal2D collectionSitePortrayal;
 	protected FastValueGridPortrayal2D resourcePortrayal;
-	protected FastValueGridPortrayal2D extractedResourcePortrayal;
-	protected FastValueGridPortrayal2D processedResourcePortrayal;
 	protected FastValueGridPortrayal2D obstaclesPortrayal;
 	protected FastValueGridPortrayal2D trailPortrayal;
 
@@ -47,12 +45,6 @@ public class SimulationUI extends GUIState implements Constants {
 				"CollectionSite", true);
 
 		resourcePortrayal = new FastValueGridPortrayal2D("Resource", false);
-
-		extractedResourcePortrayal = new FastValueGridPortrayal2D(
-				"ExtractedResource", false);
-
-		processedResourcePortrayal = new FastValueGridPortrayal2D(
-				"ProcessedResource", false);
 
 		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);
 
@@ -93,8 +85,6 @@ public class SimulationUI extends GUIState implements Constants {
 		// attach the portrayals from bottom to top
 		display.attach(collectionSitePortrayal, "Collection Sites");
 		display.attach(resourcePortrayal, "Resources");
-		display.attach(extractedResourcePortrayal, "Extracts");
-		display.attach(processedResourcePortrayal, "Products");
 		display.attach(trailPortrayal, "Trails");
 		display.attach(obstaclesPortrayal, "Obstacles");
 		display.attach(agentPortrayal, "Agents");
@@ -146,19 +136,10 @@ public class SimulationUI extends GUIState implements Constants {
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.GREEN));
 
-		setupPortrayal(extractedResourcePortrayal,
-				theState.extractedResourceGrid,
-				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
-						Color.PINK));
-
-		setupPortrayal(processedResourcePortrayal,
-				theState.extractedResourceGrid,
-				new sim.util.gui.SimpleColorMap(0, 1, new Color(0, 0, 0, 0),
-						Color.PINK));
-
 		setupPortrayal(resourcePortrayal, theState.resourceGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
-						0, 0, 0), Color.BLUE));
+				new sim.util.gui.SimpleColorMap(ResourceState.NULL.ordinal(),
+						ResourceState.PROCESSED.ordinal(),
+						new Color(0, 0, 0, 0), Color.BLUE));
 
 		agentPortrayal.setField(theState.agentGrid);
 

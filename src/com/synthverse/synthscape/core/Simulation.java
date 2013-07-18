@@ -22,6 +22,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	private static final long serialVersionUID = 2700375028430112699L;
 
+	protected ProblemComplexity problemComplexity;
+
 	protected IntGrid2D obstacleGrid;
 
 	protected IntGrid2D collectionSiteGrid;
@@ -31,10 +33,6 @@ public abstract class Simulation extends SimState implements Constants {
 	protected IntGrid2D collisionGrid;
 
 	protected IntGrid2D resourceGrid;
-
-	protected IntGrid2D extractedResourceGrid;
-
-	protected IntGrid2D processedResourceGrid;
 
 	protected DoubleGrid2D trailGrid;
 
@@ -66,10 +64,16 @@ public abstract class Simulation extends SimState implements Constants {
 		statistics = new Statistics();
 	}
 
-	public Simulation(AgentFactory agentFactory, long seed) {
+	public Simulation(AgentFactory agentFactory,
+			ProblemComplexity problemComplexity, long seed) {
 		super(seed);
+		setProblemComplexity(problemComplexity);
 		setAgentFactory(agentFactory);
 		createDataStructures();
+	}
+
+	public void setProblemComplexity(ProblemComplexity problemComplexity) {
+		this.problemComplexity = problemComplexity;
 	}
 
 	public void setAgentFactory(AgentFactory agentFactory) {
@@ -86,11 +90,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		collisionGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
 
-		resourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
-
-		extractedResourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
-
-		processedResourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
+		resourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT,
+				ResourceState.RAW.ordinal());
 
 		trailGrid = new DoubleGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
 
@@ -130,9 +131,7 @@ public abstract class Simulation extends SimState implements Constants {
 		collectionSiteList.clear();
 		collisionGrid.setTo(ABSENT);
 
-		resourceGrid.setTo(ABSENT);
-		extractedResourceGrid.setTo(ABSENT);
-		processedResourceGrid.setTo(ABSENT);
+		resourceGrid.setTo(ResourceState.NULL.ordinal());
 
 		trailGrid.setTo(ABSENT);
 
@@ -241,9 +240,7 @@ public abstract class Simulation extends SimState implements Constants {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
 			} while (collisionGrid.field[randomX][randomY] == 1);
-			resourceGrid.field[randomX][randomY] = PRESENT;
-			extractedResourceGrid.field[randomX][randomY] = ABSENT;
-			processedResourceGrid.field[randomX][randomY] = ABSENT;
+			resourceGrid.field[randomX][randomY] = ResourceState.RAW.ordinal();
 			collisionGrid.field[randomX][randomY] = 1;
 
 		}

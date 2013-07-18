@@ -11,6 +11,10 @@ public class Measure {
 	public long resourceHits = 0;
 
 	public long extractedResourceHits = 0;
+	
+	public long processedResourceHits = 0;
+	
+	public long resourceProcesses = 0;
 
 	public long resourceLoads = 0;
 

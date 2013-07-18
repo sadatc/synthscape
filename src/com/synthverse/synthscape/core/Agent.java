@@ -40,9 +40,9 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	protected Set<Trait> traits = EnumSet.noneOf(Trait.class);
 
-	protected int resourcesLoaded;
+	protected boolean isCarryingResource;
 
-	protected int loadCapacity;
+	protected ResourceState stateOfCarriedResource;
 
 	protected int previousX;
 
@@ -50,7 +50,7 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	protected boolean locationIsCollectionSite;
 
-	protected boolean locationHasResource;
+	protected boolean locationHasRawResource;
 
 	protected boolean locationHasExtractedResource;
 
@@ -196,19 +196,31 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 		grid.field[x][y] = 100;
 	}
 
-	public final boolean _operationExtractResource(boolean resourceLocated,
-			IntGrid2D resourceGrid, IntGrid2D extractGrid) {
-		boolean actuallyExtracted = false;
-		if (resourceLocated) {
-			if (resourceGrid.field[x][y] > 0) {
-				resourceGrid.field[x][y]--;
-				extractGrid.field[x][y]++;
-				actuallyExtracted = true;
-				this.sim.setNumberOfExtractedResources(this.sim
-						.getNumberOfExtractedResources() + 1);
+	public final boolean _operationPerformResourceAction(Task action,
+			IntGrid2D resourceGrid) {
+
+		boolean actionPerformed = false;
+
+		int resourceState = resourceGrid.field[x][y];
+
+		switch (action) {
+		case EXTRACTION:
+			if (resourceState == ResourceState.RAW.ordinal()) {
+				resourceGrid.field[x][y] = ResourceState.EXTRACTED.ordinal();
+				actionPerformed = true;
 			}
+			break;
+		case PROCESSING:
+			if (resourceState == ResourceState.EXTRACTED.ordinal()) {
+				resourceGrid.field[x][y] = ResourceState.PROCESSED.ordinal();
+				actionPerformed = true;
+			}
+			break;
+		default:
+			// TODO: add something later...
 		}
-		return actuallyExtracted;
+
+		return actionPerformed;
 	}
 
 	public final void _operationFollowTrail(DoubleGrid2D trail) {
@@ -438,17 +450,15 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	public final boolean operationDetectCollectionSite() {
 		if (traits.contains(Trait.HOMING)) {
-
 			return this.locationIsCollectionSite;
 		} else {
 			return false;
 		}
 	}
 
-	public final boolean operationDetectResource() {
+	public final boolean operationDetectRawResource() {
 		if (traits.contains(Trait.DETECTION)) {
-
-			return (this.locationHasResource);
+			return (this.locationHasRawResource);
 		} else {
 			return false;
 		}
@@ -457,8 +467,15 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	public final boolean operationDetectExtractedResource() {
 		if (traits.contains(Trait.DETECTION)) {
-
 			return this.locationHasExtractedResource;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean operationDetectProcessedResource() {
+		if (traits.contains(Trait.DETECTION)) {
+			return this.locationHasProcessedResource;
 		} else {
 			return false;
 		}
@@ -466,7 +483,6 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	public final boolean operationDetectTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-
 			return this.locationHasTrail;
 		} else {
 			return false;
@@ -475,27 +491,39 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 	public final void operationExtractResource() {
 		if (traits.contains(Trait.EXTRACTION)) {
-			if (_operationExtractResource(locationHasResource,
-					this.sim.resourceGrid, this.sim.extractedResourceGrid)) {
-
+			if (_operationPerformResourceAction(Task.EXTRACTION,
+					this.sim.resourceGrid)) {
 				sim.statistics.stepData.resourceExtracts++;
-
 			}
 
 			updateLocationStatus(this.x, this.y);
 		}
 	}
 
+	public void operationProcessResource() {
+		if (traits.contains(Trait.PROCESSING)) {
+			if (_operationPerformResourceAction(Task.PROCESSING,
+					this.sim.resourceGrid)) {
+				sim.statistics.stepData.resourceProcesses++;
+			}
+
+			updateLocationStatus(this.x, this.y);
+		}
+
+	}
+
 	public final void operationLoadResource() {
 
 		if (traits.contains(Trait.TRANSPORTATION)) {
-			if (this.locationHasExtractedResource
-					&& this.resourcesLoaded < this.loadCapacity) {
-				if (this.sim.extractedResourceGrid.field[x][y] > 0) {
-					this.sim.extractedResourceGrid.field[x][y]--;
-					this.resourcesLoaded++;
-					sim.statistics.stepData.resourceLoads++;
 
+			if (locationHasExtractedResource || locationHasProcessedResource
+					|| locationHasRawResource) {
+				if (!isCarryingResource) {
+					isCarryingResource = true;
+					stateOfCarriedResource = ResourceState.values()[this.sim.resourceGrid.field[x][y]];
+
+					this.sim.resourceGrid.field[x][y] = ResourceState.NULL
+							.ordinal();
 					updateLocationStatus(this.x, this.y);
 				}
 			}
@@ -504,30 +532,24 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 	}
 
 	public final void operationUnLoadResource() {
-		if (traits.contains(Trait.TRANSPORTATION)) {
-			if (this.resourcesLoaded > 0) {
-
-				this.resourcesLoaded--;
-
-				sim.statistics.stepData.resourceUnloads++;
-
-				if (this.locationIsCollectionSite) {
-					sim.statistics.stepData.resourceCaptures++;
-
-				} else {
-					this.sim.extractedResourceGrid.field[x][y]++;
-				}
-
+		if (traits.contains(Trait.TRANSPORTATION) && isCarryingResource) {
+			if (!locationHasExtractedResource && !locationHasProcessedResource
+					&& !locationHasRawResource) {
+				// do nothing, we can't unload here...
+				isCarryingResource = false;
+				this.sim.resourceGrid.field[x][y] = stateOfCarriedResource
+						.ordinal();
 				updateLocationStatus(this.x, this.y);
-
 			}
+
+			updateLocationStatus(this.x, this.y);
 
 		}
 	}
 
 	protected void reset() {
 		stepCounter = 0;
-		resourcesLoaded = 0;
+		isCarryingResource = false;
 		fitness = 0.0;
 		stats.zeroAll();
 	}
@@ -542,28 +564,18 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 
 		boolean locationIsChanging = (x != previousX || y != previousY);
 
-		if (sim.resourceGrid.field[x][y] > 0) {
-			this.locationHasResource = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.resourceHits++;
+		this.locationHasExtractedResource = false;
+		this.locationHasProcessedResource = false;
+		this.locationHasRawResource = false;
 
-				stats.resourceHits++;
-
-			}
-		} else {
-			this.locationHasResource = false;
-		}
-
-		if (sim.extractedResourceGrid.field[x][y] > 0) {
+		if (sim.resourceGrid.field[x][y] == ResourceState.RAW.ordinal()) {
+			this.locationHasRawResource = true;
+		} else if (sim.resourceGrid.field[x][y] == ResourceState.EXTRACTED
+				.ordinal()) {
 			this.locationHasExtractedResource = true;
-			if (locationIsChanging) {
-				sim.statistics.stepData.extractedResourceHits++;
-
-				stats.extractedResourceHits++;
-
-			}
-		} else {
-			this.locationHasExtractedResource = false;
+		} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED
+				.ordinal()) {
+			this.locationHasProcessedResource = true;
 		}
 
 		if (sim.trailGrid.field[x][y] > 0) {
@@ -717,14 +729,6 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 		this.traits = traits;
 	}
 
-	public int getLoadCapacity() {
-		return loadCapacity;
-	}
-
-	public void setLoadCapacity(int loadCapacity) {
-		this.loadCapacity = loadCapacity;
-	}
-
 	public VirtualMachine getVirtualMachine() {
 		return virtualMachine;
 	}
@@ -746,7 +750,7 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 		int y = (int) (info.draw.y - info.draw.height / 2.0);
 		int width = (int) (info.draw.width);
 		int height = (int) (info.draw.height);
-		
+
 		graphics.fillOval(x, y, width, height);
 
 	}

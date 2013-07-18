@@ -1,14 +1,15 @@
 package com.synthverse.synthscape.experiment.test.basic;
 
-import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 
 @SuppressWarnings("serial")
 public class TestSim extends Simulation {
 
-	public TestSim(AgentFactory agentFactory, long seed) {
-		super(agentFactory, seed);
+	public TestSim(AgentFactory agentFactory,
+			ProblemComplexity problemComplexity, long seed) {
+		super(agentFactory, problemComplexity, seed);
 		this.setNumberOfCollectionSites(1);
 		this.setNumberOfObstacles(10);
 		this.setNumberOfAgents(10);
