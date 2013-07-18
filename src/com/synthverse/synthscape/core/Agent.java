@@ -535,11 +535,44 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 		if (traits.contains(Trait.TRANSPORTATION) && isCarryingResource) {
 			if (!locationHasExtractedResource && !locationHasProcessedResource
 					&& !locationHasRawResource) {
-				// do nothing, we can't unload here...
+
 				isCarryingResource = false;
-				this.sim.resourceGrid.field[x][y] = stateOfCarriedResource
-						.ordinal();
-				updateLocationStatus(this.x, this.y);
+
+				// depending on problem complexity, this resource maybe
+				// ready to be reclaimed or dropped
+
+				boolean dropResource = true; // assume we'll drop it
+
+				if (this.locationIsCollectionSite) {
+					// depending on the problem complexity and current state
+					// this resource maybe reclaimed
+
+					if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+						if (stateOfCarriedResource == ResourceState.EXTRACTED) {
+							dropResource = false;
+							this.sim.numberOfCollectedResources++;
+						}
+
+					} else if (this.sim.problemComplexity
+							.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+						if (stateOfCarriedResource == ResourceState.PROCESSED) {
+							dropResource = false;
+							this.sim.numberOfCollectedResources++;
+						}
+
+					} else {
+						D.p("operationUnLoadResource() Problem Complexity Unknown!");
+						System.exit(-1);
+					}
+
+				}
+
+				if (dropResource) {
+					this.sim.resourceGrid.field[x][y] = stateOfCarriedResource
+							.ordinal();
+
+				}
+
 			}
 
 			updateLocationStatus(this.x, this.y);

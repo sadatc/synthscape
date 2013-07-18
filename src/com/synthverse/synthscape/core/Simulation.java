@@ -42,13 +42,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected boolean isToroidalWorld;
 
-	protected int numberOfExtractedResources;
-
 	protected int numberOfAgents;
 
 	protected int numberOfObstacles;
 
 	protected int numberOfResources;
+	
+	protected int numberOfCollectedResources;
 
 	protected int numberOfCollectionSites;
 
@@ -101,13 +101,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 		isToroidalWorld = DEFAULT_IS_TOROIDAL;
 
-		numberOfExtractedResources = 0;
-
 		numberOfAgents = DEFAULT_NUMBER_OF_AGENTS;
 
 		numberOfObstacles = DEFAULT_NUMBER_OF_OBSTACLES;
 
 		numberOfResources = DEFAULT_NUMBER_OF_RESOURCES;
+		
+		numberOfCollectedResources = 0;
 
 		numberOfCollectionSites = DEFAULT_NUMBER_OF_HOMES;
 
@@ -115,14 +115,6 @@ public abstract class Simulation extends SimState implements Constants {
 
 		generation = 0;
 
-	}
-
-	public int getNumberOfExtractedResources() {
-		return numberOfExtractedResources;
-	}
-
-	public void setNumberOfExtractedResources(int numberOfExtractedResources) {
-		this.numberOfExtractedResources = numberOfExtractedResources;
 	}
 
 	private void resetEnvironment() {
@@ -365,7 +357,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected boolean evaluateTerminalCondition() {
-		return (statistics.simData.resourceCaptures >= this.numberOfResources);
+		return (this.numberOfCollectedResources >= this.numberOfResources);
 	}
 
 	protected void doEndOfStepTasks() {
