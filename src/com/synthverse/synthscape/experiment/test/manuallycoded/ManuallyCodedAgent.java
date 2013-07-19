@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.test.basic;
+package com.synthverse.synthscape.experiment.test.manuallycoded;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,15 +15,15 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Trait;
 
 @SuppressWarnings("serial")
-public class TestAgent extends Agent {
+public class ManuallyCodedAgent extends Agent {
 	
-	public TestAgent() {
+	public ManuallyCodedAgent() {
 		super();
 		
 	}
 	
 
-	public TestAgent(Simulation sim, long generationNumber, long agentId,
+	public ManuallyCodedAgent(Simulation sim, long generationNumber, long agentId,
 			int maxSteps, int startX, int startY) {
 		super();
 
