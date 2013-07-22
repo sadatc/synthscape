@@ -2,9 +2,9 @@ package com.synthverse.synthscape.core;
 
 public interface Constants {
 
-	public static final int WORLD_WIDTH = 50;
+	public static final int WORLD_WIDTH = 20;
 
-	public static final int WORLD_HEIGHT = 50;
+	public static final int WORLD_HEIGHT = 20;
 
 	public static final int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
@@ -24,7 +24,7 @@ public interface Constants {
 
 	public static final int DEFAULT_NUMBER_OF_AGENTS = 50;
 
-	public static final int DEFAULT_NUMBER_OF_OBSTACLES = 1000;
+	public static final int DEFAULT_NUMBER_OF_OBSTACLES = 50;
 
 	public static final int DEFAULT_NUMBER_OF_RESOURCES = 10;
 
@@ -37,5 +37,21 @@ public interface Constants {
 	public static final long SIMULATION_RNG_SEED = 2;
 
 	public static final int INVALID = -1;
+	
+	public static final double GRID_ICON_SCALE_FACTOR = 0.70;
+	
+	public static final String GRID_ICON_AGENT = "../../images/agent.png";
+	
+	public static final String GRID_ICON_COLLECTION_SITE = "../../images/collection_site.png";
+	
+	public static final String GRID_ICON_RAW_RESOURCE = "../../images/raw_resource.png";
+	
+	public static final String GRID_ICON_EXTRACTED_RESOURCE = "../../images/extracted_resource.png";
+	
+	public static final String GRID_ICON_PROCESSED_RESOURCE = "../../images/processed_resource.png";
+	
+	
+	
+	
 
 }

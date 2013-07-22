@@ -1,7 +1,5 @@
 package com.synthverse.synthscape.core;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -9,8 +7,6 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
-import sim.portrayal.DrawInfo2D;
-import sim.portrayal.simple.OvalPortrayal2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
@@ -18,10 +14,15 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent extends OvalPortrayal2D implements Constants,
+public abstract class Agent /* extends SimplePortrayal2D  */ implements Constants,
 		Steppable, Valuable, Comparable<Agent> {
 
 	private static final long serialVersionUID = -5129827193602692370L;
+
+	/*
+	protected ImageIcon imageIcon = new ImageIcon(
+			"/Users/sadat/Desktop/agent.png");
+	*/
 
 	Simulation sim;
 
@@ -774,20 +775,58 @@ public abstract class Agent extends OvalPortrayal2D implements Constants,
 		this.generation = generation;
 	}
 
+	
+	
+	/*
 	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
 
-		graphics.setColor(Color.RED);
+		Image image = imageIcon.getImage();
 
-		// this code was stolen from OvalPortrayal2D
-		int x = (int) (info.draw.x - info.draw.width / 2.0);
-		int y = (int) (info.draw.y - info.draw.height / 2.0);
-		int width = (int) (info.draw.width);
-		int height = (int) (info.draw.height);
+		if (image != null) {
+			double scale = GRID_ICON_SCALE_FACTOR;
+			java.awt.geom.AffineTransform preciseTransform = new java.awt.geom.AffineTransform();
+			// in this example we ALWAYS draw the image, even if the color is
+			// set to 0 alpha...
 
-		graphics.fillOval(x, y, width, height);
+			final int iw = image.getWidth(null);
+			final int ih = image.getHeight(null);
+			double width;
+			double height;
+
+			if (ih > iw) {
+				width = info.draw.width * scale;
+				height = (ih * width) / iw; // ih/iw = height / width
+			} else {
+				height = info.draw.height * scale;
+				width = (iw * height) / ih; // iw/ih = width/height
+			}
+
+			final double x = (info.draw.x - width / 2.0);
+			final double y = (info.draw.y - height / 2.0);
+
+			// draw centered on the origin
+			if (info.precise) {
+				preciseTransform.setToScale(width, height);
+				preciseTransform.translate(x, y);
+				graphics.drawImage(image, preciseTransform, null);
+			} else
+				graphics.drawImage(image, (int) x, (int) y, (int) width,
+						(int) height, null);
+		}
+
+		else {
+			graphics.setColor(Color.RED);
+
+			int x = (int) (info.draw.x - info.draw.width / 2.0);
+			int y = (int) (info.draw.y - info.draw.height / 2.0);
+			int width = (int) (info.draw.width);
+			int height = (int) (info.draw.height);
+
+			graphics.fillOval(x, y, width, height);
+		}
 
 	}
-
+	*/
 	protected static Agent generateAgent(long generation, long agentId, int x,
 			int y) {
 		return null;

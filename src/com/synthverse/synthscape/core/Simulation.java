@@ -30,7 +30,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected ArrayList<Int2D> collectionSiteList;
 
-	protected IntGrid2D collisionGrid;
+	protected IntGrid2D setupCollisionGrid;
 
 	protected IntGrid2D resourceGrid;
 
@@ -88,7 +88,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		collectionSiteList = new ArrayList<Int2D>();
 
-		collisionGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
+		setupCollisionGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
 
 		resourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT,
 				ResourceState.RAW.ordinal());
@@ -121,7 +121,7 @@ public abstract class Simulation extends SimState implements Constants {
 		obstacleGrid.setTo(ABSENT);
 		collectionSiteGrid.setTo(ABSENT);
 		collectionSiteList.clear();
-		collisionGrid.setTo(ABSENT);
+		setupCollisionGrid.setTo(ABSENT);
 
 		resourceGrid.setTo(ResourceState.NULL.ordinal());
 
@@ -180,7 +180,7 @@ public abstract class Simulation extends SimState implements Constants {
 	private void setupPrimaryCollectionSite() {
 		// set the primary collection site
 		collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-		collisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = 1;
+		setupCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 		collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
 				PRIMARY_COLLECTION_SITE_Y));
 	}
@@ -196,7 +196,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 			}
 			collectionSiteGrid.field[randomX][randomY] = PRESENT;
-			collisionGrid.field[randomX][randomY] = 1;
+			setupCollisionGrid.field[randomX][randomY] = PRESENT;
 			collectionSiteList.add(new Int2D(randomX, randomY));
 
 		}
@@ -209,12 +209,12 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = random.nextInt(WORLD_WIDTH);
 			int randomY = random.nextInt(WORLD_HEIGHT);
 			// make sure there isn't an obstacle there already...
-			while (collisionGrid.field[randomX][randomY] == 1) {
+			while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
 			}
-			collisionGrid.field[randomX][randomY] = 1;
-			obstacleGrid.field[randomX][randomY] = ABSENT;
+			setupCollisionGrid.field[randomX][randomY] = PRESENT;
+			obstacleGrid.field[randomX][randomY] = PRESENT;
 
 		}
 
@@ -231,9 +231,9 @@ public abstract class Simulation extends SimState implements Constants {
 			do {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
-			} while (collisionGrid.field[randomX][randomY] == 1);
+			} while (setupCollisionGrid.field[randomX][randomY] == PRESENT);
 			resourceGrid.field[randomX][randomY] = ResourceState.RAW.ordinal();
-			collisionGrid.field[randomX][randomY] = 1;
+			setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		}
 
@@ -254,11 +254,11 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = random.nextInt(WORLD_WIDTH);
 			int randomY = random.nextInt(WORLD_HEIGHT);
 
-			while (collisionGrid.field[randomX][randomY] == 1) {
+			while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
 			}
-			collisionGrid.field[randomX][randomY] = 1;
+			setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
 			Agent agent = agentFactory.create(this, SEED_GENERATION_NUMBER, i,
 					randomX, randomY);
@@ -282,11 +282,11 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = random.nextInt(WORLD_WIDTH);
 			int randomY = random.nextInt(WORLD_HEIGHT);
 
-			while (collisionGrid.field[randomX][randomY] == 1) {
+			while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
 			}
-			collisionGrid.field[randomX][randomY] = 1;
+			setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
 			Agent agent = agents.get(i);
 			agent.reset();

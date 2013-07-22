@@ -10,9 +10,9 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	public ManuallyCodedAgentSimulation(AgentFactory agentFactory,
 			ProblemComplexity problemComplexity, long seed) {
 		super(agentFactory, problemComplexity, seed);
-		this.setNumberOfCollectionSites(1);
-		this.setNumberOfObstacles(10);
-		this.setNumberOfAgents(10);
+		this.setNumberOfCollectionSites(5);
+		this.setNumberOfObstacles(50);
+		this.setNumberOfAgents(15);
 
 	}
 
