@@ -6,7 +6,7 @@ import java.util.Set;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.IntGrid2D;
+import sim.field.grid.ObjectGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
@@ -14,15 +14,15 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent /* extends SimplePortrayal2D  */ implements Constants,
-		Steppable, Valuable, Comparable<Agent> {
+public abstract class Agent /* extends SimplePortrayal2D */implements
+		Constants, Steppable, Valuable, Comparable<Agent> {
 
 	private static final long serialVersionUID = -5129827193602692370L;
 
 	/*
-	protected ImageIcon imageIcon = new ImageIcon(
-			"/Users/sadat/Desktop/agent.png");
-	*/
+	 * protected ImageIcon imageIcon = new ImageIcon(
+	 * "/Users/sadat/Desktop/agent.png");
+	 */
 
 	Simulation sim;
 
@@ -198,22 +198,22 @@ public abstract class Agent /* extends SimplePortrayal2D  */ implements Constant
 	}
 
 	public final boolean _operationPerformResourceAction(Task action,
-			IntGrid2D resourceGrid) {
+			ObjectGrid2D resourceGrid) {
 
 		boolean actionPerformed = false;
 
-		int resourceState = resourceGrid.field[x][y];
+		ResourceState resourceState = (ResourceState) resourceGrid.field[x][y];
 
 		switch (action) {
 		case EXTRACTION:
-			if (resourceState == ResourceState.RAW.ordinal()) {
-				resourceGrid.field[x][y] = ResourceState.EXTRACTED.ordinal();
+			if (resourceState == ResourceState.RAW) {
+				resourceGrid.field[x][y] = ResourceState.EXTRACTED;
 				actionPerformed = true;
 			}
 			break;
 		case PROCESSING:
-			if (resourceState == ResourceState.EXTRACTED.ordinal()) {
-				resourceGrid.field[x][y] = ResourceState.PROCESSED.ordinal();
+			if (resourceState == ResourceState.EXTRACTED) {
+				resourceGrid.field[x][y] = ResourceState.PROCESSED;
 				actionPerformed = true;
 			}
 			break;
@@ -521,10 +521,9 @@ public abstract class Agent /* extends SimplePortrayal2D  */ implements Constant
 					|| locationHasRawResource) {
 				if (!isCarryingResource) {
 					isCarryingResource = true;
-					stateOfCarriedResource = ResourceState.values()[this.sim.resourceGrid.field[x][y]];
+					stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
-					this.sim.resourceGrid.field[x][y] = ResourceState.NULL
-							.ordinal();
+					this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
 					updateLocationStatus(this.x, this.y);
 				}
 			}
@@ -569,8 +568,7 @@ public abstract class Agent /* extends SimplePortrayal2D  */ implements Constant
 				}
 
 				if (dropResource) {
-					this.sim.resourceGrid.field[x][y] = stateOfCarriedResource
-							.ordinal();
+					this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
 
 				}
 
@@ -602,13 +600,11 @@ public abstract class Agent /* extends SimplePortrayal2D  */ implements Constant
 		this.locationHasProcessedResource = false;
 		this.locationHasRawResource = false;
 
-		if (sim.resourceGrid.field[x][y] == ResourceState.RAW.ordinal()) {
+		if (sim.resourceGrid.field[x][y] == ResourceState.RAW) {
 			this.locationHasRawResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.EXTRACTED
-				.ordinal()) {
+		} else if (sim.resourceGrid.field[x][y] == ResourceState.EXTRACTED) {
 			this.locationHasExtractedResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED
-				.ordinal()) {
+		} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED) {
 			this.locationHasProcessedResource = true;
 		}
 
@@ -775,58 +771,43 @@ public abstract class Agent /* extends SimplePortrayal2D  */ implements Constant
 		this.generation = generation;
 	}
 
-	
-	
 	/*
-	public final void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
-
-		Image image = imageIcon.getImage();
-
-		if (image != null) {
-			double scale = GRID_ICON_SCALE_FACTOR;
-			java.awt.geom.AffineTransform preciseTransform = new java.awt.geom.AffineTransform();
-			// in this example we ALWAYS draw the image, even if the color is
-			// set to 0 alpha...
-
-			final int iw = image.getWidth(null);
-			final int ih = image.getHeight(null);
-			double width;
-			double height;
-
-			if (ih > iw) {
-				width = info.draw.width * scale;
-				height = (ih * width) / iw; // ih/iw = height / width
-			} else {
-				height = info.draw.height * scale;
-				width = (iw * height) / ih; // iw/ih = width/height
-			}
-
-			final double x = (info.draw.x - width / 2.0);
-			final double y = (info.draw.y - height / 2.0);
-
-			// draw centered on the origin
-			if (info.precise) {
-				preciseTransform.setToScale(width, height);
-				preciseTransform.translate(x, y);
-				graphics.drawImage(image, preciseTransform, null);
-			} else
-				graphics.drawImage(image, (int) x, (int) y, (int) width,
-						(int) height, null);
-		}
-
-		else {
-			graphics.setColor(Color.RED);
-
-			int x = (int) (info.draw.x - info.draw.width / 2.0);
-			int y = (int) (info.draw.y - info.draw.height / 2.0);
-			int width = (int) (info.draw.width);
-			int height = (int) (info.draw.height);
-
-			graphics.fillOval(x, y, width, height);
-		}
-
-	}
-	*/
+	 * public final void draw(Object object, Graphics2D graphics, DrawInfo2D
+	 * info) {
+	 * 
+	 * Image image = imageIcon.getImage();
+	 * 
+	 * if (image != null) { double scale = GRID_ICON_SCALE_FACTOR;
+	 * java.awt.geom.AffineTransform preciseTransform = new
+	 * java.awt.geom.AffineTransform(); // in this example we ALWAYS draw the
+	 * image, even if the color is // set to 0 alpha...
+	 * 
+	 * final int iw = image.getWidth(null); final int ih =
+	 * image.getHeight(null); double width; double height;
+	 * 
+	 * if (ih > iw) { width = info.draw.width * scale; height = (ih * width) /
+	 * iw; // ih/iw = height / width } else { height = info.draw.height * scale;
+	 * width = (iw * height) / ih; // iw/ih = width/height }
+	 * 
+	 * final double x = (info.draw.x - width / 2.0); final double y =
+	 * (info.draw.y - height / 2.0);
+	 * 
+	 * // draw centered on the origin if (info.precise) {
+	 * preciseTransform.setToScale(width, height); preciseTransform.translate(x,
+	 * y); graphics.drawImage(image, preciseTransform, null); } else
+	 * graphics.drawImage(image, (int) x, (int) y, (int) width, (int) height,
+	 * null); }
+	 * 
+	 * else { graphics.setColor(Color.RED);
+	 * 
+	 * int x = (int) (info.draw.x - info.draw.width / 2.0); int y = (int)
+	 * (info.draw.y - info.draw.height / 2.0); int width = (int)
+	 * (info.draw.width); int height = (int) (info.draw.height);
+	 * 
+	 * graphics.fillOval(x, y, width, height); }
+	 * 
+	 * }
+	 */
 	protected static Agent generateAgent(long generation, long agentId, int x,
 			int y) {
 		return null;

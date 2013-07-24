@@ -5,9 +5,9 @@ package com.synthverse.synthscape.core;
 
 import java.awt.Color;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import sim.app.antsforage.AntsForageWithUI;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -17,10 +17,12 @@ import sim.field.grid.IntGrid2D;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
+import sim.portrayal.grid.ObjectGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.OvalPortrayal2D;
+import sim.portrayal.simple.RectanglePortrayal2D;
 import sim.util.gui.SimpleColorMap;
 
 /**
@@ -34,7 +36,7 @@ public class SimulationUI extends GUIState implements Constants {
 	protected JFrame displayFrame;
 
 	protected FastValueGridPortrayal2D collectionSitePortrayal;
-	protected FastValueGridPortrayal2D resourcePortrayal;
+	protected ObjectGridPortrayal2D resourcePortrayal;
 	protected FastValueGridPortrayal2D obstaclesPortrayal;
 	protected FastValueGridPortrayal2D trailPortrayal;
 
@@ -42,11 +44,11 @@ public class SimulationUI extends GUIState implements Constants {
 
 	private void initStructures() {
 		collectionSitePortrayal = new FastValueGridPortrayal2D(
-				"CollectionSite", true);
+				"CollectionSite");
 
-		resourcePortrayal = new FastValueGridPortrayal2D("Resource", false);
+		resourcePortrayal = new ObjectGridPortrayal2D();
 
-		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);
+		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle");
 
 		agentPortrayal = new SparseGridPortrayal2D();
 
@@ -136,10 +138,17 @@ public class SimulationUI extends GUIState implements Constants {
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.GREEN));
 
-		setupPortrayal(resourcePortrayal, theState.resourceGrid,
-				new sim.util.gui.SimpleColorMap(ResourceState.NULL.ordinal(),
-						ResourceState.PROCESSED.ordinal(),
-						new Color(0, 0, 0, 0), Color.BLUE));
+		resourcePortrayal.setField(theState.resourceGrid);
+		resourcePortrayal.setPortrayalForAll(new FacetedPortrayal2D(
+				new SimplePortrayal2D[] {
+						new RectanglePortrayal2D(Color.TRANSLUCENT, false),
+						new OvalPortrayal2D(Color.YELLOW, true),
+						new OvalPortrayal2D(Color.PINK, true),
+						new OvalPortrayal2D(Color.RED, true)
+
+				}
+
+		));
 
 		agentPortrayal.setField(theState.agentGrid);
 

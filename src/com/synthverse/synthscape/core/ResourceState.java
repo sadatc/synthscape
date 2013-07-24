@@ -1,5 +1,12 @@
 package com.synthverse.synthscape.core;
 
-public enum ResourceState {
+import sim.util.Valuable;
+
+public enum ResourceState implements Valuable {
 	NULL, RAW, EXTRACTED, PROCESSED;
+
+	@Override
+	public double doubleValue() {
+		return ordinal();
+	}
 }

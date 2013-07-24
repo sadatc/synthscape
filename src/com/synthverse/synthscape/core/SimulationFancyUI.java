@@ -14,10 +14,10 @@ import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
-import sim.portrayal.FieldPortrayal2D;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
+import sim.portrayal.grid.ObjectGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
@@ -39,7 +39,7 @@ public class SimulationFancyUI extends GUIState implements Constants {
 	// instead of Fast Value Grid
 	protected ValueGridPortrayal2D collectionSitePortrayal;
 	protected ValueGridPortrayal2D worldPortrayal;
-	protected ValueGridPortrayal2D resourcePortrayal;
+	protected ObjectGridPortrayal2D resourcePortrayal;
 
 	// these are just pixel data
 	protected FastValueGridPortrayal2D obstaclesPortrayal;
@@ -51,8 +51,8 @@ public class SimulationFancyUI extends GUIState implements Constants {
 
 	private void initStructures() {
 		collectionSitePortrayal = new ValueGridPortrayal2D("CollectionSite");
-		resourcePortrayal = new ValueGridPortrayal2D("Resource");
-		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);
+		resourcePortrayal = new ObjectGridPortrayal2D();
+		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle");
 		// above, true = immutable
 
 		agentPortrayal = new SparseGridPortrayal2D();
@@ -171,8 +171,23 @@ public class SimulationFancyUI extends GUIState implements Constants {
 		agentPortrayal.setField(theState.agentGrid);
 		// agentPortrayal.setPortrayalForClass(Agent.class, new
 		// RectanglePortrayal2D(Color.GREEN, true));
-		agentPortrayal.setPortrayalForAll(new ImagePortrayal2D(new ImageIcon(
-				GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR));
+		/*
+		 * agentPortrayal.setPortrayalForAll(new ImagePortrayal2D(new ImageIcon(
+		 * GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR));
+		 */
+
+		agentPortrayal
+				.setPortrayalForAll(new FacetedPortrayal2D(
+						new SimplePortrayal2D[] {
+
+								new ImagePortrayal2D(new ImageIcon(
+										GRID_ICON_AGENT),
+										GRID_ICON_SCALE_FACTOR),
+								new ImagePortrayal2D(new ImageIcon(
+										GRID_ICON_LOADED_AGENT),
+										GRID_ICON_SCALE_FACTOR)
+
+						}));
 
 		// this draws the grid lines
 		worldPortrayal.setField(theState.obstacleGrid);

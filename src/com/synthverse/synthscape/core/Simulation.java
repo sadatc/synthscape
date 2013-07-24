@@ -10,6 +10,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
+import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
@@ -32,7 +33,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected IntGrid2D setupCollisionGrid;
 
-	protected IntGrid2D resourceGrid;
+	protected ObjectGrid2D resourceGrid;
 
 	protected DoubleGrid2D trailGrid;
 
@@ -47,7 +48,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected int numberOfObstacles;
 
 	protected int numberOfResources;
-	
+
 	protected int numberOfCollectedResources;
 
 	protected int numberOfCollectionSites;
@@ -76,6 +77,10 @@ public abstract class Simulation extends SimState implements Constants {
 		this.problemComplexity = problemComplexity;
 	}
 
+	public ProblemComplexity getProblemComplexity() {
+		return problemComplexity;
+	}
+
 	public void setAgentFactory(AgentFactory agentFactory) {
 		this.agentFactory = agentFactory;
 	}
@@ -90,8 +95,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		setupCollisionGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
 
-		resourceGrid = new IntGrid2D(WORLD_WIDTH, WORLD_HEIGHT,
-				ResourceState.RAW.ordinal());
+		resourceGrid = new ObjectGrid2D(WORLD_WIDTH, WORLD_HEIGHT);
 
 		trailGrid = new DoubleGrid2D(WORLD_WIDTH, WORLD_HEIGHT, ABSENT);
 
@@ -106,7 +110,7 @@ public abstract class Simulation extends SimState implements Constants {
 		numberOfObstacles = DEFAULT_NUMBER_OF_OBSTACLES;
 
 		numberOfResources = DEFAULT_NUMBER_OF_RESOURCES;
-		
+
 		numberOfCollectedResources = 0;
 
 		numberOfCollectionSites = DEFAULT_NUMBER_OF_HOMES;
@@ -118,13 +122,13 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	private void resetEnvironment() {
+		
 		obstacleGrid.setTo(ABSENT);
 		collectionSiteGrid.setTo(ABSENT);
 		collectionSiteList.clear();
 		setupCollisionGrid.setTo(ABSENT);
 
-		resourceGrid.setTo(ResourceState.NULL.ordinal());
-
+		resourceGrid.setTo(ResourceState.NULL);
 		trailGrid.setTo(ABSENT);
 
 		D.p("environment cleared...");
@@ -232,10 +236,11 @@ public abstract class Simulation extends SimState implements Constants {
 				randomX = random.nextInt(WORLD_WIDTH);
 				randomY = random.nextInt(WORLD_HEIGHT);
 			} while (setupCollisionGrid.field[randomX][randomY] == PRESENT);
-			resourceGrid.field[randomX][randomY] = ResourceState.RAW.ordinal();
+			resourceGrid.field[randomX][randomY] = ResourceState.RAW;
 			setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		}
+		this.numberOfCollectedResources = 0;
 
 	}
 
@@ -322,6 +327,7 @@ public abstract class Simulation extends SimState implements Constants {
 				// this terminates the simulation if, conditions have been
 				// reached
 				if (evaluateTerminalCondition()) {
+					D.p("****terminated***");
 					terminateSimulation();
 				}
 			}

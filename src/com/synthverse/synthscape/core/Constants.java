@@ -42,6 +42,8 @@ public interface Constants {
 	
 	public static final String GRID_ICON_AGENT = "../../images/agent.png";
 	
+	public static final String GRID_ICON_LOADED_AGENT = "../../images/loaded_agent.png";
+	
 	public static final String GRID_ICON_COLLECTION_SITE = "../../images/collection_site.png";
 	
 	public static final String GRID_ICON_RAW_RESOURCE = "../../images/raw_resource.png";

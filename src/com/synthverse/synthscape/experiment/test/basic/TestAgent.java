@@ -9,7 +9,6 @@ import java.util.Set;
 import sim.engine.SimState;
 
 import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Trait;
@@ -63,6 +62,13 @@ public class TestAgent extends Agent {
 	public double doubleValue() {
 		// TODO: value will determine color
 		return 0;
+	}
+
+
+	@Override
+	public void step(SimState state) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
