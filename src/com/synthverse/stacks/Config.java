@@ -16,7 +16,6 @@
  */
 package com.synthverse.stacks;
 
-import com.synthverse.stacks.Instruction;
 
 /**
  * 

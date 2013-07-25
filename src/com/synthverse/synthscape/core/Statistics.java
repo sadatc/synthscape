@@ -3,8 +3,6 @@ package com.synthverse.synthscape.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import sim.field.grid.IntGrid2D;
-
 /*
  * TODO: Statistics capture will be in 3 phases: step, trial, experiment
  */

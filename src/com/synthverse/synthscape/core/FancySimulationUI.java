@@ -6,15 +6,10 @@ package com.synthverse.synthscape.core;
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 
 import sim.display.Controller;
 import sim.display.Display2D;
-import sim.display.GUIState;
 import sim.engine.SimState;
-import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.IntGrid2D;
-import sim.portrayal.Inspector;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
 import sim.portrayal.grid.ObjectGridPortrayal2D;
@@ -23,7 +18,6 @@ import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
-import sim.util.gui.SimpleColorMap;
 
 public class FancySimulationUI extends SimulationUI {
 

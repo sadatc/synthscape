@@ -1,7 +1,6 @@
 package com.synthverse.evolutionengine;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
