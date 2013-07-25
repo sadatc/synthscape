@@ -7,13 +7,13 @@ import sim.display.Console;
 
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.ProblemComplexity;
-import com.synthverse.synthscape.core.SimulationFancyUI;
+import com.synthverse.synthscape.core.FancySimulationUI;
 
 /**
  * @author sadat
  * 
  */
-public class ManuallyCodedAgentSimulationFancyUI extends SimulationFancyUI {
+public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
 
 	public ManuallyCodedAgentSimulationFancyUI() {
 		super(new ManuallyCodedAgentSimulation(ManuallyCodedAgentFactory.getInstance(),

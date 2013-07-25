@@ -25,31 +25,19 @@ import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
 import sim.util.gui.SimpleColorMap;
 
-/**
- * @author sadat
- * 
- * 
- */
-public class SimulationFancyUI extends GUIState implements Constants {
-	protected Simulation sim;
-	protected Display2D display;
-	protected JFrame displayFrame;
+public class FancySimulationUI extends SimulationUI {
 
-	// these are drawn using images, hence, Value Grid
-	// instead of Fast Value Grid
-	protected ValueGridPortrayal2D collectionSitePortrayal;
+	public FancySimulationUI() {
+		super();
+	}
+
+	public FancySimulationUI(SimState state) {
+		super(state);
+	}
+
 	protected ValueGridPortrayal2D worldPortrayal;
-	protected ObjectGridPortrayal2D resourcePortrayal;
 
-	// these are just pixel data
-	protected FastValueGridPortrayal2D obstaclesPortrayal;
-	protected FastValueGridPortrayal2D trailPortrayal;
-
-	// this one is drawn images, but there can be
-	// multiple agents in a location
-	protected SparseGridPortrayal2D agentPortrayal;
-
-	private void initStructures() {
+	protected void initStructures() {
 		collectionSitePortrayal = new ValueGridPortrayal2D("CollectionSite");
 		resourcePortrayal = new ObjectGridPortrayal2D();
 		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle");
@@ -58,24 +46,6 @@ public class SimulationFancyUI extends GUIState implements Constants {
 		agentPortrayal = new SparseGridPortrayal2D();
 		trailPortrayal = new FastValueGridPortrayal2D("Trail");
 		worldPortrayal = new ValueGridPortrayal2D("World");
-	}
-
-	public Simulation getSim() {
-		return sim;
-	}
-
-	public void setSim(Simulation sim) {
-		this.sim = sim;
-	}
-
-	public Object getSimulationInspectedObject() {
-		return state;
-	}
-
-	public Inspector getInspector() {
-		Inspector i = super.getInspector();
-		i.setVolatile(true);
-		return i;
 	}
 
 	public void init(Controller controller) {
@@ -96,28 +66,6 @@ public class SimulationFancyUI extends GUIState implements Constants {
 		display.attach(resourcePortrayal, "Resources");
 		display.attach(trailPortrayal, "Trails");
 		display.attach(agentPortrayal, "Agents");
-	}
-
-	public void quit() {
-		super.quit();
-		if (displayFrame != null)
-			displayFrame.dispose();
-		displayFrame = null;
-		display = null;
-	}
-
-	private void setupPortrayal(FastValueGridPortrayal2D portrayal,
-			DoubleGrid2D grid, SimpleColorMap colorMap) {
-		portrayal.setField(grid);
-		portrayal.setMap(colorMap);
-
-	}
-
-	private void setupPortrayal(FastValueGridPortrayal2D portrayal,
-			IntGrid2D grid, SimpleColorMap colorMap) {
-		portrayal.setField(grid);
-		portrayal.setMap(colorMap);
-
 	}
 
 	public void setupPortrayals() {
@@ -169,12 +117,6 @@ public class SimulationFancyUI extends GUIState implements Constants {
 				});
 
 		agentPortrayal.setField(theState.agentGrid);
-		// agentPortrayal.setPortrayalForClass(Agent.class, new
-		// RectanglePortrayal2D(Color.GREEN, true));
-		/*
-		 * agentPortrayal.setPortrayalForAll(new ImagePortrayal2D(new ImageIcon(
-		 * GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR));
-		 */
 
 		agentPortrayal
 				.setPortrayalForAll(new FacetedPortrayal2D(
@@ -198,34 +140,8 @@ public class SimulationFancyUI extends GUIState implements Constants {
 		display.repaint();
 	}
 
-	public void start() {
-		super.start();
-		setupPortrayals();
-	}
-
-	public void load(SimState state) {
-		super.load(state);
-		setupPortrayals();
-	}
-
-	public SimulationFancyUI() {
-		super(null);
-		initStructures();
-
-	}
-
-	public SimulationFancyUI(SimState state) {
-		super(state);
-		initStructures();
-		this.sim = (Simulation) state;
-	}
-
-	public static String getName() {
-		return "Synthscape Simulation";
-	}
-
 	public static void main(String[] args) {
-		new SimulationFancyUI().createController();
+		new FancySimulationUI().createController();
 	}
 
 }

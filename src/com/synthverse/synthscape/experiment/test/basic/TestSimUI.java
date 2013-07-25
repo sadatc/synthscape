@@ -4,17 +4,16 @@
 package com.synthverse.synthscape.experiment.test.basic;
 
 import sim.display.Console;
-import sim.engine.SimState;
 
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.ProblemComplexity;
-import com.synthverse.synthscape.core.SimulationUI;
+import com.synthverse.synthscape.core.SimpleSimulationUI;
 
 /**
  * @author sadat
  * 
  */
-public class TestSimUI extends SimulationUI {
+public class TestSimUI extends SimpleSimulationUI {
 
 	public TestSimUI() {
 		super(new TestSim(TestAgentFactory.getInstance(),
