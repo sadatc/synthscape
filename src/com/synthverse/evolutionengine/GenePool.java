@@ -68,7 +68,7 @@ public class GenePool {
 	/**
 	 * This returns an agent. Depending on the internal state of the genepool,
 	 * either a fresh new agent with completely random genotype is generated, OR
-	 * an evolved agane is generated.
+	 * an evolved agent is generated.
 	 */
 	public Agent getNewAgent() {
 		Agent agent = null;

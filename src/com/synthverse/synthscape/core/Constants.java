@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.core;
 
+import java.io.BufferedWriter;
+
 public interface Constants {
 
 	public static final int WORLD_WIDTH = 20;

@@ -1,11 +1,9 @@
 package com.synthverse.evolutionengine;
 
 /**
- * These configuration parameters control the proportion of mutants, crosses,
- * etc
+ * Defines the configuration parameters for evolutionary algorithms
  * 
  * @author sadat
- * 
  */
 public interface EvolverConfig {
 

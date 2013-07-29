@@ -6,32 +6,24 @@ package com.synthverse.synthscape.core;
  * @author sadat
  * 
  */
-public class BroadcastSignal {
+public class Broadcast {
 
-	private long senderAgentId;
+	private Agent senderAgent;
+
 	private SignalType signalType;
 	private int x;
 	private int y;
 
-	public BroadcastSignal() {
-		this(-1, SignalType.GENERIC, -1, -1);
+	public Broadcast() {
+		this(null, SignalType.GENERIC, -1, -1);
 	}
 
-	public BroadcastSignal(long senderAgentId, SignalType signalType, int x,
-			int y) {
-		this.senderAgentId = senderAgentId;
+	public Broadcast(Agent senderAgent, SignalType signalType, int x, int y) {
+		this.senderAgent = senderAgent;
 		this.x = x;
 		this.y = y;
 		this.signalType = signalType;
 
-	}
-
-	public long getSenderAgentId() {
-		return senderAgentId;
-	}
-
-	public void setSenderAgentId(long senderAgentId) {
-		this.senderAgentId = senderAgentId;
 	}
 
 	public SignalType getSignalType() {
@@ -57,7 +49,14 @@ public class BroadcastSignal {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
+	public Agent getSenderAgent() {
+		return senderAgent;
+	}
+
+	public void setSenderAgent(Agent senderAgent) {
+		this.senderAgent = senderAgent;
+	}
 	
 
 }

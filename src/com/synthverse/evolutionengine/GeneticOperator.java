@@ -8,7 +8,7 @@ import ec.util.MersenneTwisterFast;
 
 /**
  * 
- * This defines the two most basic genetic operators: mutation and cross
+ * Defines the two most common genetic operators: crossover and mutation.
  * 
  * @author sadat
  * 
@@ -36,8 +36,7 @@ public final class GeneticOperator {
 	}
 
 	public final static void cross(MersenneTwisterFast randomNumberGenerator,
-			Agent parentA, Agent parentB,
-			Agent offspring) {
+			Agent parentA, Agent parentB, Agent offspring) {
 		Instruction[] offspringDNA = offspring.getProgram()
 				.getInstructionArray();
 		Instruction[] parentA_DNA = parentA.getProgram().getInstructionArray();
