@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -72,7 +72,7 @@ public class IslanderAgent extends Agent {
 			result = 1.0;
 		}
 		return result;
-
+		
 	}
 
 }

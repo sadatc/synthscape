@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import sim.display.Console;
 
@@ -13,16 +13,16 @@ import com.synthverse.synthscape.core.ProblemComplexity;
  * @author sadat
  * 
  */
-public class IslanderAgentSimulationFancyUI extends FancySimulationUI {
+public class ArchipelagoFancyUI extends FancySimulationUI {
 
-	public IslanderAgentSimulationFancyUI() {
-		super(new IslanderAgentSimulation(IslanderAgentFactory.getInstance(),
+	public ArchipelagoFancyUI() {
+		super(new ArchipelagoSimulation(IslanderAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}
 
 	public static void main(String[] args) {
-		Console c = new Console(new IslanderAgentSimulationFancyUI());
+		Console c = new Console(new ArchipelagoFancyUI());
 		c.setVisible(true);
 	}
 }

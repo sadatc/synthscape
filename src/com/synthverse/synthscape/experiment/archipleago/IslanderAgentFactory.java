@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;

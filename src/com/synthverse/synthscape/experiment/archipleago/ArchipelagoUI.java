@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import sim.display.Console;
 
@@ -13,16 +13,16 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  * @author sadat
  * 
  */
-public class IslanderAgentSimulationUI extends SimpleSimulationUI {
+public class ArchipelagoUI extends SimpleSimulationUI {
 
-	public IslanderAgentSimulationUI() {
-		super(new IslanderAgentSimulation(IslanderAgentFactory.getInstance(),
+	public ArchipelagoUI() {
+		super(new ArchipelagoSimulation(IslanderAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}
 
 	public static void main(String[] args) {
-		Console c = new Console(new IslanderAgentSimulationUI());
+		Console c = new Console(new ArchipelagoUI());
 		c.setVisible(true);
 	}
 }
