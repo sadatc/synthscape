@@ -13,151 +13,152 @@ import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Trait;
 
 @SuppressWarnings("serial")
 public class ManuallyCodedAgent extends Agent {
 
-	enum AgentState {
-		INIT, DETECT_RAW, DETECT_EXTRACT, EXTRACT_MODE, PROCESS_MODE, TRANSPORT_MODE, DETECT_PROCESSED, LOAD_EXTRACT, LOAD_PROCESSED, MOVE_TO_COLLECTION_SITE, UNLOAD_RESOURCE, SEEK_COLLECTION_SITE, SEEK_NEW_RESOURCE;
-	}
+    enum AgentState {
+	INIT, DETECT_RAW, DETECT_EXTRACT, EXTRACT_MODE, PROCESS_MODE, TRANSPORT_MODE, DETECT_PROCESSED, LOAD_EXTRACT, LOAD_PROCESSED, MOVE_TO_COLLECTION_SITE, UNLOAD_RESOURCE, SEEK_COLLECTION_SITE, SEEK_NEW_RESOURCE;
+    }
 
-	AgentState myMode = AgentState.INIT;
+    AgentState myMode = AgentState.INIT;
 
-	public ManuallyCodedAgent() {
-		super();
+    public ManuallyCodedAgent() {
+	super();
 
-	}
+    }
 
-	public ManuallyCodedAgent(Simulation sim, long generationNumber,
-			long agentId, int maxSteps, int startX, int startY) {
-		super();
+    public ManuallyCodedAgent(Simulation sim, long generationNumber,
+	    long agentId, int maxSteps, int startX, int startY) {
+	super();
 
-		// set the basic stuff:
-		setSim(sim);
-		setAgentId(agentId);
-		setMaxSteps(maxSteps);
-		setX(startX);
-		setY(startY);
-		setGeneration(generationNumber);
+	// set the basic stuff:
+	setSim(sim);
+	setAgentId(agentId);
+	setMaxSteps(maxSteps);
+	setX(startX);
+	setY(startY);
+	setGeneration(generationNumber);
 
-		// set the traits:
-		Set<Trait> traits = new HashSet<Trait>();
-		traits.add(Trait.DETECTION);
-		traits.add(Trait.EXTRACTION);
-		traits.add(Trait.HOMING);
-		traits.add(Trait.PROCESSING);
-		traits.add(Trait.TRANSPORTATION);
-		traits.add(Trait.FLOCKING);
-		setTraits(traits);
+	// set the species/traits:
+	Species species = new Species();
+	species.traits.add(Trait.DETECTION);
+	species.traits.add(Trait.EXTRACTION);
+	species.traits.add(Trait.HOMING);
+	species.traits.add(Trait.PROCESSING);
+	species.traits.add(Trait.TRANSPORTATION);
+	species.traits.add(Trait.FLOCKING);
+	setSpecies(species);
 
-		// set the interaction mechanisms:
-		Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
-		interactionMechanisms.add(InteractionMechanism.BROADCAST);
-		interactionMechanisms.add(InteractionMechanism.TRAIL);
-		interactionMechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-		interactionMechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-		setInteractionMechanisms(interactionMechanisms);
+	// set the interaction mechanisms:
+	Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
+	interactionMechanisms.add(InteractionMechanism.BROADCAST);
+	interactionMechanisms.add(InteractionMechanism.TRAIL);
+	interactionMechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	interactionMechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	setInteractionMechanisms(interactionMechanisms);
 
-	}
+    }
 
-	public void stepAction(SimState state) {
-		// the main idea is as follows
-		// the agent is in a particular state
-		// given it's state, it can only execute
-		// an operation and move to a newer state
-		Simulation theSim = (Simulation) state;
+    public void stepAction(SimState state) {
+	// the main idea is as follows
+	// the agent is in a particular state
+	// given it's state, it can only execute
+	// an operation and move to a newer state
+	Simulation theSim = (Simulation) state;
 
-		AgentState oldState = myMode;
-		switch (myMode) {
-		case INIT:
-		case DETECT_RAW:
-			if (this.operationDetectRawResource()) {
-				myMode = AgentState.EXTRACT_MODE;
-			} else {
-				myMode = AgentState.DETECT_EXTRACT;
-			}
-			break;
-		case DETECT_EXTRACT:
-			if (this.operationDetectExtractedResource()) {
-				if (theSim.getProblemComplexity() == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-					myMode = AgentState.PROCESS_MODE;
-				} else {
-					myMode = AgentState.LOAD_EXTRACT;
-				}
-			} else {
-				// no extracts detected...
-				if (theSim.getProblemComplexity() == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-					myMode = AgentState.DETECT_PROCESSED;
-				} else {
-					myMode = AgentState.SEEK_NEW_RESOURCE;
-				}
-			}
-			break;
-		case DETECT_PROCESSED:
-			if (this.operationDetectProcessedResource()) {
-				myMode = AgentState.LOAD_PROCESSED;
-			} else {
-				myMode = AgentState.SEEK_NEW_RESOURCE;
-			}
-			break;
-		case EXTRACT_MODE:
-			this.operationExtractResource();
-			myMode = AgentState.SEEK_NEW_RESOURCE;
-			//myMode = AgentState.DETECT_EXTRACT;
-			D.p(oldState + " => " + myMode);
-
-			break;
-		case PROCESS_MODE:
-			this.operationProcessResource();
-			myMode = AgentState.DETECT_PROCESSED;
-			D.p(oldState + " => " + myMode);
-
-			break;
-		case LOAD_EXTRACT:
-			this.operationLoadResource();
-			myMode = AgentState.MOVE_TO_COLLECTION_SITE;
-			break;
-		case LOAD_PROCESSED:
-			this.operationLoadResource();
-			myMode = AgentState.MOVE_TO_COLLECTION_SITE;
-			break;
-		case MOVE_TO_COLLECTION_SITE:
-			if (this.operationDetectCollectionSite()) {
-				myMode = AgentState.UNLOAD_RESOURCE;
-			} else {
-				myMode = AgentState.SEEK_COLLECTION_SITE;
-			}
-			break;
-		case UNLOAD_RESOURCE:
-			this.operationUnLoadResource();
-			myMode = AgentState.SEEK_NEW_RESOURCE;
-			break;
-		case SEEK_COLLECTION_SITE:
-			this.operationRandomMove();
-			myMode = AgentState.MOVE_TO_COLLECTION_SITE;
-			break;
-
-		case SEEK_NEW_RESOURCE:
-			this.operationRandomMove();
-			myMode = AgentState.INIT;
-			break;
-
-		default:
-			this.operationRandomMove();
-
+	AgentState oldState = myMode;
+	switch (myMode) {
+	case INIT:
+	case DETECT_RAW:
+	    if (this.operationDetectRawResource()) {
+		myMode = AgentState.EXTRACT_MODE;
+	    } else {
+		myMode = AgentState.DETECT_EXTRACT;
+	    }
+	    break;
+	case DETECT_EXTRACT:
+	    if (this.operationDetectExtractedResource()) {
+		if (theSim.getProblemComplexity() == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		    myMode = AgentState.PROCESS_MODE;
+		} else {
+		    myMode = AgentState.LOAD_EXTRACT;
 		}
-
-	}
-
-	@Override
-	public double doubleValue() {
-		double result = 0.0; // normal agent
-		if (this.isCarryingResource) {
-			result = 1.0;
+	    } else {
+		// no extracts detected...
+		if (theSim.getProblemComplexity() == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		    myMode = AgentState.DETECT_PROCESSED;
+		} else {
+		    myMode = AgentState.SEEK_NEW_RESOURCE;
 		}
-		return result;
+	    }
+	    break;
+	case DETECT_PROCESSED:
+	    if (this.operationDetectProcessedResource()) {
+		myMode = AgentState.LOAD_PROCESSED;
+	    } else {
+		myMode = AgentState.SEEK_NEW_RESOURCE;
+	    }
+	    break;
+	case EXTRACT_MODE:
+	    this.operationExtractResource();
+	    myMode = AgentState.SEEK_NEW_RESOURCE;
+	    // myMode = AgentState.DETECT_EXTRACT;
+	    D.p(oldState + " => " + myMode);
+
+	    break;
+	case PROCESS_MODE:
+	    this.operationProcessResource();
+	    myMode = AgentState.DETECT_PROCESSED;
+	    D.p(oldState + " => " + myMode);
+
+	    break;
+	case LOAD_EXTRACT:
+	    this.operationLoadResource();
+	    myMode = AgentState.MOVE_TO_COLLECTION_SITE;
+	    break;
+	case LOAD_PROCESSED:
+	    this.operationLoadResource();
+	    myMode = AgentState.MOVE_TO_COLLECTION_SITE;
+	    break;
+	case MOVE_TO_COLLECTION_SITE:
+	    if (this.operationDetectCollectionSite()) {
+		myMode = AgentState.UNLOAD_RESOURCE;
+	    } else {
+		myMode = AgentState.SEEK_COLLECTION_SITE;
+	    }
+	    break;
+	case UNLOAD_RESOURCE:
+	    this.operationUnLoadResource();
+	    myMode = AgentState.SEEK_NEW_RESOURCE;
+	    break;
+	case SEEK_COLLECTION_SITE:
+	    this.operationRandomMove();
+	    myMode = AgentState.MOVE_TO_COLLECTION_SITE;
+	    break;
+
+	case SEEK_NEW_RESOURCE:
+	    this.operationRandomMove();
+	    myMode = AgentState.INIT;
+	    break;
+
+	default:
+	    this.operationRandomMove();
 
 	}
+
+    }
+
+    @Override
+    public double doubleValue() {
+	double result = 0.0; // normal agent
+	if (this.isCarryingResource) {
+	    result = 1.0;
+	}
+	return result;
+
+    }
 
 }

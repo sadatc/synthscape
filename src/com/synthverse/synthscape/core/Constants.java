@@ -1,7 +1,5 @@
 package com.synthverse.synthscape.core;
 
-import java.io.BufferedWriter;
-
 public interface Constants {
 
 	public static final int WORLD_WIDTH = 20;
@@ -39,23 +37,19 @@ public interface Constants {
 	public static final long SIMULATION_RNG_SEED = 2;
 
 	public static final int INVALID = -1;
-	
+
 	public static final double GRID_ICON_SCALE_FACTOR = 0.70;
-	
+
 	public static final String GRID_ICON_AGENT = "images/agent.png";
-	
+
 	public static final String GRID_ICON_LOADED_AGENT = "images/loaded_agent.png";
-	
+
 	public static final String GRID_ICON_COLLECTION_SITE = "images/collection_site.png";
-	
+
 	public static final String GRID_ICON_RAW_RESOURCE = "images/raw_resource.png";
-	
+
 	public static final String GRID_ICON_EXTRACTED_RESOURCE = "images/extracted_resource.png";
-	
+
 	public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
-	
-	
-	
-	
 
 }

@@ -11,64 +11,63 @@ import sim.engine.SimState;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Trait;
 
 @SuppressWarnings("serial")
 public class TestAgent extends Agent {
-	
-	public TestAgent() {
-		super();
-		
-	}
-	
 
-	public TestAgent(Simulation sim, long generationNumber, long agentId,
-			int maxSteps, int startX, int startY) {
-		super();
+    public TestAgent() {
+	super();
 
-		// set the basic stuff:
-		setSim(sim);
-		setAgentId(agentId);
-		setMaxSteps(maxSteps);
-		setX(startX);
-		setY(startY);
-		setGeneration(generationNumber);
+    }
 
-		// set the traits:
-		Set<Trait> traits = new HashSet<Trait>();
-		traits.add(Trait.DETECTION);
-		traits.add(Trait.EXTRACTION);
-		traits.add(Trait.HOMING);
-		traits.add(Trait.PROCESSING);
-		traits.add(Trait.TRANSPORTATION);
-		traits.add(Trait.FLOCKING);
-		setTraits(traits);
+    public TestAgent(Simulation sim, long generationNumber, long agentId,
+	    int maxSteps, int startX, int startY) {
+	super();
 
-		// set the interaction mechanisms:
-		Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
-		interactionMechanisms.add(InteractionMechanism.BROADCAST);
-		interactionMechanisms.add(InteractionMechanism.TRAIL);
-		interactionMechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-		interactionMechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-		setInteractionMechanisms(interactionMechanisms);
+	// set the basic stuff:
+	setSim(sim);
+	setAgentId(agentId);
+	setMaxSteps(maxSteps);
+	setX(startX);
+	setY(startY);
+	setGeneration(generationNumber);
 
-	}
+	// set the species/traits:
+	Species species = new Species();
+	species.traits.add(Trait.DETECTION);
+	species.traits.add(Trait.EXTRACTION);
+	species.traits.add(Trait.HOMING);
+	species.traits.add(Trait.PROCESSING);
+	species.traits.add(Trait.TRANSPORTATION);
+	species.traits.add(Trait.FLOCKING);
+	setSpecies(species);
 
-	public void stepAction(SimState state) {
-		this.operationRandomMove();
-	}
+	// set the interaction mechanisms:
+	Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
+	interactionMechanisms.add(InteractionMechanism.BROADCAST);
+	interactionMechanisms.add(InteractionMechanism.TRAIL);
+	interactionMechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	interactionMechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	setInteractionMechanisms(interactionMechanisms);
 
-	@Override
-	public double doubleValue() {
-		// TODO: value will determine color
-		return 0;
-	}
+    }
 
+    public void stepAction(SimState state) {
+	this.operationRandomMove();
+    }
 
-	@Override
-	public void step(SimState state) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public double doubleValue() {
+	// TODO: value will determine color
+	return 0;
+    }
+
+    @Override
+    public void step(SimState state) {
+	// TODO Auto-generated method stub
+
+    }
 
 }

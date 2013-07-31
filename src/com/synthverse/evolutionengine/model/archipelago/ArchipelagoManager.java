@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArchipelagoManager {
-	List<PopulationIsland> islands = new ArrayList<PopulationIsland>();
-	
+    private int numberOfIslands;
+
+    List<PopulationIsland> islands = new ArrayList<PopulationIsland>();
+
 }
