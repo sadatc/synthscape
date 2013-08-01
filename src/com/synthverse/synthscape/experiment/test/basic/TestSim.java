@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.experiment.test.basic;
 
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
@@ -13,7 +14,6 @@ public class TestSim extends Simulation {
 
     public TestSim(long seed) {
 	super(seed);
-
     }
 
     @Override
@@ -51,12 +51,11 @@ public class TestSim extends Simulation {
 	species1.addTrait(Trait.PROCESSING);
 	species1.addTrait(Trait.TRANSPORTATION);
 	myExperiment.addSpecies(species1);
-	
+
 	// generations and runs
 	myExperiment.setGenerationsPerSimulation(GENERATIONS_PER_SIM);
 	myExperiment.setNumberOfSimulations(SIMS_PER_EXPERIMENT);
-	
-	
+
 	return myExperiment;
     }
 

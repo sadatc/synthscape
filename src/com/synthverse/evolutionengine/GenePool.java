@@ -33,85 +33,85 @@ import com.synthverse.util.LogUtils;
  */
 public class GenePool {
 
-	AgentCache agentCache = null;
-	AgentFactory agentFactory = null;
-	int populationSize = 0;
-	int numSeedAgentsRequested = 0;
-	int numEvolvedAgentsRequested = 0;
-	boolean isSeedingPhase = true;
+    AgentCache agentCache = null;
+    AgentFactory agentFactory = null;
+    int populationSize = 0;
+    int numSeedAgentsRequested = 0;
+    int numEvolvedAgentsRequested = 0;
+    boolean isSeedingPhase = true;
 
-	private static Logger log = Logger.getLogger(GenePool.class.getName());
+    private static Logger log = Logger.getLogger(GenePool.class.getName());
 
-	static {
-		LogUtils.applyDefaultSettings(log, Level.ALL);
+    static {
+	LogUtils.applyDefaultSettings(log, Level.ALL);
+    }
+
+    @SuppressWarnings("unused")
+    private GenePool() {
+	throw new AssertionError("GenePool constructor is restricted");
+    }
+
+    public GenePool(AgentFactory agentFactory, int populationSize) {
+	if (populationSize > 0) {
+	    this.agentFactory = agentFactory;
+	    this.populationSize = populationSize;
+	    isSeedingPhase = true;
+	    numSeedAgentsRequested = 0;
+	    numEvolvedAgentsRequested = 0;
+	    // create twice the number of agents
+	    agentCache = new AgentCache(agentFactory, populationSize * 2);
+	} else {
+	    throw new AssertionError("invalid condition: populationSize < 0");
+	}
+    }
+
+    /**
+     * This returns an agent. Depending on the internal state of the genepool,
+     * either a fresh new agent with completely random genotype is generated, OR
+     * an evolved agent is generated.
+     */
+    public Agent getNewAgent() {
+	Agent agent = null;
+
+	if (isSeedingPhase) {
+	    if (numSeedAgentsRequested <= populationSize) {
+		agent = agentCache.borrowAgent();
+		numSeedAgentsRequested++;
+		agent.randomizeGenotype();
+	    } else {
+		throw new AssertionError("already generated maximum allowed seed agents");
+	    }
+
+	} else {
+	    // evolution phase
+	    if (numEvolvedAgentsRequested <= populationSize) {
+		agent = agentCache.borrowAgent();
+		numSeedAgentsRequested++;
+		agent.randomizeGenotype();
+	    } else {
+		throw new AssertionError("already generated maximum allowed seed agents");
+	    }
+
 	}
 
-	@SuppressWarnings("unused")
-	private GenePool() {
-		throw new AssertionError("GenePool constructor is restricted");
-	}
+	return agent;
+    }
 
-	public GenePool(AgentFactory agentFactory, int populationSize) {
-		if (populationSize > 0) {
-			this.agentFactory = agentFactory;
-			this.populationSize = populationSize;
-			isSeedingPhase = true;
-			numSeedAgentsRequested = 0;
-			numEvolvedAgentsRequested = 0;
-			// create twice the number of agents
-			agentCache = new AgentCache(agentFactory, populationSize * 2);
-		} else {
-			throw new AssertionError("invalid condition: populationSize < 0");
-		}
-	}
+    /**
+     * An agent that has completed its lifecycle and has had it's fitness
+     * evaluated is submitted to be reclaimed by the gene pool
+     * 
+     * @param agent
+     */
+    public void reclaimUsedAgent(Agent agent) {
+	log.info("Used agent submitted fore reclaiming...");
+    }
 
-	/**
-	 * This returns an agent. Depending on the internal state of the genepool,
-	 * either a fresh new agent with completely random genotype is generated, OR
-	 * an evolved agent is generated.
-	 */
-	public Agent getNewAgent() {
-		Agent agent = null;
+    /**
+     * Resets to the seeding phase.
+     */
+    public void reset() {
 
-		if (isSeedingPhase) {
-			if(numSeedAgentsRequested <= populationSize) {
-				agent = agentCache.borrowAgent();
-				numSeedAgentsRequested++;
-				agent.randomizeGenotype();
-			} else {
-				throw new AssertionError("already generated maximum allowed seed agents");
-			}
-
-		} else {
-			// evolution phase
-			if(numEvolvedAgentsRequested <= populationSize) {
-				agent = agentCache.borrowAgent();
-				numSeedAgentsRequested++;
-				agent.randomizeGenotype();
-			} else {
-				throw new AssertionError("already generated maximum allowed seed agents");
-			}
-
-		}
-
-		return agent;
-	}
-
-	/**
-	 * An agent that has completed its lifecycle and has had it's fitness
-	 * evaluated is submitted to be reclaimed by the gene pool
-	 * 
-	 * @param agent
-	 */
-	public void reclaimUsedAgent(Agent agent) {
-		log.info("Used agent submitted fore reclaiming...");
-	}
-
-	/**
-	 * Resets to the seeding phase.
-	 */
-	public void reset() {
-
-	}
+    }
 
 }

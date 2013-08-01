@@ -2,9 +2,9 @@ package com.synthverse.synthscape.core;
 
 public interface Constants {
 
-	public static final int WORLD_WIDTH = 32;
+	public static final int WORLD_WIDTH = 16;
 
-	public static final int WORLD_HEIGHT = 32;
+	public static final int WORLD_HEIGHT = 16;
 
 	public static final int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
@@ -24,11 +24,13 @@ public interface Constants {
 
 	public static final int AGENTS_PER_SPECIES = 10;
 
-	public static final double OBSTACLE_DENSITY = 0.20;
+	public static final double OBSTACLE_DENSITY = 0.05;
 
 	public static final double RESOURCE_DENSITY = 0.05;
 
-	public static final int NUMBER_OF_COLLECTION_SITES = 0;
+	public static final int NUMBER_OF_COLLECTION_SITES = 5;
+	
+	public static final int MAX_STEPS_PER_AGENT = 2000;
 	
 	public static final int GENERATIONS_PER_SIM = 2000;
 	

@@ -13,17 +13,14 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  * @author sadat
  * 
  */
-public class ArchipelagoUI extends SimpleSimulationUI {
+public class ManuallyCodedAgentSimulationUI extends SimpleSimulationUI {
 
-	public ArchipelagoUI() {
-		super(new ArchipelagoSimulation("ARCHIPELAGO",
-				IslanderAgentFactory.getInstance(),
-				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
-				Constants.SIMULATION_RNG_SEED));
+	public ManuallyCodedAgentSimulationUI() {
+	    super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
 	}
 
 	public static void main(String[] args) {
-		Console c = new Console(new ArchipelagoUI());
+		Console c = new Console(new ManuallyCodedAgentSimulationUI());
 		c.setVisible(true);
 	}
 }

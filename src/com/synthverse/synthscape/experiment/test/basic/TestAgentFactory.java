@@ -16,16 +16,16 @@ public class TestAgentFactory implements AgentFactory, Constants {
 	return instance;
     }
 
+    @Override
     public Agent create() {
-	Agent agent = new TestAgent();
-	return agent;
+	return new TestAgent();
     }
 
-    public Agent create(Simulation simulation, int generation, int agentId,
-	    int x, int y) {
-	TestAgent agent = new TestAgent(simulation, SEED_GENERATION_NUMBER,
-		agentId, 200, x, y);
-	return agent;
+    @Override
+    public Agent create(Simulation simulation, int generation, int agentId, int maxSteps, int x,
+	    int y) {
+	return new TestAgent(simulation, generation, agentId, maxSteps, x, y);
+
     }
 
 }

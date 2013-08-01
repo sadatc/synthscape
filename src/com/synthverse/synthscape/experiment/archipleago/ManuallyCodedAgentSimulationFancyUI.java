@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.experiment.test.manuallycoded;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import sim.display.Console;
 

@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.experiment.test.manuallycoded;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Experiment;
@@ -57,7 +57,6 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	// generations and runs
 	myExperiment.setGenerationsPerSimulation(GENERATIONS_PER_SIM);
 	myExperiment.setNumberOfSimulations(SIMS_PER_EXPERIMENT);
-	myExperiment.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
 
 	return myExperiment;
     }

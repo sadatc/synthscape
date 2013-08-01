@@ -14,17 +14,12 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent /* extends SimplePortrayal2D */implements
-	Constants, Steppable, Valuable, Comparable<Agent> {
+public abstract class Agent /* extends SimplePortrayal2D */implements Constants, Steppable,
+	Valuable, Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
 
-    /*
-     * protected ImageIcon imageIcon = new ImageIcon(
-     * "/Users/sadat/Desktop/agent.png");
-     */
-
-    Simulation sim;
+    private Simulation sim;
 
     int agentId;
 
@@ -68,6 +63,36 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     protected Program program;
 
     protected Measure stats = new Measure();
+
+    abstract public double doubleValue();
+
+    abstract public void stepAction(SimState state);
+
+    protected Agent() {
+    }
+
+    protected Agent(Simulation simulation, int generationNumber, int agentId, int maxSteps,
+	    int startX, int startY) {
+
+	// set the basic stuff:
+	setSim(simulation);
+	setAgentId(agentId);
+	setMaxSteps(maxSteps);
+	setX(startX);
+	setY(startY);
+	setGeneration(generationNumber);
+
+	// set the species/traits:
+	species = getSpecies();
+
+	// set the interaction mechanisms:
+	interactionMechanisms = getInteractionMechanisms();
+
+    }
+
+    protected abstract Species getSpecies();
+
+    protected abstract Set<InteractionMechanism> getInteractionMechanisms();
 
     public Agent randomizeGenotype() {
 	if (program != null) {
@@ -142,9 +167,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
-		    && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight()
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
 		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
@@ -197,8 +221,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	grid.field[x][y] = 100;
     }
 
-    public final boolean _operationPerformResourceAction(Task action,
-	    ObjectGrid2D resourceGrid) {
+    public final boolean _operationPerformResourceAction(Task action, ObjectGrid2D resourceGrid) {
 
 	boolean actionPerformed = false;
 
@@ -256,8 +279,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA,
-	    DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -396,8 +419,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 		}
 	    }
 
-	    _operationMoveToLocationAt(closestCollectionSite.x,
-		    closestCollectionSite.y);
+	    _operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
 
 	}
     }
@@ -423,8 +445,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 		    }
 		}
 	    }
-	    _operationMoveToLocationAt(closestAgentLocation.x,
-		    closestAgentLocation.y);
+	    _operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
 
 	}
     }
@@ -492,8 +513,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     public final void operationExtractResource() {
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
-	    if (_operationPerformResourceAction(Task.EXTRACTION,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
 	    }
 
@@ -503,8 +523,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     public void operationProcessResource() {
 	if (species.getTraits().contains(Trait.PROCESSING)) {
-	    if (_operationPerformResourceAction(Task.PROCESSING,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
 	    }
 
@@ -532,8 +551,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final void operationUnLoadResource() {
-	if (species.getTraits().contains(Trait.TRANSPORTATION)
-		&& isCarryingResource) {
+	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
 	    if (!locationHasExtractedResource && !locationHasProcessedResource
 		    && !locationHasRawResource) {
 
@@ -587,9 +605,6 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	stats.zeroAll();
     }
 
-    protected Agent() {
-    }
-
     public void updateLocationStatus(int x, int y) {
 
 	this.x = x;
@@ -627,8 +642,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 		// sim.statistics.stepData.collectionSiteHits++;
 		stats.collectionSiteHits++;
 
-		if (x == sim.PRIMARY_COLLECTION_SITE_X
-			&& y == sim.PRIMARY_COLLECTION_SITE_Y) {
+		if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
 		    // sim.statistics.stepData.primaryCollectionSiteHits++;
 		    stats.primaryCollectionSiteHits++;
 		}
@@ -638,15 +652,6 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	}
 
     }
-
-    abstract public double doubleValue();
-
-    /**
-     * Inherited classes should override this
-     * 
-     * @param state
-     */
-    abstract public void stepAction(SimState state);
 
     public boolean hasStepsRemaining() {
 	return stepCounter < maxSteps;
@@ -695,14 +700,6 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	return 0;
     }
 
-    public Simulation getSim() {
-	return sim;
-    }
-
-    public void setSim(Simulation sim) {
-	this.sim = sim;
-    }
-
     public int getAgentId() {
 	return agentId;
     }
@@ -743,15 +740,6 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	this.y = y;
     }
 
-    public Set<InteractionMechanism> getInteractionMechanisms() {
-	return interactionMechanisms;
-    }
-
-    public void setInteractionMechanisms(
-	    Set<InteractionMechanism> interactionMechanisms) {
-	this.interactionMechanisms = interactionMechanisms;
-    }
-
     public VirtualMachine getVirtualMachine() {
 	return virtualMachine;
     }
@@ -764,54 +752,16 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	this.generation = generation;
     }
 
-    public Species getSpecies() {
-	return species;
+    public void setSim(Simulation sim) {
+	this.sim = sim;
     }
 
-    public void setSpecies(Species species) {
-	this.species = species;
-    }
-
-    /*
-     * public final void draw(Object object, Graphics2D graphics, DrawInfo2D
-     * info) {
-     * 
-     * Image image = imageIcon.getImage();
-     * 
-     * if (image != null) { double scale = GRID_ICON_SCALE_FACTOR;
-     * java.awt.geom.AffineTransform preciseTransform = new
-     * java.awt.geom.AffineTransform(); // in this example we ALWAYS draw the
-     * image, even if the color is // set to 0 alpha...
-     * 
-     * final int iw = image.getWidth(null); final int ih =
-     * image.getHeight(null); double width; double height;
-     * 
-     * if (ih > iw) { width = info.draw.width * scale; height = (ih * width) /
-     * iw; // ih/iw = height / width } else { height = info.draw.height * scale;
-     * width = (iw * height) / ih; // iw/ih = width/height }
-     * 
-     * final double x = (info.draw.x - width / 2.0); final double y =
-     * (info.draw.y - height / 2.0);
-     * 
-     * // draw centered on the origin if (info.precise) {
-     * preciseTransform.setToScale(width, height); preciseTransform.translate(x,
-     * y); graphics.drawImage(image, preciseTransform, null); } else
-     * graphics.drawImage(image, (int) x, (int) y, (int) width, (int) height,
-     * null); }
-     * 
-     * else { graphics.setColor(Color.RED);
-     * 
-     * int x = (int) (info.draw.x - info.draw.width / 2.0); int y = (int)
-     * (info.draw.y - info.draw.height / 2.0); int width = (int)
-     * (info.draw.width); int height = (int) (info.draw.height);
-     * 
-     * graphics.fillOval(x, y, width, height); }
-     * 
-     * }
-     */
-    protected static Agent generateAgent(long generation, long agentId, int x,
-	    int y) {
+    protected static Agent generateAgent(long generation, long agentId, int x, int y) {
 	return null;
+    }
+
+    public Simulation getSim() {
+	return sim;
     }
 
 }

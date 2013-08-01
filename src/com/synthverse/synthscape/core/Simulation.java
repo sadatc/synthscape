@@ -87,7 +87,10 @@ public abstract class Simulation extends SimState implements Constants {
 	numberOfResources = (int) (gridArea * experiment.getResourceDensity());
 	numberOfCollectionSites = experiment.getNumberOfCollectionSites();
 	problemComplexity = experiment.getProblemComplexity();
-
+	
+	D.p("number of resources:"+numberOfResources);
+	D.p("number of obstacles:"+numberOfObstacles);
+	
 	createDataStructures();
 
 	simulationNumber = 0;
@@ -178,12 +181,15 @@ public abstract class Simulation extends SimState implements Constants {
 	return gridHeight;
     }
 
+    public ProblemComplexity getProblemComplexity() {
+	return problemComplexity;
+    }
+
     private void setupPrimaryCollectionSite() {
 	// set the primary collection site
 	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	setupCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
-		PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X, PRIMARY_COLLECTION_SITE_Y));
     }
 
     private void setupNonPrimaryCollectionSites() {
@@ -263,7 +269,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
 	    Agent agent = agentFactory.create(this, SEED_GENERATION_NUMBER, i,
-		    randomX, randomY);
+		    experiment.getMaxStepsPerAgent(), randomX, randomY);
 
 	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 

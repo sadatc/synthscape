@@ -3,39 +3,39 @@
  */
 package com.synthverse.synthscape.experiment.test.basic;
 
+import java.util.Set;
+
 import sim.engine.SimState;
 
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
 public class TestAgent extends Agent {
 
+    public TestAgent(Simulation simulation, int generation, int agentId, int maxSteps, int x, int y) {
+	super(simulation, generation, agentId, maxSteps, x, y);
+    }
+
     public TestAgent() {
 	super();
-
     }
 
-    public TestAgent(Simulation sim, int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
-	super();
-
-	// set the basic stuff:
-	setSim(sim);
-	setAgentId(agentId);
-	setMaxSteps(maxSteps);
-	setX(startX);
-	setY(startY);
-	setGeneration(generationNumber);
-
-	// set the species/traits:
-	setSpecies(sim.getExperiment().getSpeciesComposition().iterator().next());
-
-	// set the interaction mechanisms:
-	setInteractionMechanisms(sim.getExperiment().getInteractionMechanisms());
-
+    @Override
+    protected Species getSpecies() {
+	// or pick a specific one...
+	return getSim().getExperiment().getSpeciesComposition().iterator().next();
     }
 
+    @Override
+    protected Set<InteractionMechanism> getInteractionMechanisms() {
+	// or pick a specific one...
+	return getSim().getExperiment().getInteractionMechanisms();
+    }
+
+    @Override
     public void stepAction(SimState state) {
 	this.operationRandomMove();
     }
@@ -44,12 +44,6 @@ public class TestAgent extends Agent {
     public double doubleValue() {
 	// TODO: value will determine color
 	return 0;
-    }
-
-    @Override
-    public void step(SimState state) {
-	// TODO Auto-generated method stub
-
     }
 
 }

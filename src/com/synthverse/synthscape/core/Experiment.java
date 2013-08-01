@@ -18,6 +18,7 @@ public class Experiment {
     private double resourceDensity;
     private int numberOfAgentsPerSpecies;
     private int numberOfCollectionSites;
+    private int maxStepsPerAgent;
 
     private int numberOfSimulations;
     private int generationsPerSimulation;
@@ -35,8 +36,7 @@ public class Experiment {
 	sb.append(this.name.toUpperCase());
 	sb.append('-');
 	try {
-	    sb.append(java.net.InetAddress.getLocalHost().getHostName()
-		    .toUpperCase());
+	    sb.append(java.net.InetAddress.getLocalHost().getHostName().toUpperCase());
 	} catch (Exception e) {
 	    sb.append("LOCAL");
 	}
@@ -127,8 +127,7 @@ public class Experiment {
 	return interactionMechanisms;
     }
 
-    public void setInteractionMechanisms(
-	    Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
@@ -156,12 +155,19 @@ public class Experiment {
 	this.numberOfCollectionSites = numberOfCollectionSites;
     }
 
-    public void addInteractionMechanism(
-	    InteractionMechanism interactionMechanism) {
+    public int getMaxStepsPerAgent() {
+	return maxStepsPerAgent;
+    }
+
+    public void setMaxStepsPerAgent(int maxStepsPerAgent) {
+	this.maxStepsPerAgent = maxStepsPerAgent;
+    }
+
+    public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
 	this.interactionMechanisms.add(interactionMechanism);
 
     }
-    
+
     public void addSpecies(Species species) {
 	this.speciesComposition.add(species);
     }

@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.test.manuallycoded;
+package com.synthverse.synthscape.experiment.archipleago;
 
 import java.util.Set;
 
@@ -135,14 +135,14 @@ public class ManuallyCodedAgent extends Agent {
 
     @Override
     protected Species getSpecies() {
-	// or pick a specific one...
-	return getSim().getExperiment().getSpeciesComposition().iterator().next();
+	// TODO Auto-generated method stub
+	return null;
     }
 
     @Override
     protected Set<InteractionMechanism> getInteractionMechanisms() {
-	// or pick a specific one...
-	return getSim().getExperiment().getInteractionMechanisms();
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }
