@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.experiment.test.basic;
 
+import java.io.IOException;
+
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Experiment;
@@ -12,7 +14,7 @@ import com.synthverse.synthscape.core.Trait;
 @SuppressWarnings("serial")
 public class TestSim extends Simulation {
 
-    public TestSim(long seed) {
+    public TestSim(long seed) throws IOException {
 	super(seed);
     }
 

@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
+import java.io.IOException;
+
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -11,7 +13,7 @@ import com.synthverse.synthscape.core.Trait;
 @SuppressWarnings("serial")
 public class ManuallyCodedAgentSimulation extends Simulation {
 
-    public ManuallyCodedAgentSimulation(long seed) {
+    public ManuallyCodedAgentSimulation(long seed) throws IOException {
 	super(seed);
 
     }
@@ -58,6 +60,10 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	myExperiment.setGenerationsPerSimulation(GENERATIONS_PER_SIM);
 	myExperiment.setNumberOfSimulations(SIMS_PER_EXPERIMENT);
 	myExperiment.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
+	
+	myExperiment.setRecordExperiment(true);
+	myExperiment.setAgentEventFileName("/tmp/AGENT_LOG.CSV");
+	myExperiment.setFlushAlways(true);
 
 	return myExperiment;
     }

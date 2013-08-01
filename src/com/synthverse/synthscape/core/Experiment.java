@@ -6,7 +6,8 @@ import java.util.Set;
 
 public class Experiment {
     private String name;
-    private String signature;
+    private String serverName;
+    private String experimentId;
 
     private Date startDate;
     private Date endDate;
@@ -27,27 +28,24 @@ public class Experiment {
     private Set<Species> speciesComposition = new HashSet<Species>();
     private Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
 
+    private String agentEventFileName;
+    private boolean recordExperiment = false;
+    private boolean flushAlways = false;
+
     private Experiment() {
 	throw new AssertionError("not allowed");
     }
 
-    private String getSignature() {
-	StringBuffer sb = new StringBuffer();
-	sb.append(this.name.toUpperCase());
-	sb.append('-');
-	try {
-	    sb.append(java.net.InetAddress.getLocalHost().getHostName().toUpperCase());
-	} catch (Exception e) {
-	    sb.append("LOCAL");
-	}
-	sb.append('-');
-	sb.append(Long.toHexString(System.currentTimeMillis()).toUpperCase());
-
-	return sb.toString();
-    }
-
     public Experiment(String name) {
 	this.name = name;
+
+	try {
+	    serverName = java.net.InetAddress.getLocalHost().getHostName().toUpperCase();
+	} catch (Exception e) {
+	    serverName = "LOCAL";
+	}
+	
+	experimentId = Long.toHexString(System.currentTimeMillis()).toUpperCase();
 
     }
 
@@ -163,6 +161,38 @@ public class Experiment {
 	this.maxStepsPerAgent = maxStepsPerAgent;
     }
 
+    public String getAgentEventFileName() {
+	
+	// modify the file name to contain the id
+	if(agentEventFileName!=null) {
+	    
+	    if(agentEventFileName.indexOf(".")!=-1) {
+		String prePart = agentEventFileName.substring(0,agentEventFileName.lastIndexOf('.'));
+		String postPart = agentEventFileName.substring(agentEventFileName.lastIndexOf('.'));
+		agentEventFileName = prePart+"_"+experimentId+postPart;
+		
+	    } else {
+		agentEventFileName += "_"+experimentId;
+	    }
+	    
+	}
+	
+	
+	return agentEventFileName;
+    }
+
+    public void setAgentEventFileName(String agentEventFileName) {
+	this.agentEventFileName = agentEventFileName;
+    }
+
+    public boolean isRecordExperiment() {
+	return recordExperiment;
+    }
+
+    public void setRecordExperiment(boolean recordExperiment) {
+	this.recordExperiment = recordExperiment;
+    }
+
     public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
 	this.interactionMechanisms.add(interactionMechanism);
 
@@ -171,5 +201,27 @@ public class Experiment {
     public void addSpecies(Species species) {
 	this.speciesComposition.add(species);
     }
+
+    public boolean isFlushAlways() {
+	return flushAlways;
+    }
+
+    public void setFlushAlways(boolean flushAlways) {
+	this.flushAlways = flushAlways;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public String getExperimentId() {
+        return experimentId;
+    }
+    
+    
 
 }

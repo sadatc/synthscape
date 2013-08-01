@@ -3,11 +3,13 @@
  */
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
+import java.io.IOException;
+
 import sim.display.Console;
 
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.FancySimulationUI;
-import com.synthverse.synthscape.core.ProblemComplexity;
 
 /**
  * @author sadat
@@ -15,12 +17,17 @@ import com.synthverse.synthscape.core.ProblemComplexity;
  */
 public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
 
-    public ManuallyCodedAgentSimulationFancyUI() {
+    public ManuallyCodedAgentSimulationFancyUI() throws IOException {
 	super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {
-	Console c = new Console(new ManuallyCodedAgentSimulationFancyUI());
-	c.setVisible(true);
+	try {
+	    Console c = new Console(new ManuallyCodedAgentSimulationFancyUI());
+	    c.setVisible(true);
+	} catch (Exception e) {
+	    D.p("Exception:" + e.getMessage());
+	    e.printStackTrace();
+	}
     }
 }

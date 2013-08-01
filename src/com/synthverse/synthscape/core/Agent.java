@@ -23,9 +23,9 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
     int agentId;
 
-    protected long stepCounter;
+    protected int stepCounter;
 
-    protected long maxSteps;
+    protected int maxSteps;
 
     protected int x;
 
@@ -480,6 +480,9 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
     public final boolean operationDetectRawResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
+	    if (this.locationHasRawResource) {
+		sim.reportEvent(species, agentId, this.stepCounter, Event.DETECTED_RAW_RESOURCE);
+	    }
 	    return (this.locationHasRawResource);
 	} else {
 	    return false;
@@ -489,6 +492,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
     public final boolean operationDetectExtractedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
+	    if (this.locationHasExtractedResource) {
+		sim.reportEvent(species, agentId, this.stepCounter,
+			Event.DETECTED_EXTRACTED_RESOURCE);
+	    }
 	    return this.locationHasExtractedResource;
 	} else {
 	    return false;
@@ -497,6 +504,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
     public boolean operationDetectProcessedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
+	    if (this.locationHasProcessedResource) {
+		sim.reportEvent(species, agentId, this.stepCounter,
+			Event.DETECTED_PROCESSED_RESOURCE);
+	    }
 	    return this.locationHasProcessedResource;
 	} else {
 	    return false;
@@ -515,6 +526,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
 	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
+		sim.reportEvent(species, agentId, this.stepCounter, Event.EXTRACTED_RESOURCE);
+
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -525,6 +538,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 	if (species.getTraits().contains(Trait.PROCESSING)) {
 	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
+		sim.reportEvent(species, agentId, this.stepCounter, Event.PROCESSED_RESOURCE);
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -544,6 +558,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
 		    this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
 		    updateLocationStatus(this.x, this.y);
+		    sim.reportEvent(species, agentId, this.stepCounter, Event.LOADED_RESOURCE);
 		}
 	    }
 
@@ -570,6 +585,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 			if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
+			    sim.reportEvent(species, agentId, this.stepCounter,
+				    Event.UNLOADED_RESOURCE);
+			    sim.reportEvent(species, agentId, this.stepCounter,
+				    Event.COLLECTED_RESOURCE);
 			}
 
 		    } else if (this.sim.problemComplexity
@@ -577,6 +596,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
+			    sim.reportEvent(species, agentId, this.stepCounter,
+				    Event.UNLOADED_RESOURCE);
+			    sim.reportEvent(species, agentId, this.stepCounter,
+				    Event.COLLECTED_RESOURCE);
 			}
 
 		    } else {
@@ -588,6 +611,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 
 		if (dropResource) {
 		    this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+		    sim.reportEvent(species, agentId, this.stepCounter, Event.UNLOADED_RESOURCE);
 
 		}
 
@@ -628,6 +652,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
 		// sim.statistics.stepData.trailHits++;
+		sim.reportEvent(species, agentId, this.stepCounter,
+			Event.RECEIVED_RAW_RESOURCE_TRAIL);
 
 		stats.trailHits++;
 
@@ -640,6 +666,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 	    this.locationIsCollectionSite = true;
 	    if (locationIsChanging) {
 		// sim.statistics.stepData.collectionSiteHits++;
+
 		stats.collectionSiteHits++;
 
 		if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
@@ -708,19 +735,19 @@ public abstract class Agent /* extends SimplePortrayal2D */implements Constants,
 	this.agentId = agentId;
     }
 
-    public long getStepCounter() {
+    public int getStepCounter() {
 	return stepCounter;
     }
 
-    public void setStepCounter(long stepCounter) {
+    public void setStepCounter(int stepCounter) {
 	this.stepCounter = stepCounter;
     }
 
-    public long getMaxSteps() {
+    public int getMaxSteps() {
 	return maxSteps;
     }
 
-    public void setMaxSteps(long maxSteps) {
+    public void setMaxSteps(int maxSteps) {
 	this.maxSteps = maxSteps;
     }
 

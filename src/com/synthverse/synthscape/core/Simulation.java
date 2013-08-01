@@ -3,6 +3,7 @@
  */
 package com.synthverse.synthscape.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import sim.engine.Schedule;
@@ -24,6 +25,8 @@ public abstract class Simulation extends SimState implements Constants {
     private static final long serialVersionUID = 2700375028430112699L;
 
     protected Experiment experiment;
+
+    protected AgentEventReporter agentEventReporter;
 
     protected int simulationNumber;
 
@@ -71,7 +74,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public abstract AgentFactory getAgentFactory();
 
-    public Simulation(long seed) {
+    public Simulation(long seed) throws IOException {
 	super(seed);
 
 	agentFactory = getAgentFactory();
@@ -87,15 +90,17 @@ public abstract class Simulation extends SimState implements Constants {
 	numberOfResources = (int) (gridArea * experiment.getResourceDensity());
 	numberOfCollectionSites = experiment.getNumberOfCollectionSites();
 	problemComplexity = experiment.getProblemComplexity();
-	
-	D.p("number of resources:"+numberOfResources);
-	D.p("number of obstacles:"+numberOfObstacles);
-	
+
 	createDataStructures();
 
 	simulationNumber = 0;
 	generation = 0;
 	numberOfCollectedResources = 0;
+
+	if (experiment.isRecordExperiment()) {
+	    agentEventReporter = new AgentEventReporter(experiment.isFlushAlways(),
+		    experiment.getAgentEventFileName());
+	}
 
 	isToroidalWorld = TOROIDAL_FLAG;
 	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
@@ -312,6 +317,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	setupEnvironment();
 	setupFirstGeneration();
+	if (experiment.isRecordExperiment() && agentEventReporter != null) {
+	    experiment.setStartDate();
+	    agentEventReporter.openFile();
+	}
 
 	// this is run at the end of each step
 
@@ -392,6 +401,24 @@ public abstract class Simulation extends SimState implements Constants {
 
     public static void main(String[] arg) {
 	_main(arg);
+    }
+
+    public AgentEventReporter getAgentEventReporter() {
+	return agentEventReporter;
+    }
+
+    public void setAgentEventReporter(AgentEventReporter agentEventReporter) {
+	this.agentEventReporter = agentEventReporter;
+    }
+
+    public void reportEvent(Species species, int agentId, int stepCounter, Event event) {
+	if (experiment.isRecordExperiment() && this.agentEventReporter != null) {
+	    this.agentEventReporter.reportEvent(experiment.getServerName(),
+		    experiment.getExperimentId(), experiment.getName(), simulationNumber,
+		    generation, species, agentId, stepCounter, event);
+
+	}
+
     }
 
 }
