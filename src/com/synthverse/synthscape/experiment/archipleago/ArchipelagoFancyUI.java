@@ -17,7 +17,8 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 public class ArchipelagoFancyUI extends FancySimulationUI {
 
 	public ArchipelagoFancyUI() {
-		super(new ArchipelagoSimulation(IslanderAgentFactory.getInstance(),
+		super(new ArchipelagoSimulation("ARCHIPELAGO",
+				IslanderAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}

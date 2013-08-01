@@ -4,7 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Species {
-    public Set<Trait> traits = new HashSet<Trait>();
+    private Set<Trait> traits = new HashSet<Trait>();
+
+    public void addTrait(Trait trait) {
+	traits.add(trait);
+    }
+    
+    public Set<Trait> getTraits() {
+	return traits;
+    }
 
     public String getAbbreviation() {
 	String result = null;

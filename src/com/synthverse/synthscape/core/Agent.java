@@ -26,7 +26,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     Simulation sim;
 
-    long agentId;
+    int agentId;
 
     protected long stepCounter;
 
@@ -143,8 +143,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
 	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
-		    && xMod < Simulation.WORLD_WIDTH && yMod >= 0
-		    && yMod < Simulation.WORLD_HEIGHT
+		    && xMod < sim.getGridWidth() && yMod >= 0
+		    && yMod < sim.getGridHeight()
 		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
@@ -383,7 +383,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     public final void operationMoveToClosestCollectionSite() {
 
-	if (species.traits.contains(Trait.HOMING)) {
+	if (species.getTraits().contains(Trait.HOMING)) {
 	    // first let's find out the closest collection site
 	    Int2D closestCollectionSite = null;
 	    double closestDistance = Double.MAX_VALUE;
@@ -403,7 +403,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final void operationMoveToClosestAgent() {
-	if (species.traits.contains(Trait.FLOCKING)) {
+	if (species.getTraits().contains(Trait.FLOCKING)) {
 
 	    // first let's find out the closest agent
 	    Int2D closestAgentLocation = null;
@@ -433,7 +433,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 	    _operationFollowTrail(sim.trailGrid);
 
-	    sim.statistics.stepData.trailFollows++;
+	    // sim.statistics.stepData.trailFollows++;
 
 	}
     }
@@ -442,7 +442,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 	    _operationLeaveTrail(sim.trailGrid);
 
-	    sim.statistics.stepData.trailDrops++;
+	    // sim.statistics.stepData.trailDrops++;
 
 	    updateLocationStatus(this.x, this.y);
 
@@ -450,7 +450,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final boolean operationDetectCollectionSite() {
-	if (species.traits.contains(Trait.HOMING)) {
+	if (species.getTraits().contains(Trait.HOMING)) {
 	    return this.locationIsCollectionSite;
 	} else {
 	    return false;
@@ -458,7 +458,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final boolean operationDetectRawResource() {
-	if (species.traits.contains(Trait.DETECTION)) {
+	if (species.getTraits().contains(Trait.DETECTION)) {
 	    return (this.locationHasRawResource);
 	} else {
 	    return false;
@@ -467,7 +467,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final boolean operationDetectExtractedResource() {
-	if (species.traits.contains(Trait.DETECTION)) {
+	if (species.getTraits().contains(Trait.DETECTION)) {
 	    return this.locationHasExtractedResource;
 	} else {
 	    return false;
@@ -475,7 +475,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public boolean operationDetectProcessedResource() {
-	if (species.traits.contains(Trait.DETECTION)) {
+	if (species.getTraits().contains(Trait.DETECTION)) {
 	    return this.locationHasProcessedResource;
 	} else {
 	    return false;
@@ -491,10 +491,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final void operationExtractResource() {
-	if (species.traits.contains(Trait.EXTRACTION)) {
+	if (species.getTraits().contains(Trait.EXTRACTION)) {
 	    if (_operationPerformResourceAction(Task.EXTRACTION,
 		    this.sim.resourceGrid)) {
-		sim.statistics.stepData.resourceExtracts++;
+		// sim.statistics.stepData.resourceExtracts++;
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -502,10 +502,10 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public void operationProcessResource() {
-	if (species.traits.contains(Trait.PROCESSING)) {
+	if (species.getTraits().contains(Trait.PROCESSING)) {
 	    if (_operationPerformResourceAction(Task.PROCESSING,
 		    this.sim.resourceGrid)) {
-		sim.statistics.stepData.resourceProcesses++;
+		// sim.statistics.stepData.resourceProcesses++;
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -515,7 +515,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 
     public final void operationLoadResource() {
 
-	if (species.traits.contains(Trait.TRANSPORTATION)) {
+	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
 	    if (locationHasExtractedResource || locationHasProcessedResource
 		    || locationHasRawResource) {
@@ -532,7 +532,8 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
     }
 
     public final void operationUnLoadResource() {
-	if (species.traits.contains(Trait.TRANSPORTATION) && isCarryingResource) {
+	if (species.getTraits().contains(Trait.TRANSPORTATION)
+		&& isCarryingResource) {
 	    if (!locationHasExtractedResource && !locationHasProcessedResource
 		    && !locationHasRawResource) {
 
@@ -611,7 +612,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	if (sim.trailGrid.field[x][y] > 0) {
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
-		sim.statistics.stepData.trailHits++;
+		// sim.statistics.stepData.trailHits++;
 
 		stats.trailHits++;
 
@@ -623,12 +624,12 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	if (sim.collectionSiteGrid.field[x][y] > 0) {
 	    this.locationIsCollectionSite = true;
 	    if (locationIsChanging) {
-		sim.statistics.stepData.collectionSiteHits++;
+		// sim.statistics.stepData.collectionSiteHits++;
 		stats.collectionSiteHits++;
 
 		if (x == sim.PRIMARY_COLLECTION_SITE_X
 			&& y == sim.PRIMARY_COLLECTION_SITE_Y) {
-		    sim.statistics.stepData.primaryCollectionSiteHits++;
+		    // sim.statistics.stepData.primaryCollectionSiteHits++;
 		    stats.primaryCollectionSiteHits++;
 		}
 	    }
@@ -702,11 +703,11 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	this.sim = sim;
     }
 
-    public long getAgentId() {
+    public int getAgentId() {
 	return agentId;
     }
 
-    public void setAgentId(long agentId) {
+    public void setAgentId(int agentId) {
 	this.agentId = agentId;
     }
 
@@ -751,7 +752,6 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	this.interactionMechanisms = interactionMechanisms;
     }
 
-   
     public VirtualMachine getVirtualMachine() {
 	return virtualMachine;
     }
@@ -760,7 +760,7 @@ public abstract class Agent /* extends SimplePortrayal2D */implements
 	this.fitness = fitness;
     }
 
-    public void setGeneration(long generation) {
+    public void setGeneration(int generation) {
 	this.generation = generation;
     }
 

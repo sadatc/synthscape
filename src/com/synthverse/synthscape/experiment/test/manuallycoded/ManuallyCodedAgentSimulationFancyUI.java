@@ -16,7 +16,8 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
 
 	public ManuallyCodedAgentSimulationFancyUI() {
-		super(new ManuallyCodedAgentSimulation(ManuallyCodedAgentFactory.getInstance(),
+		super(new ManuallyCodedAgentSimulation("MANUAL_CODED",
+				ManuallyCodedAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}

@@ -21,10 +21,10 @@ public class IslanderAgentFactory implements AgentFactory, Constants {
 		return agent;
 	}
 
-	public Agent create(Simulation simulation, long generation, long agentId,
+	public Agent create(Simulation simulation, int generation, int agentId,
 			int x, int y) {
-		IslanderAgent agent = new IslanderAgent(simulation, SEED_GENERATION_NUMBER,
-				agentId, 20000, x, y);
+		IslanderAgent agent = new IslanderAgent(simulation,
+				SEED_GENERATION_NUMBER, agentId, 20000, x, y);
 		return agent;
 	}
 

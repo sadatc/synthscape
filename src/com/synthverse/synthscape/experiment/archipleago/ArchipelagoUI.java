@@ -16,7 +16,8 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
 public class ArchipelagoUI extends SimpleSimulationUI {
 
 	public ArchipelagoUI() {
-		super(new ArchipelagoSimulation(IslanderAgentFactory.getInstance(),
+		super(new ArchipelagoSimulation("ARCHIPELAGO",
+				IslanderAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}

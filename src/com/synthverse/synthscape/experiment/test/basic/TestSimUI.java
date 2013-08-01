@@ -15,14 +15,12 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  */
 public class TestSimUI extends SimpleSimulationUI {
 
-	public TestSimUI() {
-		super(new TestSim(TestAgentFactory.getInstance(),
-				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
-				Constants.SIMULATION_RNG_SEED));
-	}
+    public TestSimUI() {
+	super(new TestSim(Constants.SIMULATION_RNG_SEED));
+    }
 
-	public static void main(String[] args) {
-		Console c = new Console(new TestSimUI());
-		c.setVisible(true);
-	}
+    public static void main(String[] args) {
+	Console c = new Console(new TestSimUI());
+	c.setVisible(true);
+    }
 }

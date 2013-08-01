@@ -16,7 +16,8 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
 public class ManuallyCodedAgentSimulationUI extends SimpleSimulationUI {
 
 	public ManuallyCodedAgentSimulationUI() {
-		super(new ManuallyCodedAgentSimulation(ManuallyCodedAgentFactory.getInstance(),
+		super(new ManuallyCodedAgentSimulation("MANUALLY_CODED",
+				ManuallyCodedAgentFactory.getInstance(),
 				ProblemComplexity.FOUR_SEQUENTIAL_TASKS,
 				Constants.SIMULATION_RNG_SEED));
 	}

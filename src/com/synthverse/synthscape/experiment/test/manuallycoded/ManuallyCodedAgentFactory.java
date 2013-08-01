@@ -21,10 +21,10 @@ public class ManuallyCodedAgentFactory implements AgentFactory, Constants {
 		return agent;
 	}
 
-	public Agent create(Simulation simulation, long generation, long agentId,
+	public Agent create(Simulation simulation, int generation, int agentId,
 			int x, int y) {
-		ManuallyCodedAgent agent = new ManuallyCodedAgent(simulation, SEED_GENERATION_NUMBER,
-				agentId, 20000, x, y);
+		ManuallyCodedAgent agent = new ManuallyCodedAgent(simulation,
+				SEED_GENERATION_NUMBER, agentId, 20000, x, y);
 		return agent;
 	}
 

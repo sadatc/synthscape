@@ -1,19 +1,16 @@
 package com.synthverse.evolutionengine.model.archipelago;
 
-import java.util.Set;
-
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Trait;
 
 /**
- * A population island maintains a gene pool that produces agents with a
- * specific set of traits.
+ * A population island maintains a gene pool that produces agents of a specific
+ * species
  * 
  * @author sadat
  * 
  */
 public class PopulationIsland {
     private int populationSize;
-    Species species;
+    private Species species;
 
 }
