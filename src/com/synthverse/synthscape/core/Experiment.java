@@ -7,7 +7,7 @@ import java.util.Set;
 public class Experiment {
     private String name;
     private String serverName;
-    private String experimentId;
+    private String batchId;
 
     private Date startDate;
     private Date endDate;
@@ -21,14 +21,14 @@ public class Experiment {
     private int numberOfCollectionSites;
     private int maxStepsPerAgent;
 
-    private int numberOfSimulations;
-    private int generationsPerSimulation;
+    private int simulationsPerExperiment;
+    private int stepsPerSimulation;
 
     private ProblemComplexity problemComplexity;
     private Set<Species> speciesComposition = new HashSet<Species>();
     private Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
 
-    private String agentEventFileName;
+    private String eventFileName;
     private boolean recordExperiment = false;
     private boolean flushAlways = false;
 
@@ -40,12 +40,12 @@ public class Experiment {
 	this.name = name;
 
 	try {
-	    serverName = java.net.InetAddress.getLocalHost().getHostName().toUpperCase();
+	    serverName = java.net.InetAddress.getLocalHost().getHostName();
 	} catch (Exception e) {
 	    serverName = "LOCAL";
 	}
-	
-	experimentId = Long.toHexString(System.currentTimeMillis()).toUpperCase();
+
+	batchId = Long.toHexString(System.currentTimeMillis());
 
     }
 
@@ -97,21 +97,7 @@ public class Experiment {
 	this.resourceDensity = resourceDensity;
     }
 
-    public int getNumberOfSimulations() {
-	return numberOfSimulations;
-    }
-
-    public void setNumberOfSimulations(int numberOfSimulations) {
-	this.numberOfSimulations = numberOfSimulations;
-    }
-
-    public int getGenerationsPerSimulation() {
-	return generationsPerSimulation;
-    }
-
-    public void setGenerationsPerSimulation(int generationsPerSimulation) {
-	this.generationsPerSimulation = generationsPerSimulation;
-    }
+    
 
     public Set<Species> getSpeciesComposition() {
 	return speciesComposition;
@@ -161,28 +147,28 @@ public class Experiment {
 	this.maxStepsPerAgent = maxStepsPerAgent;
     }
 
-    public String getAgentEventFileName() {
-	
+    public String getEventFileName() {
+
 	// modify the file name to contain the id
-	if(agentEventFileName!=null) {
-	    
-	    if(agentEventFileName.indexOf(".")!=-1) {
-		String prePart = agentEventFileName.substring(0,agentEventFileName.lastIndexOf('.'));
-		String postPart = agentEventFileName.substring(agentEventFileName.lastIndexOf('.'));
-		agentEventFileName = prePart+"_"+experimentId+postPart;
-		
+	if (eventFileName != null) {
+
+	    if (eventFileName.indexOf(".") != -1) {
+		String prePart = eventFileName.substring(0,
+			eventFileName.lastIndexOf('.'));
+		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
+		eventFileName = prePart + "_" + batchId + postPart;
+
 	    } else {
-		agentEventFileName += "_"+experimentId;
+		eventFileName += "_" + batchId;
 	    }
-	    
+
 	}
-	
-	
-	return agentEventFileName;
+
+	return eventFileName;
     }
 
-    public void setAgentEventFileName(String agentEventFileName) {
-	this.agentEventFileName = agentEventFileName;
+    public void setEventFileName(String eventFileName) {
+	this.eventFileName = eventFileName;
     }
 
     public boolean isRecordExperiment() {
@@ -211,15 +197,31 @@ public class Experiment {
     }
 
     public String getName() {
-        return name;
+	return name;
     }
 
     public String getServerName() {
-        return serverName;
+	return serverName;
     }
 
-    public String getExperimentId() {
-        return experimentId;
+    public String getBatchId() {
+	return batchId;
+    }
+
+    public int getSimulationsPerExperiment() {
+        return simulationsPerExperiment;
+    }
+
+    public void setSimulationsPerExperiment(int simulationsPerExperiment) {
+        this.simulationsPerExperiment = simulationsPerExperiment;
+    }
+
+    public int getStepsPerSimulation() {
+        return stepsPerSimulation;
+    }
+
+    public void setStepsPerSimulation(int stepsPerSimulation) {
+        this.stepsPerSimulation = stepsPerSimulation;
     }
     
     

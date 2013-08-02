@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class AgentEventReporter implements Constants {
+public class EventReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 120;
 
@@ -16,11 +16,11 @@ public class AgentEventReporter implements Constants {
     private StringBuilder sb = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
     @SuppressWarnings("unused")
-    private AgentEventReporter() {
+    private EventReporter() {
 	throw new AssertionError("not allowed");
     }
 
-    public AgentEventReporter(boolean flushConstantly, String reportFile) throws IOException {
+    public EventReporter(boolean flushConstantly, String reportFile) throws IOException {
 	this.flushConstantly = flushConstantly;
 	this.reportFileName = reportFile;
 	openFile();
@@ -45,12 +45,12 @@ public class AgentEventReporter implements Constants {
     private void writeCSVHeader() throws IOException {
 
 	bufferedWriter
-		.write("SERVER,EXPERIMENT,EXPERIMENT_ID,SIMULATION,GENERATION,AGENT_ID,TRAITS,STEP,EVENT");
+		.write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,EVENT");
 	bufferedWriter.newLine();
 
     }
 
-    public void reportEvent(String serverName, String experimentName, String experimentId,
+    public void reportEvent(String serverName, String experimentName, String batchId,
 	    int simulationNumber, int generation, Species species, int agentId, int step,
 	    Event event) {
 	try {
@@ -58,7 +58,7 @@ public class AgentEventReporter implements Constants {
 	    sb.append(COMMA);
 	    sb.append(experimentName);
 	    sb.append(COMMA);
-	    sb.append(experimentId);
+	    sb.append(batchId);
 	    sb.append(COMMA);
 	    sb.append(simulationNumber);
 	    sb.append(COMMA);

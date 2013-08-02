@@ -3,6 +3,7 @@ package com.synthverse.synthscape.experiment.test.manuallycoded;
 import java.io.IOException;
 
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
@@ -29,7 +30,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     public Experiment getExperiment() {
 
 	// name and complexity
-	Experiment myExperiment = new Experiment("Manually.coded");
+	Experiment myExperiment = new Experiment("POPULATION_ISLAND_MANUAL");
 	myExperiment.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
 
 	// demographics
@@ -57,13 +58,14 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	myExperiment.addSpecies(species1);
 
 	// generations and runs
-	myExperiment.setGenerationsPerSimulation(GENERATIONS_PER_SIM);
-	myExperiment.setNumberOfSimulations(SIMS_PER_EXPERIMENT);
+	myExperiment.setStepsPerSimulation(MAX_STEPS_PER_SIM);
+	myExperiment.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
+
 	myExperiment.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
-	
+
 	myExperiment.setRecordExperiment(true);
-	myExperiment.setAgentEventFileName("/tmp/AGENT_LOG.CSV");
-	myExperiment.setFlushAlways(true);
+	myExperiment.setEventFileName(EVENT_LOG_FILE);
+	myExperiment.setFlushAlways(false);
 
 	return myExperiment;
     }

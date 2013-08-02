@@ -1,15 +1,15 @@
 package com.synthverse.synthscape.core;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Species {
-    private Set<Trait> traits = new HashSet<Trait>();
+    private Set<Trait> traits = new LinkedHashSet<Trait>();
 
     public void addTrait(Trait trait) {
 	traits.add(trait);
     }
-    
+
     public Set<Trait> getTraits() {
 	return traits;
     }

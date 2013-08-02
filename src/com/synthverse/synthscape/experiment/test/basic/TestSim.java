@@ -54,9 +54,9 @@ public class TestSim extends Simulation {
 	species1.addTrait(Trait.TRANSPORTATION);
 	myExperiment.addSpecies(species1);
 
-	// generations and runs
-	myExperiment.setGenerationsPerSimulation(GENERATIONS_PER_SIM);
-	myExperiment.setNumberOfSimulations(SIMS_PER_EXPERIMENT);
+	// steps and simulations...
+	myExperiment.setStepsPerSimulation(MAX_STEPS_PER_SIM);
+	myExperiment.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
 
 	return myExperiment;
     }

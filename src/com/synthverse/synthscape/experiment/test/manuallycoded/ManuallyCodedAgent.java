@@ -78,13 +78,13 @@ public class ManuallyCodedAgent extends Agent {
 	    this.operationExtractResource();
 	    myMode = AgentState.SEEK_NEW_RESOURCE;
 	    // myMode = AgentState.DETECT_EXTRACT;
-	    D.p(oldState + " => " + myMode);
+	    //D.p(oldState + " => " + myMode);
 
 	    break;
 	case PROCESS_MODE:
 	    this.operationProcessResource();
 	    myMode = AgentState.DETECT_PROCESSED;
-	    D.p(oldState + " => " + myMode);
+	    //D.p(oldState + " => " + myMode);
 
 	    break;
 	case LOAD_EXTRACT:

@@ -26,11 +26,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected Experiment experiment;
 
-    protected AgentEventReporter agentEventReporter;
+    protected EventReporter eventReporter;
 
-    protected int simulationNumber;
+    protected int simulationCounter;
 
-    protected int generation;
+    protected int generationCounter;
+
+    protected int stepCounter;
 
     protected ProblemComplexity problemComplexity;
 
@@ -93,13 +95,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 	createDataStructures();
 
-	simulationNumber = 0;
-	generation = 0;
+	simulationCounter = 0;
+	generationCounter = 0;
 	numberOfCollectedResources = 0;
 
 	if (experiment.isRecordExperiment()) {
-	    agentEventReporter = new AgentEventReporter(experiment.isFlushAlways(),
-		    experiment.getAgentEventFileName());
+	    eventReporter = new EventReporter(experiment.isFlushAlways(),
+		    experiment.getEventFileName());
 	}
 
 	isToroidalWorld = TOROIDAL_FLAG;
@@ -289,7 +291,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void setupNextGeneration() {
 	// populate with agents
-	generation++;
+	generationCounter++;
 	for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
 
 	    int randomX = random.nextInt(gridWidth);
@@ -303,29 +305,31 @@ public abstract class Simulation extends SimState implements Constants {
 
 	    Agent agent = agents.get(i);
 	    agent.reset();
-	    agent.generation = generation;
+	    agent.generation = generationCounter;
 	    agent.x = randomX;
 	    agent.y = randomY;
 
 	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 	}
 
-	D.p("finished population generation #" + generation);
+	D.p("finished population generation #" + generationCounter);
     }
 
     private void setupSimulation() {
 
 	setupEnvironment();
 	setupFirstGeneration();
-	if (experiment.isRecordExperiment() && agentEventReporter != null) {
+
+	if (experiment.isRecordExperiment() && eventReporter != null) {
 	    experiment.setStartDate();
-	    agentEventReporter.openFile();
+	    eventReporter.openFile();
 	}
 
 	// this is run at the end of each step
 
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
+		stepCounter++;
 		// statistics.simData.numberOfSteps++;
 		// D.p("sim loop");
 
@@ -338,9 +342,21 @@ public abstract class Simulation extends SimState implements Constants {
 
 		// this terminates the simulation if, conditions have been
 		// reached
-		if (evaluateTerminalCondition()) {
-		    D.p("****terminated***");
-		    terminateSimulation();
+		if (evaluateSimulationTerminateCondition()) {
+		    D.p("**** end of simulation ***");
+
+		    stepCounter = 0;
+		    simulationCounter++;
+
+		    if (simulationCounter < experiment.getSimulationsPerExperiment()) {
+
+			startNewSimulation();
+		    } else {
+			D.p("**** end of experiment ***");
+			experiment.setEndDate();
+			eventReporter.closeFile();
+			finish();
+		    }
 		}
 	    }
 
@@ -365,17 +381,16 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    protected void terminateSimulation() {
-	// statistics.takeSimSnapshot();
+    protected void startNewSimulation() {
 	resetEnvironment();
 	setupEnvironment();
 	setupNextGeneration();
 
-	// finish();
     }
 
-    protected boolean evaluateTerminalCondition() {
-	return (this.numberOfCollectedResources >= this.numberOfResources);
+    protected boolean evaluateSimulationTerminateCondition() {
+	return (this.numberOfCollectedResources >= this.numberOfResources || this.stepCounter > experiment
+		.getStepsPerSimulation());
     }
 
     protected void doEndOfStepTasks() {
@@ -383,6 +398,10 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public void start() {
+	this.generationCounter = 0;
+	this.simulationCounter = 0;
+	this.stepCounter = 0;
+
 	super.start();
 	resetAll();
 	setupSimulation();
@@ -403,19 +422,19 @@ public abstract class Simulation extends SimState implements Constants {
 	_main(arg);
     }
 
-    public AgentEventReporter getAgentEventReporter() {
-	return agentEventReporter;
+    public EventReporter getEventReporter() {
+	return eventReporter;
     }
 
-    public void setAgentEventReporter(AgentEventReporter agentEventReporter) {
-	this.agentEventReporter = agentEventReporter;
+    public void setEventReporter(EventReporter eventReporter) {
+	this.eventReporter = eventReporter;
     }
 
     public void reportEvent(Species species, int agentId, int stepCounter, Event event) {
-	if (experiment.isRecordExperiment() && this.agentEventReporter != null) {
-	    this.agentEventReporter.reportEvent(experiment.getServerName(),
-		    experiment.getExperimentId(), experiment.getName(), simulationNumber,
-		    generation, species, agentId, stepCounter, event);
+	if (experiment.isRecordExperiment() && this.eventReporter != null) {
+	    this.eventReporter.reportEvent(experiment.getServerName(), experiment.getName(),
+		    experiment.getBatchId(), simulationCounter, generationCounter, species,
+		    agentId, stepCounter, event);
 
 	}
 
