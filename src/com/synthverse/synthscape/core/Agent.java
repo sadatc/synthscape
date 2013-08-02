@@ -14,8 +14,7 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent /* extends SimplePortrayal2D */implements Constants, Steppable,
-	Valuable, Comparable<Agent> {
+public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
 
