@@ -61,5 +61,7 @@ public interface Constants {
     public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
 
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
+    
+    public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true; 
 
 }

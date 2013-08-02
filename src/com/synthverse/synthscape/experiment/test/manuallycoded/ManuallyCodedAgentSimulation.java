@@ -65,7 +65,6 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
 	myExperiment.setRecordExperiment(true);
 	myExperiment.setEventFileName(EVENT_LOG_FILE);
-	myExperiment.setFlushAlways(false);
 
 	return myExperiment;
     }

@@ -26,7 +26,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected Experiment experiment;
 
-    protected EventReporter eventReporter;
+    protected ExperimentReporter experimentReporter;
 
     protected int simulationCounter;
 
@@ -100,8 +100,7 @@ public abstract class Simulation extends SimState implements Constants {
 	numberOfCollectedResources = 0;
 
 	if (experiment.isRecordExperiment()) {
-	    eventReporter = new EventReporter(experiment.isFlushAlways(),
-		    experiment.getEventFileName());
+	    experimentReporter = new ExperimentReporter(experiment, DEFAULT_FLUSH_ALWAYS_FLAG);
 	}
 
 	isToroidalWorld = TOROIDAL_FLAG;
@@ -320,9 +319,9 @@ public abstract class Simulation extends SimState implements Constants {
 	setupEnvironment();
 	setupFirstGeneration();
 
-	if (experiment.isRecordExperiment() && eventReporter != null) {
+	if (experiment.isRecordExperiment() && experimentReporter != null) {
 	    experiment.setStartDate();
-	    eventReporter.openFile();
+	    experimentReporter.openFile();
 	}
 
 	// this is run at the end of each step
@@ -354,7 +353,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    } else {
 			D.p("**** end of experiment ***");
 			experiment.setEndDate();
-			eventReporter.closeFile();
+			experimentReporter.closeFile();
 			finish();
 		    }
 		}
@@ -422,18 +421,17 @@ public abstract class Simulation extends SimState implements Constants {
 	_main(arg);
     }
 
-    public EventReporter getEventReporter() {
-	return eventReporter;
+    public ExperimentReporter getExperimentReporter() {
+	return experimentReporter;
     }
 
-    public void setEventReporter(EventReporter eventReporter) {
-	this.eventReporter = eventReporter;
+    public void setExperimentReporter(ExperimentReporter experimentReporter) {
+	this.experimentReporter = experimentReporter;
     }
 
     public void reportEvent(Species species, int agentId, int stepCounter, Event event) {
-	if (experiment.isRecordExperiment() && this.eventReporter != null) {
-	    this.eventReporter.reportEvent(experiment.getServerName(), experiment.getName(),
-		    experiment.getBatchId(), simulationCounter, generationCounter, species,
+	if (experiment.isRecordExperiment() && this.experimentReporter != null) {
+	    this.experimentReporter.reportEvent(simulationCounter, generationCounter, species,
 		    agentId, stepCounter, event);
 
 	}

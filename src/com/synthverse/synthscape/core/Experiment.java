@@ -29,8 +29,9 @@ public class Experiment {
     private Set<InteractionMechanism> interactionMechanisms = new HashSet<InteractionMechanism>();
 
     private String eventFileName;
+
     private boolean recordExperiment = false;
-    private boolean flushAlways = false;
+    
 
     private Experiment() {
 	throw new AssertionError("not allowed");
@@ -97,8 +98,6 @@ public class Experiment {
 	this.resourceDensity = resourceDensity;
     }
 
-    
-
     public Set<Species> getSpeciesComposition() {
 	return speciesComposition;
     }
@@ -153,8 +152,7 @@ public class Experiment {
 	if (eventFileName != null) {
 
 	    if (eventFileName.indexOf(".") != -1) {
-		String prePart = eventFileName.substring(0,
-			eventFileName.lastIndexOf('.'));
+		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
 		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
 		eventFileName = prePart + "_" + batchId + postPart;
 
@@ -188,14 +186,7 @@ public class Experiment {
 	this.speciesComposition.add(species);
     }
 
-    public boolean isFlushAlways() {
-	return flushAlways;
-    }
-
-    public void setFlushAlways(boolean flushAlways) {
-	this.flushAlways = flushAlways;
-    }
-
+  
     public String getName() {
 	return name;
     }
@@ -209,21 +200,19 @@ public class Experiment {
     }
 
     public int getSimulationsPerExperiment() {
-        return simulationsPerExperiment;
+	return simulationsPerExperiment;
     }
 
     public void setSimulationsPerExperiment(int simulationsPerExperiment) {
-        this.simulationsPerExperiment = simulationsPerExperiment;
+	this.simulationsPerExperiment = simulationsPerExperiment;
     }
 
     public int getStepsPerSimulation() {
-        return stepsPerSimulation;
+	return stepsPerSimulation;
     }
 
     public void setStepsPerSimulation(int stepsPerSimulation) {
-        this.stepsPerSimulation = stepsPerSimulation;
+	this.stepsPerSimulation = stepsPerSimulation;
     }
-    
-    
 
 }

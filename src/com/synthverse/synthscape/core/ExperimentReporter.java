@@ -5,24 +5,31 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class EventReporter implements Constants {
+public class ExperimentReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 120;
 
-    private boolean flushConstantly = false;
+    private final String experimentName;
+    private final String serverName;
+    private final String batchId;
+
+    private boolean flushAlways = false;
     private String reportFileName = null;
     private BufferedWriter bufferedWriter = null;
     private final static char COMMA = ',';
     private StringBuilder sb = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
     @SuppressWarnings("unused")
-    private EventReporter() {
+    private ExperimentReporter() {
 	throw new AssertionError("not allowed");
     }
 
-    public EventReporter(boolean flushConstantly, String reportFile) throws IOException {
-	this.flushConstantly = flushConstantly;
-	this.reportFileName = reportFile;
+    public ExperimentReporter(Experiment experiment, boolean flushAlways) throws IOException {
+	this.serverName = experiment.getServerName();
+	this.experimentName = experiment.getName();
+	this.batchId = experiment.getBatchId();
+	this.flushAlways = flushAlways;
+	this.reportFileName = experiment.getEventFileName();
 	openFile();
     }
 
@@ -50,9 +57,8 @@ public class EventReporter implements Constants {
 
     }
 
-    public void reportEvent(String serverName, String experimentName, String batchId,
-	    int simulationNumber, int generation, Species species, int agentId, int step,
-	    Event event) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
+	    int step, Event event) {
 	try {
 	    sb.append(serverName);
 	    sb.append(COMMA);
@@ -75,7 +81,7 @@ public class EventReporter implements Constants {
 	    bufferedWriter.newLine();
 	    sb.delete(0, sb.length());
 
-	    if (this.flushConstantly) {
+	    if (this.flushAlways) {
 		bufferedWriter.flush();
 	    }
 	} catch (Exception e) {
