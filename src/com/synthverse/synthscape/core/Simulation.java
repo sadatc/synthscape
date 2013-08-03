@@ -100,7 +100,8 @@ public abstract class Simulation extends SimState implements Constants {
 	numberOfCollectedResources = 0;
 
 	if (experiment.isRecordExperiment()) {
-	    experimentReporter = new ExperimentReporter(experiment, DEFAULT_FLUSH_ALWAYS_FLAG);
+	    experimentReporter = new ExperimentReporter(experiment,
+		    DEFAULT_FLUSH_ALWAYS_FLAG);
 	}
 
 	isToroidalWorld = TOROIDAL_FLAG;
@@ -195,7 +196,8 @@ public abstract class Simulation extends SimState implements Constants {
 	// set the primary collection site
 	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	setupCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X, PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
+		PRIMARY_COLLECTION_SITE_Y));
     }
 
     private void setupNonPrimaryCollectionSites() {
@@ -347,7 +349,8 @@ public abstract class Simulation extends SimState implements Constants {
 		    stepCounter = 0;
 		    simulationCounter++;
 
-		    if (simulationCounter < experiment.getSimulationsPerExperiment()) {
+		    if (simulationCounter < experiment
+			    .getSimulationsPerExperiment()) {
 
 			startNewSimulation();
 		    } else {
@@ -429,10 +432,12 @@ public abstract class Simulation extends SimState implements Constants {
 	this.experimentReporter = experimentReporter;
     }
 
-    public void reportEvent(Species species, int agentId, int stepCounter, Event event) {
+    public void reportEvent(Species species, int agentId, int stepCounter,
+	    int x, int y, Event event, String source, String destination) {
 	if (experiment.isRecordExperiment() && this.experimentReporter != null) {
-	    this.experimentReporter.reportEvent(simulationCounter, generationCounter, species,
-		    agentId, stepCounter, event);
+	    this.experimentReporter.reportEvent(simulationCounter,
+		    generationCounter, species, agentId, stepCounter, x, y,
+		    event, source, destination);
 
 	}
 

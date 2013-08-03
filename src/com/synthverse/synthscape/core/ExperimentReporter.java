@@ -24,7 +24,8 @@ public class ExperimentReporter implements Constants {
 	throw new AssertionError("not allowed");
     }
 
-    public ExperimentReporter(Experiment experiment, boolean flushAlways) throws IOException {
+    public ExperimentReporter(Experiment experiment, boolean flushAlways)
+	    throws IOException {
 	this.serverName = experiment.getServerName();
 	this.experimentName = experiment.getName();
 	this.batchId = experiment.getBatchId();
@@ -39,11 +40,12 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-		    REPORT_WRITER_BUFFER_SIZE);
+	    bufferedWriter = new BufferedWriter(new FileWriter(
+		    file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 	    writeCSVHeader();
 	} catch (Exception e) {
-	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
+	    D.p("Exception while trying to open experiment output file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	}
 
@@ -52,13 +54,14 @@ public class ExperimentReporter implements Constants {
     private void writeCSVHeader() throws IOException {
 
 	bufferedWriter
-		.write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,EVENT");
+		.write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
 	bufferedWriter.newLine();
 
     }
 
-    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
-	    int step, Event event) {
+    public void reportEvent(int simulationNumber, int generation,
+	    Species species, int agentId, int step, int x, int y, Event event,
+	    String source, String destination) {
 	try {
 	    sb.append(serverName);
 	    sb.append(COMMA);
@@ -76,7 +79,15 @@ public class ExperimentReporter implements Constants {
 	    sb.append(COMMA);
 	    sb.append(step);
 	    sb.append(COMMA);
+	    sb.append(x);
+	    sb.append(COMMA);
+	    sb.append(y);
+	    sb.append(COMMA);
 	    sb.append(event.toString());
+	    sb.append(source);
+	    sb.append(COMMA);
+	    sb.append(destination);
+	    sb.append(COMMA);
 	    bufferedWriter.write(sb.toString());
 	    bufferedWriter.newLine();
 	    sb.delete(0, sb.length());
