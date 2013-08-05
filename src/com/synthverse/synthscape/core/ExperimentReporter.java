@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class ExperimentReporter implements Constants {
 
-    private static int STRING_BUFFER_MAX_SIZE = 120;
+    private static int STRING_BUFFER_MAX_SIZE = 175;
 
     private final String experimentName;
     private final String serverName;
@@ -84,10 +84,11 @@ public class ExperimentReporter implements Constants {
 	    sb.append(y);
 	    sb.append(COMMA);
 	    sb.append(event.toString());
+	    sb.append(COMMA);
 	    sb.append(source);
 	    sb.append(COMMA);
 	    sb.append(destination);
-	    sb.append(COMMA);
+	    
 	    bufferedWriter.write(sb.toString());
 	    bufferedWriter.newLine();
 	    sb.delete(0, sb.length());
