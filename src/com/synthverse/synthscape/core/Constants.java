@@ -65,5 +65,7 @@ public interface Constants {
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
 
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
+    
+    public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
 
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.synthverse.util.DateUtils;
+
 public class Experiment {
     private String name;
     private String serverName;
@@ -31,7 +33,6 @@ public class Experiment {
     private String eventFileName;
 
     private boolean recordExperiment = false;
-    
 
     private Experiment() {
 	throw new AssertionError("not allowed");
@@ -110,7 +111,8 @@ public class Experiment {
 	return interactionMechanisms;
     }
 
-    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(
+	    Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
@@ -152,9 +154,11 @@ public class Experiment {
 	if (eventFileName != null) {
 
 	    if (eventFileName.indexOf(".") != -1) {
-		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
-		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + batchId + postPart;
+		String prePart = eventFileName.substring(0,
+			eventFileName.lastIndexOf('.'));
+		String postPart = eventFileName.substring(eventFileName
+			.lastIndexOf('.'));
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp()+ postPart;
 
 	    } else {
 		eventFileName += "_" + batchId;
@@ -177,7 +181,8 @@ public class Experiment {
 	this.recordExperiment = recordExperiment;
     }
 
-    public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
+    public void addInteractionMechanism(
+	    InteractionMechanism interactionMechanism) {
 	this.interactionMechanisms.add(interactionMechanism);
 
     }
@@ -186,7 +191,6 @@ public class Experiment {
 	this.speciesComposition.add(species);
     }
 
-  
     public String getName() {
 	return name;
     }
