@@ -23,82 +23,83 @@ package com.synthverse.util;
  * 
  */
 public final class StopWatch {
-	
-	private static final double THOUSAND_D = 1000.0f;
-	private static final long MILLION_L = 1000000L;
-	private static final double MILLION_D = 1000000.0f;
-	
-	
-	private static long tick = System.nanoTime();
 
-	/**
-	 * Restricted constructor
-	 */
-	private StopWatch() {
-		throw new AssertionError("StopWatch constructor is restricted");
-	}
+    private static final double THOUSAND_D = 1000.0f;
+    private static final long MILLION_L = 1000000L;
+    private static final double MILLION_D = 1000000.0f;
 
-	/**
-	 * Reset timer
-	 */
-	public final static void reset() {
-		tick = System.nanoTime();
-	}
+    private static long tick = System.nanoTime();
 
-	/**
-	 * Returns nanoseconds elapsed since last call to {@link #reset()}
-	 * 
-	 * @return time in ns
-	 */
-	public final static long getElapsedNanos() {
-		long now = System.nanoTime();
-		long elapsed = now - tick;
-		tick = now;
+    /**
+     * Restricted constructor
+     */
+    private StopWatch() {
+	throw new AssertionError("StopWatch constructor is restricted");
+    }
 
-		return elapsed;
-	}
+    /**
+     * Reset timer
+     */
+    public final static void reset() {
+	tick = System.nanoTime();
+    }
 
-	/**
-	 * Returns milliseconds elapsed since last call to {@link #reset()}
-	 * 
-	 * @return time in ms.
-	 */
-	public final static long getElapsedMillis() {
+    /**
+     * Returns nanoseconds elapsed since last call to {@link #reset()}
+     * 
+     * @return time in ns
+     */
+    public final static long getElapsedNanos() {
+	long now = System.nanoTime();
+	long elapsed = now - tick;
+	tick = now;
 
-		long elapsed = getElapsedNanos();
+	return elapsed;
+    }
 
-		return elapsed/MILLION_L;
-	}
+    /**
+     * Returns milliseconds elapsed since last call to {@link #reset()}
+     * 
+     * @return time in ms.
+     */
+    public final static long getElapsedMillis() {
 
-	
-	
-	/**
-	 * Given the number of operations specified, this method uses time elapsed since last {@link #reset()}
-	 * to calculate and return speed of operations performed in Mhz.
-	 * @param operations
-	 * @return
-	 */
-	public final static long getSpeedInMhz(long operations) {
-		// elapsed time in seconds
-		long elapsed = (System.nanoTime() - tick);
-		
-		long speed =  (long)((double)operations / (double)((double)elapsed/THOUSAND_D));
-		return speed;
-		
-	}
-	
-	/**
-	 * Given the number of operations specified, this method uses time elapsed since last {@link #reset()}
-	 * to calculate and return tspeed of operations performed in Khz.
-	 * @param operations
-	 * @return
-	 */
-	public final static long getSpeedInKhz(long operations) {
-		// elapsed time in seconds
-		long elapsed = (System.nanoTime() - tick);
-		
-		long speed =  (long)((double)operations / (double)((double)elapsed/MILLION_D));
-		return speed;
-		
-	}
+	long elapsed = getElapsedNanos();
+
+	return elapsed / MILLION_L;
+    }
+
+    /**
+     * Given the number of operations specified, this method uses time elapsed
+     * since last {@link #reset()} to calculate and return speed of operations
+     * performed in Mhz.
+     * 
+     * @param operations
+     * @return
+     */
+    public final static long getSpeedInMhz(long operations) {
+	// elapsed time in seconds
+	long elapsed = (System.nanoTime() - tick);
+
+	long speed = (long) ((double) operations / (double) ((double) elapsed / THOUSAND_D));
+	return speed;
+
+    }
+
+    /**
+     * Given the number of operations specified, this method uses time elapsed
+     * since last {@link #reset()} to calculate and return tspeed of operations
+     * performed in Khz.
+     * 
+     * @param operations
+     * @return
+     */
+    public final static long getSpeedInKhz(long operations) {
+	// elapsed time in seconds
+	long elapsed = (System.nanoTime() - tick);
+
+	long speed = (long) ((double) operations / (double) ((double) elapsed / MILLION_D));
+	return speed;
+
+    }
 }

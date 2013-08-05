@@ -15,8 +15,6 @@
  * 
  */
 
-
-
 package com.synthverse.util;
 
 import java.util.ArrayList;
@@ -26,24 +24,24 @@ import ec.util.MersenneTwisterFast;
 
 /**
  * @author sadat
- *
+ * 
  */
 public class CollectionUtils {
 
+    private CollectionUtils() {
+	throw new AssertionError("CollectionUtils constructor is restricted");
+    }
 
-	private CollectionUtils() {
-		throw new AssertionError("CollectionUtils constructor is restricted");
+    @SuppressWarnings("unused")
+    public static void clearDeeply(Collection<?> c) {
+	for (Object object : c) {
+	    object = null;
 	}
-	
-	@SuppressWarnings("unused") 
-	public static void clearDeeply(Collection<?> c) {
-		for(Object object: c) {
-			object = null;
-		}
-		c.clear();
-	}
+	c.clear();
+    }
 
-	public static <T> T pickRandomFromList(MersenneTwisterFast randomNumberGenerator, ArrayList<T> l) {
-		return l.get(randomNumberGenerator.nextInt(l.size()));
-	}
+    public static <T> T pickRandomFromList(
+	    MersenneTwisterFast randomNumberGenerator, ArrayList<T> l) {
+	return l.get(randomNumberGenerator.nextInt(l.size()));
+    }
 }
