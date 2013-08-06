@@ -5,6 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Reports on various aspects of the experiments.
+ * @author sadat
+ *
+ */
 public class ExperimentReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 175;
