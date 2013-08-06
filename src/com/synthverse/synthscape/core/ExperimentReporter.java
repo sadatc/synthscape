@@ -52,12 +52,11 @@ public class ExperimentReporter implements Constants {
     }
 
     private void writeCSVHeader() throws IOException {
-	
-	
-	if(Constants.INCLUDE_EXPERIMENT_META_DATA)
 
-	bufferedWriter
-		.write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
+	if (Constants.INCLUDE_EXPERIMENT_META_DATA)
+
+	    bufferedWriter
+		    .write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
 	bufferedWriter.newLine();
 
     }
@@ -91,7 +90,7 @@ public class ExperimentReporter implements Constants {
 	    sb.append(source);
 	    sb.append(COMMA);
 	    sb.append(destination);
-	    
+
 	    bufferedWriter.write(sb.toString());
 	    bufferedWriter.newLine();
 	    sb.delete(0, sb.length());
