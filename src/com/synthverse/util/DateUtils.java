@@ -25,9 +25,9 @@ public final class DateUtils {
 
     }
 
-    public static final String getReportDateStamp() {
+    public static final String getReportFormattedDateString(java.util.Date date) {
 
-	return reportFormatter.format(new java.util.Date());
+	return reportFormatter.format(date);
 
     }
 

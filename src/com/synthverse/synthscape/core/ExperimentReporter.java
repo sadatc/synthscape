@@ -5,7 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-// test
+import com.synthverse.util.DateUtils;
+
+/**
+ * This stores experiment output into physical medium
+ * 
+ * @author sadat
+ * 
+ */
 public class ExperimentReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 175;
@@ -22,8 +29,7 @@ public class ExperimentReporter implements Constants {
 	throw new AssertionError("not allowed");
     }
 
-    public ExperimentReporter(Experiment experiment, boolean flushAlways)
-	    throws IOException {
+    public ExperimentReporter(Experiment experiment, boolean flushAlways) throws IOException {
 
 	this.experiment = experiment;
 	this.flushAlways = flushAlways;
@@ -36,12 +42,11 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    bufferedWriter = new BufferedWriter(new FileWriter(
-		    file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    D.p("Exception while trying to open experiment output file: "
-		    + e.getMessage());
+	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
 	    e.printStackTrace();
 	}
 
@@ -60,7 +65,8 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append(experiment.getBatchId());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(experiment.getStartDate().toString());
+	    bufferedWriter
+		    .append(DateUtils.getReportFormattedDateString(experiment.getStartDate()));
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + experiment.getGridWidth());
 	    bufferedWriter.append(COMMA);
@@ -70,23 +76,24 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + experiment.getResourceDensity());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter
-		    .append("" + experiment.getNumberOfAgentsPerSpecies());
+	    bufferedWriter.append("" + experiment.getNumberOfAgentsPerSpecies());
 	    bufferedWriter.append(COMMA);
 
 	    bufferedWriter.append("" + experiment.getNumberOfCollectionSites());
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + experiment.getMaxStepsPerAgent());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getProblemComplexity());
+	    bufferedWriter.append("" + experiment.getProblemComplexity().getId());
 	    bufferedWriter.append(COMMA);
 
-	    bufferedWriter.append("" + experiment.getSpeciesComposition());
+	    bufferedWriter.append("" + experiment.getSpeciesCompositionSting());
+
 	    bufferedWriter.append(COMMA);
 
-	    bufferedWriter.append("" + experiment.getInteractionMechanisms());
+	    bufferedWriter.append("" + experiment.getInteractionMechanismsString());
 	    bufferedWriter.append(COMMA);
 
+	    bufferedWriter.newLine();
 	    bufferedWriter.newLine();
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
@@ -110,16 +117,15 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(int simulationNumber, int generation,
-	    Species species, int agentId, int step, int x, int y, Event event,
-	    String source, String destination) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
+	    int step, int x, int y, Event event, String source, String destination) {
 	try {
 	    if (experiment.isRecordExperiment()) {
 		sb.append(simulationNumber);
 		sb.append(COMMA);
 		sb.append(generation);
 		sb.append(COMMA);
-		sb.append(species.getAbbreviation());
+		sb.append(species.getId());
 		sb.append(COMMA);
 		sb.append(agentId);
 		sb.append(COMMA);

@@ -38,21 +38,16 @@ public class TestSim extends Simulation {
 	myExperiment.setResourceDensity(RESOURCE_DENSITY);
 
 	// interactions
-	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);
 	myExperiment.addInteractionMechanism(InteractionMechanism.TRAIL);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);	
 	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	
 
 	// species compositions
 	myExperiment.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);
-	Species species1 = new Species();
-	species1.addTrait(Trait.DETECTION);
-	species1.addTrait(Trait.EXTRACTION);
-	species1.addTrait(Trait.FLOCKING);
-	species1.addTrait(Trait.HOMING);
-	species1.addTrait(Trait.PROCESSING);
-	species1.addTrait(Trait.TRANSPORTATION);
-	myExperiment.addSpecies(species1);
+
+	myExperiment.addSpecies(Species.SUPER);
 
 	// steps and simulations...
 	myExperiment.setStepsPerSimulation(MAX_STEPS_PER_SIM);
