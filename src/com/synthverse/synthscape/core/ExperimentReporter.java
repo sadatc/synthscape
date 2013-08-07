@@ -5,24 +5,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Reports on various aspects of the experiments.
- * @author sadat
- *
- */
+// test
 public class ExperimentReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 175;
 
-    private final String experimentName;
-    private final String serverName;
-    private final String batchId;
-
-    private boolean flushAlways = false;
-    private String reportFileName = null;
+    private final Experiment experiment;
     private BufferedWriter bufferedWriter = null;
     private final static char COMMA = ',';
     private StringBuilder sb = new StringBuilder(STRING_BUFFER_MAX_SIZE);
+
+    private final boolean flushAlways;
 
     @SuppressWarnings("unused")
     private ExperimentReporter() {
@@ -31,22 +24,25 @@ public class ExperimentReporter implements Constants {
 
     public ExperimentReporter(Experiment experiment, boolean flushAlways)
 	    throws IOException {
-	this.serverName = experiment.getServerName();
-	this.experimentName = experiment.getName();
-	this.batchId = experiment.getBatchId();
+	this.experiment = experiment;
 	this.flushAlways = flushAlways;
-	this.reportFileName = experiment.getEventFileName();
+
 	openFile();
     }
 
     public void openFile() {
-	File file = new File(reportFileName);
+	File file = new File(experiment.getEventFileName());
 	try {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
 	    bufferedWriter = new BufferedWriter(new FileWriter(
 		    file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+
+	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
+		writeExperimentMetaData();
+	    }
+
 	    writeCSVHeader();
 	} catch (Exception e) {
 	    D.p("Exception while trying to open experiment output file: "
@@ -56,12 +52,51 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    private void writeExperimentMetaData() throws IOException {
+
+	bufferedWriter
+		.write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY, RESOURCE_DENSITY,NUM_AGENTS_PER_SPECIES,NUM_COLLECTION_SITES,NUM_STEPS_PER_AGENT,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
+	bufferedWriter.newLine();
+	bufferedWriter.append(experiment.getServerName());
+	sb.append(COMMA);
+	bufferedWriter.append(experiment.getName());
+	sb.append(COMMA);
+	bufferedWriter.append(experiment.getBatchId());
+	sb.append(COMMA);
+	bufferedWriter.append(experiment.getStartDate().toString());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getGridWidth());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getGridHeight());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getObstacleDensity());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getResourceDensity());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getNumberOfAgentsPerSpecies());
+	sb.append(COMMA);
+
+	bufferedWriter.append("" + experiment.getNumberOfCollectionSites());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getMaxStepsPerAgent());
+	sb.append(COMMA);
+	bufferedWriter.append("" + experiment.getProblemComplexity());
+	sb.append(COMMA);
+
+	bufferedWriter.append("" + experiment.getSpeciesComposition());
+	sb.append(COMMA);
+
+	bufferedWriter.append("" + experiment.getInteractionMechanisms());
+	sb.append(COMMA);
+
+	bufferedWriter.newLine();
+
+    }
+
     private void writeCSVHeader() throws IOException {
 
-	if (Constants.INCLUDE_EXPERIMENT_META_DATA)
-
-	    bufferedWriter
-		    .write("SERVER,EXPERIMENT,BATCH_ID,SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
+	bufferedWriter
+		.write("SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
 	bufferedWriter.newLine();
 
     }
@@ -70,12 +105,6 @@ public class ExperimentReporter implements Constants {
 	    Species species, int agentId, int step, int x, int y, Event event,
 	    String source, String destination) {
 	try {
-	    sb.append(serverName);
-	    sb.append(COMMA);
-	    sb.append(experimentName);
-	    sb.append(COMMA);
-	    sb.append(batchId);
-	    sb.append(COMMA);
 	    sb.append(simulationNumber);
 	    sb.append(COMMA);
 	    sb.append(generation);
