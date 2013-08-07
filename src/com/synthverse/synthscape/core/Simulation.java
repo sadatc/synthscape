@@ -99,10 +99,8 @@ public abstract class Simulation extends SimState implements Constants {
 	generationCounter = 0;
 	numberOfCollectedResources = 0;
 
-	if (experiment.isRecordExperiment()) {
-	    experimentReporter = new ExperimentReporter(experiment,
-		    DEFAULT_FLUSH_ALWAYS_FLAG);
-	}
+	experimentReporter = new ExperimentReporter(experiment,
+		DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
 	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
@@ -321,10 +319,8 @@ public abstract class Simulation extends SimState implements Constants {
 	setupEnvironment();
 	setupFirstGeneration();
 
-	if (experiment.isRecordExperiment() && experimentReporter != null) {
-	    experiment.setStartDate();
-	    experimentReporter.openFile();
-	}
+	experiment.setStartDate();
+	experimentReporter.setupReporter();
 
 	// this is run at the end of each step
 
@@ -356,7 +352,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    } else {
 			D.p("**** end of experiment ***");
 			experiment.setEndDate();
-			experimentReporter.closeFile();
+			experimentReporter.cleanupReporter();
 			finish();
 		    }
 		}
@@ -424,22 +420,12 @@ public abstract class Simulation extends SimState implements Constants {
 	_main(arg);
     }
 
-    public ExperimentReporter getExperimentReporter() {
-	return experimentReporter;
-    }
-
-    public void setExperimentReporter(ExperimentReporter experimentReporter) {
-	this.experimentReporter = experimentReporter;
-    }
-
     public void reportEvent(Species species, int agentId, int stepCounter,
 	    int x, int y, Event event, String source, String destination) {
-	if (experiment.isRecordExperiment() && this.experimentReporter != null) {
-	    this.experimentReporter.reportEvent(simulationCounter,
-		    generationCounter, species, agentId, stepCounter, x, y,
-		    event, source, destination);
 
-	}
+	experimentReporter
+		.reportEvent(simulationCounter, generationCounter, species,
+			agentId, stepCounter, x, y, event, source, destination);
 
     }
 

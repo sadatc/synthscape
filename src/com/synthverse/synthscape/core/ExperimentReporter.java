@@ -24,13 +24,13 @@ public class ExperimentReporter implements Constants {
 
     public ExperimentReporter(Experiment experiment, boolean flushAlways)
 	    throws IOException {
+
 	this.experiment = experiment;
 	this.flushAlways = flushAlways;
 
-	openFile();
     }
 
-    public void openFile() {
+    private void openFile() {
 	File file = new File(experiment.getEventFileName());
 	try {
 	    if (!file.exists()) {
@@ -39,11 +39,6 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter = new BufferedWriter(new FileWriter(
 		    file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 
-	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
-		writeExperimentMetaData();
-	    }
-
-	    writeCSVHeader();
 	} catch (Exception e) {
 	    D.p("Exception while trying to open experiment output file: "
 		    + e.getMessage());
@@ -52,52 +47,66 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    private void writeExperimentMetaData() throws IOException {
+    private void writeExperimentMetaData() {
 
-	bufferedWriter
-		.write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY, RESOURCE_DENSITY,NUM_AGENTS_PER_SPECIES,NUM_COLLECTION_SITES,NUM_STEPS_PER_AGENT,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
-	bufferedWriter.newLine();
-	bufferedWriter.append(experiment.getServerName());
-	sb.append(COMMA);
-	bufferedWriter.append(experiment.getName());
-	sb.append(COMMA);
-	bufferedWriter.append(experiment.getBatchId());
-	sb.append(COMMA);
-	bufferedWriter.append(experiment.getStartDate().toString());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getGridWidth());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getGridHeight());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getObstacleDensity());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getResourceDensity());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getNumberOfAgentsPerSpecies());
-	sb.append(COMMA);
+	try {
+	    bufferedWriter
+		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY, RESOURCE_DENSITY,NUM_AGENTS_PER_SPECIES,NUM_COLLECTION_SITES,NUM_STEPS_PER_AGENT,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
+	    bufferedWriter.newLine();
 
-	bufferedWriter.append("" + experiment.getNumberOfCollectionSites());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getMaxStepsPerAgent());
-	sb.append(COMMA);
-	bufferedWriter.append("" + experiment.getProblemComplexity());
-	sb.append(COMMA);
+	    bufferedWriter.append(experiment.getServerName());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append(experiment.getName());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append(experiment.getBatchId());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append(experiment.getStartDate().toString());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getGridWidth());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getGridHeight());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getObstacleDensity());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getResourceDensity());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter
+		    .append("" + experiment.getNumberOfAgentsPerSpecies());
+	    bufferedWriter.append(COMMA);
 
-	bufferedWriter.append("" + experiment.getSpeciesComposition());
-	sb.append(COMMA);
+	    bufferedWriter.append("" + experiment.getNumberOfCollectionSites());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getMaxStepsPerAgent());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + experiment.getProblemComplexity());
+	    bufferedWriter.append(COMMA);
 
-	bufferedWriter.append("" + experiment.getInteractionMechanisms());
-	sb.append(COMMA);
+	    bufferedWriter.append("" + experiment.getSpeciesComposition());
+	    bufferedWriter.append(COMMA);
 
-	bufferedWriter.newLine();
+	    bufferedWriter.append("" + experiment.getInteractionMechanisms());
+	    bufferedWriter.append(COMMA);
+
+	    bufferedWriter.newLine();
+	} catch (Exception e) {
+	    D.p("Exception while reporting event:" + e.getMessage());
+	    e.printStackTrace();
+
+	}
 
     }
 
-    private void writeCSVHeader() throws IOException {
+    private void writeFieldDescription() {
+	try {
+	    bufferedWriter
+		    .write("SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
+	    bufferedWriter.newLine();
 
-	bufferedWriter
-		.write("SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
-	bufferedWriter.newLine();
+	} catch (Exception e) {
+	    D.p("Exception while reporting event:" + e.getMessage());
+	    e.printStackTrace();
+
+	}
 
     }
 
@@ -105,47 +114,66 @@ public class ExperimentReporter implements Constants {
 	    Species species, int agentId, int step, int x, int y, Event event,
 	    String source, String destination) {
 	try {
-	    sb.append(simulationNumber);
-	    sb.append(COMMA);
-	    sb.append(generation);
-	    sb.append(COMMA);
-	    sb.append(species.getAbbreviation());
-	    sb.append(COMMA);
-	    sb.append(agentId);
-	    sb.append(COMMA);
-	    sb.append(step);
-	    sb.append(COMMA);
-	    sb.append(x);
-	    sb.append(COMMA);
-	    sb.append(y);
-	    sb.append(COMMA);
-	    sb.append(event.toString());
-	    sb.append(COMMA);
-	    sb.append(source);
-	    sb.append(COMMA);
-	    sb.append(destination);
+	    if (experiment.isRecordExperiment()) {
+		sb.append(simulationNumber);
+		sb.append(COMMA);
+		sb.append(generation);
+		sb.append(COMMA);
+		sb.append(species.getAbbreviation());
+		sb.append(COMMA);
+		sb.append(agentId);
+		sb.append(COMMA);
+		sb.append(step);
+		sb.append(COMMA);
+		sb.append(x);
+		sb.append(COMMA);
+		sb.append(y);
+		sb.append(COMMA);
+		sb.append(event.toString());
+		sb.append(COMMA);
+		sb.append(source);
+		sb.append(COMMA);
+		sb.append(destination);
 
-	    bufferedWriter.write(sb.toString());
-	    bufferedWriter.newLine();
-	    sb.delete(0, sb.length());
+		bufferedWriter.write(sb.toString());
+		bufferedWriter.newLine();
+		sb.delete(0, sb.length());
 
-	    if (this.flushAlways) {
-		bufferedWriter.flush();
+		if (this.flushAlways) {
+		    bufferedWriter.flush();
+		}
 	    }
 	} catch (Exception e) {
-	    D.p("Exception while closing:" + e.getMessage());
+	    D.p("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
 
 	}
 
     }
 
-    public void closeFile() {
+    private void closeFile() {
 	try {
 	    bufferedWriter.close();
 	} catch (Exception e) {
 	    D.p("Exception while closing:" + e.getMessage());
 	    e.printStackTrace();
+	}
+    }
+
+    public void cleanupReporter() {
+	if (experiment.isRecordExperiment()) {
+	    closeFile();
+	}
+    }
+
+    public void setupReporter() {
+	if (experiment.isRecordExperiment()) {
+
+	    openFile();
+	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
+		writeExperimentMetaData();
+	    }
+	    writeFieldDescription();
 	}
     }
 

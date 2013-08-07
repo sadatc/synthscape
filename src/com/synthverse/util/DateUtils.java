@@ -5,11 +5,14 @@ import java.text.SimpleDateFormat;
 
 public final class DateUtils {
 
-    private static final String FORMAT_STRING = "MM_dd_yyyy_HH_mm";
-    private static DateFormat dateFormat = null;
+    private static final String FILE_STAMP_FORMAT = "MM_dd_yyyy_HH_mm";
+    private static final String REPORT_FORMAT = "MM/dd/yyyy HH:mm";
+    private static DateFormat fileStampFormatter = null;
+    private static DateFormat reportFormatter = null;
 
     static {
-	dateFormat = new SimpleDateFormat(FORMAT_STRING);
+	fileStampFormatter = new SimpleDateFormat(FILE_STAMP_FORMAT);
+	reportFormatter = new SimpleDateFormat(REPORT_FORMAT);
     }
 
     private DateUtils() {
@@ -18,7 +21,13 @@ public final class DateUtils {
 
     public static final String getFileNameDateStamp() {
 
-	return dateFormat.format(new java.util.Date());
+	return fileStampFormatter.format(new java.util.Date());
+
+    }
+
+    public static final String getReportDateStamp() {
+
+	return reportFormatter.format(new java.util.Date());
 
     }
 
