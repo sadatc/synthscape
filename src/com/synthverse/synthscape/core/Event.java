@@ -47,14 +47,14 @@ public enum Event {
     RECEIVED_GENERIC_UNICAST_CLIQUE(39);
     
     
-    private int value;
+    private int id;
     
-    Event(int value) {
-    	this.value = value;
+    Event(int id) {
+    	this.id = id;
     }
     
-    public int getValue() {
-    	return this.value;
+    public int getId() {
+    	return this.id;
     }
     
 }
