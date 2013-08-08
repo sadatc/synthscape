@@ -314,7 +314,7 @@ public abstract class Simulation extends SimState implements Constants {
 	D.p("finished population generation #" + generationCounter);
     }
 
-    private void setupSimulation() {
+    private void startSimulation() {
 
 	setupEnvironment();
 	setupFirstGeneration();
@@ -348,7 +348,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (simulationCounter < experiment
 			    .getSimulationsPerExperiment()) {
 
-			startNewSimulation();
+			startNextSimulation();
 		    } else {
 			D.p("**** end of experiment ***");
 			experiment.setEndDate();
@@ -362,24 +362,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    protected void debugArray(String string, int[][] array) {
-	D.p(string);
-	int nonZeroCounter = 0;
-	for (int x = 0; x < gridWidth; x++) {
-	    for (int y = 0; y < gridHeight; y++) {
-		int value = array[x][y];
-		System.out.print(value);
-		if (value > 0) {
-		    nonZeroCounter++;
-		}
-	    }
-	    D.p();
-	}
-	D.p("total:" + nonZeroCounter);
-
-    }
-
-    protected void startNewSimulation() {
+    protected void startNextSimulation() {
 	resetEnvironment();
 	setupEnvironment();
 	setupNextGeneration();
@@ -402,7 +385,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	super.start();
 	resetAll();
-	setupSimulation();
+	startSimulation();
     }
 
     public static String[] parseArguments(String string) {
