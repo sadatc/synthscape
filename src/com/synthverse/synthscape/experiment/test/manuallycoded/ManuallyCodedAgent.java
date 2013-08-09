@@ -28,9 +28,10 @@ public class ManuallyCodedAgent extends Agent {
 
     }
 
-    public ManuallyCodedAgent(Simulation sim, int generationNumber, int agentId, int maxSteps,
-	    int startX, int startY) {
-	super(sim, generationNumber, agentId, maxSteps, startX, startY);
+    public ManuallyCodedAgent(Simulation sim, Species species,
+	    int generationNumber, int agentId, int maxSteps, int startX,
+	    int startY) {
+	super(sim, species, generationNumber, agentId, maxSteps, startX, startY);
 
     }
 
@@ -78,13 +79,13 @@ public class ManuallyCodedAgent extends Agent {
 	    this.operationExtractResource();
 	    myMode = AgentState.SEEK_NEW_RESOURCE;
 	    // myMode = AgentState.DETECT_EXTRACT;
-	    //D.p(oldState + " => " + myMode);
+	    // D.p(oldState + " => " + myMode);
 
 	    break;
 	case PROCESS_MODE:
 	    this.operationProcessResource();
 	    myMode = AgentState.DETECT_PROCESSED;
-	    //D.p(oldState + " => " + myMode);
+	    // D.p(oldState + " => " + myMode);
 
 	    break;
 	case LOAD_EXTRACT:
@@ -131,18 +132,6 @@ public class ManuallyCodedAgent extends Agent {
 	}
 	return result;
 
-    }
-
-    @Override
-    protected Species getSpecies() {
-	// or pick a specific one...
-	return getSim().getExperiment().getSpeciesComposition().iterator().next();
-    }
-
-    @Override
-    protected Set<InteractionMechanism> getInteractionMechanisms() {
-	// or pick a specific one...
-	return getSim().getExperiment().getInteractionMechanisms();
     }
 
 }

@@ -71,8 +71,9 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     protected Agent() {
     }
 
-    protected Agent(Simulation simulation, int generationNumber, int agentId,
-	    int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species,
+	    int generationNumber, int agentId, int maxSteps, int startX,
+	    int startY) {
 
 	// set the basic stuff:
 	setSim(simulation);
@@ -81,18 +82,11 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	setX(startX);
 	setY(startY);
 	setGeneration(generationNumber);
-
-	// set the species/traits:
-	species = getSpecies();
-
-	// set the interaction mechanisms:
-	interactionMechanisms = getInteractionMechanisms();
+	setSpecies(species);
+	setInteractionMechanisms(simulation.getExperiment()
+		.getInteractionMechanisms());
 
     }
-
-    protected abstract Species getSpecies();
-
-    protected abstract Set<InteractionMechanism> getInteractionMechanisms();
 
     public Agent randomizeGenotype() {
 	if (program != null) {
@@ -803,6 +797,23 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public Simulation getSim() {
 	return sim;
+    }
+
+    public Species getSpecies() {
+	return species;
+    }
+
+    public void setSpecies(Species species) {
+	this.species = species;
+    }
+
+    public void setInteractionMechanisms(
+	    Set<InteractionMechanism> interactionMechanisms) {
+	this.interactionMechanisms = interactionMechanisms;
+    }
+
+    public Set<InteractionMechanism> getInteractionMechanisms() {
+	return this.interactionMechanisms;
     }
 
 }

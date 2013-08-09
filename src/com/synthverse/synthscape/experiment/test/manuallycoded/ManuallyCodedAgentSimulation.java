@@ -31,7 +31,8 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
 	// name and complexity
 	Experiment myExperiment = new Experiment("POPULATION_ISLAND_MANUAL");
-	myExperiment.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
+	myExperiment
+		.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
 
 	// demographics
 	myExperiment.setGridWidth(WORLD_WIDTH);
@@ -43,9 +44,10 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	// interactions
 	myExperiment.addInteractionMechanism(InteractionMechanism.TRAIL);
 	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-	
+	myExperiment
+		.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	myExperiment
+		.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
 
 	// species compositions
 	myExperiment.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);

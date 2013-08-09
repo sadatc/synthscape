@@ -2,8 +2,9 @@ package com.synthverse.synthscape.core;
 
 public interface AgentFactory {
 
-    public Agent create();
+    public Agent createFactoryAgent();
 
-    public Agent create(Simulation simulation, int generationNumber, int agentId, int maxSteps,
-	    int startX, int startY);
+    public Agent createFactoryAgent(Simulation simulation, Species species,
+	    int generationNumber, int agentId, int maxSteps, int startX,
+	    int startY);
 }

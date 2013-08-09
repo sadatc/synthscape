@@ -4,6 +4,7 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Species;
 
 public class TestAgentFactory implements AgentFactory, Constants {
 
@@ -17,14 +18,15 @@ public class TestAgentFactory implements AgentFactory, Constants {
     }
 
     @Override
-    public Agent create() {
+    public Agent createFactoryAgent() {
 	return new TestAgent();
     }
 
     @Override
-    public Agent create(Simulation simulation, int generation, int agentId, int maxSteps, int x,
-	    int y) {
-	return new TestAgent(simulation, generation, agentId, maxSteps, x, y);
+    public Agent createFactoryAgent(Simulation simulation, Species species,
+	    int generation, int agentId, int maxSteps, int x, int y) {
+	return new TestAgent(simulation, species, generation, agentId,
+		maxSteps, x, y);
 
     }
 

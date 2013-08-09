@@ -5,6 +5,7 @@ package com.synthverse.synthscape.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -263,27 +264,30 @@ public abstract class Simulation extends SimState implements Constants {
     private void setupFirstGeneration() {
 	// populate with agents
 
-	for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
+	for (Species species : experiment.getSpeciesComposition()) {
+	    for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
 
-	    int randomX = random.nextInt(gridWidth);
-	    int randomY = random.nextInt(gridHeight);
+		int randomX = random.nextInt(gridWidth);
+		int randomY = random.nextInt(gridHeight);
 
-	    while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
+		while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
+		    randomX = random.nextInt(gridWidth);
+		    randomY = random.nextInt(gridHeight);
+		}
+		setupCollisionGrid.field[randomX][randomY] = PRESENT;
+
+		Agent agent = agentFactory.createFactoryAgent(this, species,
+			SEED_GENERATION_NUMBER, i,
+			experiment.getMaxStepsPerAgent(), randomX, randomY);
+
+		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
+
+		agents.add(agent);
+
+		// add agents to the scheduler so that they can be stepped
+		schedule.scheduleRepeating(agent);
+
 	    }
-	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
-
-	    Agent agent = agentFactory.create(this, SEED_GENERATION_NUMBER, i,
-		    experiment.getMaxStepsPerAgent(), randomX, randomY);
-
-	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
-
-	    agents.add(agent);
-
-	    // add agents to the scheduler so that they can be stepped
-	    schedule.scheduleRepeating(agent);
-
 	}
 
     }
@@ -291,7 +295,8 @@ public abstract class Simulation extends SimState implements Constants {
     private void setupNextGeneration() {
 	// populate with agents
 	generationCounter++;
-	for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
+
+	for (Agent agent : agents) {
 
 	    int randomX = random.nextInt(gridWidth);
 	    int randomY = random.nextInt(gridHeight);
@@ -302,7 +307,6 @@ public abstract class Simulation extends SimState implements Constants {
 	    }
 	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
 
-	    Agent agent = agents.get(i);
 	    agent.reset();
 	    agent.generation = generationCounter;
 	    agent.x = randomX;

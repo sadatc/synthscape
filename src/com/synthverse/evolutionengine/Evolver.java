@@ -130,8 +130,8 @@ public final class Evolver implements EvolverConfig {
 		offspringBuffer = new ArrayList<Agent>(populationSize);
 
 		for (int i = 0; i < populationSize; i++) {
-			parentBuffer.add(agentFactory.create().randomizeGenotype());
-			offspringBuffer.add(agentFactory.create().randomizeGenotype());
+			parentBuffer.add(agentFactory.createFactoryAgent().randomizeGenotype());
+			offspringBuffer.add(agentFactory.createFactoryAgent().randomizeGenotype());
 		}
 
 		topPerformers = new ArrayList<Agent>();

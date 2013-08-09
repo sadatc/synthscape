@@ -42,7 +42,7 @@ public class AgentCache {
 			availableEntities = new ConcurrentLinkedQueue<Agent>();
 
 			for (int i = 0; i < size; i++) {
-				availableEntities.add(agentFactory.create());
+				availableEntities.add(agentFactory.createFactoryAgent());
 			}
 			numActive = 0;
 

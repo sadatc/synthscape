@@ -4,6 +4,7 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.Species;
 
 public class ArchipelagoAgentFactory implements AgentFactory, Constants {
 
@@ -16,15 +17,15 @@ public class ArchipelagoAgentFactory implements AgentFactory, Constants {
 	return instance;
     }
 
-    public Agent create() {
+    public Agent createFactoryAgent() {
 	return new ArchipelagoAgent();
 
     }
 
     @Override
-    public Agent create(Simulation simulation, int generationNumber, int agentId, int maxSteps,
+    public Agent createFactoryAgent(Simulation simulation, Species species, int generationNumber, int agentId, int maxSteps,
 	    int startX, int startY) {
-	return new ArchipelagoAgent(simulation, generationNumber, agentId, maxSteps, startX,
+	return new ArchipelagoAgent(simulation, species, generationNumber, agentId, maxSteps, startX,
 		startY);
     }
 

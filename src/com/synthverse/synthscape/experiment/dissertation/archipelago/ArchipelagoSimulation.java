@@ -30,38 +30,42 @@ public class ArchipelagoSimulation extends Simulation {
     public Experiment getExperiment() {
 
 	// name and complexity
-	Experiment myExperiment = new Experiment("POPULATION_ISLAND_MANUAL");
-	myExperiment.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
+	Experiment exp = new Experiment("POPULATION_ISLAND");
+	exp.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
 
 	// demographics
-	myExperiment.setGridWidth(WORLD_WIDTH);
-	myExperiment.setGridHeight(WORLD_HEIGHT);
-	myExperiment.setNumberOfCollectionSites(NUMBER_OF_COLLECTION_SITES);
-	myExperiment.setObstacleDensity(OBSTACLE_DENSITY);
-	myExperiment.setResourceDensity(RESOURCE_DENSITY);
+	exp.setGridWidth(WORLD_WIDTH);
+	exp.setGridHeight(WORLD_HEIGHT);
+	exp.setNumberOfCollectionSites(NUMBER_OF_COLLECTION_SITES);
+	exp.setObstacleDensity(OBSTACLE_DENSITY);
+	exp.setResourceDensity(RESOURCE_DENSITY);
 
 	// interactions
-	myExperiment.addInteractionMechanism(InteractionMechanism.TRAIL);
-	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-	
+	exp.addInteractionMechanism(InteractionMechanism.TRAIL);
+	//exp.addInteractionMechanism(InteractionMechanism.BROADCAST);
+	//exp.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	//exp.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
 
 	// species compositions
-	myExperiment.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);
+	exp.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);
 
-	myExperiment.addSpecies(Species.SUPER);
+	exp.addSpecies(Species.DETECTOR);
+	exp.addSpecies(Species.EXTRACTOR);
+	exp.addSpecies(Species.PROCESSOR);
+	exp.addSpecies(Species.TRANSPORTER);
+	
+	
 
 	// generations and runs
-	myExperiment.setStepsPerSimulation(MAX_STEPS_PER_SIM);
-	myExperiment.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
+	exp.setStepsPerSimulation(MAX_STEPS_PER_SIM);
+	exp.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
 
-	myExperiment.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
+	exp.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
 
-	myExperiment.setRecordExperiment(true);
-	myExperiment.setEventFileName(EVENT_LOG_FILE);
+	exp.setRecordExperiment(true);
+	exp.setEventFileName(EVENT_LOG_FILE);
 
-	return myExperiment;
+	return exp;
     }
 
     @Override
