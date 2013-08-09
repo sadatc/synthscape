@@ -79,7 +79,8 @@ public class GenePool {
 		numSeedAgentsRequested++;
 		agent.randomizeGenotype();
 	    } else {
-		throw new AssertionError("already generated maximum allowed seed agents");
+		throw new AssertionError(
+			"already generated maximum allowed seed agents");
 	    }
 
 	} else {
@@ -89,7 +90,8 @@ public class GenePool {
 		numSeedAgentsRequested++;
 		agent.randomizeGenotype();
 	    } else {
-		throw new AssertionError("already generated maximum allowed seed agents");
+		throw new AssertionError(
+			"already generated maximum allowed seed agents");
 	    }
 
 	}

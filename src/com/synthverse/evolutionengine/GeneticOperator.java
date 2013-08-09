@@ -16,40 +16,40 @@ import ec.util.MersenneTwisterFast;
 
 public final class GeneticOperator {
 
-	public final static void pointMutate(
-			MersenneTwisterFast randomNumberGenerator, Agent parent,
-			Agent offspring, double mutationRate) {
-		Instruction[] offspringDNA = offspring.getProgram()
-				.getInstructionArray();
-		parent.getProgram().copyInto(offspringDNA);
+    public final static void pointMutate(
+	    MersenneTwisterFast randomNumberGenerator, Agent parent,
+	    Agent offspring, double mutationRate) {
+	Instruction[] offspringDNA = offspring.getProgram()
+		.getInstructionArray();
+	parent.getProgram().copyInto(offspringDNA);
 
-		for (int i = 0; i < offspringDNA.length; i++) {
-			if (randomNumberGenerator.nextBoolean(mutationRate)) {
-				offspringDNA[i] = InstructionTranslator
-						.getRandomInstruction(randomNumberGenerator);
-			}
-		}
+	for (int i = 0; i < offspringDNA.length; i++) {
+	    if (randomNumberGenerator.nextBoolean(mutationRate)) {
+		offspringDNA[i] = InstructionTranslator
+			.getRandomInstruction(randomNumberGenerator);
+	    }
+	}
+    }
+
+    public final static void randomize(Agent offspring) {
+	offspring.getProgram().randomizeInstructions();
+    }
+
+    public final static void cross(MersenneTwisterFast randomNumberGenerator,
+	    Agent parentA, Agent parentB, Agent offspring) {
+	Instruction[] offspringDNA = offspring.getProgram()
+		.getInstructionArray();
+	Instruction[] parentA_DNA = parentA.getProgram().getInstructionArray();
+	Instruction[] parentB_DNA = parentB.getProgram().getInstructionArray();
+
+	for (int i = 0; i < offspringDNA.length; i++) {
+	    if (randomNumberGenerator.nextBoolean()) {
+		offspringDNA[i] = parentA_DNA[i];
+	    } else {
+		offspringDNA[i] = parentB_DNA[i];
+	    }
 	}
 
-	public final static void randomize(Agent offspring) {
-		offspring.getProgram().randomizeInstructions();
-	}
-
-	public final static void cross(MersenneTwisterFast randomNumberGenerator,
-			Agent parentA, Agent parentB, Agent offspring) {
-		Instruction[] offspringDNA = offspring.getProgram()
-				.getInstructionArray();
-		Instruction[] parentA_DNA = parentA.getProgram().getInstructionArray();
-		Instruction[] parentB_DNA = parentB.getProgram().getInstructionArray();
-
-		for (int i = 0; i < offspringDNA.length; i++) {
-			if (randomNumberGenerator.nextBoolean()) {
-				offspringDNA[i] = parentA_DNA[i];
-			} else {
-				offspringDNA[i] = parentB_DNA[i];
-			}
-		}
-
-	}
+    }
 
 }
