@@ -18,8 +18,8 @@ public class TestAgentFactory implements AgentFactory, Constants {
     }
 
     @Override
-    public Agent createFactoryAgent() {
-	return new TestAgent();
+    public Agent createFactoryAgent(Species species) {
+	return new TestAgent(species);
     }
 
     @Override

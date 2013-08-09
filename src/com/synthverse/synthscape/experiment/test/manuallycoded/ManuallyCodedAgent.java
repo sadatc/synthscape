@@ -19,8 +19,8 @@ public class ManuallyCodedAgent extends Agent {
 
     AgentState myMode = AgentState.INIT;
 
-    public ManuallyCodedAgent() {
-	super();
+    public ManuallyCodedAgent(Species species) {
+	super(species);
 
     }
 

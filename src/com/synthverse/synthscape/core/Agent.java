@@ -68,7 +68,11 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     abstract public void stepAction(SimState state);
 
-    protected Agent() {
+    private Agent() {
+    }
+
+    protected Agent(Species species) {
+	setSpecies(species);
     }
 
     protected Agent(Simulation simulation, Species species,

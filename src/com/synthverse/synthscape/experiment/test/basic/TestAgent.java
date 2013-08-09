@@ -17,8 +17,8 @@ public class TestAgent extends Agent {
 	super(simulation, species, generation, agentId, maxSteps, x, y);
     }
 
-    public TestAgent() {
-	super();
+    public TestAgent(Species species) {
+	super(species);
     }
 
     @Override

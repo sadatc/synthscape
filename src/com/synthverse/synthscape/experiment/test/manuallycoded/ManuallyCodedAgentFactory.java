@@ -17,8 +17,8 @@ public class ManuallyCodedAgentFactory implements AgentFactory, Constants {
 	return instance;
     }
 
-    public Agent createFactoryAgent() {
-	return new ManuallyCodedAgent();
+    public Agent createFactoryAgent(Species species) {
+	return new ManuallyCodedAgent(species);
 
     }
 

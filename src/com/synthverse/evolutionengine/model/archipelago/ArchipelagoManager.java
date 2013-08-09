@@ -3,6 +3,7 @@ package com.synthverse.evolutionengine.model.archipelago;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
@@ -22,6 +23,17 @@ public class ArchipelagoManager {
 	setupPopulationIslands();
     }
 
+    public List<Agent> getRepresentativeAgents() {
+	List<Agent> representatives = null;
+	
+	
+	
+	
+	
+	return representatives;
+    }
+    
+    
     private void setupPopulationIslands() {
 	Experiment experiment = simulation.getExperiment();
 	for (Species species : experiment.getSpeciesComposition()) {
@@ -30,7 +42,6 @@ public class ArchipelagoManager {
 		    experiment.getNumberOfAgentsPerSpecies());
 	    islands.add(island);
 	}
-
     }
 
 }

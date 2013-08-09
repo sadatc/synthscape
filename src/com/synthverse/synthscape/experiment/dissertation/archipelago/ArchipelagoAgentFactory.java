@@ -17,16 +17,17 @@ public class ArchipelagoAgentFactory implements AgentFactory, Constants {
 	return instance;
     }
 
-    public Agent createFactoryAgent() {
-	return new ArchipelagoAgent();
+    public Agent createFactoryAgent(Species species) {
+	return new ArchipelagoAgent(species);
 
     }
 
     @Override
-    public Agent createFactoryAgent(Simulation simulation, Species species, int generationNumber,
-	    int agentId, int maxSteps, int startX, int startY) {
-	return new ArchipelagoAgent(simulation, species, generationNumber, agentId, maxSteps,
-		startX, startY);
+    public Agent createFactoryAgent(Simulation simulation, Species species,
+	    int generationNumber, int agentId, int maxSteps, int startX,
+	    int startY) {
+	return new ArchipelagoAgent(simulation, species, generationNumber,
+		agentId, maxSteps, startX, startY);
     }
 
 }
