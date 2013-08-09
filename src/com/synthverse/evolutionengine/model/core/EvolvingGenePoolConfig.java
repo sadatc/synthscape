@@ -5,7 +5,7 @@ package com.synthverse.evolutionengine.model.core;
  * 
  * @author sadat
  */
-public interface EvolverConfig {
+public interface EvolvingGenePoolConfig {
 
     public static final double DEFAULT_PERCENT_TOP = 0.3;
 
@@ -25,7 +25,7 @@ public interface EvolverConfig {
 
     public static final int DEFAULT_MAX_ENTITY_SIZE = 32;
 
-    public static final int DEFAULT_MAX_POPULATION_SIZE = 20;
+    public static final int DEFAULT_MAX_POPULATION_SIZE = 200;
 
     public static final int DEFAULT_MAX_GENERATIONS = 10;
 

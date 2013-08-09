@@ -3,13 +3,9 @@
  */
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
-import java.util.Set;
-
 import sim.engine.SimState;
 
 import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.D;
-import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
@@ -42,7 +38,6 @@ public class ManuallyCodedAgent extends Agent {
 	// an operation and move to a newer state
 	Simulation theSim = (Simulation) state;
 
-	AgentState oldState = myMode;
 	switch (myMode) {
 	case INIT:
 	case DETECT_RAW:

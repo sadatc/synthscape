@@ -5,7 +5,6 @@ package com.synthverse.synthscape.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;

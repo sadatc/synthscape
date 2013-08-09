@@ -23,10 +23,10 @@ public class ArchipelagoAgentFactory implements AgentFactory, Constants {
     }
 
     @Override
-    public Agent createFactoryAgent(Simulation simulation, Species species, int generationNumber, int agentId, int maxSteps,
-	    int startX, int startY) {
-	return new ArchipelagoAgent(simulation, species, generationNumber, agentId, maxSteps, startX,
-		startY);
+    public Agent createFactoryAgent(Simulation simulation, Species species, int generationNumber,
+	    int agentId, int maxSteps, int startX, int startY) {
+	return new ArchipelagoAgent(simulation, species, generationNumber, agentId, maxSteps,
+		startX, startY);
     }
 
 }

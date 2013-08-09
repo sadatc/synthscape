@@ -1,5 +1,7 @@
 package com.synthverse.evolutionengine.model.archipelago;
 
+import com.synthverse.evolutionengine.model.core.EvolvingGenePool;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Species;
 
 /**
@@ -10,7 +12,19 @@ import com.synthverse.synthscape.core.Species;
  * 
  */
 public class PopulationIsland {
+
     private int populationSize;
     private Species species;
+    private EvolvingGenePool population;
+    private AgentFactory agentFactory;
+
+    public PopulationIsland(AgentFactory agentFactory, Species species,
+	    int populationSize) {
+	this.species = species;
+	this.populationSize = populationSize;
+	this.agentFactory = agentFactory;
+	this.population = new EvolvingGenePool(agentFactory, species,
+		populationSize);
+    }
 
 }

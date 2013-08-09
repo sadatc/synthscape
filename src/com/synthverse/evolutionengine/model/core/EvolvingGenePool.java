@@ -9,19 +9,21 @@ import java.util.logging.Logger;
 import com.synthverse.stacks.Config;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.CollectionUtils;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
-public final class Evolver implements EvolverConfig {
+public final class EvolvingGenePool implements EvolvingGenePoolConfig {
 
-    private static Logger logger = Logger.getLogger(Evolver.class.getName());
-
+    private static Logger logger = Logger.getLogger(EvolvingGenePool.class
+	    .getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
 
+    private Species species;
     double averageFitness = 0.0f;
     int generationCounter = 0;
     boolean terminationRequested = false;
@@ -53,13 +55,14 @@ public final class Evolver implements EvolverConfig {
     /**
      * creates an evolver with all default values
      */
-    public Evolver(AgentFactory agentFactory) {
-	this(agentFactory, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
-		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM,
-		DEFAULT_PERCENT_BOTTOM, DEFAULT_PERCENT_BOTTOM_MUTANT,
-		DEFAULT_PERCENT_BOTTOM_X_BOTTOM, DEFAULT_PERCENT_RANDOM,
-		DEFAULT_MAX_POPULATION_SIZE, DEFAULT_MAX_GENERATIONS,
-		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
+    public EvolvingGenePool(AgentFactory agentFactory, Species species) {
+	this(agentFactory, species, DEFAULT_PERCENT_TOP,
+		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
+		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
+		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
+		DEFAULT_PERCENT_RANDOM, DEFAULT_MAX_POPULATION_SIZE,
+		DEFAULT_MAX_GENERATIONS, DEFAULT_MAX_MUTATION_RATE,
+		DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -69,13 +72,15 @@ public final class Evolver implements EvolverConfig {
      * @param agentFactory
      * @param maxPopulationSize
      */
-    public Evolver(AgentFactory agentFactory, int maxPopulationSize) {
-	this(agentFactory, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
-		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM,
-		DEFAULT_PERCENT_BOTTOM, DEFAULT_PERCENT_BOTTOM_MUTANT,
-		DEFAULT_PERCENT_BOTTOM_X_BOTTOM, DEFAULT_PERCENT_RANDOM,
-		maxPopulationSize, DEFAULT_MAX_GENERATIONS,
-		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
+    public EvolvingGenePool(AgentFactory agentFactory, Species species,
+	    int maxPopulationSize) {
+	this(agentFactory, species, DEFAULT_PERCENT_TOP,
+		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
+		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
+		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
+		DEFAULT_PERCENT_RANDOM, maxPopulationSize,
+		DEFAULT_MAX_GENERATIONS, DEFAULT_MAX_MUTATION_RATE,
+		DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -95,14 +100,15 @@ public final class Evolver implements EvolverConfig {
      * @param maxMutationRate
      * @param evolutionProgressLog
      */
-    public Evolver(AgentFactory agentFactory, double percentTop,
-	    double percentTopXTop, double percentTopMutant,
+    public EvolvingGenePool(AgentFactory agentFactory, Species species,
+	    double percentTop, double percentTopXTop, double percentTopMutant,
 	    double percentTopXBottom, double percentBottom,
 	    double percentBottomMutant, double percentBottomXBottom,
 	    double percentRandom, int maxPopulationSize, int maxGenerations,
 	    double maxMutationRate, String evolutionProgressLog) {
 
 	this.agentFactory = agentFactory;
+	this.species = species;
 
 	aTop = (int) ((double) maxPopulationSize * percentTop);
 	aTopXTop = (int) ((double) maxPopulationSize * percentTopXTop);
@@ -130,9 +136,9 @@ public final class Evolver implements EvolverConfig {
 	offspringBuffer = new ArrayList<Agent>(populationSize);
 
 	for (int i = 0; i < populationSize; i++) {
-	    parentBuffer.add(agentFactory.createFactoryAgent()
+	    parentBuffer.add(agentFactory.createFactoryAgent(species)
 		    .randomizeGenotype());
-	    offspringBuffer.add(agentFactory.createFactoryAgent()
+	    offspringBuffer.add(agentFactory.createFactoryAgent(species)
 		    .randomizeGenotype());
 	}
 
