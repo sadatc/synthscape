@@ -21,21 +21,15 @@ public class ArchipelagoEvolver implements Evolver {
 
     public ArchipelagoEvolver(Simulation simulation) {
 	this.simulation = simulation;
-	setupPopulationIslands();
     }
 
     public List<Agent> getRepresentativeAgents() {
 	List<Agent> representatives = null;
-	
-	
-	
-	
-	
+
 	return representatives;
     }
-    
-    
-    private void setupPopulationIslands() {
+
+    public void initPopulationIslands() {
 	Experiment experiment = simulation.getExperiment();
 	for (Species species : experiment.getSpeciesComposition()) {
 	    PopulationIsland island = new PopulationIsland(

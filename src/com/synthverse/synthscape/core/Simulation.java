@@ -42,7 +42,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected ArrayList<Int2D> collectionSiteList;
 
-    protected IntGrid2D setupCollisionGrid;
+    protected IntGrid2D initCollisionGrid;
 
     protected ObjectGrid2D resourceGrid;
 
@@ -114,7 +114,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	collectionSiteList = new ArrayList<Int2D>();
 
-	setupCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 
 	resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 
@@ -131,7 +131,7 @@ public abstract class Simulation extends SimState implements Constants {
 	obstacleGrid.setTo(ABSENT);
 	collectionSiteGrid.setTo(ABSENT);
 	collectionSiteList.clear();
-	setupCollisionGrid.setTo(ABSENT);
+	initCollisionGrid.setTo(ABSENT);
 
 	resourceGrid.setTo(ResourceState.NULL);
 	trailGrid.setTo(ABSENT);
@@ -190,15 +190,15 @@ public abstract class Simulation extends SimState implements Constants {
 	return problemComplexity;
     }
 
-    private void setupPrimaryCollectionSite() {
+    private void initPrimaryCollectionSite() {
 	// set the primary collection site
 	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	setupCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
+	initCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
 		PRIMARY_COLLECTION_SITE_Y));
     }
 
-    private void setupNonPrimaryCollectionSites() {
+    private void initNonPrimaryCollectionSites() {
 	for (int i = 0; i < (numberOfCollectionSites - 1); i++) {
 	    int randomX = random.nextInt(gridWidth);
 	    int randomY = random.nextInt(gridHeight);
@@ -209,31 +209,31 @@ public abstract class Simulation extends SimState implements Constants {
 
 	    }
 	    collectionSiteGrid.field[randomX][randomY] = PRESENT;
-	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
+	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 	    collectionSiteList.add(new Int2D(randomX, randomY));
 
 	}
     }
 
-    private void setupObstacles() {
+    private void initObstacles() {
 	// create obstacles in random locations
 	for (int i = 0; i < numberOfObstacles; i++) {
 
 	    int randomX = random.nextInt(gridWidth);
 	    int randomY = random.nextInt(gridHeight);
 	    // make sure there isn't an obstacle there already...
-	    while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
+	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
 		randomX = random.nextInt(gridWidth);
 		randomY = random.nextInt(gridHeight);
 	    }
-	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
+	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 	    obstacleGrid.field[randomX][randomY] = PRESENT;
 
 	}
 
     }
 
-    private void setupResources() {
+    private void initResources() {
 	for (int i = 0; i < numberOfResources; i++) {
 
 	    int randomX = 0;
@@ -244,23 +244,23 @@ public abstract class Simulation extends SimState implements Constants {
 	    do {
 		randomX = random.nextInt(gridWidth);
 		randomY = random.nextInt(gridHeight);
-	    } while (setupCollisionGrid.field[randomX][randomY] == PRESENT);
+	    } while (initCollisionGrid.field[randomX][randomY] == PRESENT);
 	    resourceGrid.field[randomX][randomY] = ResourceState.RAW;
-	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
+	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 	}
 	this.numberOfCollectedResources = 0;
 
     }
 
-    private void setupEnvironment() {
-	setupPrimaryCollectionSite();
-	setupNonPrimaryCollectionSites();
-	setupObstacles();
-	setupResources();
+    private void initEnvironment() {
+	initPrimaryCollectionSite();
+	initNonPrimaryCollectionSites();
+	initObstacles();
+	initResources();
     }
 
-    private void setupFirstGeneration() {
+    private void initFirstGeneration() {
 	// populate with agents
 
 	for (Species species : experiment.getSpeciesComposition()) {
@@ -269,11 +269,11 @@ public abstract class Simulation extends SimState implements Constants {
 		int randomX = random.nextInt(gridWidth);
 		int randomY = random.nextInt(gridHeight);
 
-		while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
+		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
 		    randomX = random.nextInt(gridWidth);
 		    randomY = random.nextInt(gridHeight);
 		}
-		setupCollisionGrid.field[randomX][randomY] = PRESENT;
+		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		Agent agent = agentFactory.createFactoryAgent(this, species,
 			SEED_GENERATION_NUMBER, i,
@@ -291,7 +291,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void setupNextGeneration() {
+    private void initNextGeneration() {
 	// populate with agents
 	generationCounter++;
 
@@ -300,11 +300,11 @@ public abstract class Simulation extends SimState implements Constants {
 	    int randomX = random.nextInt(gridWidth);
 	    int randomY = random.nextInt(gridHeight);
 
-	    while (setupCollisionGrid.field[randomX][randomY] == PRESENT) {
+	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
 		randomX = random.nextInt(gridWidth);
 		randomY = random.nextInt(gridHeight);
 	    }
-	    setupCollisionGrid.field[randomX][randomY] = PRESENT;
+	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 	    agent.reset();
 	    agent.generation = generationCounter;
@@ -319,11 +319,11 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
-	setupEnvironment();
-	setupFirstGeneration();
+	initEnvironment();
+	initFirstGeneration();
 
 	experiment.setStartDate();
-	experimentReporter.setupReporter();
+	experimentReporter.initReporter();
 
 	// this is run at the end of each step
 
@@ -367,8 +367,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void startNextSimulation() {
 	resetEnvironment();
-	setupEnvironment();
-	setupNextGeneration();
+	initEnvironment();
+	initNextGeneration();
 
     }
 

@@ -60,30 +60,30 @@ public abstract class SimulationUI extends GUIState implements Constants {
 		display = null;
 	}
 
-	protected void setupPortrayal(ValueGridPortrayal2D portrayal,
+	protected void initPortrayal(ValueGridPortrayal2D portrayal,
 			IntGrid2D grid, SimpleColorMap colorMap) {
 
 		portrayal.setField(grid);
 		portrayal.setMap(colorMap);
 	}
 
-	protected void setupPortrayal(ValueGridPortrayal2D portrayal,
+	protected void initPortrayal(ValueGridPortrayal2D portrayal,
 			DoubleGrid2D grid, SimpleColorMap colorMap) {
 		portrayal.setField(grid);
 		portrayal.setMap(colorMap);
 
 	}
 
-	protected abstract void setupPortrayals();
+	protected abstract void initPortrayals();
 	
 	public void start() {
 		super.start();
-		setupPortrayals();
+		initPortrayals();
 	}
 
 	public void load(SimState state) {
 		super.load(state);
-		setupPortrayals();
+		initPortrayals();
 	}
 
 	public SimulationUI() {

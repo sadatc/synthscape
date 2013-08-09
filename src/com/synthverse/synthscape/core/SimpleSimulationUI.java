@@ -56,10 +56,10 @@ public class SimpleSimulationUI extends SimulationUI {
 		trailPortrayal = new ValueGridPortrayal2D("Trail");
 	}
 
-	protected void setupPortrayals() {
+	protected void initPortrayals() {
 		Simulation theState = (Simulation) state;
 
-		setupPortrayal(trailPortrayal, theState.trailGrid,
+		initPortrayal(trailPortrayal, theState.trailGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
@@ -69,11 +69,11 @@ public class SimpleSimulationUI extends SimulationUI {
 
 				});
 
-		setupPortrayal(obstaclesPortrayal, theState.obstacleGrid,
+		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.BLACK));
 
-		setupPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
+		initPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.GREEN));
 

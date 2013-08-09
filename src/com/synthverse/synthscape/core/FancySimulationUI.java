@@ -62,7 +62,7 @@ public class FancySimulationUI extends SimulationUI {
 		display.attach(agentPortrayal, "Agents");
 	}
 
-	public void setupPortrayals() {
+	public void initPortrayals() {
 		Simulation theState = (Simulation) state;
 
 		// image based portrayal
@@ -96,11 +96,11 @@ public class FancySimulationUI extends SimulationUI {
 
 				));
 
-		setupPortrayal(obstaclesPortrayal, theState.obstacleGrid,
+		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.BLACK));
 
-		setupPortrayal(trailPortrayal, theState.trailGrid,
+		initPortrayal(trailPortrayal, theState.trailGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {

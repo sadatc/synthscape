@@ -177,7 +177,7 @@ public class ExperimentReporter implements Constants {
 	}
     }
 
-    public void setupReporter() {
+    public void initReporter() {
 	if (experiment.isRecordExperiment()) {
 
 	    openFile();

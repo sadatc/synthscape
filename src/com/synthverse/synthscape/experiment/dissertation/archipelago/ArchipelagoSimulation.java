@@ -2,6 +2,7 @@ package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
 import java.io.IOException;
 
+import com.synthverse.evolutionengine.model.archipelago.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -30,7 +31,7 @@ public class ArchipelagoSimulation extends Simulation {
 	// name and complexity
 	Experiment exp = new Experiment("POPULATION_ISLAND");
 	exp.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
-	exp.setEvolver(null);
+	exp.setEvolver(new ArchipelagoEvolver(this));
 	
 	// demographics
 	exp.setGridWidth(WORLD_WIDTH);

@@ -124,11 +124,11 @@ public final class EvolverCore implements EvolverConfig {
 	this.maxMutationRate = maxMutationRate;
 	this.evolutionProgressLog = evolutionProgressLog;
 
-	setupDataStructures();
+	initDataStructures();
 
     }
 
-    private final void setupDataStructures() {
+    private final void initDataStructures() {
 	// pre-fill all data strcuture
 	// we'll be re-using these over and over again
 
