@@ -16,7 +16,6 @@
  */
 package com.synthverse.stacks;
 
-
 /**
  * 
  * Configurations that affect classes in this package.
@@ -26,49 +25,50 @@ package com.synthverse.stacks;
  */
 public final class Config {
 
-	public final static boolean USE_DEFAULT_RANDOM_SEED = true;
+    public final static boolean USE_DEFAULT_RANDOM_SEED = true;
 
-	public final static boolean USE_ENTITY_POOL = false;
+    public final static boolean USE_ENTITY_POOL = false;
 
-	public final static int DEFAULT_ENTITY_CPU_CYCLES = 128;
+    public final static int DEFAULT_ENTITY_CPU_CYCLES = 128;
 
-	public final static int DEFAULT_ENTITY_CACHE_SIZE = 8096;
+    public final static int DEFAULT_ENTITY_CACHE_SIZE = 8096;
 
-	public final static int DEFAULT_RANDOM_SEED = 123456789;
+    public final static int DEFAULT_RANDOM_SEED = 123456789;
 
-	public final static int MAX_RETRIES_FOR_ENTITY_FILTERS = 40;
+    public final static int MAX_RETRIES_FOR_ENTITY_FILTERS = 40;
 
-	public final static boolean FILTER_ENTITY_DUPLICATES = false;
+    public final static boolean FILTER_ENTITY_DUPLICATES = false;
 
-	//
-	// The constants below should not be changed.
-	//
+    //
+    // The constants below should not be changed.
+    //
 
-	public final static int DEFAULT_CONTAINER_CAPACITY = 16;
-	public final static int DEFAULT_STACK_CAPACITY = DEFAULT_CONTAINER_CAPACITY;
-	public final static int DEFAULT_INTEGER_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
-	public final static int DEFAULT_BOOLEAN_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
-	public final static int DEFAULT_FLOAT_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
+    public final static int DEFAULT_CONTAINER_CAPACITY = 16;
+    public final static int DEFAULT_STACK_CAPACITY = DEFAULT_CONTAINER_CAPACITY;
+    public final static int DEFAULT_INTEGER_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
+    public final static int DEFAULT_BOOLEAN_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
+    public final static int DEFAULT_FLOAT_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
 
-	public final static int DEFAULT_ARRAY_SIZE = 128;
-	public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
+    public final static int DEFAULT_ARRAY_SIZE = 128;
+    public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
 
-	/**
-	 * CODE_STACK_CAPACITY and PRORGAM_ARRAY_SIZE should be the same
-	 */
-	public final static int DEFAULT_CODE_STACK_CAPACITY = DEFAULT_PROGRAM_ARRAY_SIZE;
+    /**
+     * CODE_STACK_CAPACITY and PRORGAM_ARRAY_SIZE should be the same
+     */
+    public final static int DEFAULT_CODE_STACK_CAPACITY = DEFAULT_PROGRAM_ARRAY_SIZE;
 
-	public final static boolean DEFAULT_BOOLEAN_VALUE = false;
-	public final static float DEFAULT_FLOAT_VALUE = 0F;
-	public final static int DEFAULT_INTEGER_VALUE = 0;
-	public final static Instruction DEFAULT_PROGRAM_VALUE = Instruction.NOOP;
-	public final static Instruction DEFAULT_CODE_VALUE = DEFAULT_PROGRAM_VALUE;
-	public final static String EMPTY_CONTAINER_STRING = "[]";
+    public final static boolean DEFAULT_BOOLEAN_VALUE = false;
+    public final static float DEFAULT_FLOAT_VALUE = 0F;
+    public final static int DEFAULT_INTEGER_VALUE = 0;
+    public final static Instruction DEFAULT_PROGRAM_VALUE = Instruction.NOOP;
+    public final static Instruction DEFAULT_CODE_VALUE = DEFAULT_PROGRAM_VALUE;
+    public final static String EMPTY_CONTAINER_STRING = "[]";
 
-	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    public final static String LINE_SEPARATOR = System
+	    .getProperty("line.separator");
 
-	private Config() {
-		throw new AssertionError("Config constructor is restricted");
-	}
+    private Config() {
+	throw new AssertionError("Config constructor is restricted");
+    }
 
 }

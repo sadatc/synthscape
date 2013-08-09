@@ -30,89 +30,89 @@ import ec.util.MersenneTwisterFast;
  */
 public abstract class AbstractStack {
 
-	/**
-	 * Subclasses can view this - but need not redefine it. This is a constant
-	 * defining the most bottom index (i.e. empty stack position).
-	 */
-	protected static final int BOTTOM_INDEX = -1;
+    /**
+     * Subclasses can view this - but need not redefine it. This is a constant
+     * defining the most bottom index (i.e. empty stack position).
+     */
+    protected static final int BOTTOM_INDEX = -1;
 
-	/**
-	 * A Subclasses can use a different value for this - if needed.
-	 */
-	protected int capacity = Config.DEFAULT_STACK_CAPACITY;
+    /**
+     * A Subclasses can use a different value for this - if needed.
+     */
+    protected int capacity = Config.DEFAULT_STACK_CAPACITY;
 
-	/**
-	 * We start with the empty index. Subclasses should not override this: but
-	 * increment/decrement it as required. If stack is empty, index should
-	 * BOTTOM_INDEX. If stack is full, index should be (capacity-1)
-	 */
-	protected int index = BOTTOM_INDEX;
+    /**
+     * We start with the empty index. Subclasses should not override this: but
+     * increment/decrement it as required. If stack is empty, index should
+     * BOTTOM_INDEX. If stack is full, index should be (capacity-1)
+     */
+    protected int index = BOTTOM_INDEX;
 
-	/**
-	 * We start with an empty stack. Subclasses should definitely increment and
-	 * decrement this depending on the number of elements in the stack. This
-	 * should reflect the number of elements in the stack.
-	 */
-	protected int size = 0;
+    /**
+     * We start with an empty stack. Subclasses should definitely increment and
+     * decrement this depending on the number of elements in the stack. This
+     * should reflect the number of elements in the stack.
+     */
+    protected int size = 0;
 
-	public MersenneTwisterFast randomNumberGenerator = null;
+    public MersenneTwisterFast randomNumberGenerator = null;
 
-	/**
-	 * True if stack is empty. Subclasses can not override this.
-	 * 
-	 * @return true if empty
-	 */
-	public final boolean isEmpty() {
-		return (index == BOTTOM_INDEX);
-	}
+    /**
+     * True if stack is empty. Subclasses can not override this.
+     * 
+     * @return true if empty
+     */
+    public final boolean isEmpty() {
+	return (index == BOTTOM_INDEX);
+    }
 
-	/**
-	 * True if stack is full.
-	 * 
-	 * @return
-	 */
-	public final boolean isFull() {
-		return (index == (capacity - 1));
-	}
+    /**
+     * True if stack is full.
+     * 
+     * @return
+     */
+    public final boolean isFull() {
+	return (index == (capacity - 1));
+    }
 
-	/**
-	 * Returns the number of elements contained within the stack.
-	 * 
-	 * @return
-	 */
-	public final int size() {
-		return size;
-	}
+    /**
+     * Returns the number of elements contained within the stack.
+     * 
+     * @return
+     */
+    public final int size() {
+	return size;
+    }
 
-	/**
-	 * This empties the stack. For efficiency, it doesn't go item by item and
-	 * actually garbage collect or delete individually, but rather sets the
-	 * index to {@link #BOTTOM_INDEX} signifying that it's effectively empty
-	 */
-	public final void flush() {
-		index = BOTTOM_INDEX;
-		size = 0;
+    /**
+     * This empties the stack. For efficiency, it doesn't go item by item and
+     * actually garbage collect or delete individually, but rather sets the
+     * index to {@link #BOTTOM_INDEX} signifying that it's effectively empty
+     */
+    public final void flush() {
+	index = BOTTOM_INDEX;
+	size = 0;
 
-	}
+    }
 
-	public MersenneTwisterFast getRandomNumberGenerator() {
-		return randomNumberGenerator;
-	}
+    public MersenneTwisterFast getRandomNumberGenerator() {
+	return randomNumberGenerator;
+    }
 
-	public void setRandomNumberGenerator(
-			MersenneTwisterFast randomNumberGenerator) {
-		this.randomNumberGenerator = randomNumberGenerator;
-	}
+    public void setRandomNumberGenerator(
+	    MersenneTwisterFast randomNumberGenerator) {
+	this.randomNumberGenerator = randomNumberGenerator;
+    }
 
-	/*
-	 * @see java.lang.Object#toString()
-	 */
-	public abstract String toString();
+    /*
+     * @see java.lang.Object#toString()
+     */
+    public abstract String toString();
 
-	private AbstractStack() {
-	};
+    private AbstractStack() {
+    };
 
-	public AbstractStack(MersenneTwisterFast randomNumberGenerator) {
-		this.randomNumberGenerator = randomNumberGenerator;
-	}
+    public AbstractStack(MersenneTwisterFast randomNumberGenerator) {
+	this.randomNumberGenerator = randomNumberGenerator;
+    }
 }
