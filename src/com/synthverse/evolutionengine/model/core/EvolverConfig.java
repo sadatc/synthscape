@@ -5,7 +5,7 @@ package com.synthverse.evolutionengine.model.core;
  * 
  * @author sadat
  */
-public interface EvolvingGenePoolConfig {
+public interface EvolverConfig {
 
     public static final double DEFAULT_PERCENT_TOP = 0.3;
 

@@ -30,7 +30,8 @@ public class ArchipelagoSimulation extends Simulation {
 	// name and complexity
 	Experiment exp = new Experiment("POPULATION_ISLAND");
 	exp.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
-
+	exp.setEvolver(null);
+	
 	// demographics
 	exp.setGridWidth(WORLD_WIDTH);
 	exp.setGridHeight(WORLD_HEIGHT);

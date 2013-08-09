@@ -26,7 +26,9 @@ public class TestSim extends Simulation {
 
 	// name and complexity
 	Experiment myExperiment = new Experiment("Basic.Test");
-	myExperiment.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
+	myExperiment.setEvolver(null);	
+	myExperiment
+		.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
 
 	// demographics
 	myExperiment.setGridWidth(WORLD_WIDTH);
@@ -37,10 +39,11 @@ public class TestSim extends Simulation {
 
 	// interactions
 	myExperiment.addInteractionMechanism(InteractionMechanism.TRAIL);
-	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);	
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	myExperiment.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-	
+	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);
+	myExperiment
+		.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	myExperiment
+		.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
 
 	// species compositions
 	myExperiment.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);

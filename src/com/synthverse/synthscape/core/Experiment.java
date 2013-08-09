@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.synthverse.evolutionengine.model.core.Evolver;
 import com.synthverse.util.DateUtils;
 
 public class Experiment {
@@ -29,6 +30,7 @@ public class Experiment {
     private ProblemComplexity problemComplexity;
     private Set<Species> speciesComposition = new LinkedHashSet<Species>();
     private Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
+    private Evolver evolver;
 
     private String eventFileName;
 
@@ -133,7 +135,8 @@ public class Experiment {
 
     }
 
-    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(
+	    Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
@@ -175,9 +178,12 @@ public class Experiment {
 	if (eventFileName != null) {
 
 	    if (eventFileName.indexOf(".") != -1) {
-		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
-		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + postPart;
+		String prePart = eventFileName.substring(0,
+			eventFileName.lastIndexOf('.'));
+		String postPart = eventFileName.substring(eventFileName
+			.lastIndexOf('.'));
+		eventFileName = prePart + "_"
+			+ DateUtils.getFileNameDateStamp() + postPart;
 
 	    } else {
 		eventFileName += "_" + batchId;
@@ -200,7 +206,8 @@ public class Experiment {
 	this.recordExperiment = recordExperiment;
     }
 
-    public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
+    public void addInteractionMechanism(
+	    InteractionMechanism interactionMechanism) {
 	this.interactionMechanisms.add(interactionMechanism);
 
     }
@@ -235,6 +242,14 @@ public class Experiment {
 
     public void setStepsPerSimulation(int stepsPerSimulation) {
 	this.stepsPerSimulation = stepsPerSimulation;
+    }
+
+    public Evolver getEvolver() {
+	return evolver;
+    }
+
+    public void setEvolver(Evolver evolver) {
+	this.evolver = evolver;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.experiment.test.basic;
 
+import com.synthverse.evolutionengine.model.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
@@ -28,6 +29,20 @@ public class TestAgentFactory implements AgentFactory, Constants {
 	return new TestAgent(simulation, species, generation, agentId,
 		maxSteps, x, y);
 
+    }
+
+    @Override
+    public Agent getSeedAgent(Evolver evolver,
+	    Species species) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public Agent getEvolvedAgent(Evolver evolver,
+	    Species species) {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

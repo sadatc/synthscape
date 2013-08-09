@@ -31,6 +31,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 	Experiment myExperiment = new Experiment("POPULATION_ISLAND_MANUAL");
 	myExperiment
 		.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
+	myExperiment.setEvolver(null);
 
 	// demographics
 	myExperiment.setGridWidth(WORLD_WIDTH);

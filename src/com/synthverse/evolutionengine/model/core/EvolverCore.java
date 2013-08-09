@@ -15,9 +15,9 @@ import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
-public final class EvolvingGenePool implements EvolvingGenePoolConfig {
+public final class EvolverCore implements EvolverConfig {
 
-    private static Logger logger = Logger.getLogger(EvolvingGenePool.class
+    private static Logger logger = Logger.getLogger(EvolverCore.class
 	    .getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -55,7 +55,7 @@ public final class EvolvingGenePool implements EvolvingGenePoolConfig {
     /**
      * creates an evolver with all default values
      */
-    public EvolvingGenePool(AgentFactory agentFactory, Species species) {
+    public EvolverCore(AgentFactory agentFactory, Species species) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP,
 		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
 		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
@@ -72,7 +72,7 @@ public final class EvolvingGenePool implements EvolvingGenePoolConfig {
      * @param agentFactory
      * @param maxPopulationSize
      */
-    public EvolvingGenePool(AgentFactory agentFactory, Species species,
+    public EvolverCore(AgentFactory agentFactory, Species species,
 	    int maxPopulationSize) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP,
 		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
@@ -100,7 +100,7 @@ public final class EvolvingGenePool implements EvolvingGenePoolConfig {
      * @param maxMutationRate
      * @param evolutionProgressLog
      */
-    public EvolvingGenePool(AgentFactory agentFactory, Species species,
+    public EvolverCore(AgentFactory agentFactory, Species species,
 	    double percentTop, double percentTopXTop, double percentTopMutant,
 	    double percentTopXBottom, double percentBottom,
 	    double percentBottomMutant, double percentBottomXBottom,
