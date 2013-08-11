@@ -17,6 +17,16 @@ public class TestSim extends Simulation {
 	super(seed);
     }
 
+    @Override
+    public Evolver configEvolver() {
+	return new TestAgentEvolver(this);
+    }
+
+    @Override
+    public AgentFactory configAgentFactory() {
+	return new TestAgentFactory(this);
+    }
+
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
 	doLoop(TestSim.class, manualArgs);
@@ -99,16 +109,6 @@ public class TestSim extends Simulation {
     @Override
     public int configStepsPerSimulation() {
 	return MAX_STEPS_PER_AGENT;
-    }
-
-    @Override
-    public Evolver configEvolver() {
-	return new TestAgentEvolver(this);
-    }
-
-    @Override
-    public AgentFactory configAgentFactory() {
-	return new TestAgentFactory(this);
     }
 
 }
