@@ -1,18 +1,19 @@
 package com.synthverse.synthscape.core;
 
-import com.synthverse.evolutionengine.model.core.Evolver;
+public abstract class AgentFactory {
 
-public interface AgentFactory {
+    protected Simulation simulation;
 
-    public Agent createFactoryAgent(Species species);
+    @SuppressWarnings("unused")
+    private AgentFactory() {
+	throw new AssertionError("AgentFactory constructor is restricted");
+    }
 
-    public Agent createFactoryAgent(Simulation simulation, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY);
+    protected AgentFactory(Simulation simulation) {
+	this.simulation = simulation;
 
-    public Agent getSeedAgent(Evolver evolver,
-	    Species species);
+    }
 
-    public Agent getEvolvedAgent(Evolver evolver,
-	    Species species);
+    public abstract Agent getNewFactoryAgent(Species species);
+
 }

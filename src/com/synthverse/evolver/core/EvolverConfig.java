@@ -1,4 +1,4 @@
-package com.synthverse.evolutionengine.model.core;
+package com.synthverse.evolver.core;
 
 /**
  * Defines the configuration parameters for evolutionary algorithms

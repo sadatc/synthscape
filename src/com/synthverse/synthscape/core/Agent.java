@@ -14,8 +14,7 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent implements Constants, Steppable, Valuable,
-	Comparable<Agent> {
+public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
 
@@ -71,13 +70,13 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     private Agent() {
     }
 
-    protected Agent(Species species) {
+    protected Agent(Simulation simulation, Species species) {
+	setSim(simulation);
 	setSpecies(species);
     }
 
-    protected Agent(Simulation simulation, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int agentId,
+	    int maxSteps, int startX, int startY) {
 
 	// set the basic stuff:
 	setSim(simulation);
@@ -87,8 +86,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	setY(startY);
 	setGeneration(generationNumber);
 	setSpecies(species);
-	setInteractionMechanisms(simulation.getExperiment()
-		.getInteractionMechanisms());
+	setInteractionMechanisms(simulation.getInteractionMechanisms());
 
     }
 
@@ -165,9 +163,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
-		    && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight()
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
 		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
@@ -220,8 +217,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	grid.field[x][y] = 100;
     }
 
-    public final boolean _operationPerformResourceAction(Task action,
-	    ObjectGrid2D resourceGrid) {
+    public final boolean _operationPerformResourceAction(Task action, ObjectGrid2D resourceGrid) {
 
 	boolean actionPerformed = false;
 
@@ -279,8 +275,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA,
-	    DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -419,8 +415,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		}
 	    }
 
-	    _operationMoveToLocationAt(closestCollectionSite.x,
-		    closestCollectionSite.y);
+	    _operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
 
 	}
     }
@@ -446,8 +441,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		    }
 		}
 	    }
-	    _operationMoveToLocationAt(closestAgentLocation.x,
-		    closestAgentLocation.y);
+	    _operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
 
 	}
     }
@@ -527,11 +521,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public final void operationExtractResource() {
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
-	    if (_operationPerformResourceAction(Task.EXTRACTION,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.EXTRACTED_RESOURCE, NA, NA);
+		sim.reportEvent(species, agentId, this.stepCounter, x, y, Event.EXTRACTED_RESOURCE,
+			NA, NA);
 
 	    }
 
@@ -541,11 +534,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public void operationProcessResource() {
 	if (species.getTraits().contains(Trait.PROCESSING)) {
-	    if (_operationPerformResourceAction(Task.PROCESSING,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.PROCESSED_RESOURCE, NA, NA);
+		sim.reportEvent(species, agentId, this.stepCounter, x, y, Event.PROCESSED_RESOURCE,
+			NA, NA);
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -574,8 +566,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public final void operationUnLoadResource() {
-	if (species.getTraits().contains(Trait.TRANSPORTATION)
-		&& isCarryingResource) {
+	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
 	    if (!locationHasExtractedResource && !locationHasProcessedResource
 		    && !locationHasRawResource) {
 
@@ -594,10 +585,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.reportEvent(species, agentId, this.stepCounter, x, y,
+				    Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.reportEvent(species, agentId, this.stepCounter, x, y,
+				    Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
 		    } else if (this.sim.problemComplexity
@@ -605,10 +596,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.reportEvent(species, agentId, this.stepCounter, x, y,
+				    Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.reportEvent(species, agentId, this.stepCounter, x, y,
+				    Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
 		    } else {
@@ -679,8 +670,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 		stats.collectionSiteHits++;
 
-		if (x == sim.PRIMARY_COLLECTION_SITE_X
-			&& y == sim.PRIMARY_COLLECTION_SITE_Y) {
+		if (x == sim.PRIMARY_COLLECTION_SITE_X && y == sim.PRIMARY_COLLECTION_SITE_Y) {
 		    // sim.statistics.stepData.primaryCollectionSiteHits++;
 		    stats.primaryCollectionSiteHits++;
 		}
@@ -794,8 +784,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.sim = sim;
     }
 
-    protected static Agent generateAgent(long generation, long agentId, int x,
-	    int y) {
+    protected static Agent generateAgent(long generation, long agentId, int x, int y) {
 	return null;
     }
 
@@ -811,8 +800,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.species = species;
     }
 
-    public void setInteractionMechanisms(
-	    Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 

@@ -1,6 +1,6 @@
-package com.synthverse.evolutionengine.model.archipelago;
+package com.synthverse.evolver.archipelago;
 
-import com.synthverse.evolutionengine.model.core.EvolverCore;
+import com.synthverse.evolver.core.EvolverCore;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Species;
 

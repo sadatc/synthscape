@@ -3,8 +3,6 @@
  */
 package com.synthverse.synthscape.experiment.test.basic;
 
-import java.io.IOException;
-
 import sim.display.Console;
 
 import com.synthverse.synthscape.core.Constants;
@@ -17,7 +15,7 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  */
 public class TestSimUI extends SimpleSimulationUI {
 
-    public TestSimUI() throws IOException {
+    public TestSimUI() throws Exception {
 	super(new TestSim(Constants.SIMULATION_RNG_SEED));
     }
 

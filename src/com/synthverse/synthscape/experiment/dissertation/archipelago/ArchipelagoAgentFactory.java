@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
-import com.synthverse.evolutionengine.model.core.Evolver;
+import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
@@ -29,20 +29,6 @@ public class ArchipelagoAgentFactory implements AgentFactory, Constants {
 	    int startY) {
 	return new ArchipelagoAgent(simulation, species, generationNumber,
 		agentId, maxSteps, startX, startY);
-    }
-
-    @Override
-    public Agent getSeedAgent(Evolver evolver,
-	    Species species) {
-	// TODO Auto-generated method stub
-	return null;
-    }
-
-    @Override
-    public Agent getEvolvedAgent(Evolver evolver,
-	    Species species) {
-	// TODO Auto-generated method stub
-	return null;
     }
 
 }

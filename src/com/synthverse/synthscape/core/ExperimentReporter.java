@@ -17,7 +17,7 @@ public class ExperimentReporter implements Constants {
 
     private static int STRING_BUFFER_MAX_SIZE = 175;
 
-    private final Experiment experiment;
+    private final Simulation simulation;
     private BufferedWriter bufferedWriter = null;
     private final static char COMMA = ',';
     private StringBuilder sb = new StringBuilder(STRING_BUFFER_MAX_SIZE);
@@ -29,26 +29,24 @@ public class ExperimentReporter implements Constants {
 	throw new AssertionError("not allowed");
     }
 
-    public ExperimentReporter(Experiment experiment, boolean flushAlways)
-	    throws IOException {
+    public ExperimentReporter(Simulation simulation, boolean flushAlways) throws IOException {
 
-	this.experiment = experiment;
+	this.simulation = simulation;
 	this.flushAlways = flushAlways;
 
     }
 
     private void openFile() {
-	File file = new File(experiment.getEventFileName());
+	File file = new File(simulation.getEventFileName());
 	try {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    bufferedWriter = new BufferedWriter(new FileWriter(
-		    file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    D.p("Exception while trying to open experiment output file: "
-		    + e.getMessage());
+	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
 	    e.printStackTrace();
 	}
 
@@ -61,41 +59,38 @@ public class ExperimentReporter implements Constants {
 		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,NUM_AGENTS_PER_SPECIES,NUM_COLLECTION_SITES,NUM_STEPS_PER_AGENT,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
 	    bufferedWriter.newLine();
 
-	    bufferedWriter.append(experiment.getServerName());
+	    bufferedWriter.append(simulation.getServerName());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(experiment.getName());
+	    bufferedWriter.append(simulation.getExperimentName());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(experiment.getBatchId());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(DateUtils
-		    .getReportFormattedDateString(experiment.getStartDate()));
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getGridWidth());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getGridHeight());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getObstacleDensity());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getResourceDensity());
+	    bufferedWriter.append(simulation.getBatchId());
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter
-		    .append("" + experiment.getNumberOfAgentsPerSpecies());
+		    .append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getGridWidth());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getGridHeight());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getObstacleDensity());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getResourceDensity());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getNumberOfAgentsPerSpecies());
 	    bufferedWriter.append(COMMA);
 
-	    bufferedWriter.append("" + experiment.getNumberOfCollectionSites());
+	    bufferedWriter.append("" + simulation.getNumberOfCollectionSites());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + experiment.getMaxStepsPerAgent());
+	    bufferedWriter.append("" + simulation.getMaxStepsPerAgent());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(""
-		    + experiment.getProblemComplexity().getId());
-	    bufferedWriter.append(COMMA);
-
-	    bufferedWriter.append("" + experiment.getSpeciesCompositionSting());
-
+	    bufferedWriter.append("" + simulation.getProblemComplexity().getId());
 	    bufferedWriter.append(COMMA);
 
-	    bufferedWriter.append(""
-		    + experiment.getInteractionMechanismsString());
+	    bufferedWriter.append("" + simulation.getSpeciesCompositionSting());
+
+	    bufferedWriter.append(COMMA);
+
+	    bufferedWriter.append("" + simulation.getInteractionMechanismsString());
 
 	    bufferedWriter.newLine();
 	    bufferedWriter.newLine();
@@ -121,11 +116,10 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(int simulationNumber, int generation,
-	    Species species, int agentId, int step, int x, int y, Event event,
-	    String source, String destination) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
+	    int step, int x, int y, Event event, String source, String destination) {
 	try {
-	    if (experiment.isRecordExperiment()) {
+	    if (simulation.isRecordExperiment()) {
 		sb.append(simulationNumber);
 		sb.append(COMMA);
 		sb.append(generation);
@@ -172,13 +166,13 @@ public class ExperimentReporter implements Constants {
     }
 
     public void cleanupReporter() {
-	if (experiment.isRecordExperiment()) {
+	if (simulation.isRecordExperiment()) {
 	    closeFile();
 	}
     }
 
     public void initReporter() {
-	if (experiment.isRecordExperiment()) {
+	if (simulation.isRecordExperiment()) {
 
 	    openFile();
 	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {

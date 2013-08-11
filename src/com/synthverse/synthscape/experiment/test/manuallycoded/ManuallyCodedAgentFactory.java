@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
-import com.synthverse.evolutionengine.model.core.Evolver;
+import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;

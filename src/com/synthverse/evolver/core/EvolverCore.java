@@ -1,4 +1,4 @@
-package com.synthverse.evolutionengine.model.core;
+package com.synthverse.evolver.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +17,7 @@ import ec.util.MersenneTwisterFast;
 
 public final class EvolverCore implements EvolverConfig {
 
-    private static Logger logger = Logger.getLogger(EvolverCore.class
-	    .getName());
+    private static Logger logger = Logger.getLogger(EvolverCore.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
@@ -27,8 +26,6 @@ public final class EvolverCore implements EvolverConfig {
     double averageFitness = 0.0f;
     int generationCounter = 0;
     boolean terminationRequested = false;
-
-    AgentFactory agentFactory = null;
 
     ArrayList<Agent> activeBuffer = null;
     ArrayList<Agent> parentBuffer = null;
@@ -51,18 +48,17 @@ public final class EvolverCore implements EvolverConfig {
     int maxGenerations;
     double maxMutationRate;
     String evolutionProgressLog;
+    private AgentFactory agentFactory;
 
     /**
      * creates an evolver with all default values
      */
     public EvolverCore(AgentFactory agentFactory, Species species) {
-	this(agentFactory, species, DEFAULT_PERCENT_TOP,
-		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
-		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
+	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
+		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
 		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
-		DEFAULT_PERCENT_RANDOM, DEFAULT_MAX_POPULATION_SIZE,
-		DEFAULT_MAX_GENERATIONS, DEFAULT_MAX_MUTATION_RATE,
-		DEFAULT_EVOLUTION_PROGRESS_LOG);
+		DEFAULT_PERCENT_RANDOM, DEFAULT_MAX_POPULATION_SIZE, DEFAULT_MAX_GENERATIONS,
+		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -72,15 +68,12 @@ public final class EvolverCore implements EvolverConfig {
      * @param agentFactory
      * @param maxPopulationSize
      */
-    public EvolverCore(AgentFactory agentFactory, Species species,
-	    int maxPopulationSize) {
-	this(agentFactory, species, DEFAULT_PERCENT_TOP,
-		DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
-		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
+    public EvolverCore(AgentFactory agentFactory, Species species, int maxPopulationSize) {
+	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
+		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
 		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
-		DEFAULT_PERCENT_RANDOM, maxPopulationSize,
-		DEFAULT_MAX_GENERATIONS, DEFAULT_MAX_MUTATION_RATE,
-		DEFAULT_EVOLUTION_PROGRESS_LOG);
+		DEFAULT_PERCENT_RANDOM, maxPopulationSize, DEFAULT_MAX_GENERATIONS,
+		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -100,10 +93,9 @@ public final class EvolverCore implements EvolverConfig {
      * @param maxMutationRate
      * @param evolutionProgressLog
      */
-    public EvolverCore(AgentFactory agentFactory, Species species,
-	    double percentTop, double percentTopXTop, double percentTopMutant,
-	    double percentTopXBottom, double percentBottom,
-	    double percentBottomMutant, double percentBottomXBottom,
+    public EvolverCore(AgentFactory agentFactory, Species species, double percentTop,
+	    double percentTopXTop, double percentTopMutant, double percentTopXBottom,
+	    double percentBottom, double percentBottomMutant, double percentBottomXBottom,
 	    double percentRandom, int maxPopulationSize, int maxGenerations,
 	    double maxMutationRate, String evolutionProgressLog) {
 
@@ -136,10 +128,8 @@ public final class EvolverCore implements EvolverConfig {
 	offspringBuffer = new ArrayList<Agent>(populationSize);
 
 	for (int i = 0; i < populationSize; i++) {
-	    parentBuffer.add(agentFactory.createFactoryAgent(species)
-		    .randomizeGenotype());
-	    offspringBuffer.add(agentFactory.createFactoryAgent(species)
-		    .randomizeGenotype());
+	    parentBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
+	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
 	}
 
 	topPerformers = new ArrayList<Agent>();
@@ -159,17 +149,14 @@ public final class EvolverCore implements EvolverConfig {
 	logger.finest("<<<");
     }
 
-    private final void generateMutants(
-	    MersenneTwisterFast randomNumberGenerator,
-	    ArrayList<Agent> candidateParents, int numMutants,
-	    int offspringBufferIndex) {
+    private final void generateMutants(MersenneTwisterFast randomNumberGenerator,
+	    ArrayList<Agent> candidateParents, int numMutants, int offspringBufferIndex) {
 
 	for (int i = 0; i < numMutants; i++) {
-	    Agent parent = CollectionUtils.pickRandomFromList(
-		    randomNumberGenerator, candidateParents);
+	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
-	    GeneticOperator.pointMutate(randomNumberGenerator, parent,
-		    offspring, maxMutationRate);
+	    GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
 
 	    // do filtering, if needed
 	    if (Config.FILTER_ENTITY_DUPLICATES) {
@@ -181,10 +168,10 @@ public final class EvolverCore implements EvolverConfig {
 		    offspringId = offspring.getId();
 
 		    if (entityIdDB.contains(offspringId)) {
-			parent = CollectionUtils.pickRandomFromList(
-				randomNumberGenerator, candidateParents);
-			GeneticOperator.pointMutate(randomNumberGenerator,
-				parent, offspring, maxMutationRate);
+			parent = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+				candidateParents);
+			GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring,
+				maxMutationRate);
 			numRetries++;
 		    } else {
 			entityIdDB.add(offspringId);
@@ -197,20 +184,17 @@ public final class EvolverCore implements EvolverConfig {
 
     }
 
-    private final void generateCrosses(
-	    MersenneTwisterFast randomNumberGenerator,
-	    ArrayList<Agent> candidateAParents,
-	    ArrayList<Agent> candidateBParents, int numOffsprings,
-	    int offspringBufferIndex) {
+    private final void generateCrosses(MersenneTwisterFast randomNumberGenerator,
+	    ArrayList<Agent> candidateAParents, ArrayList<Agent> candidateBParents,
+	    int numOffsprings, int offspringBufferIndex) {
 
 	for (int i = 0; i < numOffsprings; i++) {
-	    Agent parentA = CollectionUtils.pickRandomFromList(
-		    randomNumberGenerator, candidateAParents);
-	    Agent parentB = CollectionUtils.pickRandomFromList(
-		    randomNumberGenerator, candidateBParents);
+	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateAParents);
+	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateBParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
-	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB,
-		    offspring);
+	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
 
 	    // do filtering, if needed
 	    if (Config.FILTER_ENTITY_DUPLICATES) {
@@ -222,12 +206,11 @@ public final class EvolverCore implements EvolverConfig {
 		    offspringId = offspring.getId();
 
 		    if (entityIdDB.contains(offspringId)) {
-			parentA = CollectionUtils.pickRandomFromList(
-				randomNumberGenerator, candidateAParents);
-			parentB = CollectionUtils.pickRandomFromList(
-				randomNumberGenerator, candidateBParents);
-			GeneticOperator.cross(randomNumberGenerator, parentA,
-				parentB, offspring);
+			parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+				candidateAParents);
+			parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+				candidateBParents);
+			GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
 
 			numRetries++;
 		    } else {
@@ -279,8 +262,7 @@ public final class EvolverCore implements EvolverConfig {
 
     }
 
-    public final void generateNextGeneration(
-	    MersenneTwisterFast randomNumberGenerator) {
+    public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 	logger.finest(">>>");
 
 	// clear up values from previous generation
@@ -301,45 +283,43 @@ public final class EvolverCore implements EvolverConfig {
 	// adding tops
 	compareBufffers();
 
-	swapBufferElements(activeBuffer, offspringBuffer, 0, aTop,
-		offspringBufferIndex);
+	swapBufferElements(activeBuffer, offspringBuffer, 0, aTop, offspringBufferIndex);
 
 	offspringBufferIndex += aTop;
 
 	// adding bottoms
 
-	swapBufferElements(activeBuffer, offspringBuffer, populationSize
-		- aBottom - 1, aBottom, offspringBufferIndex);
+	swapBufferElements(activeBuffer, offspringBuffer, populationSize - aBottom - 1, aBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottom;
 
 	// adding top x top
 
-	generateCrosses(randomNumberGenerator, topPerformers, topPerformers,
-		aTopXTop, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, topPerformers, aTopXTop,
+		offspringBufferIndex);
 	offspringBufferIndex += aTopXTop;
 
 	// adding top mutants
 
-	generateMutants(randomNumberGenerator, topPerformers, aTopMutants,
-		offspringBufferIndex);
+	generateMutants(randomNumberGenerator, topPerformers, aTopMutants, offspringBufferIndex);
 	offspringBufferIndex += aTopMutants;
 
 	// adding top x bottom
 
-	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers,
-		aTopXBottom, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers, aTopXBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aTopXBottom;
 
 	// adding bottom mutants
 
-	generateMutants(randomNumberGenerator, bottomPerformers,
-		aBottomMutants, offspringBufferIndex);
+	generateMutants(randomNumberGenerator, bottomPerformers, aBottomMutants,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottomMutants;
 
 	// adding bottom x bottom
 
-	generateCrosses(randomNumberGenerator, bottomPerformers,
-		bottomPerformers, aBottomXBottom, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, bottomPerformers, bottomPerformers, aBottomXBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottomXBottom;
 
 	// add new random programs
@@ -358,12 +338,11 @@ public final class EvolverCore implements EvolverConfig {
 	offspringBuffer = savedSwapBuffer;
 	activeBuffer = parentBuffer;
 
-	String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" + aTopMutants
-		+ ", tXb=" + aTopXBottom + ", b=" + aBottom + ", bM="
-		+ aBottomMutants + ", bXb=" + aBottomXBottom + ", n=" + aRandom;
+	String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" + aTopMutants + ", tXb="
+		+ aTopXBottom + ", b=" + aBottom + ", bM=" + aBottomMutants + ", bXb="
+		+ aBottomXBottom + ", n=" + aRandom;
 
-	logger.fine("[GENERATION " + generationCounter
-		+ "] REGENERATION COMPLETED:" + msg);
+	logger.fine("[GENERATION " + generationCounter + "] REGENERATION COMPLETED:" + msg);
 
 	logger.finest("<<<\n");
 
@@ -386,16 +365,15 @@ public final class EvolverCore implements EvolverConfig {
     }
 
     @SuppressWarnings("unused")
-    private final void swapBufferElement(ArrayList<Agent> srcBuffer,
-	    ArrayList<Agent> targetBuffer, int srcIndex, int targetIndex) {
+    private final void swapBufferElement(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer,
+	    int srcIndex, int targetIndex) {
 	Agent savedBaseAgent = targetBuffer.get(targetIndex);
 	targetBuffer.set(targetIndex, srcBuffer.get(srcIndex));
 	srcBuffer.set(srcIndex, savedBaseAgent);
     }
 
     private final void swapBufferElements(ArrayList<Agent> srcBuffer,
-	    ArrayList<Agent> targetBuffer, int srcIndex, int numElements,
-	    int targetIndex) {
+	    ArrayList<Agent> targetBuffer, int srcIndex, int numElements, int targetIndex) {
 	for (int i = 0; i < numElements; i++) {
 	    Agent savedBaseAgent = targetBuffer.get(targetIndex + i);
 	    targetBuffer.set(targetIndex + i, srcBuffer.get(srcIndex + i));

@@ -3,8 +3,10 @@
  */
 package com.synthverse.synthscape.core;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -15,6 +17,9 @@ import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
+import com.synthverse.evolver.core.Evolver;
+import com.synthverse.util.DateUtils;
+
 /**
  * @author sadat
  * 
@@ -24,7 +29,9 @@ public abstract class Simulation extends SimState implements Constants {
 
     private static final long serialVersionUID = 2700375028430112699L;
 
-    protected Experiment experiment;
+    protected Evolver evolver;
+
+    private AgentFactory agentFactory;
 
     protected ExperimentReporter experimentReporter;
 
@@ -54,8 +61,6 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected boolean isToroidalWorld;
 
-    protected int numberOfAgentsPerSpecies;
-
     protected int numberOfObstacles;
 
     protected int numberOfResources;
@@ -66,32 +71,78 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected double trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
 
-    protected AgentFactory agentFactory;
-
     private int gridWidth;
 
     private int gridHeight;
 
-    public abstract Experiment getExperiment();
+    private String experimentName;
+    private boolean recordExperiment = false;
+    private String serverName;
+    private String batchId;
 
-    public abstract AgentFactory getAgentFactory();
+    private Date startDate;
+    private Date endDate;
 
-    public Simulation(long seed) throws IOException {
+    private double obstacleDensity;
+    private double resourceDensity;
+    private int numberOfAgentsPerSpecies;
+
+    private int maxStepsPerAgent;
+
+    private int simulationsPerExperiment;
+    private int stepsPerSimulation;
+
+    private Set<Species> speciesComposition = new LinkedHashSet<Species>();
+    private Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
+
+    private String eventFileName;
+
+    private void initSimulator() {
+	// we can compute the server name and batch ID right away
+	try {
+	    serverName = java.net.InetAddress.getLocalHost().getHostName();
+	} catch (Exception e) {
+	    serverName = "LOCAL";
+	}
+	batchId = Long.toHexString(System.currentTimeMillis());
+
+	// now set these up based on the concrete simulation
+
+	setExperimentName(configExperimentName());
+	setProblemComplexity(configProblemComplexity());
+
+	// environmental stuff
+	setGridWidth(configGridWidth());
+	setGridHeight(configGridHeight());
+	setNumberOfCollectionSites(configNumberOfCollectionSites());
+	setObstacleDensity(configObstacleDensity());
+	setResourceDensity(configResourceDensity());
+
+	// interactions
+	setInteractionMechanisms(configInteractionMechanisms());
+
+	// species compositions
+	setNumberOfAgentsPerSpecies(configNumberOfAgentsPerSpecies());
+	setSpeciesComposition(configSpeciesComposition());
+
+	// steps and simulations...
+	setStepsPerSimulation(configStepsPerSimulation());
+	setSimulationsPerExperiment(configSimulationsPerExperiment());
+
+	// agent factory and evolver...
+	setAgentFactory(configAgentFactory());
+	setEvolver(configEvolver());
+
+	// init any other dependencies...
+	evolver.init();
+
+    }
+
+    public Simulation(long seed) throws Exception {
 	super(seed);
-
-	agentFactory = getAgentFactory();
-
-	experiment = getExperiment();
-	gridWidth = experiment.getGridWidth();
-	gridHeight = experiment.getGridHeight();
-	numberOfAgentsPerSpecies = experiment.getNumberOfAgentsPerSpecies();
-
 	double gridArea = gridWidth * gridHeight;
-	numberOfObstacles = (int) (gridArea * experiment.getObstacleDensity());
-
-	numberOfResources = (int) (gridArea * experiment.getResourceDensity());
-	numberOfCollectionSites = experiment.getNumberOfCollectionSites();
-	problemComplexity = experiment.getProblemComplexity();
+	numberOfObstacles = (int) (gridArea * obstacleDensity);
+	numberOfResources = (int) (gridArea * resourceDensity);
 
 	createDataStructures();
 
@@ -99,31 +150,22 @@ public abstract class Simulation extends SimState implements Constants {
 	generationCounter = 0;
 	numberOfCollectedResources = 0;
 
-	experimentReporter = new ExperimentReporter(experiment,
-		DEFAULT_FLUSH_ALWAYS_FLAG);
+	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
 	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
+
     }
 
     private void createDataStructures() {
-
 	obstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-
 	collectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-
 	collectionSiteList = new ArrayList<Int2D>();
-
 	initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-
 	resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
-
 	trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-
 	agentGrid = new SparseGrid2D(gridWidth, gridHeight);
-
 	agents = new ArrayList<Agent>();
-
     }
 
     private void resetEnvironment() {
@@ -194,8 +236,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// set the primary collection site
 	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	initCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
-		PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X, PRIMARY_COLLECTION_SITE_Y));
     }
 
     private void initNonPrimaryCollectionSites() {
@@ -263,7 +304,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void initFirstGeneration() {
 	// populate with agents
 
-	for (Species species : experiment.getSpeciesComposition()) {
+	for (Species species : speciesComposition) {
 	    for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
 
 		int randomX = random.nextInt(gridWidth);
@@ -275,9 +316,13 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		Agent agent = agentFactory.createFactoryAgent(this, species,
-			SEED_GENERATION_NUMBER, i,
-			experiment.getMaxStepsPerAgent(), randomX, randomY);
+		/*
+		 * Agent agent = agentFactory.createFactoryAgent(this, species,
+		 * SEED_GENERATION_NUMBER, i, experiment.getMaxStepsPerAgent(),
+		 * randomX, randomY);
+		 */
+
+		Agent agent = evolver.getSeedAgent(species, randomX, randomY);
 
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 
@@ -295,23 +340,25 @@ public abstract class Simulation extends SimState implements Constants {
 	// populate with agents
 	generationCounter++;
 
-	for (Agent agent : agents) {
+	for (Species species : speciesComposition) {
+	    for (Agent agent : agents) {
 
-	    int randomX = random.nextInt(gridWidth);
-	    int randomY = random.nextInt(gridHeight);
+		int randomX = random.nextInt(gridWidth);
+		int randomY = random.nextInt(gridHeight);
 
-	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
+		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+		    randomX = random.nextInt(gridWidth);
+		    randomY = random.nextInt(gridHeight);
+		}
+		initCollisionGrid.field[randomX][randomY] = PRESENT;
+
+		/*
+		 * agent.reset(); agent.generation = generationCounter; agent.x
+		 * = randomX; agent.y = randomY;
+		 */
+		agent = evolver.getEvolvedAgent(species, generationCounter, randomX, randomY);
+		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 	    }
-	    initCollisionGrid.field[randomX][randomY] = PRESENT;
-
-	    agent.reset();
-	    agent.generation = generationCounter;
-	    agent.x = randomX;
-	    agent.y = randomY;
-
-	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 	}
 
 	D.p("finished population generation #" + generationCounter);
@@ -319,10 +366,11 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
+	initSimulator();
 	initEnvironment();
 	initFirstGeneration();
 
-	experiment.setStartDate();
+	setStartDate();
 	experimentReporter.initReporter();
 
 	// this is run at the end of each step
@@ -348,13 +396,12 @@ public abstract class Simulation extends SimState implements Constants {
 		    stepCounter = 0;
 		    simulationCounter++;
 
-		    if (simulationCounter < experiment
-			    .getSimulationsPerExperiment()) {
+		    if (simulationCounter < simulationsPerExperiment) {
 
 			startNextSimulation();
 		    } else {
 			D.p("**** end of experiment ***");
-			experiment.setEndDate();
+			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
 		    }
@@ -362,6 +409,16 @@ public abstract class Simulation extends SimState implements Constants {
 	    }
 
 	}, 1);
+
+    }
+
+    private void setProblemComplexity(ProblemComplexity problemComplexity) {
+	this.problemComplexity = problemComplexity;
+
+    }
+
+    private void setExperimentName(String experimentName) {
+	this.experimentName = experimentName;
 
     }
 
@@ -373,8 +430,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
-	return (this.numberOfCollectedResources >= this.numberOfResources || this.stepCounter > experiment
-		.getStepsPerSimulation());
+	return (this.numberOfCollectedResources >= this.numberOfResources || this.stepCounter > stepsPerSimulation);
     }
 
     protected void doEndOfStepTasks() {
@@ -396,23 +452,225 @@ public abstract class Simulation extends SimState implements Constants {
 	return array;
     }
 
-    public static void _main(String[] arg) {
-	doLoop(Simulation.class, arg);
-	// statistics.printExperimentSummary();
-	System.exit(0);
+    public void reportEvent(Species species, int agentId, int stepCounter, int x, int y,
+	    Event event, String source, String destination) {
+
+	experimentReporter.reportEvent(simulationCounter, generationCounter, species, agentId,
+		stepCounter, x, y, event, source, destination);
+
     }
 
-    public static void main(String[] arg) {
-	_main(arg);
+    public void setStartDate() {
+	this.startDate = new java.util.Date();
     }
 
-    public void reportEvent(Species species, int agentId, int stepCounter,
-	    int x, int y, Event event, String source, String destination) {
+    public void setEndDate() {
+	this.endDate = new java.util.Date();
+    }
 
-	experimentReporter
-		.reportEvent(simulationCounter, generationCounter, species,
-			agentId, stepCounter, x, y, event, source, destination);
+    public String getSpeciesCompositionSting() {
+	StringBuilder sb = new StringBuilder();
 
+	for (Species species : speciesComposition) {
+	    sb.append(species.getId());
+	}
+
+	return sb.toString();
+
+    }
+
+    public String getInteractionMechanismsString() {
+	StringBuilder sb = new StringBuilder();
+
+	for (InteractionMechanism mechanism : interactionMechanisms) {
+	    sb.append(mechanism.getId());
+	}
+
+	return sb.toString();
+
+    }
+
+    public String getEventFileName() {
+
+	// modify the file name to contain the id
+	if (eventFileName != null) {
+
+	    if (eventFileName.indexOf(".") != -1) {
+		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
+		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + postPart;
+
+	    } else {
+		eventFileName += "_" + batchId;
+	    }
+
+	}
+
+	return eventFileName;
+    }
+
+    public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
+	this.interactionMechanisms.add(interactionMechanism);
+    }
+
+    public void addSpecies(Species species) {
+	this.speciesComposition.add(species);
+    }
+
+    public abstract int configGridWidth();
+
+    public abstract int configGridHeight();
+
+    public abstract double configObstacleDensity();
+
+    public abstract double configResourceDensity();
+
+    public abstract Set<Species> configSpeciesComposition();
+
+    public abstract Set<InteractionMechanism> configInteractionMechanisms();
+
+    public abstract ProblemComplexity configProblemComplexity();
+
+    public abstract int configNumberOfAgentsPerSpecies();
+
+    public abstract int configNumberOfCollectionSites();
+
+    public abstract int configMaxStepsPerAgent();
+
+    public abstract boolean configIsRecordExperiment();
+
+    public abstract String configExperimentName();
+
+    public abstract int configSimulationsPerExperiment();
+
+    public abstract int configStepsPerSimulation();
+
+    public abstract Evolver configEvolver();
+
+    public abstract AgentFactory configAgentFactory();
+
+    public Evolver getEvolver() {
+	return evolver;
+    }
+
+    public void setEvolver(Evolver evolver) {
+	this.evolver = evolver;
+    }
+
+    public AgentFactory getAgentFactory() {
+	return agentFactory;
+    }
+
+    public void setAgentFactory(AgentFactory agentFactory) {
+	this.agentFactory = agentFactory;
+    }
+
+    public boolean isRecordExperiment() {
+	return recordExperiment;
+    }
+
+    public void setRecordExperiment(boolean recordExperiment) {
+	this.recordExperiment = recordExperiment;
+    }
+
+    public String getBatchId() {
+	return batchId;
+    }
+
+    public Date getStartDate() {
+	return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+	this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+	return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+	this.endDate = endDate;
+    }
+
+    public double getObstacleDensity() {
+	return obstacleDensity;
+    }
+
+    public void setObstacleDensity(double obstacleDensity) {
+	this.obstacleDensity = obstacleDensity;
+    }
+
+    public double getResourceDensity() {
+	return resourceDensity;
+    }
+
+    public void setResourceDensity(double resourceDensity) {
+	this.resourceDensity = resourceDensity;
+    }
+
+    public int getNumberOfAgentsPerSpecies() {
+	return numberOfAgentsPerSpecies;
+    }
+
+    public void setNumberOfAgentsPerSpecies(int numberOfAgentsPerSpecies) {
+	this.numberOfAgentsPerSpecies = numberOfAgentsPerSpecies;
+    }
+
+    public int getMaxStepsPerAgent() {
+	return maxStepsPerAgent;
+    }
+
+    public void setMaxStepsPerAgent(int maxStepsPerAgent) {
+	this.maxStepsPerAgent = maxStepsPerAgent;
+    }
+
+    public int getSimulationsPerExperiment() {
+	return simulationsPerExperiment;
+    }
+
+    public void setSimulationsPerExperiment(int simulationsPerExperiment) {
+	this.simulationsPerExperiment = simulationsPerExperiment;
+    }
+
+    public int getStepsPerSimulation() {
+	return stepsPerSimulation;
+    }
+
+    public void setStepsPerSimulation(int stepsPerSimulation) {
+	this.stepsPerSimulation = stepsPerSimulation;
+    }
+
+    public Set<Species> getSpeciesComposition() {
+	return speciesComposition;
+    }
+
+    public void setSpeciesComposition(Set<Species> speciesComposition) {
+	this.speciesComposition = speciesComposition;
+    }
+
+    public Set<InteractionMechanism> getInteractionMechanisms() {
+	return interactionMechanisms;
+    }
+
+    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
+	this.interactionMechanisms = interactionMechanisms;
+    }
+
+    public String getExperimentName() {
+	return experimentName;
+    }
+
+    public String getServerName() {
+	return serverName;
+    }
+
+    public void setGridWidth(int gridWidth) {
+	this.gridWidth = gridWidth;
+    }
+
+    public void setGridHeight(int gridHeight) {
+	this.gridHeight = gridHeight;
     }
 
 }

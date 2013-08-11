@@ -2,7 +2,7 @@ package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
 import java.io.IOException;
 
-import com.synthverse.evolutionengine.model.archipelago.ArchipelagoEvolver;
+import com.synthverse.evolver.archipelago.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
