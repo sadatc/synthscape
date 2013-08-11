@@ -522,6 +522,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	return eventFileName;
     }
+    
 
     public void addInteractionMechanism(
 	    InteractionMechanism interactionMechanism) {
@@ -559,6 +560,8 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract int configSimulationsPerExperiment();
 
     public abstract int configStepsPerSimulation();
+    
+    public abstract String configEventFileName();
 
     public abstract Evolver configEvolver();
 

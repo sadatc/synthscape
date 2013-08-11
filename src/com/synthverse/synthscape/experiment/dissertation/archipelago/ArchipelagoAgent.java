@@ -13,8 +13,8 @@ import com.synthverse.synthscape.core.Species;
 @SuppressWarnings("serial")
 public class ArchipelagoAgent extends Agent {
 
-    public ArchipelagoAgent(Species species) {
-	super(species);
+    public ArchipelagoAgent(Simulation simulation, Species species) {
+	super(simulation, species);
 
     }
 

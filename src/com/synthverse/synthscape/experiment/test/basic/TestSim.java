@@ -13,6 +13,13 @@ import com.synthverse.synthscape.core.Species;
 @SuppressWarnings("serial")
 public class TestSim extends Simulation {
 
+    public static void main(String[] arg) {
+	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
+	doLoop(TestSim.class, manualArgs);
+
+	System.exit(0);
+    }
+
     public TestSim(long seed) throws Exception {
 	super(seed);
     }
@@ -25,13 +32,6 @@ public class TestSim extends Simulation {
     @Override
     public AgentFactory configAgentFactory() {
 	return new TestAgentFactory(this);
-    }
-
-    public static void main(String[] arg) {
-	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
-	doLoop(TestSim.class, manualArgs);
-
-	System.exit(0);
     }
 
     @Override
@@ -109,6 +109,11 @@ public class TestSim extends Simulation {
     @Override
     public int configStepsPerSimulation() {
 	return MAX_STEPS_PER_AGENT;
+    }
+
+    @Override
+    public String configEventFileName() {
+	return EVENT_LOG_FILE;
     }
 
 }

@@ -1,9 +1,10 @@
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
-import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
@@ -12,9 +13,8 @@ import com.synthverse.synthscape.core.Species;
 @SuppressWarnings("serial")
 public class ManuallyCodedAgentSimulation extends Simulation {
 
-    public ManuallyCodedAgentSimulation(long seed) throws IOException {
+    public ManuallyCodedAgentSimulation(long seed) throws Exception {
 	super(seed);
-
     }
 
     public static void main(String[] arg) {
@@ -25,49 +25,95 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     }
 
     @Override
-    public Experiment getExperiment() {
-
-	// name and complexity
-	Experiment myExperiment = new Experiment("POPULATION_ISLAND_MANUAL");
-	myExperiment
-		.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
-	myExperiment.setEvolver(null);
-
-	// demographics
-	myExperiment.setGridWidth(WORLD_WIDTH);
-	myExperiment.setGridHeight(WORLD_HEIGHT);
-	myExperiment.setNumberOfCollectionSites(NUMBER_OF_COLLECTION_SITES);
-	myExperiment.setObstacleDensity(OBSTACLE_DENSITY);
-	myExperiment.setResourceDensity(RESOURCE_DENSITY);
-
-	// interactions
-	myExperiment.addInteractionMechanism(InteractionMechanism.TRAIL);
-	myExperiment.addInteractionMechanism(InteractionMechanism.BROADCAST);
-	myExperiment
-		.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	myExperiment
-		.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-
-	// species compositions
-	myExperiment.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);
-
-	myExperiment.addSpecies(Species.SUPER);
-
-	// generations and runs
-	myExperiment.setStepsPerSimulation(MAX_STEPS_PER_SIM);
-	myExperiment.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
-
-	myExperiment.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
-
-	myExperiment.setRecordExperiment(true);
-	myExperiment.setEventFileName(EVENT_LOG_FILE);
-
-	return myExperiment;
+    public Evolver configEvolver() {
+	return new ManuallyCodedEvolver(this);
     }
 
     @Override
-    public AgentFactory getAgentFactory() {
-	return ManuallyCodedAgentFactory.getInstance();
+    public AgentFactory configAgentFactory() {
+	return new ManuallyCodedAgentFactory(this);
+    }
+
+    @Override
+    public int configGridWidth() {
+	return WORLD_WIDTH;
+    }
+
+    @Override
+    public int configGridHeight() {
+	return WORLD_HEIGHT;
+    }
+
+    @Override
+    public double configObstacleDensity() {
+	return OBSTACLE_DENSITY;
+    }
+
+    @Override
+    public double configResourceDensity() {
+	return RESOURCE_DENSITY;
+    }
+
+    @Override
+    public Set<Species> configSpeciesComposition() {
+	Set<Species> speciesSet = new HashSet<Species>();
+	speciesSet.add(Species.SUPER);
+	return speciesSet;
+    }
+
+    @Override
+    public Set<InteractionMechanism> configInteractionMechanisms() {
+	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
+	mechanisms.add(InteractionMechanism.TRAIL);
+	mechanisms.add(InteractionMechanism.BROADCAST);
+	mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	return mechanisms;
+    }
+
+    @Override
+    public ProblemComplexity configProblemComplexity() {
+	return ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
+    }
+
+    @Override
+    public int configNumberOfAgentsPerSpecies() {
+	return AGENTS_PER_SPECIES;
+    }
+
+    @Override
+    public int configNumberOfCollectionSites() {
+	return NUMBER_OF_COLLECTION_SITES;
+    }
+
+    @Override
+    public int configMaxStepsPerAgent() {
+	return MAX_STEPS_PER_AGENT;
+    }
+
+    @Override
+    public boolean configIsRecordExperiment() {
+	return true;
+    }
+
+    @Override
+    public String configExperimentName() {
+	return "POPULATION_ISLAND_MANUAL";
+    }
+
+    @Override
+    public int configSimulationsPerExperiment() {
+	return SIMS_PER_EXPERIMENT;
+    }
+
+    @Override
+    public int configStepsPerSimulation() {
+	return MAX_STEPS_PER_AGENT;
+    }
+
+    @Override
+    public String configEventFileName() {
+	return EVENT_LOG_FILE;
     }
 
 }

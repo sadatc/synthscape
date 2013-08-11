@@ -17,7 +17,7 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  */
 public class ManuallyCodedAgentSimulationUI extends SimpleSimulationUI {
 
-    public ManuallyCodedAgentSimulationUI() throws IOException {
+    public ManuallyCodedAgentSimulationUI() throws Exception {
 	super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
     }
 

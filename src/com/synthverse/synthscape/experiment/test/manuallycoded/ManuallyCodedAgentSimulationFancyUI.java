@@ -17,7 +17,7 @@ import com.synthverse.synthscape.core.FancySimulationUI;
  */
 public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
 
-    public ManuallyCodedAgentSimulationFancyUI() throws IOException {
+    public ManuallyCodedAgentSimulationFancyUI() throws Exception {
 	super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
     }
 
