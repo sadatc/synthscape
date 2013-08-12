@@ -1,6 +1,6 @@
 package com.synthverse.evolver.islands;
 
-import com.synthverse.evolver.core.EvolverCore;
+import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Species;
 
@@ -15,7 +15,7 @@ public class PopulationIsland {
 
     private int populationSize;
     private Species species;
-    private EvolverCore population;
+    private CentralizedEvolutionEngine engine;
     private AgentFactory agentFactory;
 
     public PopulationIsland(AgentFactory agentFactory, Species species,
@@ -23,7 +23,7 @@ public class PopulationIsland {
 	this.species = species;
 	this.populationSize = populationSize;
 	this.agentFactory = agentFactory;
-	this.population = new EvolverCore(agentFactory, species,
+	this.engine = new CentralizedEvolutionEngine(agentFactory, species,
 		populationSize);
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
@@ -36,8 +37,8 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void init() {
+	D.p("initing population island evolver...");
 	initPopulationIslands();
-
     }
 
     @Override

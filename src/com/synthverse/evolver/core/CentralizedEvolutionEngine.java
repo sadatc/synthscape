@@ -15,9 +15,9 @@ import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
-public final class EvolverCore implements EvolverConfig {
+public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 
-    private static Logger logger = Logger.getLogger(EvolverCore.class.getName());
+    private static Logger logger = Logger.getLogger(CentralizedEvolutionEngine.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
@@ -53,7 +53,7 @@ public final class EvolverCore implements EvolverConfig {
     /**
      * creates an evolver with all default values
      */
-    public EvolverCore(AgentFactory agentFactory, Species species) {
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
 		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
 		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
@@ -68,7 +68,7 @@ public final class EvolverCore implements EvolverConfig {
      * @param agentFactory
      * @param maxPopulationSize
      */
-    public EvolverCore(AgentFactory agentFactory, Species species, int maxPopulationSize) {
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int maxPopulationSize) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
 		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
 		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
@@ -93,7 +93,7 @@ public final class EvolverCore implements EvolverConfig {
      * @param maxMutationRate
      * @param evolutionProgressLog
      */
-    public EvolverCore(AgentFactory agentFactory, Species species, double percentTop,
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
 	    double percentTopXTop, double percentTopMutant, double percentTopXBottom,
 	    double percentBottom, double percentBottomMutant, double percentBottomXBottom,
 	    double percentRandom, int maxPopulationSize, int maxGenerations,

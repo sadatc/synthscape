@@ -5,7 +5,7 @@ package com.synthverse.evolver.core;
  * 
  * @author sadat
  */
-public interface EvolverConfig {
+public interface EvolutionEngineConfig {
 
     public static final double DEFAULT_PERCENT_TOP = 0.3;
 
