@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.synthverse.evolver.core.Evolver;
@@ -26,104 +27,94 @@ public class ArchipelagoSimulation extends Simulation {
 
     @Override
     public int configGridWidth() {
-	// TODO Auto-generated method stub
-	return 0;
+	return WORLD_WIDTH;
     }
 
     @Override
     public int configGridHeight() {
-	// TODO Auto-generated method stub
-	return 0;
+	return WORLD_HEIGHT;
     }
 
     @Override
     public double configObstacleDensity() {
-	// TODO Auto-generated method stub
-	return 0;
+	return OBSTACLE_DENSITY;
     }
 
     @Override
     public double configResourceDensity() {
-	// TODO Auto-generated method stub
-	return 0;
+	return RESOURCE_DENSITY;
     }
 
     @Override
     public Set<Species> configSpeciesComposition() {
-	// TODO Auto-generated method stub
-	return null;
+	Set<Species> speciesSet = new HashSet<Species>();
+	speciesSet.add(Species.SUPER);
+	return speciesSet;
     }
 
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
-	// TODO Auto-generated method stub
-	return null;
+	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
+	mechanisms.add(InteractionMechanism.TRAIL);
+	mechanisms.add(InteractionMechanism.BROADCAST);
+	mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	return mechanisms;
     }
 
     @Override
     public ProblemComplexity configProblemComplexity() {
-	// TODO Auto-generated method stub
-	return null;
+	return ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
     }
 
     @Override
     public int configNumberOfAgentsPerSpecies() {
-	// TODO Auto-generated method stub
-	return 0;
+	return AGENTS_PER_SPECIES;
     }
 
     @Override
     public int configNumberOfCollectionSites() {
-	// TODO Auto-generated method stub
-	return 0;
+	return NUMBER_OF_COLLECTION_SITES;
     }
 
     @Override
     public int configMaxStepsPerAgent() {
-	// TODO Auto-generated method stub
-	return 0;
+	return MAX_STEPS_PER_AGENT;
     }
 
     @Override
     public boolean configIsRecordExperiment() {
-	// TODO Auto-generated method stub
-	return false;
+	return true;
     }
 
     @Override
     public String configExperimentName() {
-	// TODO Auto-generated method stub
-	return null;
+	return "POPULATION_ISLAND_MANUAL";
     }
 
     @Override
     public int configSimulationsPerExperiment() {
-	// TODO Auto-generated method stub
-	return 0;
+	return SIMS_PER_EXPERIMENT;
     }
 
     @Override
     public int configStepsPerSimulation() {
-	// TODO Auto-generated method stub
-	return 0;
+	return MAX_STEPS_PER_AGENT;
     }
 
     @Override
     public String configEventFileName() {
-	// TODO Auto-generated method stub
-	return null;
+	return EVENT_LOG_FILE;
     }
 
     @Override
     public Evolver configEvolver() {
-	// TODO Auto-generated method stub
-	return null;
+	return new ArchipelagoEvolver(this);
     }
 
     @Override
     public AgentFactory configAgentFactory() {
-	// TODO Auto-generated method stub
-	return null;
+	return new ArchipelagoAgentFactory(this);
     }
 
 }

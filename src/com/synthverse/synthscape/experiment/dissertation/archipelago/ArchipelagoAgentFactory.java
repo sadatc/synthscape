@@ -10,13 +10,11 @@ public class ArchipelagoAgentFactory extends AgentFactory implements Constants {
 
     protected ArchipelagoAgentFactory(Simulation simulation) {
 	super(simulation);
-	// TODO Auto-generated constructor stub
     }
 
     @Override
     public Agent getNewFactoryAgent(Species species) {
-	// TODO Auto-generated method stub
-	return null;
+	return new ArchipelagoAgent(simulation,species);
     }
 
 }

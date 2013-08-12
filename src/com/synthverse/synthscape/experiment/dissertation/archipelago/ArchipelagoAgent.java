@@ -26,6 +26,7 @@ public class ArchipelagoAgent extends Agent {
 
     public void stepAction(SimState state) {
 	Simulation theSim = (Simulation) state;
+	this.operationRandomMove();
 
     }
 
