@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.dissertation.islands;
 
 import sim.engine.SimState;
 
@@ -11,14 +11,14 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
-public class ArchipelagoAgent extends Agent {
+public class IslanderAgent extends Agent {
 
-    public ArchipelagoAgent(Simulation simulation, Species species) {
+    public IslanderAgent(Simulation simulation, Species species) {
 	super(simulation, species);
 
     }
 
-    public ArchipelagoAgent(Simulation sim, Species species,
+    public IslanderAgent(Simulation sim, Species species,
 	    int generationNumber, int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 

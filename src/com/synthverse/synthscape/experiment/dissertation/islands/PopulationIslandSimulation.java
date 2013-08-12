@@ -1,10 +1,10 @@
-package com.synthverse.synthscape.experiment.dissertation.archipelago;
+package com.synthverse.synthscape.experiment.dissertation.islands;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.synthverse.evolver.archipelago.ArchipelagoEvolver;
 import com.synthverse.evolver.core.Evolver;
+import com.synthverse.evolver.islands.PopulationIslandEvolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
@@ -12,16 +12,16 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
-public class ArchipelagoSimulation extends Simulation {
+public class PopulationIslandSimulation extends Simulation {
 
-    public ArchipelagoSimulation(long seed) throws Exception {
+    public PopulationIslandSimulation(long seed) throws Exception {
 	super(seed);
 
     }
 
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
-	doLoop(ArchipelagoSimulation.class, manualArgs);
+	doLoop(PopulationIslandSimulation.class, manualArgs);
 
 	System.exit(0);
     }
@@ -110,12 +110,12 @@ public class ArchipelagoSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return new ArchipelagoEvolver(this);
+	return new PopulationIslandEvolver(this);
     }
 
     @Override
     public AgentFactory configAgentFactory() {
-	return new ArchipelagoAgentFactory(this);
+	return new IslanderAgentFactory(this);
     }
 
 }

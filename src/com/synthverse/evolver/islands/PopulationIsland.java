@@ -1,4 +1,4 @@
-package com.synthverse.evolver.archipelago;
+package com.synthverse.evolver.islands;
 
 import com.synthverse.evolver.core.EvolverCore;
 import com.synthverse.synthscape.core.AgentFactory;

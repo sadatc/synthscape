@@ -1,4 +1,4 @@
-package com.synthverse.evolver.archipelago;
+package com.synthverse.evolver.islands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,9 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
-public class ArchipelagoEvolver extends Evolver implements Constants {
+public class PopulationIslandEvolver extends Evolver implements Constants {
 
-    public ArchipelagoEvolver(Simulation simulation) {
+    public PopulationIslandEvolver(Simulation simulation) {
 	super(simulation);
 
     }
