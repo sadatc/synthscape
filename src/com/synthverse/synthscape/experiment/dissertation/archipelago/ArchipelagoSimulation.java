@@ -3,6 +3,7 @@ package com.synthverse.synthscape.experiment.dissertation.archipelago;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.synthverse.evolver.archipelago.ArchipelagoEvolver;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.InteractionMechanism;
