@@ -2,9 +2,9 @@ package com.synthverse.synthscape.core;
 
 public interface Constants {
 
-    public static final int WORLD_WIDTH = 32;
+    public static final int WORLD_WIDTH = 16;
 
-    public static final int WORLD_HEIGHT = 32;
+    public static final int WORLD_HEIGHT = 16;
 
     public static final int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
