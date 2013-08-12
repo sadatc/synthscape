@@ -1,6 +1,5 @@
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
-import java.io.IOException;
 import java.util.Set;
 
 import com.synthverse.evolver.core.Evolver;

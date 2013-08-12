@@ -19,5 +19,4 @@ public class ArchipelagoAgentFactory extends AgentFactory implements Constants {
 	return null;
     }
 
-
 }

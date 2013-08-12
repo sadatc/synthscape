@@ -3,8 +3,6 @@
  */
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
-import java.io.IOException;
-
 import sim.display.Console;
 
 import com.synthverse.synthscape.core.Constants;
