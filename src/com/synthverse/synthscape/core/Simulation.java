@@ -97,7 +97,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     private String eventFileName;
 
-    private void initSimulator() {
+    private void init() {
 	// we can compute the server name and batch ID right away
 	try {
 	    serverName = java.net.InetAddress.getLocalHost().getHostName();
@@ -105,11 +105,15 @@ public abstract class Simulation extends SimState implements Constants {
 	    serverName = "LOCAL";
 	}
 	batchId = Long.toHexString(System.currentTimeMillis());
+	setRecordExperiment(configIsRecordExperiment());
+	setEventFileName(configEventFileName());
 
 	// now set these up based on the concrete simulation
 
 	setExperimentName(configExperimentName());
 	setProblemComplexity(configProblemComplexity());
+
+	setMaxStepsPerAgent(configMaxStepsPerAgent());
 
 	// environmental stuff
 	setGridWidth(configGridWidth());
@@ -140,7 +144,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public Simulation(long seed) throws Exception {
 	super(seed);
-	initSimulator();
+	init();
 
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
@@ -326,12 +330,7 @@ public abstract class Simulation extends SimState implements Constants {
 		 * randomX, randomY);
 		 */
 
-		Agent agent = evolver.getSeedAgent(species);
-		agent.setGeneration(SEED_GENERATION_NUMBER);
-		agent.setAgentId(i);
-		agent.setMaxSteps(getMaxStepsPerAgent());
-		agent.setX(randomX);
-		agent.setY(randomY);
+		Agent agent = evolver.getSeedAgent(species, randomX, randomY);
 
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 
@@ -349,27 +348,24 @@ public abstract class Simulation extends SimState implements Constants {
 	// populate with agents
 	generationCounter++;
 
-	for (Species species : speciesComposition) {
-	    for (Agent agent : agents) {
+	for (Agent agent : agents) {
 
-		int randomX = random.nextInt(gridWidth);
-		int randomY = random.nextInt(gridHeight);
+	    int randomX = random.nextInt(gridWidth);
+	    int randomY = random.nextInt(gridHeight);
 
-		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		    randomX = random.nextInt(gridWidth);
-		    randomY = random.nextInt(gridHeight);
-		}
-		initCollisionGrid.field[randomX][randomY] = PRESENT;
-
-		/*
-		 * agent.reset(); agent.generation = generationCounter; agent.x
-		 * = randomX; agent.y = randomY;
-		 */
-		agent = evolver.getEvolvedAgent(agent, randomX, randomY);
-		agent.reset();
-
-		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
+	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+		randomX = random.nextInt(gridWidth);
+		randomY = random.nextInt(gridHeight);
 	    }
+	    initCollisionGrid.field[randomX][randomY] = PRESENT;
+
+	    /*
+	     * agent.reset(); agent.generation = generationCounter; agent.x =
+	     * randomX; agent.y = randomY;
+	     */
+	    agent = evolver.getEvolvedAgent(agent, randomX, randomY);
+
+	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 	}
 
 	D.p("finished population generation #" + generationCounter);
@@ -522,7 +518,6 @@ public abstract class Simulation extends SimState implements Constants {
 
 	return eventFileName;
     }
-    
 
     public void addInteractionMechanism(
 	    InteractionMechanism interactionMechanism) {
@@ -560,7 +555,7 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract int configSimulationsPerExperiment();
 
     public abstract int configStepsPerSimulation();
-    
+
     public abstract String configEventFileName();
 
     public abstract Evolver configEvolver();
@@ -690,6 +685,10 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setGridHeight(int gridHeight) {
 	this.gridHeight = gridHeight;
+    }
+
+    public void setEventFileName(String eventFileName) {
+	this.eventFileName = eventFileName;
     }
 
 }

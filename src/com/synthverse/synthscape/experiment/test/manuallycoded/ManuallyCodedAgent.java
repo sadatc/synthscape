@@ -25,12 +25,12 @@ public class ManuallyCodedAgent extends Agent {
     }
 
     public ManuallyCodedAgent(Simulation sim, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
-	super(sim, species, generationNumber, agentId, maxSteps, startX, startY);
+	    int generationNumber, int maxSteps, int startX, int startY) {
+	super(sim, species, generationNumber, maxSteps, startX, startY);
 
     }
 
+    @Override
     public void stepAction(SimState state) {
 	// the main idea is as follows
 	// the agent is in a particular state

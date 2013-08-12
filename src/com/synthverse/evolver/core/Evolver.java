@@ -17,7 +17,7 @@ public abstract class Evolver {
 	this.simulation = simulation;
     }
 
-    public abstract Agent getSeedAgent(Species species);
+    public abstract Agent getSeedAgent(Species species, int x, int y);
 
     public abstract Agent getEvolvedAgent(Agent ancestorAgent, int x, int y);
 

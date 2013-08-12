@@ -1,34 +1,23 @@
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
-import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
-public class ArchipelagoAgentFactory implements AgentFactory, Constants {
+public class ArchipelagoAgentFactory extends AgentFactory implements Constants {
 
-    private static ArchipelagoAgentFactory instance = new ArchipelagoAgentFactory();
-
-    private ArchipelagoAgentFactory() {
-    }
-
-    public static ArchipelagoAgentFactory getInstance() {
-	return instance;
-    }
-
-    public Agent createFactoryAgent(Species species) {
-	return new ArchipelagoAgent(species);
-
+    protected ArchipelagoAgentFactory(Simulation simulation) {
+	super(simulation);
+	// TODO Auto-generated constructor stub
     }
 
     @Override
-    public Agent createFactoryAgent(Simulation simulation, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
-	return new ArchipelagoAgent(simulation, species, generationNumber,
-		agentId, maxSteps, startX, startY);
+    public Agent getNewFactoryAgent(Species species) {
+	// TODO Auto-generated method stub
+	return null;
     }
+
 
 }

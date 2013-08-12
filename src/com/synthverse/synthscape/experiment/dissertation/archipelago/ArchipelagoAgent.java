@@ -19,9 +19,8 @@ public class ArchipelagoAgent extends Agent {
     }
 
     public ArchipelagoAgent(Simulation sim, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
-	super(sim, species, generationNumber, agentId, maxSteps, startX, startY);
+	    int generationNumber, int maxSteps, int startX, int startY) {
+	super(sim, species, generationNumber, maxSteps, startX, startY);
 
     }
 

@@ -17,7 +17,7 @@ import com.synthverse.synthscape.core.SimpleSimulationUI;
  */
 public class ArchipelagoSimulationUI extends SimpleSimulationUI {
 
-    public ArchipelagoSimulationUI() throws IOException {
+    public ArchipelagoSimulationUI() throws Exception {
 	super(new ArchipelagoSimulation(Constants.SIMULATION_RNG_SEED));
     }
 

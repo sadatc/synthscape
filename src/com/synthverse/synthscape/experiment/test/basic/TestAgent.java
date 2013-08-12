@@ -13,8 +13,8 @@ import com.synthverse.synthscape.core.Species;
 public class TestAgent extends Agent {
 
     public TestAgent(Simulation simulation, Species species, int generation,
-	    int agentId, int maxSteps, int x, int y) {
-	super(simulation, species, generation, agentId, maxSteps, x, y);
+	    int maxSteps, int x, int y) {
+	super(simulation, species, generation, maxSteps, x, y);
     }
 
     public TestAgent(Simulation simulation, Species species) {

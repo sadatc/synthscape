@@ -1,10 +1,10 @@
 package com.synthverse.synthscape.experiment.dissertation.archipelago;
 
 import java.io.IOException;
+import java.util.Set;
 
-import com.synthverse.evolver.archipelago.ArchipelagoEvolver;
+import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.Experiment;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
@@ -13,7 +13,7 @@ import com.synthverse.synthscape.core.Species;
 @SuppressWarnings("serial")
 public class ArchipelagoSimulation extends Simulation {
 
-    public ArchipelagoSimulation(long seed) throws IOException {
+    public ArchipelagoSimulation(long seed) throws Exception {
 	super(seed);
 
     }
@@ -26,51 +26,105 @@ public class ArchipelagoSimulation extends Simulation {
     }
 
     @Override
-    public Experiment getExperiment() {
-
-	// name and complexity
-	Experiment exp = new Experiment("POPULATION_ISLAND");
-	exp.setProblemComplexity(ProblemComplexity.FOUR_SEQUENTIAL_TASKS);
-	exp.setEvolver(new ArchipelagoEvolver(this));
-	
-	// demographics
-	exp.setGridWidth(WORLD_WIDTH);
-	exp.setGridHeight(WORLD_HEIGHT);
-	exp.setNumberOfCollectionSites(NUMBER_OF_COLLECTION_SITES);
-	exp.setObstacleDensity(OBSTACLE_DENSITY);
-	exp.setResourceDensity(RESOURCE_DENSITY);
-
-	// interactions
-	exp.addInteractionMechanism(InteractionMechanism.TRAIL);
-	//exp.addInteractionMechanism(InteractionMechanism.BROADCAST);
-	//exp.addInteractionMechanism(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	//exp.addInteractionMechanism(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-
-	// species compositions
-	exp.setNumberOfAgentsPerSpecies(AGENTS_PER_SPECIES);
-
-	exp.addSpecies(Species.DETECTOR);
-	exp.addSpecies(Species.EXTRACTOR);
-	exp.addSpecies(Species.PROCESSOR);
-	exp.addSpecies(Species.TRANSPORTER);
-	
-	
-
-	// generations and runs
-	exp.setStepsPerSimulation(MAX_STEPS_PER_SIM);
-	exp.setSimulationsPerExperiment(SIMS_PER_EXPERIMENT);
-
-	exp.setMaxStepsPerAgent(MAX_STEPS_PER_AGENT);
-
-	exp.setRecordExperiment(true);
-	exp.setEventFileName(EVENT_LOG_FILE);
-
-	return exp;
+    public int configGridWidth() {
+	// TODO Auto-generated method stub
+	return 0;
     }
 
     @Override
-    public AgentFactory getAgentFactory() {
-	return ArchipelagoAgentFactory.getInstance();
+    public int configGridHeight() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public double configObstacleDensity() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public double configResourceDensity() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public Set<Species> configSpeciesComposition() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public Set<InteractionMechanism> configInteractionMechanisms() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public ProblemComplexity configProblemComplexity() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public int configNumberOfAgentsPerSpecies() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public int configNumberOfCollectionSites() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public int configMaxStepsPerAgent() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public boolean configIsRecordExperiment() {
+	// TODO Auto-generated method stub
+	return false;
+    }
+
+    @Override
+    public String configExperimentName() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public int configSimulationsPerExperiment() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public int configStepsPerSimulation() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public String configEventFileName() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public Evolver configEvolver() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public AgentFactory configAgentFactory() {
+	// TODO Auto-generated method stub
+	return null;
     }
 
 }

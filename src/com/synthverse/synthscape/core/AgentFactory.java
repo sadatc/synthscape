@@ -14,5 +14,7 @@ public abstract class AgentFactory {
     }
 
     public abstract Agent getNewFactoryAgent(Species species);
+    
+    
 
 }

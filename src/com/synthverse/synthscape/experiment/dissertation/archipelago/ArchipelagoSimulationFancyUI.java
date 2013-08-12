@@ -17,7 +17,7 @@ import com.synthverse.synthscape.core.FancySimulationUI;
  */
 public class ArchipelagoSimulationFancyUI extends FancySimulationUI {
 
-    public ArchipelagoSimulationFancyUI() throws IOException {
+    public ArchipelagoSimulationFancyUI() throws Exception {
 	super(new ArchipelagoSimulation(Constants.SIMULATION_RNG_SEED));
     }
 

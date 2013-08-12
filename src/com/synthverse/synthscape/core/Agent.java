@@ -18,11 +18,13 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
+
     private static long _optimizationAgentCounter = 0;
+    private static int _agentCounter = 0;
 
     private Simulation sim;
 
-    int agentId;
+    private int agentId;
 
     protected int stepCounter;
 
@@ -70,26 +72,28 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     abstract public void stepAction(SimState state);
 
     private Agent() {
+	generateAgentId();
 	_optimizationAgentCounter++;
 	D.p("==> Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
+	generateAgentId();
 	_optimizationAgentCounter++;
 	D.p("==> Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
+
     }
 
     protected Agent(Simulation simulation, Species species,
-	    int generationNumber, int agentId, int maxSteps, int startX,
-	    int startY) {
+	    int generationNumber, int maxSteps, int startX, int startY) {
+	generateAgentId();
 	_optimizationAgentCounter++;
 	D.p("==> Agent(sim,species, gen...): AgentCount = "
 		+ _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
-	setAgentId(agentId);
 	setMaxSteps(maxSteps);
 	setX(startX);
 	setY(startY);
@@ -639,7 +643,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	}
     }
 
-    protected void reset() {
+    public void reset() {
 	stepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
@@ -749,8 +753,9 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	return agentId;
     }
 
-    public void setAgentId(int agentId) {
-	this.agentId = agentId;
+    private void generateAgentId() {
+	_agentCounter++;
+	this.agentId = _agentCounter;
     }
 
     public int getStepCounter() {

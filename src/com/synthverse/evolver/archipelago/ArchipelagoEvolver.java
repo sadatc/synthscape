@@ -26,7 +26,8 @@ public class ArchipelagoEvolver extends Evolver {
     public void initPopulationIslands() {
 
 	for (Species species : simulation.getSpeciesComposition()) {
-	    PopulationIsland island = new PopulationIsland(simulation.getAgentFactory(), species,
+	    PopulationIsland island = new PopulationIsland(
+		    simulation.getAgentFactory(), species,
 		    simulation.getNumberOfAgentsPerSpecies());
 	    islands.add(island);
 	}
@@ -45,7 +46,7 @@ public class ArchipelagoEvolver extends Evolver {
     }
 
     @Override
-    public Agent getEvolvedAgent(Species species, int generationId, int x, int y) {
+    public Agent getEvolvedAgent(Agent ancestorAgent, int x, int y) {
 	// TODO Auto-generated method stub
 	return null;
     }
