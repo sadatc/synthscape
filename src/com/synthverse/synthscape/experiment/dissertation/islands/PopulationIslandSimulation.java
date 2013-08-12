@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.synthverse.evolver.core.Evolver;
-import com.synthverse.evolver.islands.PopulationIslandEvolver;
+import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
@@ -110,7 +110,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return new PopulationIslandEvolver(this);
+	return new ArchipelagoEvolver(this);
     }
 
     @Override

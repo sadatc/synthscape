@@ -1,69 +1,51 @@
 package com.synthverse.evolver.islands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
+/**
+ * A population island maintains a gene pool that produces agents of a specific
+ * species
+ * 
+ * @author sadat
+ * 
+ */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
-    public PopulationIslandEvolver(Simulation simulation) {
+    private int populationSize;
+    private Species species;
+    private CentralizedEvolutionEngine engine;
+
+    public PopulationIslandEvolver(Simulation simulation, Species species,
+	    int populationSize) {
 	super(simulation);
+	this.species = species;
+	this.populationSize = populationSize;
 
-    }
-
-    private List<PopulationIsland> islands = new ArrayList<PopulationIsland>();
-
-    public List<Agent> getRepresentativeAgents() {
-	List<Agent> representatives = null;
-
-	return representatives;
-    }
-
-    public void initPopulationIslands() {
-
-	for (Species species : simulation.getSpeciesComposition()) {
-	    PopulationIsland island = new PopulationIsland(
-		    simulation.getAgentFactory(), species,
-		    simulation.getNumberOfAgentsPerSpecies());
-	    islands.add(island);
-	}
-    }
-
-    @Override
-    public void init() {
-	D.p("initing population island evolver...");
-	initPopulationIslands();
+	this.engine = new CentralizedEvolutionEngine(
+		simulation.getAgentFactory(), species, populationSize);
     }
 
     @Override
     public Agent getSeedAgent(Species species, int x, int y) {
-	Agent agent = simulation.getAgentFactory().getNewFactoryAgent(species);
-	agent.setGeneration(SEED_GENERATION_NUMBER);
-
-	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	agent.setX(x);
-	agent.setY(y);
-
-	return agent;
+	// TODO Auto-generated method stub
+	return null;
     }
 
     @Override
-    public Agent getEvolvedAgent(Agent parentAgent, int x, int y) {
-	parentAgent.setGeneration(parentAgent.getGeneration() + 1);
+    public Agent getEvolvedAgent(Agent ancestorAgent, int x, int y) {
+	// TODO Auto-generated method stub
+	return null;
+    }
 
-	parentAgent.setX(x);
-	parentAgent.setY(y);
+    @Override
+    public void init() {
 
-	// perhaps do other things to get it evolved.
-	parentAgent.reset();
-
-	return parentAgent;
     }
 
 }
