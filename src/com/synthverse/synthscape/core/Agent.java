@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.core;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Set;
 
 import sim.engine.SimState;
@@ -21,6 +22,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     private static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
+
+    private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
     private Simulation sim;
 
@@ -830,6 +833,14 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public Set<InteractionMechanism> getInteractionMechanisms() {
 	return this.interactionMechanisms;
+    }
+
+    public int getIntPropertyValue(String key) {
+	return this.intPropertyMap.get(key);
+    }
+
+    public void setIntPropertyValue(String key, int value) {
+	this.intPropertyMap.put(key, value);
     }
 
 }
