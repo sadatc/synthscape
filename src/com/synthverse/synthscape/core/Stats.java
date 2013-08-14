@@ -1,6 +1,8 @@
 package com.synthverse.synthscape.core;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class Stats {
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
@@ -15,6 +17,10 @@ public class Stats {
 	} else {
 	    eventCounterMap.put(event, 1);
 	}
+    }
+    
+    public Set<Event> getEvents() {
+	return eventCounterMap.keySet();
     }
 
     public int getValue(Event event) {

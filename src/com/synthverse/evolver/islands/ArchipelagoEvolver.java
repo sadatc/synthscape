@@ -8,6 +8,7 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.D;
+import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
@@ -30,8 +31,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public void initPopulationIslands() {
 
 	for (Species species : simulation.getSpeciesComposition()) {
-	    PopulationIslandEvolver island = new PopulationIslandEvolver(
-		    simulation, species,
+	    PopulationIslandEvolver island = new PopulationIslandEvolver(simulation, species,
 		    simulation.getNumberOfAgentsPerSpecies());
 	    speciesIslandMap.put(species, island);
 	    islands.add(island);
@@ -52,16 +52,34 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public Agent getEvolvedAgent(Agent parentAgent, int x, int y) {
-	return speciesIslandMap.get(parentAgent.getSpecies()).getEvolvedAgent(
-		parentAgent, x, y);
+	return speciesIslandMap.get(parentAgent.getSpecies()).getEvolvedAgent(parentAgent, x, y);
     }
 
     @Override
     public void generateNextGeneration() {
+
+	// let's compute the global fitness
+	// and share it across all agents...
+	double fitness = computeGlobalFitness();
+	for(Agent agent: simulation.getAgents()) {
+	    agent.setFitness(fitness);
+	}
+
 	for (PopulationIslandEvolver island : islands) {
 	    island.generateNextGeneration();
 	}
 
+    }
+
+    private double computeGlobalFitness() {
+	double result = 0.0;
+	D.p("]]]computing global fitness");
+
+	for (Event event : simulation.simStats.getEvents()) {
+	    result += simulation.simStats.getValue(event);
+	}
+
+	return result;
     }
 
 }

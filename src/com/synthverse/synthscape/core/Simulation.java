@@ -450,21 +450,21 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void doEndOfStepTasks() {
 	// aggregate step stats...
-	D.p(">>> End of step");
+	//D.p(">>> End of step");
 
 	for (Agent agent : agents) {
 	    agent.agentStats.aggregateStatsTo(stepStats);
 	}
 	simStats.aggregateStatsTo(stepStats);
-	stepStats.printValues();
+	//stepStats.printValues();
 	stepStats.clear();
 	
     }
 
     protected void doEndOfSimulationTasks() {
 	// aggregate sim stats
-	D.p(">>> End of sim");
-	simStats.printValues();
+	//D.p(">>> End of sim");
+	//simStats.printValues();
 	simStats.clear();
 	
     }
@@ -719,4 +719,8 @@ public abstract class Simulation extends SimState implements Constants {
 	this.eventFileName = eventFileName;
     }
 
+    public List<Agent> getAgents() {
+	return agents;
+    }
+    
 }
