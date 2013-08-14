@@ -23,4 +23,5 @@ public abstract class Evolver {
 
     public abstract void init();
 
+    public abstract void generateNextGeneration();
 }

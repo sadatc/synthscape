@@ -1,5 +1,6 @@
 package com.synthverse.evolver.islands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import com.synthverse.synthscape.core.Species;
 public class ArchipelagoEvolver extends Evolver implements Constants {
 
     HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
+    List<PopulationIslandEvolver> islands = new ArrayList<PopulationIslandEvolver>();
 
     public ArchipelagoEvolver(Simulation simulation) {
 	super(simulation);
@@ -32,6 +34,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 		    simulation, species,
 		    simulation.getNumberOfAgentsPerSpecies());
 	    speciesIslandMap.put(species, island);
+	    islands.add(island);
 	}
     }
 
@@ -51,6 +54,14 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public Agent getEvolvedAgent(Agent parentAgent, int x, int y) {
 	return speciesIslandMap.get(parentAgent.getSpecies()).getEvolvedAgent(
 		parentAgent, x, y);
+    }
+
+    @Override
+    public void generateNextGeneration() {
+	for (PopulationIslandEvolver island : islands) {
+	    island.generateNextGeneration();
+	}
+
     }
 
 }

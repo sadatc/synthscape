@@ -68,7 +68,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     protected Program program;
 
-    protected Measure stats = new Measure();
+    public Stats agentStats = new Stats();
 
     abstract public double doubleValue();
 
@@ -497,8 +497,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     public final boolean operationDetectRawResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasRawResource) {
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.DETECTED_RAW_RESOURCE, NA, NA);
+		sim.reportEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
 	    }
 	    return (this.locationHasRawResource);
 	} else {
@@ -510,8 +509,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     public final boolean operationDetectExtractedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasExtractedResource) {
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
+		sim.reportEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
 	    }
 	    return this.locationHasExtractedResource;
 	} else {
@@ -522,8 +520,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     public boolean operationDetectProcessedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasProcessedResource) {
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
+		sim.reportEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
 	    }
 	    return this.locationHasProcessedResource;
 	} else {
@@ -544,8 +541,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	    if (_operationPerformResourceAction(Task.EXTRACTION,
 		    this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.EXTRACTED_RESOURCE, NA, NA);
+		sim.reportEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
 
 	    }
 
@@ -558,8 +554,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	    if (_operationPerformResourceAction(Task.PROCESSING,
 		    this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.PROCESSED_RESOURCE, NA, NA);
+		sim.reportEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -579,8 +574,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 		    this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
 		    updateLocationStatus(this.x, this.y);
-		    sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			    Event.LOADED_RESOURCE, NA, NA);
+		    sim.reportEvent(this, Event.LOADED_RESOURCE, NA, NA);
 		}
 	    }
 
@@ -608,10 +602,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA,
+				    NA);
+			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA,
+				    NA);
 			}
 
 		    } else if (this.sim.problemComplexity
@@ -619,10 +613,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(species, agentId, this.stepCounter,
-				    x, y, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA,
+				    NA);
+			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA,
+				    NA);
 			}
 
 		    } else {
@@ -634,8 +628,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 		if (dropResource) {
 		    this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
-		    sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			    Event.UNLOADED_RESOURCE, NA, NA);
+		    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 
 		}
 
@@ -650,7 +643,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	stepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
-	stats.zeroAll();
+
+	agentStats.clear();
     }
 
     public void updateLocationStatus(int x, int y) {
@@ -676,10 +670,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
 		// sim.statistics.stepData.trailHits++;
-		sim.reportEvent(species, agentId, this.stepCounter, x, y,
-			Event.RECEIVED_RAW_RESOURCE_TRAIL, NA, NA);
-
-		stats.trailHits++;
+		sim.reportEvent(this, Event.RECEIVED_RAW_RESOURCE_TRAIL, NA, NA);
 
 	    }
 	} else {
@@ -688,17 +679,6 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	if (sim.collectionSiteGrid.field[x][y] > 0) {
 	    this.locationIsCollectionSite = true;
-	    if (locationIsChanging) {
-		// sim.statistics.stepData.collectionSiteHits++;
-
-		stats.collectionSiteHits++;
-
-		if (x == sim.PRIMARY_COLLECTION_SITE_X
-			&& y == sim.PRIMARY_COLLECTION_SITE_Y) {
-		    // sim.statistics.stepData.primaryCollectionSiteHits++;
-		    stats.primaryCollectionSiteHits++;
-		}
-	    }
 	} else {
 	    this.locationIsCollectionSite = false;
 	}
@@ -722,7 +702,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public long getId() {
-	return this.agentId;
+	return getAgentId();
     }
 
     public int getGeneration() {

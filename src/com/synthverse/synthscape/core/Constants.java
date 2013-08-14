@@ -32,9 +32,9 @@ public interface Constants {
 
     public static final int NUMBER_OF_COLLECTION_SITES = 5;
 
-    public static final int MAX_STEPS_PER_AGENT = 2500;
+    public static final int MAX_STEPS_PER_AGENT = 500;
 
-    public static final int MAX_STEPS_PER_SIM = 2500;
+    public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
     public static final int SIMS_PER_EXPERIMENT = 200;
 
@@ -65,7 +65,7 @@ public interface Constants {
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
 
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
-    
+
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
 
 }

@@ -6,6 +6,7 @@ package com.synthverse.synthscape.core;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import sim.engine.Schedule;
@@ -96,6 +97,12 @@ public abstract class Simulation extends SimState implements Constants {
     private Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
 
     private String eventFileName;
+    
+    public Stats stepStats = new Stats();
+    public List<Stats> stepStatsList = new ArrayList<Stats>();
+    public Stats simStats = new Stats();
+    
+
 
     private void init() {
 	// we can compute the server name and batch ID right away
@@ -347,6 +354,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void initNextGeneration() {
 	// populate with agents
 	generationCounter++;
+	evolver.generateNextGeneration();
 
 	for (Agent agent : agents) {
 
@@ -398,6 +406,7 @@ public abstract class Simulation extends SimState implements Constants {
 		// reached
 		if (evaluateSimulationTerminateCondition()) {
 		    D.p("**** end of simulation ***");
+		    doEndOfSimulationTasks();
 
 		    stepCounter = 0;
 		    simulationCounter++;
@@ -440,7 +449,24 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void doEndOfStepTasks() {
-	// statistics.takeStepSnapshot();
+	// aggregate step stats...
+	D.p(">>> End of step");
+
+	for (Agent agent : agents) {
+	    agent.agentStats.aggregateStatsTo(stepStats);
+	}
+	simStats.aggregateStatsTo(stepStats);
+	stepStats.printValues();
+	stepStats.clear();
+	
+    }
+
+    protected void doEndOfSimulationTasks() {
+	// aggregate sim stats
+	D.p(">>> End of sim");
+	simStats.printValues();
+	simStats.clear();
+	
     }
 
     public void start() {
@@ -458,12 +484,14 @@ public abstract class Simulation extends SimState implements Constants {
 	return array;
     }
 
-    public void reportEvent(Species species, int agentId, int stepCounter,
-	    int x, int y, Event event, String source, String destination) {
+    public void reportEvent(Agent agent, Event event, String source,
+	    String destination) {
 
-	experimentReporter
-		.reportEvent(simulationCounter, generationCounter, species,
-			agentId, stepCounter, x, y, event, source, destination);
+	agent.agentStats.recordValue(event);
+
+	experimentReporter.reportEvent(simulationCounter, generationCounter,
+		agent.getSpecies(), agent.getAgentId(), stepCounter,
+		agent.getX(), agent.getY(), event, source, destination);
 
     }
 

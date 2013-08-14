@@ -18,15 +18,14 @@ public class IslanderAgent extends Agent {
 
     }
 
-    public IslanderAgent(Simulation sim, Species species,
-	    int generationNumber, int maxSteps, int startX, int startY) {
+    public IslanderAgent(Simulation sim, Species species, int generationNumber,
+	    int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 
     }
 
     public void stepAction(SimState state) {
-	Simulation theSim = (Simulation) state;
-	this.operationRandomMove();
+	this.getVirtualMachine().step();
 
     }
 
