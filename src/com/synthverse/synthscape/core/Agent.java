@@ -22,6 +22,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     private static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
+    
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
@@ -69,7 +70,9 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     protected Program program;
 
     public Stats agentStats = new Stats();
-
+    
+    private boolean retirable = false;
+    
     abstract public double doubleValue();
 
     abstract public void stepAction(SimState state);
@@ -640,10 +643,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public void reset() {
+	retirable = false;
 	stepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
-
 	agentStats.clear();
     }
 
@@ -823,4 +826,14 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.intPropertyMap.put(key, value);
     }
 
+    public boolean isRetirable() {
+        return retirable;
+    }
+
+    public void setRetirable(boolean retirable) {
+        this.retirable = retirable;
+    }
+
+    
+    
 }

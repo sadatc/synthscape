@@ -36,6 +36,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	    speciesIslandMap.put(species, island);
 	    islands.add(island);
 	}
+	D.p("number of islands = " + islands.size());
     }
 
     @Override
@@ -61,7 +62,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	// let's compute the global fitness
 	// and share it across all agents...
 	double fitness = computeGlobalFitness();
-	for(Agent agent: simulation.getAgents()) {
+	for (Agent agent : simulation.getAgents()) {
 	    agent.setFitness(fitness);
 	}
 

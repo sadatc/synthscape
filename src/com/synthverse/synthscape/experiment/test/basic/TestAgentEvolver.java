@@ -13,7 +13,7 @@ public class TestAgentEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public Agent getSeedAgent(Species species, int x, int y) {
+    public Agent getAgent(Species species, int x, int y) {
 	Agent agent = simulation.getAgentFactory().getNewFactoryAgent(species);
 	agent.setGeneration(SEED_GENERATION_NUMBER);
 
@@ -24,28 +24,9 @@ public class TestAgentEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public Agent getEvolvedAgent(Agent parentAgent, int x, int y) {
-	parentAgent.setGeneration(parentAgent.getGeneration() + 1);
-
-	parentAgent.setX(x);
-	parentAgent.setY(y);
-
-	// perhaps do other things to get it evolved.
-	parentAgent.reset();
-
-	return parentAgent;
-    }
-
-    @Override
     public void init() {
 	// TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void generateNextGeneration() {
-	// TODO Auto-generated method stub
-	
     }
 
 }

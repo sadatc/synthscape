@@ -6,8 +6,7 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
-public class ManuallyCodedAgentFactory extends AgentFactory implements
-	Constants {
+public class ManuallyCodedAgentFactory extends AgentFactory implements Constants {
 
     protected ManuallyCodedAgentFactory(Simulation simulation) {
 	super(simulation);
@@ -15,7 +14,7 @@ public class ManuallyCodedAgentFactory extends AgentFactory implements
     }
 
     @Override
-    public Agent getNewFactoryAgent(Species species) {
+    public Agent createNewFactoryAgent(Species species) {
 	return new ManuallyCodedAgent(simulation, species);
     }
 

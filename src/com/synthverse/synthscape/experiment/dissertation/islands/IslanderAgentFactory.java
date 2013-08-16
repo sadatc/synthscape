@@ -33,4 +33,10 @@ public class IslanderAgentFactory extends AgentFactory implements Constants {
 	return agent;
     }
 
+    @Override
+    public Agent createNewFactoryAgent(Species species) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
 }

@@ -38,8 +38,6 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected int simulationCounter;
 
-    protected int generationCounter;
-
     protected int stepCounter;
 
     protected ProblemComplexity problemComplexity;
@@ -97,12 +95,10 @@ public abstract class Simulation extends SimState implements Constants {
     private Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
 
     private String eventFileName;
-    
+
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
     public Stats simStats = new Stats();
-    
-
 
     private void init() {
 	// we can compute the server name and batch ID right away
@@ -160,11 +156,10 @@ public abstract class Simulation extends SimState implements Constants {
 	createDataStructures();
 
 	simulationCounter = 0;
-	generationCounter = 0;
+
 	numberOfCollectedResources = 0;
 
-	experimentReporter = new ExperimentReporter(this,
-		DEFAULT_FLUSH_ALWAYS_FLAG);
+	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
 	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
@@ -250,8 +245,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// set the primary collection site
 	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	initCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X,
-		PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X, PRIMARY_COLLECTION_SITE_Y));
     }
 
     private void initNonPrimaryCollectionSites() {
@@ -316,8 +310,9 @@ public abstract class Simulation extends SimState implements Constants {
 	initResources();
     }
 
-    private void initFirstGeneration() {
+    private void initAgents() {
 	// populate with agents
+	agents.clear();
 
 	for (Species species : speciesComposition) {
 	    for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
@@ -331,19 +326,13 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		/*
-		 * Agent agent = agentFactory.createFactoryAgent(this, species,
-		 * SEED_GENERATION_NUMBER, i, experiment.getMaxStepsPerAgent(),
-		 * randomX, randomY);
-		 */
-
-		Agent agent = evolver.getSeedAgent(species, randomX, randomY);
-
+		Agent agent = evolver.getAgent(species, randomX, randomY);
+		agent.setRetirable(false);
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
-
 		agents.add(agent);
+		
 
-		// add agents to the scheduler so that they can be stepped
+		// add agents to the scheduler
 		schedule.scheduleRepeating(agent);
 
 	    }
@@ -351,59 +340,29 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void initNextGeneration() {
-	// populate with agents
-	generationCounter++;
-	evolver.generateNextGeneration();
+    private void fadeTrails() {
+	trailGrid.lowerBound(0.0);
+	trailGrid.multiply(trailEvaporationConstant);
 
-	for (Agent agent : agents) {
-
-	    int randomX = random.nextInt(gridWidth);
-	    int randomY = random.nextInt(gridHeight);
-
-	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
-	    }
-	    initCollisionGrid.field[randomX][randomY] = PRESENT;
-
-	    /*
-	     * agent.reset(); agent.generation = generationCounter; agent.x =
-	     * randomX; agent.y = randomY;
-	     */
-	    agent = evolver.getEvolvedAgent(agent, randomX, randomY);
-
-	    agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
-	}
-
-	D.p("finished population generation #" + generationCounter);
     }
 
     private void startSimulation() {
 
 	initEnvironment();
-	initFirstGeneration();
+	initAgents();
 
 	setStartDate();
 	experimentReporter.initReporter();
 
 	// this is run at the end of each step
-
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
 		stepCounter++;
-		// statistics.simData.numberOfSteps++;
-		// D.p("sim loop");
 
-		// this fades the trails at the appropriate rates
-		trailGrid.lowerBound(0.0);
-		trailGrid.multiply(trailEvaporationConstant);
-
-		// this handles statistics
+		fadeTrails();
 		doEndOfStepTasks();
 
-		// this terminates the simulation if, conditions have been
-		// reached
+		// check is simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
 		    D.p("**** end of simulation ***");
 		    doEndOfSimulationTasks();
@@ -412,7 +371,6 @@ public abstract class Simulation extends SimState implements Constants {
 		    simulationCounter++;
 
 		    if (simulationCounter < simulationsPerExperiment) {
-
 			startNextSimulation();
 		    } else {
 			D.p("**** end of experiment ***");
@@ -440,7 +398,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void startNextSimulation() {
 	resetEnvironment();
 	initEnvironment();
-	initNextGeneration();
+	initAgents();
 
     }
 
@@ -449,28 +407,27 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void doEndOfStepTasks() {
-	// aggregate step stats...
-	//D.p(">>> End of step");
-
+	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
 	    agent.agentStats.aggregateStatsTo(stepStats);
+	    agent.agentStats.clear();
 	}
-	simStats.aggregateStatsTo(stepStats);
-	//stepStats.printValues();
+	// add step count to the sim count
+	stepStats.aggregateStatsTo(simStats);
+	// clear step count, it's been used...
 	stepStats.clear();
-	
+
     }
 
     protected void doEndOfSimulationTasks() {
-	// aggregate sim stats
-	//D.p(">>> End of sim");
-	//simStats.printValues();
-	simStats.clear();
-	
+	for(Agent agent: agents) {
+	    agent.setRetirable(true);
+	}
+
     }
 
     public void start() {
-	this.generationCounter = 0;
+
 	this.simulationCounter = 0;
 	this.stepCounter = 0;
 
@@ -484,14 +441,12 @@ public abstract class Simulation extends SimState implements Constants {
 	return array;
     }
 
-    public void reportEvent(Agent agent, Event event, String source,
-	    String destination) {
+    public void reportEvent(Agent agent, Event event, String source, String destination) {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, generationCounter,
-		agent.getSpecies(), agent.getAgentId(), stepCounter,
-		agent.getX(), agent.getY(), event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		agent.getAgentId(), stepCounter, agent.getX(), agent.getY(), event, source, destination);
 
     }
 
@@ -531,12 +486,9 @@ public abstract class Simulation extends SimState implements Constants {
 	if (eventFileName != null) {
 
 	    if (eventFileName.indexOf(".") != -1) {
-		String prePart = eventFileName.substring(0,
-			eventFileName.lastIndexOf('.'));
-		String postPart = eventFileName.substring(eventFileName
-			.lastIndexOf('.'));
-		eventFileName = prePart + "_"
-			+ DateUtils.getFileNameDateStamp() + postPart;
+		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
+		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + postPart;
 
 	    } else {
 		eventFileName += "_" + batchId;
@@ -547,8 +499,7 @@ public abstract class Simulation extends SimState implements Constants {
 	return eventFileName;
     }
 
-    public void addInteractionMechanism(
-	    InteractionMechanism interactionMechanism) {
+    public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
 	this.interactionMechanisms.add(interactionMechanism);
     }
 
@@ -694,8 +645,7 @@ public abstract class Simulation extends SimState implements Constants {
 	return interactionMechanisms;
     }
 
-    public void setInteractionMechanisms(
-	    Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
@@ -722,5 +672,5 @@ public abstract class Simulation extends SimState implements Constants {
     public List<Agent> getAgents() {
 	return agents;
     }
-    
+
 }
