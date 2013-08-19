@@ -16,27 +16,19 @@ public class IslanderAgentFactory extends AgentFactory implements Constants {
     }
 
     @Override
-    public Agent getNewFactoryAgent(Species species) {
+    public Agent createNewFactoryAgent(Species species) {
 	IslanderAgent agent = new IslanderAgent(simulation, species);
 	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	
-	
+
 	Program p = Program.Factory.createRandom(simulation.random);
-	VirtualMachine vm = VirtualMachine.Factory.createDefault(simulation,
-		agent, simulation.random);
+	VirtualMachine vm = VirtualMachine.Factory.createDefault(simulation, agent, simulation.random);
 	vm.loadProgram(p);
 	vm.setCpuCycles(simulation.getMaxStepsPerAgent());
-	
-	D.p("maxSteps="+agent.getMaxSteps());
+
+	D.p("maxSteps=" + agent.getMaxSteps());
 	agent.setVirtualMachine(vm);
 
 	return agent;
-    }
-
-    @Override
-    public Agent createNewFactoryAgent(Species species) {
-	// TODO Auto-generated method stub
-	return null;
     }
 
 }
