@@ -76,7 +76,7 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + simulation.getResourceDensity());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getNumberOfAgentsPerSpecies());
+	    bufferedWriter.append("" + simulation.getClonesPerSpecies());
 	    bufferedWriter.append(COMMA);
 
 	    bufferedWriter.append("" + simulation.getNumberOfCollectionSites());

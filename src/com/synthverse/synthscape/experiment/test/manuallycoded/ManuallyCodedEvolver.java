@@ -37,7 +37,7 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
 	
 	agentsRequested++;
 	// check if this is exceeding the limit
-	if(agentsRequested <= simulation.getNumberOfAgentsPerSpecies()) {
+	if(agentsRequested <= simulation.getClonesPerSpecies()) {
 	    speciesAgentRequestCounter.put(species, agentsRequested);
 	} else {
 	    // if it did, we are on a new generation...

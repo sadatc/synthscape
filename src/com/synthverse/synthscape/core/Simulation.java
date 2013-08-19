@@ -84,7 +84,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     private double obstacleDensity;
     private double resourceDensity;
-    private int numberOfAgentsPerSpecies;
+    private int clonesPerSpecies;
 
     private int maxStepsPerAgent;
 
@@ -129,7 +129,7 @@ public abstract class Simulation extends SimState implements Constants {
 	setInteractionMechanisms(configInteractionMechanisms());
 
 	// species compositions
-	setNumberOfAgentsPerSpecies(configNumberOfAgentsPerSpecies());
+	setClonesPerSpecies(configClonesPerSpecies());
 	setSpeciesComposition(configSpeciesComposition());
 
 	// steps and simulations...
@@ -315,7 +315,7 @@ public abstract class Simulation extends SimState implements Constants {
 	agents.clear();
 
 	for (Species species : speciesComposition) {
-	    for (int i = 0; i < numberOfAgentsPerSpecies; i++) {
+	    for (int i = 0; i < clonesPerSpecies; i++) {
 
 		int randomX = random.nextInt(gridWidth);
 		int randomY = random.nextInt(gridHeight);
@@ -523,7 +523,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public abstract ProblemComplexity configProblemComplexity();
 
-    public abstract int configNumberOfAgentsPerSpecies();
+    public abstract int configClonesPerSpecies();
 
     public abstract int configNumberOfCollectionSites();
 
@@ -603,12 +603,12 @@ public abstract class Simulation extends SimState implements Constants {
 	this.resourceDensity = resourceDensity;
     }
 
-    public int getNumberOfAgentsPerSpecies() {
-	return numberOfAgentsPerSpecies;
+    public int getClonesPerSpecies() {
+	return clonesPerSpecies;
     }
 
-    public void setNumberOfAgentsPerSpecies(int numberOfAgentsPerSpecies) {
-	this.numberOfAgentsPerSpecies = numberOfAgentsPerSpecies;
+    public void setClonesPerSpecies(int ClonesPerSpecies) {
+	this.clonesPerSpecies = ClonesPerSpecies;
     }
 
     public int getMaxStepsPerAgent() {

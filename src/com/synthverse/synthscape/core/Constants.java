@@ -24,7 +24,7 @@ public interface Constants {
 
     public static final boolean TOROIDAL_FLAG = true;
 
-    public static final int AGENTS_PER_SPECIES = 10;
+    public static final int CLONES_PER_SPECIES = 10;
 
     public static final double OBSTACLE_DENSITY = 0.05;
 

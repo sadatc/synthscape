@@ -69,8 +69,8 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     @Override
-    public int configNumberOfAgentsPerSpecies() {
-	return AGENTS_PER_SPECIES;
+    public int configClonesPerSpecies() {
+	return CLONES_PER_SPECIES;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return null;
-	//return new ArchipelagoEvolver(this);
+	
+	return new ArchipelagoEvolver(this);
     }
 
     @Override

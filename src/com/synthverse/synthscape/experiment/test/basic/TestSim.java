@@ -77,8 +77,8 @@ public class TestSim extends Simulation {
     }
 
     @Override
-    public int configNumberOfAgentsPerSpecies() {
-	return AGENTS_PER_SPECIES;
+    public int configClonesPerSpecies() {
+	return CLONES_PER_SPECIES;
     }
 
     @Override
