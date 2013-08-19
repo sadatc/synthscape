@@ -15,14 +15,13 @@ import sim.util.Valuable;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 
-public abstract class Agent implements Constants, Steppable, Valuable,
-	Comparable<Agent> {
+public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
 
     private static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
-    
+    private boolean scheduled = false;
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
@@ -30,7 +29,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     private int agentId;
 
-    protected int stepCounter;
+    protected int agentStepCounter;
 
     protected int maxSteps;
 
@@ -38,8 +37,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
-	    .noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -70,9 +68,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     protected Program program;
 
     public Stats agentStats = new Stats();
-    
-    private boolean retirable = false;
-    
+
     abstract public double doubleValue();
 
     abstract public void stepAction(SimState state);
@@ -92,12 +88,10 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     }
 
-    protected Agent(Simulation simulation, Species species,
-	    int generationNumber, int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	generateAgentId();
 	_optimizationAgentCounter++;
-	D.p("==> Agent(sim,species, gen...): AgentCount = "
-		+ _optimizationAgentCounter);
+	D.p("==> Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
@@ -182,10 +176,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
-		    && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight()
-		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
+		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -237,8 +229,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	grid.field[x][y] = 100;
     }
 
-    public final boolean _operationPerformResourceAction(Task action,
-	    ObjectGrid2D resourceGrid) {
+    public final boolean _operationPerformResourceAction(Task action, ObjectGrid2D resourceGrid) {
 
 	boolean actionPerformed = false;
 
@@ -296,8 +287,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA,
-	    DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -416,8 +406,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
-		Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
 
     }
 
@@ -436,8 +425,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		}
 	    }
 
-	    _operationMoveToLocationAt(closestCollectionSite.x,
-		    closestCollectionSite.y);
+	    _operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
 
 	}
     }
@@ -463,8 +451,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		    }
 		}
 	    }
-	    _operationMoveToLocationAt(closestAgentLocation.x,
-		    closestAgentLocation.y);
+	    _operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
 
 	}
     }
@@ -541,8 +528,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public final void operationExtractResource() {
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
-	    if (_operationPerformResourceAction(Task.EXTRACTION,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
 		sim.reportEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
 
@@ -554,8 +540,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
     public void operationProcessResource() {
 	if (species.getTraits().contains(Trait.PROCESSING)) {
-	    if (_operationPerformResourceAction(Task.PROCESSING,
-		    this.sim.resourceGrid)) {
+	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
 		sim.reportEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
 	    }
@@ -569,8 +554,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource
-		    || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -585,10 +569,8 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public final void operationUnLoadResource() {
-	if (species.getTraits().contains(Trait.TRANSPORTATION)
-		&& isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource
-		    && !locationHasRawResource) {
+	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -605,21 +587,16 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 			if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA,
-				    NA);
-			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA,
-				    NA);
+			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
-		    } else if (this.sim.problemComplexity
-			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA,
-				    NA);
-			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA,
-				    NA);
+			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
 		    } else {
@@ -643,8 +620,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public void reset() {
-	retirable = false;
-	stepCounter = 0;
+	agentStepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
 	agentStats.clear();
@@ -689,14 +665,15 @@ public abstract class Agent implements Constants, Steppable, Valuable,
     }
 
     public boolean hasStepsRemaining() {
-	return stepCounter < maxSteps;
+	return agentStepCounter < maxSteps;
     }
 
     public void step(SimState state) {
 	if (hasStepsRemaining()) {
 
 	    stepAction(state);
-	    stepCounter++;
+	    agentStepCounter++;
+
 	}
     }
 
@@ -744,12 +721,12 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.agentId = _agentCounter;
     }
 
-    public int getStepCounter() {
-	return stepCounter;
+    public int getAgentStepCounter() {
+	return agentStepCounter;
     }
 
     public void setStepCounter(int stepCounter) {
-	this.stepCounter = stepCounter;
+	this.agentStepCounter = stepCounter;
     }
 
     public int getMaxSteps() {
@@ -792,8 +769,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.sim = sim;
     }
 
-    protected static Agent generateAgent(long generation, long agentId, int x,
-	    int y) {
+    protected static Agent generateAgent(long generation, long agentId, int x, int y) {
 	return null;
     }
 
@@ -809,8 +785,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.species = species;
     }
 
-    public void setInteractionMechanisms(
-	    Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
@@ -826,14 +801,12 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 	this.intPropertyMap.put(key, value);
     }
 
-    public boolean isRetirable() {
-        return retirable;
+    public boolean isScheduled() {
+	return scheduled;
     }
 
-    public void setRetirable(boolean retirable) {
-        this.retirable = retirable;
+    public void setScheduled(boolean scheduled) {
+	this.scheduled = scheduled;
     }
 
-    
-    
 }

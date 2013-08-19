@@ -38,7 +38,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected int simulationCounter;
 
-    protected int stepCounter;
+    protected int simStepCounter;
 
     protected ProblemComplexity problemComplexity;
 
@@ -327,13 +327,16 @@ public abstract class Simulation extends SimState implements Constants {
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
-		agent.setRetirable(false);
+
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 		agents.add(agent);
-		
 
 		// add agents to the scheduler
-		schedule.scheduleRepeating(agent);
+
+		if (!agent.isScheduled()) {
+		    schedule.scheduleRepeating(agent);
+		    agent.setScheduled(true);
+		}
 
 	    }
 	}
@@ -357,7 +360,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// this is run at the end of each step
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
-		stepCounter++;
+		simStepCounter++;
 
 		fadeTrails();
 		doEndOfStepTasks();
@@ -367,7 +370,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    D.p("**** end of simulation ***");
 		    doEndOfSimulationTasks();
 
-		    stepCounter = 0;
+		    simStepCounter = 0;
 		    simulationCounter++;
 
 		    if (simulationCounter < simulationsPerExperiment) {
@@ -396,6 +399,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
+
 	resetEnvironment();
 	initEnvironment();
 	initAgents();
@@ -403,10 +407,10 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
-	return (this.numberOfCollectedResources >= this.numberOfResources || this.stepCounter > stepsPerSimulation);
+	return (this.numberOfCollectedResources >= this.numberOfResources || this.simStepCounter > stepsPerSimulation);
     }
 
-    protected void doEndOfStepTasks() {
+    private void doEndOfStepTasks() {
 	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
 	    agent.agentStats.aggregateStatsTo(stepStats);
@@ -419,19 +423,17 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    protected void doEndOfSimulationTasks() {
-	for(Agent agent: agents) {
-	    agent.setRetirable(true);
+    private void doEndOfSimulationTasks() {
+	for (Agent agent : agents) {
+	    agentFactory.reclaimAgent(agent);
 	}
-
     }
 
     public void start() {
+	super.start();
 
 	this.simulationCounter = 0;
-	this.stepCounter = 0;
-
-	super.start();
+	this.simStepCounter = 0;
 	resetAll();
 	startSimulation();
     }
@@ -446,7 +448,7 @@ public abstract class Simulation extends SimState implements Constants {
 	agent.agentStats.recordValue(event);
 
 	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		agent.getAgentId(), stepCounter, agent.getX(), agent.getY(), event, source, destination);
+		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 
     }
 

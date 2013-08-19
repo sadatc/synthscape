@@ -1,18 +1,18 @@
 package com.synthverse.evolver.islands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
-import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
 public class ArchipelagoEvolver extends Evolver implements Constants {
+
+    protected ArchipelagoEvolver(Simulation simulation) {
+	super(simulation);
+	// TODO Auto-generated constructor stub
+    }
+    /*
 
     HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
     List<PopulationIslandEvolver> islands = new ArrayList<PopulationIslandEvolver>();
@@ -81,6 +81,25 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	}
 
 	return result;
+    }
+
+    @Override
+    public Agent getAgent(Species species, int x, int y) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+    */
+
+    @Override
+    public Agent getAgent(Species species, int x, int y) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public void init() {
+	// TODO Auto-generated method stub
+	
     }
 
 }

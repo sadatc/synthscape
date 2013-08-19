@@ -110,7 +110,8 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return new ArchipelagoEvolver(this);
+	return null;
+	//return new ArchipelagoEvolver(this);
     }
 
     @Override

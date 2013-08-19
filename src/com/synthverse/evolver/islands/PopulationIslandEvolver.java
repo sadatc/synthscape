@@ -19,6 +19,12 @@ import com.synthverse.synthscape.core.Species;
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
+    protected PopulationIslandEvolver(Simulation simulation) {
+	super(simulation);
+	// TODO Auto-generated constructor stub
+    }
+    /*
+
     private int populationSize;
     private Species species;
     private CentralizedEvolutionEngine engine;
@@ -92,6 +98,19 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     @Override
     public void generateNextGeneration() {
 	engine.generateNextGeneration(simulation.random);
+	
+    }
+    */
+
+    @Override
+    public Agent getAgent(Species species, int x, int y) {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public void init() {
+	// TODO Auto-generated method stub
 	
     }
 
