@@ -74,25 +74,38 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     abstract public double doubleValue();
 
     abstract public void stepAction(SimState state);
+    
+    
+    
+    private void initGenotype() {
+	this.program = Program.Factory.createRandom(sim.random);
+	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
+	vm.loadProgram(this.program);
+	vm.setCpuCycles(sim.getMaxStepsPerAgent());
+	this.setVirtualMachine(vm);
+    }
 
     private Agent() {
 	generateAgentId();
+	
 	_optimizationAgentCounter++;
 	D.p("==> Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
 	generateAgentId();
+	
 	_optimizationAgentCounter++;
 	D.p("==> Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
-
+	initGenotype();
     }
 
     protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
 	    int startX, int startY) {
 	generateAgentId();
+	initGenotype();
 	_optimizationAgentCounter++;
 	D.p("==> Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
 	// set the basic stuff:
@@ -103,7 +116,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	setGeneration(generationNumber);
 	setSpecies(species);
 	setInteractionMechanisms(simulation.getInteractionMechanisms());
-
+	initGenotype();
     }
 
     public Agent randomizeGenotype() {

@@ -56,7 +56,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    Agent archetype = activeBuffer.get(genePoolIndex);
 	    // now clone this and give it.
 
-	    returnAgent = simulation.getAgentFactory().createNewFactoryAgent(species);
+	    returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
 	    returnAgent.cloneGenotypeFrom(archetype);
 
 	    returnAgent.reset();

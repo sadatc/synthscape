@@ -335,6 +335,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		if (!agent.isScheduled()) {
 		    schedule.scheduleRepeating(agent);
+		    
 		    agent.setScheduled(true);
 		}
 
@@ -426,6 +427,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void doEndOfSimulationTasks() {
 	for (Agent agent : agents) {
 	    agentFactory.reclaimAgent(agent);
+	    D.p("reclaiming agent#"+agent.getId());
 	}
     }
 
