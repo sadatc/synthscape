@@ -9,13 +9,14 @@ import java.util.logging.Logger;
 import com.synthverse.stacks.Config;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.CollectionUtils;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
-public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
+public final class CentralizedEvolutionEngine implements Constants {
 
     private static Logger logger = Logger.getLogger(CentralizedEvolutionEngine.class.getName());
     static {
