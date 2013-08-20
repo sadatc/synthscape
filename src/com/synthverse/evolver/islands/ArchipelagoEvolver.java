@@ -48,7 +48,10 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
-	// TODO Auto-generated method stub
+	for(Agent agent: agents) {
+	    PopulationIslandEvolver islandEvolver = speciesIslandMap.get(agent.getSpecies());
+	    islandEvolver.provideFeedback(agent, simStats);
+	}
 	
     }
 
