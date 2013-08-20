@@ -24,7 +24,7 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
-	D.p("Diagnosis: total # of agents created: "+Agent._optimizationAgentCounter);
+	D.p("Diagnosis: total # of agents created: "+Agent.get_optimizationAgentCounter());
 
 	System.exit(0);
     }

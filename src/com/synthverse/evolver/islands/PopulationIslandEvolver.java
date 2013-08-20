@@ -59,6 +59,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
 	    returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
 	    returnAgent.cloneGenotypeFrom(archetype);
+	    returnAgent.getVirtualMachine().resetAll();
 
 	    returnAgent.reset();
 	    returnAgent.setGeneration(generation);
@@ -99,9 +100,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	
     }
 
-    public void provideFeedback(Agent agent, Stats simStats) {
-	
-	
-    }
+   
 
 }

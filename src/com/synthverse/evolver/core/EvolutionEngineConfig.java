@@ -25,7 +25,7 @@ public interface EvolutionEngineConfig {
 
     public static final int DEFAULT_MAX_ENTITY_SIZE = 32;
 
-    public static final int DEFAULT_GENE_POOL_SIZE = 50;
+    public static final int DEFAULT_GENE_POOL_SIZE = 100;
 
     public static final int DEFAULT_MAX_GENERATIONS = 10;
 

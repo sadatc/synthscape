@@ -45,8 +45,8 @@ public final class LogUtils {
     private static final String SEVERE_SYMBOL = "!!!";
     private static final String INFO_SYMBOL = "==>";
     private static final String CONFIG_SYMBOL = "##>";
-    private static final String FINE_SYMBOL =   "~  ";
-    private static final String FINER_SYMBOL =  "~~ ";
+    private static final String FINE_SYMBOL = "~  ";
+    private static final String FINER_SYMBOL = "~~ ";
     private static final String FINEST_SYMBOL = "~~~";
 
     private static final String EMPTY_STRING = "";
@@ -66,10 +66,8 @@ public final class LogUtils {
      */
     public enum LogFormatter {
 
-	DEFAULT(new LogUtils.BareBonesFormatter()), CUSTOM_SIMPLE(
-		new LogUtils.CustomSimplestLogFormatter()), CUSTOM_DETAILED_2(
-		new LogUtils.CustomDetailedLogFormatter2()), CUSTOM_DETAILED(
-		new LogUtils.CustomDetailedLogFormatter()), CUSTOM_NEAT(
+	DEFAULT(new LogUtils.BareBonesFormatter()), CUSTOM_SIMPLE(new LogUtils.CustomSimplestLogFormatter()), CUSTOM_DETAILED_2(
+		new LogUtils.CustomDetailedLogFormatter2()), CUSTOM_DETAILED(new LogUtils.CustomDetailedLogFormatter()), CUSTOM_NEAT(
 		new LogUtils.NeatLogFormatter());
 	;
 
@@ -109,8 +107,7 @@ public final class LogUtils {
 
     }
 
-    private static class NeatLogFormatter extends
-	    java.util.logging.SimpleFormatter {
+    private static class NeatLogFormatter extends java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
 
 	    StringBuilder SB = new StringBuilder("");
@@ -135,8 +132,7 @@ public final class LogUtils {
 
 	    SB.append("|");
 
-	    SB.append(record.getSourceClassName().substring(
-		    record.getSourceClassName().lastIndexOf('.') + 1));
+	    SB.append(record.getSourceClassName().substring(record.getSourceClassName().lastIndexOf('.') + 1));
 	    SB.append("|");
 	    SB.append(record.getSourceMethodName());
 	    SB.append("| ");
@@ -146,8 +142,7 @@ public final class LogUtils {
 	}
     }
 
-    private static class CustomDetailedLogFormatter extends
-	    java.util.logging.SimpleFormatter {
+    private static class CustomDetailedLogFormatter extends java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
 	    StringBuilder SB = new StringBuilder("");
 	    SB.append(record.getMillis());
@@ -162,17 +157,14 @@ public final class LogUtils {
 	}
     }
 
-    private static class CustomDetailedLogFormatter2 extends
-	    java.util.logging.SimpleFormatter {
+    private static class CustomDetailedLogFormatter2 extends java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
-	    return record.getLevel() + "  :  " + record.getSourceClassName()
-		    + " -:- " + record.getSourceMethodName() + " -:- "
-		    + record.getMessage() + "\n";
+	    return record.getLevel() + "  :  " + record.getSourceClassName() + " -:- " + record.getSourceMethodName()
+		    + " -:- " + record.getMessage() + "\n";
 	}
     }
 
-    private static class CustomSimplestLogFormatter extends
-	    java.util.logging.SimpleFormatter {
+    private static class CustomSimplestLogFormatter extends java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
 	    StringBuilder SB = new StringBuilder("");
 	    SB.append(record.getMessage());
@@ -181,24 +173,32 @@ public final class LogUtils {
 	}
     }
 
-    public static void applyLoggerSettings(Logger logger,
-	    LogFormatter formatter, Level level) {
+    public static void applyLoggerSettings(Logger logger, LogFormatter formatter, Level level) {
 	// set level
 	logger.setLevel(level);
 
 	// detach parent handlers
 	logger.setUseParentHandlers(false);
 
+	// check to see if it already has a consolehandler
+	boolean consoleHandlerExists = false;
+	for (Handler existingHandler : logger.getHandlers()) {
+	    if (existingHandler instanceof ConsoleHandler) {
+		consoleHandlerExists = true;
+	    }
+	}
+
 	// add a console handler
-	Handler consoleHandler = new ConsoleHandler();
-	consoleHandler.setLevel(level);
-	consoleHandler.setFormatter(formatter.getFormatter());
-	logger.addHandler(consoleHandler);
+	if (!consoleHandlerExists) {
+	    Handler consoleHandler = new ConsoleHandler();
+	    consoleHandler.setLevel(level);
+	    consoleHandler.setFormatter(formatter.getFormatter());
+	    logger.addHandler(consoleHandler);
+	}
 
     }
 
-    public static void applyLoggerSettings(Logger logger,
-	    LogFormatter formatter, Level level, String fileName) {
+    public static void applyLoggerSettings(Logger logger, LogFormatter formatter, Level level, String fileName) {
 	// set level
 	logger.setLevel(level);
 
@@ -207,22 +207,19 @@ public final class LogUtils {
 
 	// add a console handler
 	try {
-	    Handler fileHandler = new FileHandler(fileName,
-		    MAX_FILE_RECORD_LIMIT, MAX_FILE_COUNT, APPEND_TO_LOG_FILE);
+	    Handler fileHandler = new FileHandler(fileName, MAX_FILE_RECORD_LIMIT, MAX_FILE_COUNT, APPEND_TO_LOG_FILE);
 	    fileHandler.setLevel(level);
 	    fileHandler.setFormatter(formatter.getFormatter());
 	    logger.addHandler(fileHandler);
 	} catch (Exception e) {
-	    System.out.println("EXCEPTION: opening logfile:" + fileName
-		    + " Trace:" + e.getMessage());
+	    System.out.println("EXCEPTION: opening logfile:" + fileName + " Trace:" + e.getMessage());
 	    e.printStackTrace();
 	}
 
     }
 
     public static void applyDefaultSettings(Logger logger) {
-	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER,
-		LogUtils.DEFAULT_LOG_LEVEL);
+	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER, LogUtils.DEFAULT_LOG_LEVEL);
     }
 
     public static void applyDefaultSettings(Logger logger, Level level) {
@@ -230,14 +227,11 @@ public final class LogUtils {
     }
 
     public static void applyDefaultSettings(Logger logger, String fileName) {
-	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER,
-		LogUtils.DEFAULT_LOG_LEVEL, fileName);
+	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER, LogUtils.DEFAULT_LOG_LEVEL, fileName);
     }
 
-    public static void applyDefaultSettings(Logger logger, Level level,
-	    String fileName) {
-	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER, level,
-		fileName);
+    public static void applyDefaultSettings(Logger logger, Level level, String fileName) {
+	applyLoggerSettings(logger, LogUtils.DEFAULT_LOG_FORMATTER, level, fileName);
     }
 
 }

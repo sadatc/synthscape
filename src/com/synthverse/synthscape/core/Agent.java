@@ -21,11 +21,11 @@ import com.synthverse.util.LogUtils;
 
 public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
-    private static final long serialVersionUID = -5129827193602692370L;
-    private static Logger logger = Logger.getLogger(Agent.class.getName());
-
-    public static long _optimizationAgentCounter = 0;
-    private static int _agentCounter = 0;
+    protected static final long serialVersionUID = -5129827193602692370L;
+    protected static Logger logger = Logger.getLogger(Agent.class.getName());
+    protected static long _optimizationAgentCounter = 0;
+    protected static int _agentCounter = 0;
+    
     private boolean scheduled = false;
     private Agent genotypicalParent = null;
 
@@ -852,6 +852,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public Agent getGenotypicalParent() {
         return genotypicalParent;
     }
+
+    public static long get_optimizationAgentCounter() {
+        return _optimizationAgentCounter;
+    }
+    
     
     
     

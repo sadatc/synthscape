@@ -32,7 +32,7 @@ import com.synthverse.util.LogUtils;
 public abstract class Simulation extends SimState implements Constants {
 
     private static final long serialVersionUID = 2700375028430112699L;
-    private static Logger logger = Logger.getLogger(Agent.class.getName());
+    protected static Logger logger = Logger.getLogger(Agent.class.getName());
 
     protected Evolver evolver;
 
@@ -374,7 +374,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		// check if simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
-		    logger.info("end of simulation #" + (simulationCounter + 1));
+		    //logger.info("end of simulation #" + (simulationCounter + 1));
 		    doEndOfSimulationTasks();
 
 		    simStepCounter = 0;

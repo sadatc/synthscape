@@ -320,11 +320,12 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	offspringBuffer = savedSwapBuffer;
 	activeBuffer = parentBuffer;
 
+	/*
 	String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" + aTopMutants + ", tXb=" + aTopXBottom + ", b="
 		+ aBottom + ", bM=" + aBottomMutants + ", bXb=" + aBottomXBottom + ", n=" + aRandom;
 
 	logger.fine("[GENERATION " + generationCounter + "] REGENERATION COMPLETED:" + msg);
-
+	*/
 	
 
 	orderActivePopulationByFitness();
