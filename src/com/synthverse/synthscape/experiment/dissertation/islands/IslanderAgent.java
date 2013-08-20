@@ -5,8 +5,8 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 
 import sim.engine.SimState;
 
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
@@ -18,8 +18,8 @@ public class IslanderAgent extends Agent {
 
     }
 
-    public IslanderAgent(Simulation sim, Species species, int generationNumber,
-	    int maxSteps, int startX, int startY) {
+    public IslanderAgent(Simulation sim, Species species, int generationNumber, int maxSteps,
+	    int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 
     }
@@ -38,5 +38,7 @@ public class IslanderAgent extends Agent {
 	return result;
 
     }
+
+  
 
 }

@@ -6,112 +6,90 @@ import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
 /**
- * A population island maintains agentStats gene pool that produces agents of agentStats specific
- * species
+ * A population island maintains agentStats gene pool that produces agents of
+ * agentStats specific species
  * 
  * @author sadat
  * 
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
-    protected PopulationIslandEvolver(Simulation simulation) {
-	super(simulation);
-	// TODO Auto-generated constructor stub
-    }
-    /*
-
-    private int populationSize;
     private Species species;
-    private CentralizedEvolutionEngine engine;
-   
-    private static int seedAgentRequestCounter = 0;
-    private static int evolvedAgentRequestCounter = 0;
-    
-    private List<Agent> activeBuffer = null;
+    private int clonesPerSpecies;
+    private int totalPopulation;
+    private int genePoolSize;
+    private int genePoolIndex;
+    private int generation;
+    private CentralizedEvolutionEngine evolutionEngine;
+    private int requestCounter = 0;
+    private int cloneCounter = 0;
+    List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species,
-	    int populationSize) {
+    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) {
 	super(simulation);
 	this.species = species;
-	this.populationSize = populationSize;
 
-	this.engine = new CentralizedEvolutionEngine(
-		simulation.getAgentFactory(), species, populationSize);
-	 activeBuffer = engine.getActiveBuffer();
+	this.generation = 0;
+
+	evolutionEngine = new CentralizedEvolutionEngine(simulation.getAgentFactory(), species);
+	this.clonesPerSpecies = clonesPerSpecies;
+	genePoolSize = evolutionEngine.getGenePoolSize();
+	totalPopulation = clonesPerSpecies * genePoolSize;
+	activeBuffer = evolutionEngine.getActiveBuffer();
+	this.requestCounter = 0;
+	this.genePoolIndex = 0;
     }
-
-    @Override
-    public Agent getSeedAgent(Species species, int x, int y) {
-	Agent result = null;
-	if(seedAgentRequestCounter<activeBuffer.size()) {
-	    
-	    result = activeBuffer.get(seedAgentRequestCounter);
-	    
-	    result.setX(x);
-	    result.setY(y);
-	    result.setMaxSteps(simulation.getMaxStepsPerAgent());
-	    
-	    seedAgentRequestCounter++;
-	} else {
-	    D.p("WARNING! requested too many seed agents...");
-	    System.exit(-1);
-	}
-	
-	return result;
-	
-    }
-
-    @Override
-    public Agent getEvolvedAgent(Agent ancestorAgent, int x, int y) {
-	Agent result = ancestorAgent;
-	if(evolvedAgentRequestCounter<activeBuffer.size()) {
-	    
-	    if(activeBuffer.contains(result)) {
-	    
-        	    result.setX(x);
-        	    result.setY(y);
-        	    result.setMaxSteps(simulation.getMaxStepsPerAgent());
-        	    
-        	    evolvedAgentRequestCounter++;
-	    } else {
-		D.p("Warning! requested agent doesn't exist");
-		System.exit(-1);
-	    }
-	} else {
-	    D.p("WARNING! requested too many evolved agents...");
-	    System.exit(-1);
-	}
-	
-	return result;
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void generateNextGeneration() {
-	engine.generateNextGeneration(simulation.random);
-	
-    }
-    */
 
     @Override
     public Agent getAgent(Species species, int x, int y) {
-	// TODO Auto-generated method stub
-	return null;
+	Agent returnAgent = null;
+
+	requestCounter++;
+
+	if (requestCounter < totalPopulation) {
+	    cloneCounter++;
+
+	    Agent archetype = activeBuffer.get(genePoolIndex);
+	    // now clone this and give it.
+
+	    returnAgent = simulation.getAgentFactory().createNewFactoryAgent(species);
+	    returnAgent.cloneGenotypeFrom(archetype);
+
+	    returnAgent.reset();
+	    returnAgent.setGeneration(generation);
+	    returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
+	    returnAgent.setX(x);
+	    returnAgent.setY(y);
+
+	    if (cloneCounter >= clonesPerSpecies) {
+		genePoolIndex++;
+		cloneCounter = 0;
+	    }
+
+	} else {
+	    // we have reached next generation
+	    // reset all counters and re-run...
+	    generation++;
+	    requestCounter = 0;
+	    genePoolIndex = 0;
+	    cloneCounter = 0;
+	    evolutionEngine.generateNextGeneration(simulation.random);
+	    activeBuffer = evolutionEngine.getActiveBuffer();
+	    // recursive call!
+	    returnAgent = getAgent(species, x, y);
+	}
+
+	return returnAgent;
     }
 
     @Override
     public void init() {
 	// TODO Auto-generated method stub
-	
+
     }
 
 }

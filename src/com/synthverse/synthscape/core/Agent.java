@@ -22,6 +22,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     private static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
     private boolean scheduled = false;
+    private Agent genotypicalParent = null;
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
@@ -37,7 +38,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
+	    .noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -88,7 +90,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
+	    int startX, int startY) {
 	generateAgentId();
 	_optimizationAgentCounter++;
 	D.p("==> Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
@@ -176,8 +179,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
+		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -287,7 +291,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -406,7 +411,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
+		Simulation.PRIMARY_COLLECTION_SITE_Y);
 
     }
 
@@ -554,7 +560,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource
+		    || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -570,7 +577,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource
+		    && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -591,7 +599,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
-		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity
+			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
@@ -809,4 +818,16 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.scheduled = scheduled;
     }
 
+    public void cloneGenotypeFrom(Agent archetype) {
+	this.getVirtualMachine().loadProgram(new Program(archetype.getProgram()));
+	this.getVirtualMachine().setCpuCycles(archetype.getVirtualMachine().getCpuCycles());
+	genotypicalParent = archetype;
+    }
+
+    public Agent getGenotypicalParent() {
+        return genotypicalParent;
+    }
+    
+    
+    
 }

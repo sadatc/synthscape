@@ -42,8 +42,7 @@ public class Program {
 
     public final void randomizeInstructions() {
 	for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-	    instructionArray[i] = InstructionTranslator
-		    .getRandomInstruction(randomNumberGenerator);
+	    instructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	}
     }
 
@@ -61,6 +60,17 @@ public class Program {
 
     private Program() {
 
+    }
+
+    public Program(Program p) {
+	this.size = p.size;
+	this.randomNumberGenerator = p.randomNumberGenerator;
+	if (this.size > 0) {
+	    this.instructionArray = new Instruction[this.size];
+	    for (int i = 0; i < this.size; i++) {
+		this.instructionArray[i] = p.instructionArray[i];
+	    }
+	}
     }
 
     private Program(MersenneTwisterFast randomNumberGenerator, int maxSize) {
@@ -165,21 +175,17 @@ public class Program {
 
     public static class Factory {
 
-	public static final Program createDefault(
-		MersenneTwisterFast randomNumberGenerator) {
+	public static final Program createDefault(MersenneTwisterFast randomNumberGenerator) {
 	    return createRandom(randomNumberGenerator);
 	}
 
-	public static final Program createEmpty(
-		MersenneTwisterFast randomNumberGenerator) {
-	    Program program = new Program(randomNumberGenerator,
-		    Config.DEFAULT_PROGRAM_ARRAY_SIZE);
+	public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator) {
+	    Program program = new Program(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
 	    program.size = 0;
 	    return program;
 	}
 
-	public static final Program createRandom(
-		MersenneTwisterFast randomNumberGenerator) {
+	public static final Program createRandom(MersenneTwisterFast randomNumberGenerator) {
 	    Program program = null;
 
 	    program = createEmpty(randomNumberGenerator);
@@ -194,8 +200,7 @@ public class Program {
 
 	}
 
-	public static final Program createRandom(
-		MersenneTwisterFast randomNumberGenerator, int size) {
+	public static final Program createRandom(MersenneTwisterFast randomNumberGenerator, int size) {
 	    Program program = null;
 
 	    if (size > 0 && size < Config.DEFAULT_PROGRAM_ARRAY_SIZE) {

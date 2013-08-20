@@ -44,7 +44,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
     int aBottomXBottom;
     int aRandom;
 
-    int populationSize;
+    int genePoolSize;
     int maxGenerations;
     double maxMutationRate;
     String evolutionProgressLog;
@@ -66,13 +66,13 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
      * 
      * 
      * @param agentFactory
-     * @param maxPopulationSize
+     * @param genePoolSize
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int maxPopulationSize) {
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP,
 		DEFAULT_PERCENT_TOP_MUTANT, DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM,
 		DEFAULT_PERCENT_BOTTOM_MUTANT, DEFAULT_PERCENT_BOTTOM_X_BOTTOM,
-		DEFAULT_PERCENT_RANDOM, maxPopulationSize, DEFAULT_MAX_GENERATIONS,
+		DEFAULT_PERCENT_RANDOM, genePoolSize, DEFAULT_MAX_GENERATIONS,
 		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
@@ -88,7 +88,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
      * @param percentBottomMutant
      * @param percentBottomXBottom
      * @param percentRandom
-     * @param maxPopulationSize
+     * @param genePoolSize
      * @param maxGenerations
      * @param maxMutationRate
      * @param evolutionProgressLog
@@ -96,22 +96,22 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
     public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
 	    double percentTopXTop, double percentTopMutant, double percentTopXBottom,
 	    double percentBottom, double percentBottomMutant, double percentBottomXBottom,
-	    double percentRandom, int maxPopulationSize, int maxGenerations,
+	    double percentRandom, int genePoolSize, int maxGenerations,
 	    double maxMutationRate, String evolutionProgressLog) {
 
 	this.agentFactory = agentFactory;
 	this.species = species;
 
-	aTop = (int) ((double) maxPopulationSize * percentTop);
-	aTopXTop = (int) ((double) maxPopulationSize * percentTopXTop);
-	aTopMutants = (int) ((double) maxPopulationSize * percentTopMutant);
-	aTopXBottom = (int) ((double) maxPopulationSize * percentTopXBottom);
-	aBottom = (int) ((double) maxPopulationSize * percentBottom);
-	aBottomMutants = (int) ((double) maxPopulationSize * percentBottomMutant);
-	aBottomXBottom = (int) ((double) maxPopulationSize * percentBottomXBottom);
-	aRandom = (int) ((double) maxPopulationSize * percentRandom);
+	aTop = (int) ((double) genePoolSize * percentTop);
+	aTopXTop = (int) ((double) genePoolSize * percentTopXTop);
+	aTopMutants = (int) ((double) genePoolSize * percentTopMutant);
+	aTopXBottom = (int) ((double) genePoolSize * percentTopXBottom);
+	aBottom = (int) ((double) genePoolSize * percentBottom);
+	aBottomMutants = (int) ((double) genePoolSize * percentBottomMutant);
+	aBottomXBottom = (int) ((double) genePoolSize * percentBottomXBottom);
+	aRandom = (int) ((double) genePoolSize * percentRandom);
 
-	this.populationSize = maxPopulationSize;
+	this.genePoolSize = genePoolSize;
 	this.maxGenerations = maxGenerations;
 	this.maxMutationRate = maxMutationRate;
 	this.evolutionProgressLog = evolutionProgressLog;
@@ -124,10 +124,10 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	// pre-fill all data strcuture
 	// we'll be re-using these over and over again
 
-	parentBuffer = new ArrayList<Agent>(populationSize);
-	offspringBuffer = new ArrayList<Agent>(populationSize);
+	parentBuffer = new ArrayList<Agent>(genePoolSize);
+	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
-	for (int i = 0; i < populationSize; i++) {
+	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
 	}
@@ -254,7 +254,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 
     private void compareBufffers() {
 	String msg = "COMPARISON:\n";
-	for (int i = 0; i < populationSize; i++) {
+	for (int i = 0; i < genePoolSize; i++) {
 	    msg += "\t" + activeBuffer.get(i).getFitness() + "\t\t"
 		    + offspringBuffer.get(i).getFitness() + "\n";
 	}
@@ -274,7 +274,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	}
 
 	for (int i = 0; i < aBottom; i++) {
-	    bottomPerformers.add(activeBuffer.get(populationSize - i - 1));
+	    bottomPerformers.add(activeBuffer.get(genePoolSize - i - 1));
 	}
 
 	// now we start constructing the offspringBuffer
@@ -289,7 +289,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 
 	// adding bottoms
 
-	swapBufferElements(activeBuffer, offspringBuffer, populationSize - aBottom - 1, aBottom,
+	swapBufferElements(activeBuffer, offspringBuffer, genePoolSize - aBottom - 1, aBottom,
 		offspringBufferIndex);
 	offspringBufferIndex += aBottom;
 
@@ -388,8 +388,14 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	    sum += e.getFitness();
 	}
 
-	this.averageFitness = sum / (double) populationSize;
+	this.averageFitness = sum / (double) genePoolSize;
 
     }
+
+    public int getGenePoolSize() {
+        return genePoolSize;
+    }
+    
+    
 
 }
