@@ -43,11 +43,11 @@ public final class LogUtils {
 
     private static final String WARNING_SYMBOL = "***";
     private static final String SEVERE_SYMBOL = "!!!";
-    private static final String INFO_SYMBOL = "---";
-    private static final String CONFIG_SYMBOL = "###";
-    private static final String FINE_SYMBOL = " + ";
-    private static final String FINER_SYMBOL = "+ +";
-    private static final String FINEST_SYMBOL = "+++";
+    private static final String INFO_SYMBOL = "==>";
+    private static final String CONFIG_SYMBOL = "##>";
+    private static final String FINE_SYMBOL =   "~  ";
+    private static final String FINER_SYMBOL =  "~~ ";
+    private static final String FINEST_SYMBOL = "~~~";
 
     private static final String EMPTY_STRING = "";
     private static DateFormat dateFormat = null;
@@ -113,7 +113,7 @@ public final class LogUtils {
 	    java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
 
-	    StringBuffer SB = new StringBuffer("");
+	    StringBuilder SB = new StringBuilder("");
 	    SB.append(dateFormat.format(new Date(record.getMillis())));
 	    SB.append("|");
 
@@ -149,7 +149,7 @@ public final class LogUtils {
     private static class CustomDetailedLogFormatter extends
 	    java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
-	    StringBuffer SB = new StringBuffer("");
+	    StringBuilder SB = new StringBuilder("");
 	    SB.append(record.getMillis());
 	    SB.append(":");
 	    SB.append(record.getLevel().toString());
@@ -174,7 +174,7 @@ public final class LogUtils {
     private static class CustomSimplestLogFormatter extends
 	    java.util.logging.SimpleFormatter {
 	public String format(LogRecord record) {
-	    StringBuffer SB = new StringBuffer("");
+	    StringBuilder SB = new StringBuilder("");
 	    SB.append(record.getMessage());
 	    SB.append("\n");
 	    return SB.toString();
