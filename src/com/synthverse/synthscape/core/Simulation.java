@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -20,6 +22,7 @@ import sim.util.Int2D;
 
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.util.DateUtils;
+import com.synthverse.util.LogUtils;
 
 /**
  * @author sadat
@@ -29,6 +32,7 @@ import com.synthverse.util.DateUtils;
 public abstract class Simulation extends SimState implements Constants {
 
     private static final long serialVersionUID = 2700375028430112699L;
+    private static Logger logger = Logger.getLogger(Agent.class.getName());
 
     protected Evolver evolver;
 
@@ -99,6 +103,10 @@ public abstract class Simulation extends SimState implements Constants {
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
     public Stats simStats = new Stats();
+
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
 
     private void init() {
 	// we can compute the server name and batch ID right away
@@ -364,9 +372,9 @@ public abstract class Simulation extends SimState implements Constants {
 		fadeTrails();
 		doEndOfStepTasks();
 
-		// check is simulation should continue...
+		// check if simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
-		    D.p("*** end of simulation #"+(simulationCounter+1));
+		    logger.info("end of simulation #" + (simulationCounter + 1));
 		    doEndOfSimulationTasks();
 
 		    simStepCounter = 0;
@@ -375,7 +383,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
 		    } else {
-			D.p("*** end of experiment");
+			logger.info("*** end of experiment");
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
@@ -422,11 +430,16 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void doEndOfSimulationTasks() {
+    private void reclaimAgents() {
 	for (Agent agent : agents) {
 	    agentFactory.reclaimAgent(agent);
-
 	}
+    }
+
+    private void doEndOfSimulationTasks() {
+
+	reclaimAgents();
+
     }
 
     public void start() {
@@ -447,8 +460,9 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
+		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
+		event, source, destination);
 
     }
 

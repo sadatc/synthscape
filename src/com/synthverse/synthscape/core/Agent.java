@@ -3,6 +3,8 @@ package com.synthverse.synthscape.core;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -12,12 +14,15 @@ import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
 
+import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
+import com.synthverse.util.LogUtils;
 
 public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
     private static final long serialVersionUID = -5129827193602692370L;
+    private static Logger logger = Logger.getLogger(Agent.class.getName());
 
     public static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
@@ -71,6 +76,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public Stats agentStats = new Stats();
 
+    
+    
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
+    
+    
     abstract public double doubleValue();
 
     abstract public void stepAction(SimState state);
@@ -89,14 +101,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	generateAgentId();
 	
 	_optimizationAgentCounter++;
-	D.p("==> Agent(): AgentCount = " + _optimizationAgentCounter);
+	logger.fine("Created Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
 	generateAgentId();
 	
 	_optimizationAgentCounter++;
-	D.p("==> Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
+	logger.fine("Created Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
 	initGenotype();
@@ -107,7 +119,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	generateAgentId();
 	initGenotype();
 	_optimizationAgentCounter++;
-	D.p("==> Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
+	logger.fine("Created Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
@@ -622,7 +634,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			}
 
 		    } else {
-			D.p("operationUnLoadResource() Problem Complexity Unknown!");
+			logger.severe("Problem Complexity Unknown!");
 			System.exit(-1);
 		    }
 

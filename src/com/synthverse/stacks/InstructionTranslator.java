@@ -37,23 +37,21 @@ import ec.util.MersenneTwisterFast;
  */
 public class InstructionTranslator {
 
-    private static Logger logger = Logger.getLogger(InstructionTranslator.class
-	    .getName());
+    private static Logger logger = Logger.getLogger(InstructionTranslator.class.getName());
 
     private static Instruction[] instructions = null;
 
     private static int numInstructions;
 
     static {
-	LogUtils.applyDefaultSettings(logger, LogUtils.DEFAULT_LOG_LEVEL);
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
 	instructions = Instruction.values();
 	numInstructions = instructions.length;
 	logStatus();
     }
 
     private InstructionTranslator() {
-	throw new AssertionError(
-		"InstructionTranslator constructor is restricted");
+	throw new AssertionError("InstructionTranslator constructor is restricted");
     }
 
     /**
@@ -85,8 +83,7 @@ public class InstructionTranslator {
      * 
      * @return
      */
-    public static final int getRandomCode(
-	    MersenneTwisterFast randomNumberGenerator) {
+    public static final int getRandomCode(MersenneTwisterFast randomNumberGenerator) {
 	return randomNumberGenerator.nextInt(numInstructions);
     }
 
@@ -96,8 +93,7 @@ public class InstructionTranslator {
      * 
      * @return
      */
-    public static final Instruction getRandomInstruction(
-	    MersenneTwisterFast randomNumberGenerator) {
+    public static final Instruction getRandomInstruction(MersenneTwisterFast randomNumberGenerator) {
 	return instructions[getRandomCode(randomNumberGenerator)];
 
     }
@@ -106,15 +102,15 @@ public class InstructionTranslator {
 	if (logger.isLoggable(Level.CONFIG)) {
 	    StringBuilder sb = new StringBuilder("Num of Instructions: ");
 	    sb.append(numInstructions);
-	    sb.append(" - details: ");
+	    logger.config(sb.toString());
 	    for (int i = 0; i < instructions.length; i++) {
+		sb.setLength(0);
 		sb.append(i);
 		sb.append(":");
 		sb.append(instructions[i]);
-		sb.append('\n');
+		logger.fine(sb.toString());
 	    }
 
-	    logger.config(sb.toString());
 	}
     }
 
@@ -133,8 +129,7 @@ public class InstructionTranslator {
 	Instruction instruction = Config.DEFAULT_CODE_VALUE;
 
 	anyFloat = (anyFloat < 0) ? -anyFloat : anyFloat;
-	instruction = toInstruction((anyFloat < numInstructions) ? (int) anyFloat
-		: (int) anyFloat % numInstructions);
+	instruction = toInstruction((anyFloat < numInstructions) ? (int) anyFloat : (int) anyFloat % numInstructions);
 
 	return instruction;
     }
