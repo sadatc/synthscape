@@ -64,7 +64,9 @@ public interface Constants {
 
     public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
-    public static final int SIMS_PER_EXPERIMENT = 500000;
+    public static final int GENERATIONS = 2000;
+
+    public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
     public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.85;
 
