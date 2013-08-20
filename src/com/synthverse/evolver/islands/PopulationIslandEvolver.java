@@ -8,6 +8,7 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.Stats;
 
 /**
  * A population island maintains agentStats gene pool that produces agents of
@@ -90,6 +91,12 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public void init() {
 	// TODO Auto-generated method stub
 
+    }
+    
+    @Override
+    public void provideFeedback(List<Agent> agents, Stats simStats) {
+	// TODO Auto-generated method stub
+	
     }
 
 }

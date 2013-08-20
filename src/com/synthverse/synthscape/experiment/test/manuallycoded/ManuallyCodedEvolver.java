@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
 import java.util.EnumMap;
+import java.util.List;
 
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
@@ -8,6 +9,7 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.Stats;
 
 public class ManuallyCodedEvolver extends Evolver implements Constants {
     
@@ -57,6 +59,12 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
 
 	return agent;
 
+    }
+
+    @Override
+    public void provideFeedback(List<Agent> agents, Stats simStats) {
+	// TODO Auto-generated method stub
+	
     }
 
 }

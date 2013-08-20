@@ -1,12 +1,14 @@
 package com.synthverse.evolver.islands;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.Stats;
 
 /**
  * Here is how it works: 1. It creates an evolver for each species 2. when a
@@ -42,6 +44,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public void init() {
 	initPopulationIslands();
 
+    }
+    
+    @Override
+    public void provideFeedback(List<Agent> agents, Stats simStats) {
+	// TODO Auto-generated method stub
+	
     }
 
 }

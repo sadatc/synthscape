@@ -437,8 +437,9 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void doEndOfSimulationTasks() {
-
 	reclaimAgents();
+	this.evolver.provideFeedback(agents,simStats);
+	simStats.clear();
 
     }
 
