@@ -19,7 +19,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private static final long serialVersionUID = -5129827193602692370L;
 
-    private static long _optimizationAgentCounter = 0;
+    public static long _optimizationAgentCounter = 0;
     private static int _agentCounter = 0;
     private boolean scheduled = false;
     private Agent genotypicalParent = null;

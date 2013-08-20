@@ -5,7 +5,9 @@ import java.util.Set;
 
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
+import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
@@ -22,6 +24,7 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
+	D.p("Total Number of agents created:"+Agent._optimizationAgentCounter);
 
 	System.exit(0);
     }
