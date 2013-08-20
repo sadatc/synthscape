@@ -24,10 +24,8 @@ public abstract class AgentFactory implements Constants {
 
     public Agent getNewFactoryAgent(Species species) {
 	Agent result = availableAgents.pollLast();
-	if(result == null) {
+	if (result == null) {
 	    result = createNewFactoryAgent(null);
-	} else {
-	    D.p("providing reclaimed agent#"+result.getId());
 	}
 	result.setSpecies(species);
 	return result;

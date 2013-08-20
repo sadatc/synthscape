@@ -187,13 +187,11 @@ public abstract class Simulation extends SimState implements Constants {
 	resourceGrid.setTo(ResourceState.NULL);
 	trailGrid.setTo(ABSENT);
 
-	D.p("environment cleared...");
     }
 
     private void resetAll() {
 	resetEnvironment();
 	agentGrid.clear();
-	D.p("agents cleared...");
     }
 
     public boolean isToroidalWorld() {
@@ -335,7 +333,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		if (!agent.isScheduled()) {
 		    schedule.scheduleRepeating(agent);
-		    
+
 		    agent.setScheduled(true);
 		}
 
@@ -368,7 +366,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		// check is simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
-		    D.p("**** end of simulation ***");
+		    D.p("*** end of simulation #"+(simulationCounter+1));
 		    doEndOfSimulationTasks();
 
 		    simStepCounter = 0;
@@ -377,7 +375,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
 		    } else {
-			D.p("**** end of experiment ***");
+			D.p("*** end of experiment");
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
@@ -427,7 +425,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void doEndOfSimulationTasks() {
 	for (Agent agent : agents) {
 	    agentFactory.reclaimAgent(agent);
-	    D.p("reclaiming agent#"+agent.getId());
+
 	}
     }
 
