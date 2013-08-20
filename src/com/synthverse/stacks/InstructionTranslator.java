@@ -104,7 +104,7 @@ public class InstructionTranslator {
 
     public static final void logStatus() {
 	if (logger.isLoggable(Level.CONFIG)) {
-	    StringBuffer sb = new StringBuffer("Num of Instructions: ");
+	    StringBuilder sb = new StringBuilder("Num of Instructions: ");
 	    sb.append(numInstructions);
 	    sb.append(" - details: ");
 	    for (int i = 0; i < instructions.length; i++) {

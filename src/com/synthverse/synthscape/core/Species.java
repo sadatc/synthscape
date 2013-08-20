@@ -86,7 +86,7 @@ public enum Species {
 
     public String getAbbreviatedTraits() {
 	String result = null;
-	StringBuffer buffer = new StringBuffer();
+	StringBuilder buffer = new StringBuilder();
 
 	for (Trait trait : traits) {
 	    buffer.append(trait.toString().charAt(0));
