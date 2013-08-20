@@ -45,7 +45,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
     int aRandom;
 
     int genePoolSize;
-    int maxGenerations;
+
     double maxMutationRate;
     String evolutionProgressLog;
     private AgentFactory agentFactory;
@@ -57,7 +57,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
 		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM, DEFAULT_PERCENT_BOTTOM_MUTANT,
 		DEFAULT_PERCENT_BOTTOM_X_BOTTOM, DEFAULT_PERCENT_RANDOM, DEFAULT_GENE_POOL_SIZE,
-		DEFAULT_MAX_GENERATIONS, DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
+		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -70,8 +70,8 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
     public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) {
 	this(agentFactory, species, DEFAULT_PERCENT_TOP, DEFAULT_PERCENT_TOP_X_TOP, DEFAULT_PERCENT_TOP_MUTANT,
 		DEFAULT_PERCENT_TOP_X_BOTTOM, DEFAULT_PERCENT_BOTTOM, DEFAULT_PERCENT_BOTTOM_MUTANT,
-		DEFAULT_PERCENT_BOTTOM_X_BOTTOM, DEFAULT_PERCENT_RANDOM, genePoolSize, DEFAULT_MAX_GENERATIONS,
-		DEFAULT_MAX_MUTATION_RATE, DEFAULT_EVOLUTION_PROGRESS_LOG);
+		DEFAULT_PERCENT_BOTTOM_X_BOTTOM, DEFAULT_PERCENT_RANDOM, genePoolSize, DEFAULT_MAX_MUTATION_RATE,
+		DEFAULT_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -87,14 +87,13 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
      * @param percentBottomXBottom
      * @param percentRandom
      * @param genePoolSize
-     * @param maxGenerations
      * @param maxMutationRate
      * @param evolutionProgressLog
      */
     public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
 	    double percentTopXTop, double percentTopMutant, double percentTopXBottom, double percentBottom,
 	    double percentBottomMutant, double percentBottomXBottom, double percentRandom, int genePoolSize,
-	    int maxGenerations, double maxMutationRate, String evolutionProgressLog) {
+	    double maxMutationRate, String evolutionProgressLog) {
 
 	this.agentFactory = agentFactory;
 	this.species = species;
@@ -109,7 +108,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	aRandom = (int) ((double) genePoolSize * percentRandom);
 
 	this.genePoolSize = genePoolSize;
-	this.maxGenerations = maxGenerations;
+
 	this.maxMutationRate = maxMutationRate;
 	this.evolutionProgressLog = evolutionProgressLog;
 
@@ -250,7 +249,6 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
-	
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -268,7 +266,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	int offspringBufferIndex = 0;
 
 	// adding tops
-	//compareBuffers();
+	// compareBuffers();
 
 	swapBufferElements(activeBuffer, offspringBuffer, 0, aTop, offspringBufferIndex);
 
@@ -306,7 +304,7 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 
 	// add new random programs
 
-	//compareBuffers();
+	// compareBuffers();
 
 	generateNew(aRandom, offspringBufferIndex);
 
@@ -321,12 +319,13 @@ public final class CentralizedEvolutionEngine implements EvolutionEngineConfig {
 	activeBuffer = parentBuffer;
 
 	/*
-	String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" + aTopMutants + ", tXb=" + aTopXBottom + ", b="
-		+ aBottom + ", bM=" + aBottomMutants + ", bXb=" + aBottomXBottom + ", n=" + aRandom;
-
-	logger.fine("[GENERATION " + generationCounter + "] REGENERATION COMPLETED:" + msg);
-	*/
-	
+	 * String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" +
+	 * aTopMutants + ", tXb=" + aTopXBottom + ", b=" + aBottom + ", bM=" +
+	 * aBottomMutants + ", bXb=" + aBottomXBottom + ", n=" + aRandom;
+	 * 
+	 * logger.fine("[GENERATION " + generationCounter +
+	 * "] REGENERATION COMPLETED:" + msg);
+	 */
 
 	orderActivePopulationByFitness();
 
