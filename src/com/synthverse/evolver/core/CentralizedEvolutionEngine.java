@@ -244,13 +244,18 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private void reportFitness() {
+    private void reportPerformance() {
 	fitnessStats.clear();
 	for (int i = 0; i < genePoolSize; i++) {
 	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
 	}
-	logger.fine("generation="+generationCounter+"; n=" + fitnessStats.getN() + "; max=" + fitnessStats.getMax() + "; mean=" + fitnessStats.getMean()
-		+ "; var=" + fitnessStats.getVariance());
+	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
+
+	/*
+	 * logger.fine("generation="+generationCounter+"; n=" +
+	 * fitnessStats.getN() + "; max=" + fitnessStats.getMax() + "; mean=" +
+	 * fitnessStats.getMean() + "; var=" + fitnessStats.getVariance());
+	 */
 
     }
 
@@ -264,9 +269,8 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
-	
-	
-	reportFitness();
+
+	reportPerformance();
 
 	// clear up values from previous generation
 	topPerformers.clear();

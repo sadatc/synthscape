@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import com.synthverse.util.DateUtils;
 
 /**
@@ -18,9 +20,11 @@ public class ExperimentReporter implements Constants {
     private static int STRING_BUFFER_MAX_SIZE = 175;
 
     private final Simulation simulation;
-    private BufferedWriter bufferedWriter = null;
+    private BufferedWriter eventWriter = null;
+    private BufferedWriter performanceWriter = null;
     private final static char COMMA = ',';
-    private StringBuilder sb = new StringBuilder(STRING_BUFFER_MAX_SIZE);
+    private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
+    private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
     private final boolean flushAlways;
 
@@ -36,17 +40,46 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    private void openFile() {
-	File file = new File(simulation.getEventFileName());
+    private void openFiles() {
+
+	String eventFileName = simulation.getEventFileName();
+	String performanceFileName = eventFileName.replace("event", "performance");
+
+	openEventFile(eventFileName);
+	openPerformanceFile(performanceFileName);
+
+    }
+
+    private void openPerformanceFile(String fileName) {
+	File file = new File(fileName);
 	try {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
 	    e.printStackTrace();
+	    System.exit(0);
+	}
+
+    }
+
+    private void openEventFile(String fileName) {
+	File file = new File(fileName);
+	try {
+	    if (!file.exists()) {
+		file.createNewFile();
+	    }
+	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
+
+	} catch (Exception e) {
+	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
 	}
 
     }
@@ -54,131 +87,202 @@ public class ExperimentReporter implements Constants {
     private void writeExperimentMetaData() {
 
 	try {
-	    bufferedWriter
+	    eventWriter
 		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
-	    bufferedWriter.newLine();
+	    eventWriter.newLine();
 
-	    bufferedWriter.append(simulation.getServerName());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(simulation.getExperimentName());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(simulation.getBatchId());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getGridWidth());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getGridHeight());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getObstacleDensity());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getResourceDensity());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getClonesPerSpecies());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getGenePoolSize());
-	    bufferedWriter.append(COMMA);
+	    eventWriter.append(simulation.getServerName());
+	    eventWriter.append(COMMA);
+	    eventWriter.append(simulation.getExperimentName());
+	    eventWriter.append(COMMA);
+	    eventWriter.append(simulation.getBatchId());
+	    eventWriter.append(COMMA);
+	    eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getGridWidth());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getGridHeight());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getObstacleDensity());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getResourceDensity());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getClonesPerSpecies());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getGenePoolSize());
+	    eventWriter.append(COMMA);
 
-	    bufferedWriter.append("" + simulation.getNumberOfCollectionSites());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getMaxStepsPerAgent());
-	    bufferedWriter.append(COMMA);
-	    bufferedWriter.append("" + simulation.getProblemComplexity().getId());
-	    bufferedWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getNumberOfCollectionSites());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getMaxStepsPerAgent());
+	    eventWriter.append(COMMA);
+	    eventWriter.append("" + simulation.getProblemComplexity().getId());
+	    eventWriter.append(COMMA);
 
-	    bufferedWriter.append("" + simulation.getSpeciesCompositionSting());
+	    eventWriter.append("" + simulation.getSpeciesCompositionSting());
 
-	    bufferedWriter.append(COMMA);
+	    eventWriter.append(COMMA);
 
-	    bufferedWriter.append("" + simulation.getInteractionMechanismsString());
+	    eventWriter.append("" + simulation.getInteractionMechanismsString());
 
-	    bufferedWriter.newLine();
-	    bufferedWriter.newLine();
+	    eventWriter.newLine();
+	    eventWriter.newLine();
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
+	    System.exit(0);
 
 	}
 
     }
 
-    private void writeFieldDescription() {
+    private void writeEventFieldDescription() {
 	try {
-	    bufferedWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
-	    bufferedWriter.newLine();
+	    eventWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
+	    eventWriter.newLine();
 
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
+	    System.exit(0);
 
 	}
 
     }
 
-    public void reportEvent(int simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
-	    Event event, String source, String destination) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
+	    int step, int x, int y, Event event, String source, String destination) {
 	try {
 	    if (simulation.isRecordExperiment()) {
-		sb.append(simulationNumber);
-		sb.append(COMMA);
-		sb.append(generation);
-		sb.append(COMMA);
-		sb.append(species.getId());
-		sb.append(COMMA);
-		sb.append(agentId);
-		sb.append(COMMA);
-		sb.append(step);
-		sb.append(COMMA);
-		sb.append(x);
-		sb.append(COMMA);
-		sb.append(y);
-		sb.append(COMMA);
-		sb.append(event.getId());
-		sb.append(COMMA);
-		sb.append(source);
-		sb.append(COMMA);
-		sb.append(destination);
+		sbEvent.append(simulationNumber);
+		sbEvent.append(COMMA);
+		sbEvent.append(generation);
+		sbEvent.append(COMMA);
+		sbEvent.append(species.getId());
+		sbEvent.append(COMMA);
+		sbEvent.append(agentId);
+		sbEvent.append(COMMA);
+		sbEvent.append(step);
+		sbEvent.append(COMMA);
+		sbEvent.append(x);
+		sbEvent.append(COMMA);
+		sbEvent.append(y);
+		sbEvent.append(COMMA);
+		sbEvent.append(event.getId());
+		sbEvent.append(COMMA);
+		sbEvent.append(source);
+		sbEvent.append(COMMA);
+		sbEvent.append(destination);
 
-		bufferedWriter.write(sb.toString());
-		bufferedWriter.newLine();
-		sb.delete(0, sb.length());
+		eventWriter.write(sbEvent.toString());
+		eventWriter.newLine();
+		sbEvent.delete(0, sbEvent.length());
 
 		if (this.flushAlways) {
-		    bufferedWriter.flush();
+		    eventWriter.flush();
 		}
 	    }
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
+	    System.exit(0);
 
 	}
 
     }
 
-    private void closeFile() {
+    private void closeFiles() {
 	try {
-	    bufferedWriter.close();
+	    eventWriter.close();
+	    performanceWriter.close();
 	} catch (Exception e) {
 	    D.p("Exception while closing:" + e.getMessage());
 	    e.printStackTrace();
+	    System.exit(0);
 	}
     }
 
     public void cleanupReporter() {
 	if (simulation.isRecordExperiment()) {
-	    closeFile();
+	    closeFiles();
 	}
     }
 
     public void initReporter() {
 	if (simulation.isRecordExperiment()) {
 
-	    openFile();
+	    openFiles();
 	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
 		writeExperimentMetaData();
 	    }
-	    writeFieldDescription();
+	    writeEventFieldDescription();
+	    writePerformanceFieldDescription();
 	}
+    }
+
+    private void writePerformanceFieldDescription() {
+	try {
+	    performanceWriter
+		    .write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES");
+	    performanceWriter.newLine();
+
+	} catch (Exception e) {
+	    D.p("Exception while reporting performance:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+
+	}
+
+    }
+
+    public void reportPerformance(int generationCounter, Stats simStats,
+	    DescriptiveStatistics fitnessStats) {
+	try {
+
+	    if (simulation.isRecordExperiment()) {
+
+		int captures = 0;
+		for (Event event : simStats.getEvents()) {
+		    if (event == Event.COLLECTED_RESOURCE) {
+			captures++;
+		    }
+		}
+
+		sbPerformance.delete(0, sbPerformance.length());
+		sbPerformance.append(fitnessStats.getN());
+		sbPerformance.append(COMMA);
+		sbPerformance.append(generationCounter);
+		sbPerformance.append(COMMA);
+		sbPerformance.append(fitnessStats.getMean());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getVariance());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getMin());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getMax());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captures);
+		sbPerformance.append(COMMA);
+
+		performanceWriter.write(sbPerformance.toString());
+
+		performanceWriter.newLine();
+		sbPerformance.delete(0, sbPerformance.length());
+
+		if (this.flushAlways) {
+		    performanceWriter.flush();
+		}
+	    }
+	} catch (Exception e) {
+	    D.p("Exception while reporting performance:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+
     }
 
 }

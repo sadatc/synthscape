@@ -20,9 +20,9 @@ public interface Constants {
 
     public static final double EE_DEF_PERCENT_RANDOM = 0.05;
 
-    public static final int EE_DEF_MAX_ENTITY_SIZE = 32;
+    public static final int EE_DEF_MAX_ENTITY_SIZE = 64;
 
-    public static final int EE_DEF_GENE_POOL_SIZE = 10;
+    public static final int EE_DEF_GENE_POOL_SIZE = 100;
 
     public static final double EE_DEF_MAX_MUTATION_RATE = 0.05;
 
@@ -60,11 +60,11 @@ public interface Constants {
 
     public static final int NUMBER_OF_COLLECTION_SITES = 5;
 
-    public static final int MAX_STEPS_PER_AGENT = 200;
+    public static final int MAX_STEPS_PER_AGENT = 500;
 
     public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
-    public static final int GENERATIONS = 500;
+    public static final int GENERATIONS = 1000;
 
     public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 

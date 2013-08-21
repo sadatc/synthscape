@@ -33,4 +33,8 @@ public abstract class AgentFactory implements Constants {
 
     public abstract Agent createNewFactoryAgent(Species species);
 
+    public Simulation getSimulation() {
+	return this.simulation;
+    }
+
 }

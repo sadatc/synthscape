@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -103,7 +105,7 @@ public abstract class Simulation extends SimState implements Constants {
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
     public Stats simStats = new Stats();
-    
+
     private int genePoolSize;
 
     static {
@@ -118,7 +120,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    serverName = "LOCAL";
 	}
 	batchId = Long.toHexString(System.currentTimeMillis());
-	
+
 	setGenePoolSize(configGenePoolSize());
 	setRecordExperiment(configIsRecordExperiment());
 	setEventFileName(configEventFileName());
@@ -378,7 +380,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		// check if simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
-		    //logger.info("end of simulation #" + (simulationCounter + 1));
+		    // logger.info("end of simulation #" + (simulationCounter +
+		    // 1));
 		    doEndOfSimulationTasks();
 
 		    simStepCounter = 0;
@@ -442,8 +445,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void doEndOfSimulationTasks() {
 	reclaimAgents();
-	this.evolver.provideFeedback(agents,simStats);
-	simStats.clear();
+	this.evolver.provideFeedback(agents, simStats);
+	
 
     }
 
@@ -465,10 +468,14 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
-		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
-		event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 
+    }
+
+    public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
+	experimentReporter.reportPerformance(generationCounter,simStats,fitnessStats);
+	simStats.clear();
     }
 
     public void setStartDate() {
@@ -559,7 +566,7 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract String configEventFileName();
 
     public abstract Evolver configEvolver();
-    
+
     public abstract int configGenePoolSize();
 
     public abstract AgentFactory configAgentFactory();
@@ -697,13 +704,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public int getGenePoolSize() {
-        return genePoolSize;
+	return genePoolSize;
     }
 
     public void setGenePoolSize(int genePoolSize) {
-        this.genePoolSize = genePoolSize;
+	this.genePoolSize = genePoolSize;
     }
 
-    
-    
 }
