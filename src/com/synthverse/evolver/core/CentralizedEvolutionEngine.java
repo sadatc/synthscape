@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import com.synthverse.stacks.Config;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
@@ -19,6 +21,8 @@ import ec.util.MersenneTwisterFast;
 public final class CentralizedEvolutionEngine implements Constants {
 
     private static Logger logger = Logger.getLogger(CentralizedEvolutionEngine.class.getName());
+    private DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
+
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
@@ -240,6 +244,16 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
+    private void reportFitness() {
+	fitnessStats.clear();
+	for (int i = 0; i < genePoolSize; i++) {
+	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
+	}
+	logger.fine("generation="+generationCounter+"; n=" + fitnessStats.getN() + "; max=" + fitnessStats.getMax() + "; mean=" + fitnessStats.getMean()
+		+ "; var=" + fitnessStats.getVariance());
+
+    }
+
     private void compareBuffers() {
 	String msg = "COMPARISON:\n";
 	for (int i = 0; i < genePoolSize; i++) {
@@ -250,6 +264,9 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
+	
+	
+	reportFitness();
 
 	// clear up values from previous generation
 	topPerformers.clear();
