@@ -14,7 +14,6 @@ import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
 
-import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.util.LogUtils;
