@@ -103,6 +103,8 @@ public abstract class Simulation extends SimState implements Constants {
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
     public Stats simStats = new Stats();
+    
+    private int genePoolSize;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -116,6 +118,8 @@ public abstract class Simulation extends SimState implements Constants {
 	    serverName = "LOCAL";
 	}
 	batchId = Long.toHexString(System.currentTimeMillis());
+	
+	setGenePoolSize(configGenePoolSize());
 	setRecordExperiment(configIsRecordExperiment());
 	setEventFileName(configEventFileName());
 
@@ -555,6 +559,8 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract String configEventFileName();
 
     public abstract Evolver configEvolver();
+    
+    public abstract int configGenePoolSize();
 
     public abstract AgentFactory configAgentFactory();
 
@@ -690,4 +696,14 @@ public abstract class Simulation extends SimState implements Constants {
 	return agents;
     }
 
+    public int getGenePoolSize() {
+        return genePoolSize;
+    }
+
+    public void setGenePoolSize(int genePoolSize) {
+        this.genePoolSize = genePoolSize;
+    }
+
+    
+    
 }

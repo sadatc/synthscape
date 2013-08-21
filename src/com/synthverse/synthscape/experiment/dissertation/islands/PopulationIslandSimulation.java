@@ -122,4 +122,9 @@ public class PopulationIslandSimulation extends Simulation {
 	return new IslanderAgentFactory(this);
     }
 
+    @Override
+    public int configGenePoolSize() {
+	return EE_DEF_GENE_POOL_SIZE;
+    }
+
 }

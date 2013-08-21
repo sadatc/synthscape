@@ -115,5 +115,11 @@ public class TestSim extends Simulation {
     public String configEventFileName() {
 	return EVENT_LOG_FILE;
     }
+    
+    @Override
+    public int configGenePoolSize() {
+	return EE_DEF_GENE_POOL_SIZE;
+    }
+
 
 }

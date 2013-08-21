@@ -42,8 +42,7 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-		    REPORT_WRITER_BUFFER_SIZE);
+	    bufferedWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
@@ -56,7 +55,7 @@ public class ExperimentReporter implements Constants {
 
 	try {
 	    bufferedWriter
-		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,NUM_AGENTS_PER_SPECIES,NUM_COLLECTION_SITES,NUM_STEPS_PER_AGENT,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
+		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
 	    bufferedWriter.newLine();
 
 	    bufferedWriter.append(simulation.getServerName());
@@ -65,8 +64,7 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append(simulation.getBatchId());
 	    bufferedWriter.append(COMMA);
-	    bufferedWriter
-		    .append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+	    bufferedWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + simulation.getGridWidth());
 	    bufferedWriter.append(COMMA);
@@ -77,6 +75,8 @@ public class ExperimentReporter implements Constants {
 	    bufferedWriter.append("" + simulation.getResourceDensity());
 	    bufferedWriter.append(COMMA);
 	    bufferedWriter.append("" + simulation.getClonesPerSpecies());
+	    bufferedWriter.append(COMMA);
+	    bufferedWriter.append("" + simulation.getGenePoolSize());
 	    bufferedWriter.append(COMMA);
 
 	    bufferedWriter.append("" + simulation.getNumberOfCollectionSites());
@@ -104,8 +104,7 @@ public class ExperimentReporter implements Constants {
 
     private void writeFieldDescription() {
 	try {
-	    bufferedWriter
-		    .write("SIMULATION,AGENT_GENERATION,AGENT_SPECIES,AGENT_ID,STEP,X,Y,EVENT,SRC,DEST");
+	    bufferedWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
 	    bufferedWriter.newLine();
 
 	} catch (Exception e) {
@@ -116,8 +115,8 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
-	    int step, int x, int y, Event event, String source, String destination) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
+	    Event event, String source, String destination) {
 	try {
 	    if (simulation.isRecordExperiment()) {
 		sb.append(simulationNumber);
