@@ -25,8 +25,7 @@ import com.synthverse.util.LogUtils;
 public class ArchipelagoEvolver extends Evolver implements Constants {
     private static Logger logger = Logger.getLogger(ArchipelagoEvolver.class.getName());
     private static double maxFitness = Double.MIN_VALUE;
-    
-    
+
     HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
 
     static {
@@ -75,13 +74,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	double result = 0.0;
 
 	// collecting a resource gets the highest point
+	//simStats.printValues();
 
 	for (Event event : simStats.getEvents()) {
-	    if (event == Event.COLLECTED_RESOURCE) {
-		result += 2.0 * simStats.getValue(event);
-	    } else {
-		result += 1.0 * simStats.getValue(event);
-	    }
+
+	    result += getEventWeight(event) * simStats.getValue(event);
+
 	}
 	if (result > maxFitness) {
 	    logger.info("Fitness=" + result);
@@ -89,6 +87,35 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	}
 
 	return result;
+    }
+
+    private double getEventWeight(Event event) {
+
+	switch (event) {
+	case DETECTED_RAW_RESOURCE:
+	    return 10.0;
+	case DETECTED_EXTRACTED_RESOURCE:
+	    return 8.0;
+	case DETECTED_PROCESSED_RESOURCE:
+	    return 6.0;
+	case EXTRACTED_RESOURCE:
+	    return 11.0;
+	case PROCESSED_RESOURCE:
+	    return 12.0;
+	case LOADED_RESOURCE: 
+	    return 6.0;
+	case UNLOADED_RESOURCE: 
+	    return 5.0;
+	case MOVE_TO_CLOSEST_COLLECTION_SITE:
+	    return 1.0;
+	case MOVE_TO_PRIMARY_COLLECTION_SITE:
+	    return 1.0;
+	case COLLECTED_RESOURCE:
+	    return 20.0;
+
+	}
+	return 0;
+
     }
 
 }
