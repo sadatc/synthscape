@@ -153,7 +153,7 @@ public class ExperimentReporter implements Constants {
     public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
 	    int step, int x, int y, Event event, String source, String destination) {
 	try {
-	    if (simulation.isRecordExperiment()) {
+	    if (simulation.isRecordEvents()) {
 		sbEvent.append(simulationNumber);
 		sbEvent.append(COMMA);
 		sbEvent.append(generation);
@@ -168,7 +168,7 @@ public class ExperimentReporter implements Constants {
 		sbEvent.append(COMMA);
 		sbEvent.append(y);
 		sbEvent.append(COMMA);
-		sbEvent.append(event.getId());
+		sbEvent.append(event.toString());
 		sbEvent.append(COMMA);
 		sbEvent.append(source);
 		sbEvent.append(COMMA);
@@ -203,13 +203,13 @@ public class ExperimentReporter implements Constants {
     }
 
     public void cleanupReporter() {
-	if (simulation.isRecordExperiment()) {
+	if (simulation.isRecordEvents()) {
 	    closeFiles();
 	}
     }
 
     public void initReporter() {
-	if (simulation.isRecordExperiment()) {
+	if (simulation.isRecordEvents()) {
 
 	    openFiles();
 	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
@@ -239,7 +239,7 @@ public class ExperimentReporter implements Constants {
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
-	    if (simulation.isRecordExperiment()) {
+	    if (simulation.isRecordEvents()) {
 
 		int captures = 0;
 		for (Event event : simStats.getEvents()) {

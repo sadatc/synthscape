@@ -92,7 +92,7 @@ public class TestSim extends Simulation {
     }
 
     @Override
-    public boolean configIsRecordExperiment() {
+    public boolean configIsRecordEvents() {
 	return true;
     }
 

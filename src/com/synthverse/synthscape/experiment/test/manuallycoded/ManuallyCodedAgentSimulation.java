@@ -92,7 +92,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     }
 
     @Override
-    public boolean configIsRecordExperiment() {
+    public boolean configIsRecordEvents() {
 	return true;
     }
 
