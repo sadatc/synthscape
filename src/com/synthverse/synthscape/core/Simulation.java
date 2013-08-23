@@ -26,6 +26,8 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
+import ec.util.MersenneTwisterFast;
+
 /**
  * @author sadat
  * 
@@ -35,6 +37,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     private static final long serialVersionUID = 2700375028430112699L;
     protected static Logger logger = Logger.getLogger(Agent.class.getName());
+
+    private MersenneTwisterFast controlledRandom = new MersenneTwisterFast(1);
 
     protected Evolver evolver;
 
@@ -81,7 +85,7 @@ public abstract class Simulation extends SimState implements Constants {
     private int gridHeight;
 
     private String experimentName;
-    private boolean recordExperiment = false;
+    private boolean recordEvents = false;
     private String serverName;
     private String batchId;
 
@@ -122,7 +126,7 @@ public abstract class Simulation extends SimState implements Constants {
 	batchId = Long.toHexString(System.currentTimeMillis());
 
 	setGenePoolSize(configGenePoolSize());
-	setRecordExperiment(configIsRecordExperiment());
+	setRecordEvents(configIsRecordEvents());
 	setEventFileName(configEventFileName());
 
 	// now set these up based on the concrete simulation
@@ -261,6 +265,12 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void initNonPrimaryCollectionSites() {
+	MersenneTwisterFast random = this.random;
+	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	    random = controlledRandom;
+	    controlledRandom.setSeed(1);
+	}
+
 	for (int i = 0; i < (numberOfCollectionSites - 1); i++) {
 	    int randomX = random.nextInt(gridWidth);
 	    int randomY = random.nextInt(gridHeight);
@@ -279,6 +289,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void initObstacles() {
 	// create obstacles in random locations
+	MersenneTwisterFast random = this.random;
+	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	    random = controlledRandom;
+	    controlledRandom.setSeed(1);
+	}
+	
+	
 	for (int i = 0; i < numberOfObstacles; i++) {
 
 	    int randomX = random.nextInt(gridWidth);
@@ -296,6 +313,8 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void initResources() {
+	MersenneTwisterFast random = new MersenneTwisterFast(1);
+
 	for (int i = 0; i < numberOfResources; i++) {
 
 	    int randomX = 0;
@@ -324,6 +343,12 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void initAgents() {
 	// populate with agents
+	
+	MersenneTwisterFast random = this.random;
+	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	    random = controlledRandom;
+	    controlledRandom.setSeed(1);
+	}
 	agents.clear();
 
 	for (Species species : speciesComposition) {
@@ -413,10 +438,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-
+	simStats.clear();
 	resetEnvironment();
 	initEnvironment();
 	initAgents();
+	
 
     }
 
@@ -446,7 +472,6 @@ public abstract class Simulation extends SimState implements Constants {
     private void doEndOfSimulationTasks() {
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
-	
 
     }
 
@@ -474,8 +499,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter,simStats,fitnessStats);
-	simStats.clear();
+	experimentReporter.reportPerformance(generationCounter, simStats, fitnessStats);
     }
 
     public void setStartDate() {
@@ -555,7 +579,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public abstract int configMaxStepsPerAgent();
 
-    public abstract boolean configIsRecordExperiment();
+    public abstract boolean configIsRecordEvents();
 
     public abstract String configExperimentName();
 
@@ -587,12 +611,12 @@ public abstract class Simulation extends SimState implements Constants {
 	this.agentFactory = agentFactory;
     }
 
-    public boolean isRecordExperiment() {
-	return recordExperiment;
+    public boolean isRecordEvents() {
+	return recordEvents;
     }
 
-    public void setRecordExperiment(boolean recordExperiment) {
-	this.recordExperiment = recordExperiment;
+    public void setRecordEvents(boolean recordEvents) {
+	this.recordEvents = recordEvents;
     }
 
     public String getBatchId() {
