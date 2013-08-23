@@ -49,7 +49,7 @@ public final class Config {
     public final static int DEFAULT_BOOLEAN_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
     public final static int DEFAULT_FLOAT_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
 
-    public final static int DEFAULT_ARRAY_SIZE = 128;
+    public final static int DEFAULT_ARRAY_SIZE = 256;
     public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
 
     /**
