@@ -59,16 +59,16 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
 	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
-	mechanisms.add(InteractionMechanism.TRAIL);
-	mechanisms.add(InteractionMechanism.BROADCAST);
-	mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	//mechanisms.add(InteractionMechanism.TRAIL);
+	//mechanisms.add(InteractionMechanism.BROADCAST);
+	//mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	//mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
 	return mechanisms;
     }
 
     @Override
     public ProblemComplexity configProblemComplexity() {
-	return ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
+	return ProblemComplexity.THREE_SEQUENTIAL_TASKS;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     @Override
-    public boolean configIsRecordExperiment() {
+    public boolean configIsRecordEvents() {
 	return true;
     }
 
