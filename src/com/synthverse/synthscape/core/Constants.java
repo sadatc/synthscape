@@ -56,7 +56,7 @@ public interface Constants {
 
     public static final double OBSTACLE_DENSITY = 0.05;
 
-    public static final double RESOURCE_DENSITY = 0.05;
+    public static final double RESOURCE_DENSITY = 0.10;
 
     public static final int NUMBER_OF_COLLECTION_SITES = 5;
 
@@ -64,7 +64,7 @@ public interface Constants {
 
     public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
-    public static final int GENERATIONS = 1000;
+    public static final int GENERATIONS = 50000;
 
     public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
@@ -91,11 +91,17 @@ public interface Constants {
     public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
 
     public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
+    
+    public static final boolean REPORT_EVENTS = false;
+    
+    public static final boolean REPORT_PERFORMANCE = false;
 
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
 
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
 
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
+    
+    public static final boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 
 }
