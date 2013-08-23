@@ -9,9 +9,11 @@ import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.synthverse.stacks.Config;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.CollectionUtils;
 import com.synthverse.util.LogUtils;
@@ -268,6 +270,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
+    private void printActiveBuffer() {
+	D.p("===========================");
+	for (int i = 0; i < genePoolSize; i++) {
+	    Agent agent =activeBuffer.get(i);
+	    Program p = agent.getProgram();
+	    D.p("--->" + agent.getFitness()+":"+p.toTranslatedString(4));
+	}
+	D.p("===========================");
+
+    }
+
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 
 	reportPerformance();
@@ -350,6 +363,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	 */
 
 	orderActivePopulationByFitness();
+	//printActiveBuffer();
 
 	generationCounter++;
 
