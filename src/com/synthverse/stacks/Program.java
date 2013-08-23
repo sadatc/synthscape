@@ -147,6 +147,28 @@ public class Program {
 	}
     }
 
+
+    public final String toTranslatedString(int n) {
+	if (size > 0) {
+	    StringBuilder buf = new StringBuilder();
+	    buf.append('[');
+	    buf.append(instructionArray[0]);
+
+	    for (int i = 1; i < n; i++) {
+		buf.append(", ");
+		buf.append(instructionArray[i]);
+	    }
+
+	    buf.append("]");
+	    return buf.toString();
+
+	} else {
+	    return Config.EMPTY_CONTAINER_STRING;
+	}
+    }
+
+    
+    
     public long getLongHashCode() {
 	return HashUtils.getLongHash(instructionArray, size);
     }
