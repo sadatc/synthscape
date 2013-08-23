@@ -85,7 +85,8 @@ public abstract class Simulation extends SimState implements Constants {
     private int gridHeight;
 
     private String experimentName;
-    private boolean recordEvents = false;
+    private boolean reportEvents = false;
+    private boolean reportPerformance = false;
     private String serverName;
     private String batchId;
 
@@ -126,7 +127,9 @@ public abstract class Simulation extends SimState implements Constants {
 	batchId = Long.toHexString(System.currentTimeMillis());
 
 	setGenePoolSize(configGenePoolSize());
-	setRecordEvents(configIsRecordEvents());
+	setReportEvents(configIsReportEvents());
+	setReportPerformance(configIsReportPerformance());
+	
 	setEventFileName(configEventFileName());
 
 	// now set these up based on the concrete simulation
@@ -579,7 +582,9 @@ public abstract class Simulation extends SimState implements Constants {
 
     public abstract int configMaxStepsPerAgent();
 
-    public abstract boolean configIsRecordEvents();
+    public abstract boolean configIsReportEvents();
+    
+    public abstract boolean configIsReportPerformance();
 
     public abstract String configExperimentName();
 
@@ -611,12 +616,12 @@ public abstract class Simulation extends SimState implements Constants {
 	this.agentFactory = agentFactory;
     }
 
-    public boolean isRecordEvents() {
-	return recordEvents;
+    public boolean isReportEvents() {
+	return reportEvents;
     }
 
-    public void setRecordEvents(boolean recordEvents) {
-	this.recordEvents = recordEvents;
+    public void setReportEvents(boolean reportEvents) {
+	this.reportEvents = reportEvents;
     }
 
     public String getBatchId() {
@@ -733,6 +738,14 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setGenePoolSize(int genePoolSize) {
 	this.genePoolSize = genePoolSize;
+    }
+
+    public boolean isReportPerformance() {
+        return reportPerformance;
+    }
+
+    public void setReportPerformance(boolean reportPerformance) {
+        this.reportPerformance = reportPerformance;
     }
 
 }

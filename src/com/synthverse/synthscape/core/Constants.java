@@ -94,7 +94,7 @@ public interface Constants {
     
     public static final boolean REPORT_EVENTS = false;
     
-    public static final boolean REPORT_PERFORMANCE = false;
+    public static final boolean REPORT_PERFORMANCE = true;
 
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
 

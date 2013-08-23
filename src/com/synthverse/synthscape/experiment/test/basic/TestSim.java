@@ -92,8 +92,13 @@ public class TestSim extends Simulation {
     }
 
     @Override
-    public boolean configIsRecordEvents() {
-	return true;
+    public boolean configIsReportEvents() {
+	return REPORT_EVENTS;
+    }
+    
+    @Override
+    public boolean configIsReportPerformance() {
+	return REPORT_PERFORMANCE;
     }
 
     @Override

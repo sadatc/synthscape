@@ -42,11 +42,15 @@ public class ExperimentReporter implements Constants {
 
     private void openFiles() {
 
-	String eventFileName = simulation.getEventFileName();
-	String performanceFileName = eventFileName.replace("event", "performance");
+	if (simulation.isReportEvents()) {
+	    String eventFileName = simulation.getEventFileName();
+	    openEventFile(eventFileName);
+	}
 
-	openEventFile(eventFileName);
-	openPerformanceFile(performanceFileName);
+	if (simulation.isReportPerformance()) {
+	    String performanceFileName = simulation.getEventFileName().replace("event", "performance");
+	    openPerformanceFile(performanceFileName);
+	}
 
     }
 
@@ -73,8 +77,7 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-		    REPORT_WRITER_BUFFER_SIZE);
+	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
@@ -87,46 +90,48 @@ public class ExperimentReporter implements Constants {
     private void writeExperimentMetaData() {
 
 	try {
-	    eventWriter
-		    .write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
-	    eventWriter.newLine();
+	    if (simulation.isReportEvents()) {
+		eventWriter
+			.write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
+		eventWriter.newLine();
 
-	    eventWriter.append(simulation.getServerName());
-	    eventWriter.append(COMMA);
-	    eventWriter.append(simulation.getExperimentName());
-	    eventWriter.append(COMMA);
-	    eventWriter.append(simulation.getBatchId());
-	    eventWriter.append(COMMA);
-	    eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getGridWidth());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getGridHeight());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getObstacleDensity());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getResourceDensity());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getClonesPerSpecies());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getGenePoolSize());
-	    eventWriter.append(COMMA);
+		eventWriter.append(simulation.getServerName());
+		eventWriter.append(COMMA);
+		eventWriter.append(simulation.getExperimentName());
+		eventWriter.append(COMMA);
+		eventWriter.append(simulation.getBatchId());
+		eventWriter.append(COMMA);
+		eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getGridWidth());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getGridHeight());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getObstacleDensity());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getResourceDensity());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getClonesPerSpecies());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getGenePoolSize());
+		eventWriter.append(COMMA);
 
-	    eventWriter.append("" + simulation.getNumberOfCollectionSites());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getMaxStepsPerAgent());
-	    eventWriter.append(COMMA);
-	    eventWriter.append("" + simulation.getProblemComplexity().getId());
-	    eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getNumberOfCollectionSites());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getMaxStepsPerAgent());
+		eventWriter.append(COMMA);
+		eventWriter.append("" + simulation.getProblemComplexity().getId());
+		eventWriter.append(COMMA);
 
-	    eventWriter.append("" + simulation.getSpeciesCompositionSting());
+		eventWriter.append("" + simulation.getSpeciesCompositionSting());
 
-	    eventWriter.append(COMMA);
+		eventWriter.append(COMMA);
 
-	    eventWriter.append("" + simulation.getInteractionMechanismsString());
+		eventWriter.append("" + simulation.getInteractionMechanismsString());
 
-	    eventWriter.newLine();
-	    eventWriter.newLine();
+		eventWriter.newLine();
+		eventWriter.newLine();
+	    }
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
@@ -138,8 +143,10 @@ public class ExperimentReporter implements Constants {
 
     private void writeEventFieldDescription() {
 	try {
-	    eventWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
-	    eventWriter.newLine();
+	    if (simulation.isReportEvents()) {
+		eventWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
+		eventWriter.newLine();
+	    }
 
 	} catch (Exception e) {
 	    D.p("Exception while reporting event:" + e.getMessage());
@@ -150,10 +157,10 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(int simulationNumber, int generation, Species species, int agentId,
-	    int step, int x, int y, Event event, String source, String destination) {
+    public void reportEvent(int simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
+	    Event event, String source, String destination) {
 	try {
-	    if (simulation.isRecordEvents()) {
+	    if (simulation.isReportEvents()) {
 		sbEvent.append(simulationNumber);
 		sbEvent.append(COMMA);
 		sbEvent.append(generation);
@@ -193,8 +200,13 @@ public class ExperimentReporter implements Constants {
 
     private void closeFiles() {
 	try {
-	    eventWriter.close();
-	    performanceWriter.close();
+	    if (eventWriter != null) {
+		eventWriter.close();
+	    }
+	    if (performanceWriter != null) {
+		performanceWriter.close();
+	    }
+
 	} catch (Exception e) {
 	    D.p("Exception while closing:" + e.getMessage());
 	    e.printStackTrace();
@@ -203,13 +215,13 @@ public class ExperimentReporter implements Constants {
     }
 
     public void cleanupReporter() {
-	if (simulation.isRecordEvents()) {
+	if (simulation.isReportEvents() || simulation.isReportPerformance()) {
 	    closeFiles();
 	}
     }
 
     public void initReporter() {
-	if (simulation.isRecordEvents()) {
+	if (simulation.isReportEvents() || simulation.isReportPerformance()) {
 
 	    openFiles();
 	    if (Constants.INCLUDE_EXPERIMENT_META_DATA) {
@@ -222,9 +234,11 @@ public class ExperimentReporter implements Constants {
 
     private void writePerformanceFieldDescription() {
 	try {
-	    performanceWriter
-		    .write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES");
-	    performanceWriter.newLine();
+	    if (simulation.isReportPerformance()) {
+		performanceWriter
+			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES");
+		performanceWriter.newLine();
+	    }
 
 	} catch (Exception e) {
 	    D.p("Exception while reporting performance:" + e.getMessage());
@@ -235,11 +249,10 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformance(int generationCounter, Stats simStats,
-	    DescriptiveStatistics fitnessStats) {
+    public void reportPerformance(int generationCounter, Stats simStats, DescriptiveStatistics fitnessStats) {
 	try {
 
-	    if (simulation.isRecordEvents()) {
+	    if (simulation.isReportPerformance()) {
 
 		int captures = 0;
 		for (Event event : simStats.getEvents()) {
