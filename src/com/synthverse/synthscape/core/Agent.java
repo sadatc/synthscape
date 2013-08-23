@@ -24,7 +24,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected static Logger logger = Logger.getLogger(Agent.class.getName());
     protected static long _optimizationAgentCounter = 0;
     protected static int _agentCounter = 0;
-    
+
     private boolean scheduled = false;
     private Agent genotypicalParent = null;
 
@@ -42,8 +42,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
-	    .noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -75,19 +74,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public Stats agentStats = new Stats();
 
-    
-    
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
-    
-    
+
     abstract public double doubleValue();
 
     abstract public void stepAction(SimState state);
-    
-    
-    
+
     private void initGenotype() {
 	this.program = Program.Factory.createRandom(sim.random);
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
@@ -98,14 +92,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private Agent() {
 	generateAgentId();
-	
+
 	_optimizationAgentCounter++;
 	logger.fine("Created Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
 	generateAgentId();
-	
+
 	_optimizationAgentCounter++;
 	logger.fine("Created Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
@@ -113,8 +107,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	initGenotype();
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
-	    int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	generateAgentId();
 	initGenotype();
 	_optimizationAgentCounter++;
@@ -203,9 +196,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
-		    && yMod >= 0 && yMod < sim.getGridHeight()
-		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
+		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -315,8 +307,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
-	    DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -435,8 +426,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
-		Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
+	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
 
@@ -456,7 +447,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    }
 
 	    _operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
-
+	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 	}
     }
 
@@ -482,6 +473,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		}
 	    }
 	    _operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
+	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
 
 	}
     }
@@ -584,8 +576,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource
-		    || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -601,8 +592,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource
-		    && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -623,8 +613,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			}
 
-		    } else if (this.sim.problemComplexity
-			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
@@ -849,14 +838,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public Agent getGenotypicalParent() {
-        return genotypicalParent;
+	return genotypicalParent;
     }
 
     public static long get_optimizationAgentCounter() {
-        return _optimizationAgentCounter;
+	return _optimizationAgentCounter;
     }
-    
-    
-    
-    
+
 }
