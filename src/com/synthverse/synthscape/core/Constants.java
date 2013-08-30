@@ -22,7 +22,7 @@ public interface Constants {
 
     public static final int EE_DEF_MAX_ENTITY_SIZE = 64;
 
-    public static final int EE_DEF_GENE_POOL_SIZE = 1000;
+    public static final int EE_DEF_GENE_POOL_SIZE = 100;
 
     public static final double EE_DEF_MAX_MUTATION_RATE = 0.05;
 
@@ -60,7 +60,7 @@ public interface Constants {
 
     public static final int NUMBER_OF_COLLECTION_SITES = 5;
 
-    public static final int MAX_STEPS_PER_AGENT = 1500;
+    public static final int MAX_STEPS_PER_AGENT = 500;
 
     public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
@@ -92,7 +92,7 @@ public interface Constants {
 
     public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
     
-    public static final boolean REPORT_EVENTS = false;
+    public static final boolean REPORT_EVENTS = true;
     
     public static final boolean REPORT_PERFORMANCE = true;
 
