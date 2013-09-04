@@ -30,7 +30,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int cloneCounter = 0;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) {
+    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
 	super(simulation);
 	this.species = species;
 

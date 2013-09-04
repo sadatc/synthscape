@@ -59,8 +59,9 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     /**
      * creates an evolver with all default values
+     * @throws Exception 
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species) {
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species) throws Exception {
 	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
 		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
 		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_GENE_POOL_SIZE, EE_DEF_MAX_MUTATION_RATE,
@@ -73,8 +74,9 @@ public final class CentralizedEvolutionEngine implements Constants {
      * 
      * @param agentFactory
      * @param genePoolSize
+     * @throws Exception 
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) {
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) throws Exception {
 	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
 		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
 		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, genePoolSize, EE_DEF_MAX_MUTATION_RATE,
@@ -96,24 +98,50 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @param genePoolSize
      * @param maxMutationRate
      * @param evolutionProgressLog
+     * @throws Exception 
      */
     public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
 	    double percentTopXTop, double percentTopMutant, double percentTopXBottom, double percentBottom,
 	    double percentBottomMutant, double percentBottomXBottom, double percentRandom, int genePoolSize,
-	    double maxMutationRate, String evolutionProgressLog) {
+	    double maxMutationRate, String evolutionProgressLog) throws Exception {
 
 	this.agentFactory = agentFactory;
 	this.species = species;
 
 	aTop = (int) ((double) genePoolSize * percentTop);
+	if(aTop <= 0) {
+	    throw new Exception("aTop is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aTopXTop = (int) ((double) genePoolSize * percentTopXTop);
+	if(aTopXTop <= 0) {
+	    throw new Exception("aTopXTop is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aTopMutants = (int) ((double) genePoolSize * percentTopMutant);
+	if(aTopMutants <= 0) {
+	    throw new Exception("aTopMutants is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aTopXBottom = (int) ((double) genePoolSize * percentTopXBottom);
+	if(aTopXBottom <= 0) {
+	    throw new Exception("aTopXBottom is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aBottom = (int) ((double) genePoolSize * percentBottom);
+	if(aBottom <= 0) {
+	    throw new Exception("aBottom is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aBottomMutants = (int) ((double) genePoolSize * percentBottomMutant);
+	if(aBottomMutants <= 0) {
+	    throw new Exception("aBottomMutants is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aBottomXBottom = (int) ((double) genePoolSize * percentBottomXBottom);
+	if(aBottomXBottom <= 0) {
+	    throw new Exception("aBottomXBottom is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
 	aRandom = (int) ((double) genePoolSize * percentRandom);
-
+	if(aRandom <= 0) {
+	    throw new Exception("aRandom is too low. Most likely, genePool="+genePoolSize+", is too small");
+	}
+	
+	
 	this.genePoolSize = genePoolSize;
 
 	this.maxMutationRate = maxMutationRate;

@@ -36,7 +36,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	super(simulation);
     }
 
-    public void initPopulationIslands() {
+    public void initPopulationIslands() throws Exception {
 	for (Species species : simulation.getSpeciesComposition()) {
 	    PopulationIslandEvolver island = new PopulationIslandEvolver(simulation, species,
 		    simulation.getClonesPerSpecies());
@@ -52,7 +52,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public void init() {
+	try {
 	initPopulationIslands();
+	} catch (Exception e) {
+	    System.err.println("Exception initializing islands:"+e.getMessage());
+	    e.printStackTrace();
+	}
 
     }
 
