@@ -82,7 +82,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     abstract public void stepAction(SimState state);
 
-    private void initGenotype() {
+    protected void initGenotype() {
 	this.program = Program.Factory.createRandom(sim.random);
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
 	vm.loadProgram(this.program);
@@ -472,8 +472,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 		}
 	    }
-	    _operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
-	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
+	    if (closestAgentLocation != null) {
+		_operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
+		sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
+	    }
 
 	}
     }
