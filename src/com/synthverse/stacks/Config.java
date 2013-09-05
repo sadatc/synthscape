@@ -51,6 +51,8 @@ public final class Config {
 
     public final static int DEFAULT_ARRAY_SIZE = 256;
     public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
+    
+    public final static boolean RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES = true;
 
     /**
      * CODE_STACK_CAPACITY and PRORGAM_ARRAY_SIZE should be the same

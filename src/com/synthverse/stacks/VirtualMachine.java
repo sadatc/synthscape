@@ -183,28 +183,18 @@ public final class VirtualMachine {
 	    instruction.execute(this);
 	    decrementCpuCycles();
 	    return true;
+	} else if(cpuCycles > 0 && Config.RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES) {
+	    this.resetIP();
+	    Instruction instruction = instructionArray.getValue(IP);
+	    instruction.execute(this);
+	    decrementCpuCycles();
+	    return true;
 	}
 
 	return false;
     }
 
-    public final boolean stepUsingDebugger() {
-
-	if (cpuCycles > 0 && instructionArray.isValidIndex(IP)) {
-	    logger.info("\n==> stepping program");
-	    logger.info("vm_bef:" + this);
-	    Instruction instruction = instructionArray.getValue(IP);
-	    logger.info("executing:" + instruction);
-	    instruction.execute(this);
-	    decrementCpuCycles();
-	    logger.info("vm_aft:" + this);
-	    return true;
-	} else {
-
-	    return false;
-	}
-    }
-
+   
     /*
      * (non-Javadoc)
      * 
