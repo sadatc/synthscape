@@ -78,7 +78,7 @@ public class InstructionArray {
     }
 
     public final boolean isValidIndex(int index) {
-	return index >= 0 && index < size;
+	return (index >= 0 && index < size);
     }
 
     public final void loadProgram(Program program) {
