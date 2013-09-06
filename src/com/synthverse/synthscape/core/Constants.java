@@ -2,6 +2,13 @@ package com.synthverse.synthscape.core;
 
 public interface Constants {
 
+    // MORE frequently changed constants appear here...
+
+    public static final int GENERATIONS = 50000;
+    public static final int CLONES_PER_SPECIES = 1;
+    public static final int EE_DEF_GENE_POOL_SIZE = 20;
+    public static final int MAX_STEPS_PER_AGENT = 64 ;
+
     // EVOLUTION ENGINE RELATED CONSTANTS
 
     public static final double EE_DEF_PERCENT_TOP = 0.3;
@@ -21,8 +28,6 @@ public interface Constants {
     public static final double EE_DEF_PERCENT_RANDOM = 0.05;
 
     public static final int EE_DEF_MAX_ENTITY_SIZE = 64;
-
-    public static final int EE_DEF_GENE_POOL_SIZE = 100;
 
     public static final double EE_DEF_MAX_MUTATION_RATE = 0.05;
 
@@ -52,21 +57,13 @@ public interface Constants {
 
     public static final boolean TOROIDAL_FLAG = true;
 
-    public static final int CLONES_PER_SPECIES = 10;
-
     public static final double OBSTACLE_DENSITY = 0.05;
 
     public static final double RESOURCE_DENSITY = 0.10;
 
-    public static final int NUMBER_OF_COLLECTION_SITES = 5;
-
-    public static final int MAX_STEPS_PER_AGENT = 500;
+    public static final int NUMBER_OF_COLLECTION_SITES = 15;
 
     public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
-
-    public static final int GENERATIONS = 50000;
-
-    public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
     public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.85;
 
@@ -91,9 +88,9 @@ public interface Constants {
     public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
 
     public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
-    
+
     public static final boolean REPORT_EVENTS = true;
-    
+
     public static final boolean REPORT_PERFORMANCE = true;
 
     public static final String EVENT_LOG_FILE = "/tmp/event_log.csv";
@@ -101,7 +98,9 @@ public interface Constants {
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
 
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
-    
+
     public static final boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
+
+    public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
 }
