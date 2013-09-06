@@ -30,7 +30,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
-    private Simulation sim;
+    public Simulation sim;
 
     private int agentId;
 
@@ -846,5 +846,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public static long get_optimizationAgentCounter() {
 	return _optimizationAgentCounter;
     }
+
+    public boolean isCarryingResource() {
+        return isCarryingResource;
+    }
+
+    public void setCarryingResource(boolean isCarryingResource) {
+        this.isCarryingResource = isCarryingResource;
+    }
+    
+    
 
 }
