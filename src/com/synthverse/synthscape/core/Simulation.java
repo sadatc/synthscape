@@ -417,6 +417,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    if (simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
+			//logger.info("*** end of simulation");
 		    } else {
 			logger.info("*** end of experiment");
 			setEndDate();

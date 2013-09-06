@@ -1,6 +1,8 @@
 package com.synthverse.evolver.islands;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
@@ -9,6 +11,7 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
+import com.synthverse.util.LogUtils;
 
 /**
  * A population island maintains agentStats gene pool that produces agents of
@@ -18,7 +21,13 @@ import com.synthverse.synthscape.core.Stats;
  * 
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
+    
+    protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
 
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
+    
     private Species species;
     private int clonesPerSpecies;
     private int totalPopulation;
@@ -74,8 +83,9 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
 	} else {
 	    // we have reached next generation
-	    // reset all counters and re-run...
+	    // reset all counters and re-run...	    
 	    generation++;
+	    //logger.info("$$$ starting new generation: "+generation);
 	    requestCounter = 0;
 	    genePoolIndex = 0;
 	    cloneCounter = 0;
@@ -83,6 +93,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    activeBuffer = evolutionEngine.getActiveBuffer();
 	    // recursive call!
 	    returnAgent = getAgent(species, x, y);
+	    
 	}
 
 	return returnAgent;
