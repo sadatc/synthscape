@@ -1375,6 +1375,16 @@ public enum Instruction {
 
     },
 
+    ACTION_IS_CARRYING_RESOURCE("ACTION.IS_CARRYING_RESOURCE") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().isCarryingResource());
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    
+    
     /*
      * ACTION_RECHARGE("ACTION.RECHARGE") { public void execute(VirtualMachine
      * virtualMachine) { virtualMachine.getAgent().operationRecharge();
