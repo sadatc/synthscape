@@ -47,15 +47,17 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public Agent getAgent(Species species, int x, int y) {
 	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
-	return islandEvolver.getAgent(species, x, y);
+	Agent result = islandEvolver.getAgent(species, x, y);
+	//logger.info(result.getProgram().toTranslatedString());
+	return result;
     }
 
     @Override
     public void init() {
 	try {
-	initPopulationIslands();
+	    initPopulationIslands();
 	} catch (Exception e) {
-	    System.err.println("Exception initializing islands:"+e.getMessage());
+	    System.err.println("Exception initializing islands:" + e.getMessage());
 	    e.printStackTrace();
 	}
 
@@ -79,7 +81,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	double result = 0.0;
 
 	// collecting a resource gets the highest point
-	//simStats.printValues();
+	// simStats.printValues();
 
 	for (Event event : simStats.getEvents()) {
 
@@ -97,28 +99,20 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     private double getEventWeight(Event event) {
 
 	switch (event) {
-	
+
 	case DETECTED_RAW_RESOURCE:
-	    return 5.0;
+	    return 4.0;
 	case EXTRACTED_RESOURCE:
-	    return 5.0;
-	
-	/*    
-	case DETECTED_EXTRACTED_RESOURCE:
-	    return 8.0;
-	case DETECTED_PROCESSED_RESOURCE:
-	    return 6.0;
-	case PROCESSED_RESOURCE:
-	    return 12.0;
-	case LOADED_RESOURCE: 
-	    return 6.0;
-	case UNLOADED_RESOURCE: 
-	    return 5.0;
-	case MOVE_TO_CLOSEST_COLLECTION_SITE:
-	    return 1.0;
-	case MOVE_TO_PRIMARY_COLLECTION_SITE:
-	    return 1.0;
-	    */
+	    return 4.0;
+
+	    /*
+	     * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
+	     * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
+	     * return 12.0; case LOADED_RESOURCE: return 6.0; case
+	     * UNLOADED_RESOURCE: return 5.0; case
+	     * MOVE_TO_CLOSEST_COLLECTION_SITE: return 1.0; case
+	     * MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
+	     */
 	case COLLECTED_RESOURCE:
 	    return 5.0;
 
