@@ -39,6 +39,12 @@ public final class Config {
 
     public final static boolean FILTER_ENTITY_DUPLICATES = false;
 
+    
+    public final static int DEFAULT_ARRAY_SIZE = 32;
+    public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
+   
+    
+    
     //
     // The constants below should not be changed.
     //
@@ -49,8 +55,6 @@ public final class Config {
     public final static int DEFAULT_BOOLEAN_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
     public final static int DEFAULT_FLOAT_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
 
-    public final static int DEFAULT_ARRAY_SIZE = 256;
-    public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
     
     public final static boolean RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES = true;
 
