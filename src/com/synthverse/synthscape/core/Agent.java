@@ -854,6 +854,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void setCarryingResource(boolean isCarryingResource) {
         this.isCarryingResource = isCarryingResource;
     }
+
+    public ResourceState getStateOfCarriedResource() {
+        return stateOfCarriedResource;
+    }
+
+    public void setStateOfCarriedResource(ResourceState stateOfCarriedResource) {
+        this.stateOfCarriedResource = stateOfCarriedResource;
+    }
+    
     
     
 
