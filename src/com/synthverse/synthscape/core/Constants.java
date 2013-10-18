@@ -5,9 +5,9 @@ public interface Constants {
     // MORE frequently changed constants appear here...
 
     public static final int GENERATIONS = 50000;
-    public static final int CLONES_PER_SPECIES = 1;
-    public static final int EE_DEF_GENE_POOL_SIZE = 20;
-    public static final int MAX_STEPS_PER_AGENT = 64 ;
+    public static final int CLONES_PER_SPECIES = 10;
+    public static final int EE_DEF_GENE_POOL_SIZE = 2000;
+    public static final int MAX_STEPS_PER_AGENT = 256 ;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
 
@@ -89,7 +89,7 @@ public interface Constants {
 
     public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
 
-    public static final boolean REPORT_EVENTS = true;
+    public static final boolean REPORT_EVENTS = false;
 
     public static final boolean REPORT_PERFORMANCE = true;
 
