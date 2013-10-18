@@ -45,6 +45,9 @@ public class IslanderAgent extends Agent {
     protected void initGenotype() {
 	
 	super.initGenotype();
+	//this.program = Program.Factory.createEmpty(sim.random);
+	//this.program.addInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE);
+	logger.info(this.program.toTranslatedString()); 
 	
 	//this.program = Program.Factory.createEmpty(sim.random);
 	//this.program.addInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE);
