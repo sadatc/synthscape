@@ -77,12 +77,6 @@ public enum Instruction {
 	    virtualMachine.incrementIP();
 	}
     },
-    CONST_INT_NEGATIVE_ONE("CONST.-1") {
-	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getIntegerStack().push(-1);
-	    virtualMachine.incrementIP();
-	}
-    },
     CONST_FLOAT_ONE("CONST.1.0") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getFloatStack().push(1.0f);
@@ -92,13 +86,6 @@ public enum Instruction {
     CONST_FLOAT_ZERO("CONST.0.0") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getFloatStack().push(0);
-	    virtualMachine.incrementIP();
-	}
-    },
-
-    CONST_FLOAT_NEGATIVE_ONE("CONST.-1.0") {
-	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getFloatStack().push(-1.0f);
 	    virtualMachine.incrementIP();
 	}
     },
@@ -224,20 +211,6 @@ public enum Instruction {
 
 	}
     },
-    /*
-
-    BOOLEAN_FROM_CODE("BOOLEAN.FROM_CODE") {
-	public void execute(VirtualMachine virtualMachine) {
-	    CodeStack cs = virtualMachine.getCodeStack();
-	    if (cs.size() > 0) {
-		Instruction i = cs.pop();
-		virtualMachine.getBooleanStack().fromCode(i);
-	    }
-	    virtualMachine.incrementIP();
-
-	}
-    },
-    */
 
     BOOLEAN_FROM_INTEGER("BOOLEAN.FROM_INTEGER") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -388,22 +361,7 @@ public enum Instruction {
 	    virtualMachine.incrementIP();
 	}
     },
-    
-    /*
 
-    INTEGER_FROM_CODE("INTEGER.FROM_CODE") {
-	public void execute(VirtualMachine virtualMachine) {
-	    CodeStack cs = virtualMachine.getCodeStack();
-	    if (cs.size() > 0) {
-		Instruction i = cs.pop();
-		virtualMachine.getIntegerStack().fromCode(i);
-	    }
-	    virtualMachine.incrementIP();
-
-	}
-    },
-    */
-	
     INTEGER_MOD("INTEGER.MOD") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getIntegerStack().mod();
@@ -684,21 +642,6 @@ public enum Instruction {
 	    virtualMachine.incrementIP();
 	}
     },
-
-    /*
-    FLOAT_FROM_CODE("FLOAT.FROM_CODE") {
-	public void execute(VirtualMachine virtualMachine) {
-	    CodeStack cs = virtualMachine.getCodeStack();
-	    if (cs.size() > 0) {
-		Instruction i = cs.pop();
-		virtualMachine.getFloatStack().fromCode(i);
-	    }
-	    virtualMachine.incrementIP();
-
-	}
-    },
-    
-    */
 
     FLOAT_MOD("FLOAT.MOD") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1093,39 +1036,6 @@ public enum Instruction {
 	}
     },
 
-    /*
-    CODE_FROM_INTEGER("CODE.FROM_INTEGER") {
-	public void execute(VirtualMachine virtualMachine) {
-	    IntegerStack is = virtualMachine.getIntegerStack();
-	    if (is.size() > 0) {
-		virtualMachine.getCodeStack().fromInteger(is.pop());
-	    }
-	    virtualMachine.incrementIP();
-
-	}
-    },
-
-    CODE_FROM_BOOLEAN("CODE.FROM_BOOLEAN") {
-	public void execute(VirtualMachine virtualMachine) {
-	    BooleanStack sourceStack = virtualMachine.getBooleanStack();
-	    if (sourceStack.size() > 0) {
-		virtualMachine.getCodeStack().fromBoolean(sourceStack.pop());
-	    }
-	    virtualMachine.incrementIP();
-	}
-    },
-
-    CODE_FROM_FLOAT("CODE.FROM_FLOAT") {
-	public void execute(VirtualMachine virtualMachine) {
-	    FloatStack sourceStack = virtualMachine.getFloatStack();
-	    if (sourceStack.size() > 0) {
-		virtualMachine.getCodeStack().fromFloat(sourceStack.pop());
-	    }
-	    virtualMachine.incrementIP();
-	}
-    },
-    */
-
     CODE_SWAP_IA("CODE.SWAP_IA") {
 	public void execute(VirtualMachine virtualMachine) {
 
@@ -1193,6 +1103,20 @@ public enum Instruction {
 	}
     },
 
+    ACTION_MOVE_N("ACTION.MOVE_N") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationMoveNorth();
+	    virtualMachine.incrementIP();
+	}
+    },
+
+    ACTION_MOVE_S("ACTION.MOVE_S") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationMoveSouth();
+	    virtualMachine.incrementIP();
+	}
+    },
+
     ACTION_MOVE_NE("ACTION.MOVE_NE") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationMoveNorthEast();
@@ -1221,17 +1145,7 @@ public enum Instruction {
 	}
     },
 
-    /*
-     * ACTION_MOVE_N_IF("ACTION.MOVE_N") { public void execute(VirtualMachine
-     * virtualMachine) { virtualMachine.getAgent().operationMoveNorth();
-     * virtualMachine.incrementIP(); } },
-     * 
-     * ACTION_MOVE_S("ACTION.MOVE_S") { public void execute(VirtualMachine
-     * virtualMachine) { virtualMachine.getAgent().operationMoveSouth();
-     * virtualMachine.incrementIP(); } },
-     */
-
-    ACTION_MOVE_CONDITIONALLY_VERTICAL("ACTION.MOVE_C_V") {
+    ACTION_MOVE_CONDITIONALLY_NS("ACTION.MOVE_C_NS") {
 	public void execute(VirtualMachine virtualMachine) {
 	    boolean foundTrue = false;
 	    if (virtualMachine.getBooleanStack().size() > 0) {
@@ -1246,7 +1160,7 @@ public enum Instruction {
 	}
     },
 
-    ACTION_MOVE_CONDITIONALLY_HORIZONTAL("ACTION.MOVE_C_H") {
+    ACTION_MOVE_CONDITIONALLY_EW("ACTION.MOVE_C_EW") {
 	public void execute(VirtualMachine virtualMachine) {
 	    boolean foundTrue = false;
 	    if (virtualMachine.getBooleanStack().size() > 0) {
@@ -1291,21 +1205,6 @@ public enum Instruction {
 	}
     },
 
-    /*
-     * 
-     * ACTION_MOVE("ACTION.MOVE") { public void execute(VirtualMachine
-     * virtualMachine) { IntegerStack integerStack =
-     * virtualMachine.getIntegerStack(); if (integerStack.size() > 1) {
-     * 
-     * virtualMachine.getAgent().operationMoveRelative(integerStack.pop(),
-     * integerStack.pop());
-     * 
-     * virtualMachine.incrementIP(); }
-     * 
-     * }
-     * 
-     * },
-     */
     ACTION_MOVE_RANDOM("ACTION.MOVE_RANDOM") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationRandomMove();
@@ -1314,14 +1213,20 @@ public enum Instruction {
 
     },
 
-    /*
-     * ACTION_MOVE_TO_PRIMARY_HOME("ACTION.MOVE_TO_PRIMARY_HOME") { public void
-     * execute(VirtualMachine virtualMachine) {
-     * virtualMachine.getAgent().operationMoveToPrimaryCollectionSite();
-     * virtualMachine.incrementIP(); }
-     * 
-     * },
-     */
+    ACTION_MOVE_CONDITIONALLY_RANDOM("ACTION.MOVE_C_RANDOM") {
+	public void execute(VirtualMachine virtualMachine) {
+	    boolean foundTrue = false;
+	    if (virtualMachine.getBooleanStack().size() > 0) {
+		foundTrue = virtualMachine.getBooleanStack().pop();
+	    }
+	    if (foundTrue) {
+		virtualMachine.getAgent().operationRandomMove();
+	    }
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
     ACTION_MOVE_TO_CLOSEST_HOME("ACTION.MOVE_TO_CLOSEST_HOME") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationMoveToClosestCollectionSite();
