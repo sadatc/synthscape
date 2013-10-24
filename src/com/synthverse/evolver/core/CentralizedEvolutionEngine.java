@@ -159,10 +159,14 @@ public final class CentralizedEvolutionEngine implements Constants {
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
 	for (int i = 0; i < genePoolSize; i++) {
-	    parentBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
-	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species).randomizeGenotype());
+	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
+	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
+	
+	
+	
+	
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 

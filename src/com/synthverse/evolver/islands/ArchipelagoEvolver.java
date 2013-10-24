@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
@@ -66,7 +67,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
-	double fitness = computeFitness(simStats);
+	double fitness = computeFitness(simStats,agents);
 
 	for (Agent agent : agents) {
 	    agent.setFitness(fitness);
@@ -77,7 +78,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     }
 
-    private double computeFitness(Stats simStats) {
+    private double computeFitness(Stats simStats, List<Agent> agents) {
 	double result = 0.0;
 
 	// collecting a resource gets the highest point
@@ -90,6 +91,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	}
 	if (result > maxFitness) {
 	    logger.info("Fitness=" + result);
+	    logger.info(agents.get(0).getVirtualMachine().toString());
 	    maxFitness = result;
 	}
 
@@ -114,6 +116,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	     * MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
 	     */
 	case COLLECTED_RESOURCE:
+	    //D.p("encountered collection!!!!!");
 	    return 5.0;
 
 	}

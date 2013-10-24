@@ -90,18 +90,20 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.setVirtualMachine(vm);
     }
 
+    
+       
     private Agent() {
 	generateAgentId();
 
 	_optimizationAgentCounter++;
-	logger.fine("Created Agent(): AgentCount = " + _optimizationAgentCounter);
+	//logger.fine("Created Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
 	generateAgentId();
 
 	_optimizationAgentCounter++;
-	logger.fine("Created Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
+	//logger.fine("Created Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
 	initGenotype();
@@ -111,7 +113,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	generateAgentId();
 	initGenotype();
 	_optimizationAgentCounter++;
-	logger.fine("Created Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
+	// logger.fine("Created Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);

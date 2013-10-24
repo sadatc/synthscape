@@ -17,6 +17,8 @@
 
 package com.synthverse.stacks;
 
+import com.synthverse.synthscape.core.ResourceState;
+
 /**
  * Defines Instruction Set of the Stacks language. The operation performed when
  * an Instruction is executed on the
@@ -222,6 +224,7 @@ public enum Instruction {
 
 	}
     },
+    /*
 
     BOOLEAN_FROM_CODE("BOOLEAN.FROM_CODE") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -234,6 +237,7 @@ public enum Instruction {
 
 	}
     },
+    */
 
     BOOLEAN_FROM_INTEGER("BOOLEAN.FROM_INTEGER") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -384,6 +388,8 @@ public enum Instruction {
 	    virtualMachine.incrementIP();
 	}
     },
+    
+    /*
 
     INTEGER_FROM_CODE("INTEGER.FROM_CODE") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -396,7 +402,8 @@ public enum Instruction {
 
 	}
     },
-
+    */
+	
     INTEGER_MOD("INTEGER.MOD") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getIntegerStack().mod();
@@ -678,6 +685,7 @@ public enum Instruction {
 	}
     },
 
+    /*
     FLOAT_FROM_CODE("FLOAT.FROM_CODE") {
 	public void execute(VirtualMachine virtualMachine) {
 	    CodeStack cs = virtualMachine.getCodeStack();
@@ -689,6 +697,8 @@ public enum Instruction {
 
 	}
     },
+    
+    */
 
     FLOAT_MOD("FLOAT.MOD") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1083,6 +1093,7 @@ public enum Instruction {
 	}
     },
 
+    /*
     CODE_FROM_INTEGER("CODE.FROM_INTEGER") {
 	public void execute(VirtualMachine virtualMachine) {
 	    IntegerStack is = virtualMachine.getIntegerStack();
@@ -1113,14 +1124,15 @@ public enum Instruction {
 	    virtualMachine.incrementIP();
 	}
     },
+    */
 
     CODE_SWAP_IA("CODE.SWAP_IA") {
 	public void execute(VirtualMachine virtualMachine) {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
-	    InstructionArray ia = virtualMachine.getInstructionArray();
+	    MetaInstructionArray ia = virtualMachine.getInstructionArray();
 
-	    Instruction[] saved_cs = cs.getInternalArray();
+	    MetaInstruction[] saved_cs = cs.getInternalArray();
 	    cs.setInternalArray(ia.getInternalArray());
 	    ia.setInternalArray(saved_cs);
 	    virtualMachine.incrementIP();
@@ -1131,9 +1143,9 @@ public enum Instruction {
 	public void execute(VirtualMachine virtualMachine) {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
-	    InstructionArray ia = virtualMachine.getInstructionArray();
+	    MetaInstructionArray ia = virtualMachine.getInstructionArray();
 
-	    Instruction[] saved_cs = cs.getInternalArray();
+	    MetaInstruction[] saved_cs = cs.getInternalArray();
 	    cs.setInternalArray(ia.getInternalArray());
 	    ia.setInternalArray(saved_cs);
 	    virtualMachine.setIP(0);
@@ -1144,8 +1156,8 @@ public enum Instruction {
 	public void execute(VirtualMachine virtualMachine) {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
-	    InstructionArray ia = virtualMachine.getInstructionArray();
-	    Instruction[] cs_array = cs.getInternalArray();
+	    MetaInstructionArray ia = virtualMachine.getInstructionArray();
+	    MetaInstruction[] cs_array = cs.getInternalArray();
 	    int size = cs.size();
 	    ia.copyFromArray(cs_array, size);
 	    virtualMachine.incrementIP();
@@ -1157,8 +1169,8 @@ public enum Instruction {
 	public void execute(VirtualMachine virtualMachine) {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
-	    InstructionArray ia = virtualMachine.getInstructionArray();
-	    Instruction[] ia_array = ia.getInternalArray();
+	    MetaInstructionArray ia = virtualMachine.getInstructionArray();
+	    MetaInstruction[] ia_array = ia.getInternalArray();
 	    cs.copyFrom(ia_array);
 	    virtualMachine.incrementIP();
 
@@ -1166,20 +1178,6 @@ public enum Instruction {
     },
 
     // ---------- MOVEMENT RELATED INSTRUCTIONS --------
-
-    ACTION_MOVE_N("ACTION.MOVE_N") {
-	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationMoveNorth();
-	    virtualMachine.incrementIP();
-	}
-    },
-
-    ACTION_MOVE_S("ACTION.MOVE_S") {
-	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationMoveSouth();
-	    virtualMachine.incrementIP();
-	}
-    },
 
     ACTION_MOVE_E("ACTION.MOVE_E") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1223,20 +1221,91 @@ public enum Instruction {
 	}
     },
 
-    ACTION_MOVE("ACTION.MOVE") {
+    /*
+     * ACTION_MOVE_N_IF("ACTION.MOVE_N") { public void execute(VirtualMachine
+     * virtualMachine) { virtualMachine.getAgent().operationMoveNorth();
+     * virtualMachine.incrementIP(); } },
+     * 
+     * ACTION_MOVE_S("ACTION.MOVE_S") { public void execute(VirtualMachine
+     * virtualMachine) { virtualMachine.getAgent().operationMoveSouth();
+     * virtualMachine.incrementIP(); } },
+     */
+
+    ACTION_MOVE_CONDITIONALLY_VERTICAL("ACTION.MOVE_C_V") {
 	public void execute(VirtualMachine virtualMachine) {
-	    IntegerStack integerStack = virtualMachine.getIntegerStack();
-	    if (integerStack.size() > 1) {
-
-		virtualMachine.getAgent().operationMoveRelative(integerStack.pop(), integerStack.pop());
-
-		virtualMachine.incrementIP();
+	    boolean foundTrue = false;
+	    if (virtualMachine.getBooleanStack().size() > 0) {
+		foundTrue = virtualMachine.getBooleanStack().pop();
 	    }
-
+	    if (foundTrue) {
+		virtualMachine.getAgent().operationMoveSouth();
+	    } else {
+		virtualMachine.getAgent().operationMoveNorth();
+	    }
+	    virtualMachine.incrementIP();
 	}
-
     },
 
+    ACTION_MOVE_CONDITIONALLY_HORIZONTAL("ACTION.MOVE_C_H") {
+	public void execute(VirtualMachine virtualMachine) {
+	    boolean foundTrue = false;
+	    if (virtualMachine.getBooleanStack().size() > 0) {
+		foundTrue = virtualMachine.getBooleanStack().pop();
+	    }
+	    if (foundTrue) {
+		virtualMachine.getAgent().operationMoveEast();
+	    } else {
+		virtualMachine.getAgent().operationMoveWest();
+	    }
+	    virtualMachine.incrementIP();
+	}
+    },
+
+    ACTION_MOVE_CONDITIONALLY_NENW("ACTION.MOVE_C_NENW") {
+	public void execute(VirtualMachine virtualMachine) {
+	    boolean foundTrue = false;
+	    if (virtualMachine.getBooleanStack().size() > 0) {
+		foundTrue = virtualMachine.getBooleanStack().pop();
+	    }
+	    if (foundTrue) {
+		virtualMachine.getAgent().operationMoveNorthEast();
+	    } else {
+		virtualMachine.getAgent().operationMoveNorthWest();
+	    }
+	    virtualMachine.incrementIP();
+	}
+    },
+
+    ACTION_MOVE_CONDITIONALLY_SESW("ACTION.MOVE_C_SESW") {
+	public void execute(VirtualMachine virtualMachine) {
+	    boolean foundTrue = false;
+	    if (virtualMachine.getBooleanStack().size() > 0) {
+		foundTrue = virtualMachine.getBooleanStack().pop();
+	    }
+	    if (foundTrue) {
+		virtualMachine.getAgent().operationMoveSouthEast();
+	    } else {
+		virtualMachine.getAgent().operationMoveSouthWest();
+	    }
+	    virtualMachine.incrementIP();
+	}
+    },
+
+    /*
+     * 
+     * ACTION_MOVE("ACTION.MOVE") { public void execute(VirtualMachine
+     * virtualMachine) { IntegerStack integerStack =
+     * virtualMachine.getIntegerStack(); if (integerStack.size() > 1) {
+     * 
+     * virtualMachine.getAgent().operationMoveRelative(integerStack.pop(),
+     * integerStack.pop());
+     * 
+     * virtualMachine.incrementIP(); }
+     * 
+     * }
+     * 
+     * },
+     */
     ACTION_MOVE_RANDOM("ACTION.MOVE_RANDOM") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationRandomMove();
@@ -1245,14 +1314,14 @@ public enum Instruction {
 
     },
 
-    ACTION_MOVE_TO_PRIMARY_HOME("ACTION.MOVE_TO_PRIMARY_HOME") {
-	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationMoveToPrimaryCollectionSite();
-	    virtualMachine.incrementIP();
-	}
-
-    },
-
+    /*
+     * ACTION_MOVE_TO_PRIMARY_HOME("ACTION.MOVE_TO_PRIMARY_HOME") { public void
+     * execute(VirtualMachine virtualMachine) {
+     * virtualMachine.getAgent().operationMoveToPrimaryCollectionSite();
+     * virtualMachine.incrementIP(); }
+     * 
+     * },
+     */
     ACTION_MOVE_TO_CLOSEST_HOME("ACTION.MOVE_TO_CLOSEST_HOME") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationMoveToClosestCollectionSite();
@@ -1360,6 +1429,36 @@ public enum Instruction {
     ACTION_IS_CARRYING_RESOURCE("ACTION.IS_CARRYING_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().isCarryingResource());
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_IS_CARRYING_EXTRACTED_RESOURCE("ACTION.IS_CARRYING_EXTRACTED_RESOURCE") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
+			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.EXTRACTED);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_IS_CARRYING_PROCESSED_RESOURCE("ACTION.IS_CARRYING_PROCESSED_RESOURCE") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
+			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.PROCESSED);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_IS_CARRYING_RAW_RESOURCE("ACTION.IS_CARRYING_RAW_RESOURCE") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
+			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.RAW);
 	    virtualMachine.incrementIP();
 	}
 
@@ -1527,6 +1626,9 @@ public enum Instruction {
     ;
 
     private String mnemonic = null;
+    private int intValue = 0;
+    private boolean boolValue = false;
+    private double floatValue = 0.0;
 
     /**
      * Gets the Mnemonic associated with the Instruction. Mnemonics are an

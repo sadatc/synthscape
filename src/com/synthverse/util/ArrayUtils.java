@@ -17,7 +17,7 @@
 
 package com.synthverse.util;
 
-import com.synthverse.stacks.Instruction;
+import com.synthverse.stacks.MetaInstruction;
 
 public class ArrayUtils {
 
@@ -59,18 +59,18 @@ public class ArrayUtils {
 	}
     }
 
-    public static final void reverseInstructionArray(Instruction[] b) {
+    public static final void reverseInstructionArray(MetaInstruction[] b) {
 	for (int left = 0, right = b.length - 1; left < right; left++, right--) {
-	    Instruction temp = b[left];
+	    MetaInstruction temp = b[left];
 	    b[left] = b[right];
 	    b[right] = temp;
 	}
     }
 
-    public static final void reverseInstructionArrayInRange(Instruction[] b,
+    public static final void reverseInstructionArrayInRange(MetaInstruction[] b,
 	    int rightIndex) {
 	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    Instruction temp = b[left];
+	    MetaInstruction temp = b[left];
 	    b[left] = b[right];
 	    b[right] = temp;
 	}

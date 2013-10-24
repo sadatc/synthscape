@@ -40,7 +40,7 @@ public final class Config {
     public final static boolean FILTER_ENTITY_DUPLICATES = false;
 
     
-    public final static int DEFAULT_ARRAY_SIZE = 32;
+    public final static int DEFAULT_ARRAY_SIZE = 128;
     public final static int DEFAULT_PROGRAM_ARRAY_SIZE = DEFAULT_ARRAY_SIZE;
    
     
@@ -66,8 +66,8 @@ public final class Config {
     public final static boolean DEFAULT_BOOLEAN_VALUE = false;
     public final static float DEFAULT_FLOAT_VALUE = 0F;
     public final static int DEFAULT_INTEGER_VALUE = 0;
-    public final static Instruction DEFAULT_PROGRAM_VALUE = Instruction.NOOP;
-    public final static Instruction DEFAULT_CODE_VALUE = DEFAULT_PROGRAM_VALUE;
+    
+    
     public final static String EMPTY_CONTAINER_STRING = "[]";
 
     public final static String LINE_SEPARATOR = System

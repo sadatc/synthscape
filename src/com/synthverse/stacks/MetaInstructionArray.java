@@ -1,5 +1,5 @@
 /**
- * @(#)InstructionArray.java  8:53:55 AM Jul 6, 2009
+ * @(#)MetaInstructionArray.java  8:53:55 AM Jul 6, 2009
  * 
  * Copyright (c) 2004-2009 Sadat Chowdhury (sadatc@gmail.com)
  * 
@@ -30,50 +30,41 @@ import com.synthverse.util.ArrayUtils;
  * @author sadat
  * 
  */
-public class InstructionArray {
+public class MetaInstructionArray {
 
-    private Instruction defaultValue = Config.DEFAULT_PROGRAM_VALUE;
-
-    private Instruction[] program = null;
+    private MetaInstruction[] program = null;
     private int size;
 
-    InstructionArray() {
+    MetaInstructionArray() {
 	this.size = Config.DEFAULT_PROGRAM_ARRAY_SIZE;
-	this.program = new Instruction[size];
-	Arrays.fill(program, getDefaultValue());
+	this.program = new MetaInstruction[size];
+	Arrays.fill(program, MetaInstruction.NOOP);
     }
 
-    public final void copyFromArray(Instruction[] array, int size) {
+    public final void copyFromArray(MetaInstruction[] array, int size) {
 	for (int i = 0; i < size; i++) {
 	    program[i] = array[i];
 	}
     }
 
-    public final Instruction[] getInternalArray() {
+    public final MetaInstruction[] getInternalArray() {
 	return program;
     }
 
-    public final void setInternalArray(Instruction[] array) {
+    public final void setInternalArray(MetaInstruction[] array) {
 	program = array;
     }
 
-    public final Instruction getDefaultValue() {
-	return defaultValue;
-    }
-
-    public final void setDefaultValue(Instruction defaultValue) {
-	this.defaultValue = defaultValue;
-    }
-
+    
     public final int getSize() {
 	return size;
     }
 
-    public final void setValue(int index, Instruction instruction) {
+    public final void setValue(int index,MetaInstruction instruction) {
 	this.program[index] = instruction;
     }
 
-    public final Instruction getValue(int index) {
+    public final MetaInstruction getValue(int index) {
 	return this.program[index];
     }
 
@@ -85,7 +76,7 @@ public class InstructionArray {
 	program.copyInto(this.program);
     }
 
-    public final void fill(Instruction instruction) {
+    public final void fill(MetaInstruction instruction) {
 	Arrays.fill(program, instruction);
     }
 
@@ -95,8 +86,8 @@ public class InstructionArray {
 
     public final void noop_left() {
 	for (int i = 0; i < size; i++) {
-	    if (program[i] != Instruction.NOOP) {
-		program[i] = Instruction.NOOP;
+	    if (program[i] !=MetaInstruction.NOOP) {
+		program[i] =MetaInstruction.NOOP;
 		return;
 	    }
 	}
@@ -104,8 +95,8 @@ public class InstructionArray {
 
     public final void noop_right() {
 	for (int i = size - 1; i >= 0; i--) {
-	    if (program[i] != Instruction.NOOP) {
-		program[i] = Instruction.NOOP;
+	    if (program[i] !=MetaInstruction.NOOP) {
+		program[i] =MetaInstruction.NOOP;
 		return;
 	    }
 	}
@@ -113,7 +104,7 @@ public class InstructionArray {
 
     public final void exchange_left(int index) {
 	if (index > 0 && index < size) {
-	    Instruction tmp = program[0];
+	   MetaInstruction tmp = program[0];
 	    program[0] = program[index];
 	    program[index] = tmp;
 	}
@@ -122,7 +113,7 @@ public class InstructionArray {
     public final void exchange_right(int index) {
 	int lastIndex = size - 1;
 	if (index >= 0 && index < lastIndex) {
-	    Instruction tmp = program[lastIndex];
+	   MetaInstruction tmp = program[lastIndex];
 	    program[lastIndex] = program[index];
 	    program[index] = tmp;
 	}
@@ -132,7 +123,7 @@ public class InstructionArray {
 	int i = startIndex;
 
 	while (i < size) {
-	    if (program[i] == Instruction.NOOP) {
+	    if (program[i] == MetaInstruction.NOOP) {
 		return i;
 	    }
 	    i++;
@@ -152,9 +143,9 @@ public class InstructionArray {
 	    return true;
 	if (obj == null)
 	    return false;
-	if (!(obj instanceof InstructionArray))
+	if (!(obj instanceof MetaInstructionArray))
 	    return false;
-	InstructionArray other = (InstructionArray) obj;
+	MetaInstructionArray other = (MetaInstructionArray) obj;
 	if (!Arrays.equals(program, other.program))
 	    return false;
 	return true;

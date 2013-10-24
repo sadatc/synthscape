@@ -42,26 +42,24 @@ import ec.util.MersenneTwisterFast;
  */
 public final class CodeStack extends AbstractStack {
 
-    private Instruction defaultValue = Config.DEFAULT_CODE_VALUE;
+    private MetaInstruction[] stack = null;
 
-    private Instruction[] stack = null;
-
-    public final Instruction[] getInternalArray() {
+    public final MetaInstruction[] getInternalArray() {
 	return stack;
     }
 
-    public final void copyFrom(Instruction[] array) {
+    public final void copyFrom(MetaInstruction[] array) {
 	for (int i = 0; i < array.length; i++) {
 	    stack[i] = array[i];
 	}
     }
 
-    public final void setInternalArray(Instruction[] array) {
+    public final void setInternalArray(MetaInstruction[] array) {
 	stack = array;
 
     }
 
-    public final CodeStack push(Instruction instruction) {
+    public final CodeStack push(MetaInstruction instruction) {
 	if (!isFull()) {
 	    index++;
 	    size++;
@@ -70,16 +68,7 @@ public final class CodeStack extends AbstractStack {
 	return this;
     }
 
-    @SuppressWarnings("unused")
-    private final CodeStack pushCode(int code) {
-	if (!isFull()) {
-	    index++;
-	    size++;
-	    stack[index] = InstructionTranslator.toInstruction(code);
-	}
-	return this;
-    }
-
+  
     /**
      * Pops a value off the stack. Size and index are decremented if an element
      * was actually popped off; otherwise no operations are performed and
@@ -87,12 +76,12 @@ public final class CodeStack extends AbstractStack {
      * 
      * @return
      */
-    public final Instruction pop() {
-	Instruction returnValue = defaultValue;
+    public final MetaInstruction pop() {
+	MetaInstruction returnValue = MetaInstruction.NOOP;
 
 	if (!isEmpty()) {
 
-	    Instruction value = stack[index];
+	    MetaInstruction value = stack[index];
 	    index--;
 	    size--;
 	    returnValue = value;
@@ -107,8 +96,8 @@ public final class CodeStack extends AbstractStack {
      * 
      * @return
      */
-    public final Instruction glance() {
-	Instruction returnValue = defaultValue;
+    public final MetaInstruction glance() {
+	MetaInstruction returnValue = MetaInstruction.NOOP;
 
 	if (size > 0) {
 	    returnValue = stack[index];
@@ -124,7 +113,7 @@ public final class CodeStack extends AbstractStack {
      */
     public final void dup() {
 	if (size > 0) {
-	    Instruction topMostValue = stack[index];
+	    MetaInstruction topMostValue = stack[index];
 	    push(topMostValue);
 	}
     }
@@ -143,8 +132,8 @@ public final class CodeStack extends AbstractStack {
      */
     public final boolean equal() {
 	if (size > 1) {
-	    Instruction topMostValue = pop();
-	    Instruction secondTopMostValue = pop();
+	    MetaInstruction topMostValue = pop();
+	    MetaInstruction secondTopMostValue = pop();
 	    if (topMostValue == secondTopMostValue) {
 		return true;
 	    }
@@ -159,8 +148,8 @@ public final class CodeStack extends AbstractStack {
      */
     public final void swap() {
 	if (size > 1) {
-	    Instruction topMostValue = pop();
-	    Instruction secondTopMostValue = pop();
+	    MetaInstruction topMostValue = pop();
+	    MetaInstruction secondTopMostValue = pop();
 
 	    push(topMostValue);
 	    push(secondTopMostValue);
@@ -175,9 +164,9 @@ public final class CodeStack extends AbstractStack {
     public final void rot() {
 	if (size > 2) {
 
-	    Instruction topMostValue = pop();
-	    Instruction secondTopMostValue = pop();
-	    Instruction thirdTopMostValue = pop();
+	    MetaInstruction topMostValue = pop();
+	    MetaInstruction secondTopMostValue = pop();
+	    MetaInstruction thirdTopMostValue = pop();
 
 	    push(secondTopMostValue);
 	    push(topMostValue);
@@ -191,8 +180,7 @@ public final class CodeStack extends AbstractStack {
      * 
      */
     public final void rand() {
-	push(InstructionTranslator
-		.getRandomInstruction(this.randomNumberGenerator));
+	push(InstructionTranslator.getRandomInstruction(this.randomNumberGenerator));
     }
 
     /**
@@ -219,7 +207,7 @@ public final class CodeStack extends AbstractStack {
 	    }
 
 	    // save value
-	    Instruction yankValue = stack[arrayYankIndex];
+	    MetaInstruction yankValue = stack[arrayYankIndex];
 
 	    // now move everything from right to left
 	    for (int i = 0; i < (size - arrayYankIndex - 1); i++) {
@@ -254,24 +242,26 @@ public final class CodeStack extends AbstractStack {
 	    }
 
 	    // save value
-	    Instruction yankValue = stack[arrayYankIndex];
+	    MetaInstruction yankValue = stack[arrayYankIndex];
 
 	    push(yankValue);
 
 	}
     }
 
+    /*
     public final void fromInteger(int intValue) {
 	push(InstructionTranslator.guessFromInt(intValue));
     }
 
     public final void fromBoolean(boolean boolValue) {
-	push(boolValue ? Instruction.CONST_TRUE : Instruction.CONST_FALSE);
+	push(boolValue ? MetaInstruction.CONST_TRUE : MetaInstruction.CONST_FALSE);
     }
 
     public final void fromFloat(double floatValue) {
 	push(InstructionTranslator.guessFromFloat(floatValue));
     }
+    */
 
     /**
      * /** Creates an empty stack with a default capacity defined by
@@ -281,21 +271,13 @@ public final class CodeStack extends AbstractStack {
     public CodeStack(MersenneTwisterFast randomNumberGenerator) {
 	super(randomNumberGenerator);
 	capacity = Config.DEFAULT_CODE_STACK_CAPACITY;
-	stack = new Instruction[capacity];
+	stack = new MetaInstruction[capacity];
 	index = AbstractStack.BOTTOM_INDEX;
-	Arrays.fill(stack, getDefaultValue());
+	Arrays.fill(stack, MetaInstruction.NOOP);
 	size = 0;
     }
 
-    /**
-     * Returns the default value (see {@link #setDefaultValue(int)}).
-     * 
-     * @return
-     */
-    public final Instruction getDefaultValue() {
-	return defaultValue;
-    }
-
+  
     /**
      * Sets the capacity of the Stack. Here are the rules: (1) Does nothing if
      * newCapacity<=0 or newCapacity == current capacity, (2) Retains all
@@ -321,7 +303,7 @@ public final class CodeStack extends AbstractStack {
 	}
 
 	// create the new stack
-	Instruction[] newStack = new Instruction[newCapacity];
+	MetaInstruction[] newStack = new MetaInstruction[newCapacity];
 
 	// change capacity
 	capacity = newCapacity;

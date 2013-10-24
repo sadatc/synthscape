@@ -93,9 +93,27 @@ public class InstructionTranslator {
      * 
      * @return
      */
-    public static final Instruction getRandomInstruction(MersenneTwisterFast randomNumberGenerator) {
-	return instructions[getRandomCode(randomNumberGenerator)];
+    public static final MetaInstruction getRandomInstruction(
+	    MersenneTwisterFast randomNumberGenerator) {
 
+	MetaInstruction result = MetaInstruction.NOOP;
+	// instructions, literals (bool, double, int) are all equally likely...
+
+	double dice = randomNumberGenerator.nextDouble();
+	if (dice > 0.9) {
+	    result = new MetaInstruction(randomNumberGenerator.nextDouble());
+
+	} else if (dice > 0.85) {
+	    result = new MetaInstruction(randomNumberGenerator.nextBoolean());
+
+	} else if (dice > 0.7) {
+	    result = new MetaInstruction(randomNumberGenerator.nextInt(100));
+
+	} else {
+	    result = new MetaInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	}
+
+	return result;
     }
 
     public static final void logStatus() {
@@ -114,28 +132,28 @@ public class InstructionTranslator {
 	}
     }
 
-    public static final Instruction guessFromInt(int anyInt) {
-	Instruction instruction = Config.DEFAULT_CODE_VALUE;
-
-	anyInt = (anyInt < 0) ? 0 : anyInt;
-	anyInt = (anyInt < numInstructions) ? anyInt : anyInt % numInstructions;
-
-	instruction = toInstruction(anyInt);
-
-	return instruction;
-    }
-
-    public static final Instruction guessFromFloat(double anyFloat) {
-	Instruction instruction = Config.DEFAULT_CODE_VALUE;
-
-	anyFloat = (anyFloat < 0) ? -anyFloat : anyFloat;
-	instruction = toInstruction((anyFloat < numInstructions) ? (int) anyFloat : (int) anyFloat % numInstructions);
-
-	return instruction;
-    }
-
-    public static final Instruction guessFromBoolean(boolean anyBool) {
-	return (anyBool) ? Instruction.CONST_TRUE : Instruction.CONST_FALSE;
-    }
+    /*
+     * public static final MetaInstruction guessFromInt(int anyInt) {
+     * MetaInstruction instruction = MetaInstruction.NOOP;
+     * 
+     * anyInt = (anyInt < 0) ? 0 : anyInt; anyInt = (anyInt < numInstructions) ?
+     * anyInt : anyInt % numInstructions;
+     * 
+     * instruction = toInstruction(anyInt);
+     * 
+     * return instruction; }
+     * 
+     * public static final Instruction guessFromFloat(double anyFloat) {
+     * Instruction instruction = Instruction.NOOP;
+     * 
+     * anyFloat = (anyFloat < 0) ? -anyFloat : anyFloat; instruction =
+     * toInstruction((anyFloat < numInstructions) ? (int) anyFloat : (int)
+     * anyFloat % numInstructions);
+     * 
+     * return instruction; }
+     * 
+     * public static final Instruction guessFromBoolean(boolean anyBool) {
+     * return (anyBool) ? Instruction.CONST_TRUE : Instruction.CONST_FALSE; }
+     */
 
 }

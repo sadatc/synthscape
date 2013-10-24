@@ -35,23 +35,23 @@ import ec.util.MersenneTwisterFast;
  */
 public class Program {
 
-    private Instruction[] instructionArray = null;
+    private MetaInstruction[] metaInstructionArray = null;
     private int size;
 
     public MersenneTwisterFast randomNumberGenerator = null;
 
     public final void randomizeInstructions() {
 	for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-	    instructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
+	    metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	}
     }
 
-    public final Instruction[] getInstructionArray() {
-	return instructionArray;
+    public final MetaInstruction[] getMetaInstructionArray() {
+	return metaInstructionArray;
     }
 
-    public final void setInstructionArray(Instruction[] instructionArray) {
-	this.instructionArray = instructionArray;
+    public final void setInstructionArray(MetaInstruction[] instructionArray) {
+	this.metaInstructionArray = instructionArray;
     }
 
     public final void setSize(int size) {
@@ -66,9 +66,9 @@ public class Program {
 	this.size = p.size;
 	this.randomNumberGenerator = p.randomNumberGenerator;
 	if (this.size > 0) {
-	    this.instructionArray = new Instruction[this.size];
+	    this.metaInstructionArray = new MetaInstruction[this.size];
 	    for (int i = 0; i < this.size; i++) {
-		this.instructionArray[i] = p.instructionArray[i];
+		this.metaInstructionArray[i] = p.metaInstructionArray[i];
 	    }
 	}
     }
@@ -77,52 +77,53 @@ public class Program {
 	// restricted, use Factory methods to create programs.
 	this.randomNumberGenerator = randomNumberGenerator;
 	size = 0;
-	instructionArray = new Instruction[maxSize];
+	metaInstructionArray = new MetaInstruction[maxSize];
     }
 
     public final void fillWithNOOP() {
-	Arrays.fill(instructionArray, Instruction.NOOP);
+	Arrays.fill(metaInstructionArray, Instruction.NOOP);
     }
 
-    public final void addInstruction(Instruction instruction) {
-	addCode(InstructionTranslator.toCode(instruction));
-    }
-
-    public final void addCode(int code) {
-	instructionArray[size] = InstructionTranslator.toInstruction(code);
+    public final void addInstruction(MetaInstruction instruction) {
+	// addCode(InstructionTranslator.toCode(instruction));
+	metaInstructionArray[size] = instruction;
 	size++;
     }
 
+    /*
+     * public final void addCode(int code) { metaInstructionArray[size] =
+     * InstructionTranslator.toInstruction(code); size++; }
+     */
     public final int getSize() {
 	return size;
     }
 
     public final int getSizeLimit() {
-	return instructionArray.length;
+	return metaInstructionArray.length;
     }
 
     public final boolean isIPValid(int ipIndex) {
 	return (ipIndex >= 0 && ipIndex < size);
     }
 
-    public final int getCode(int ipIndex) {
-	return InstructionTranslator.toCode(instructionArray[ipIndex]);
-    }
-
-    public final void copyInto(Instruction[] array) {
+    /*
+     * public final int getCode(int ipIndex) { return
+     * InstructionTranslator.toCode(metaInstructionArray[ipIndex]); }
+     */
+    public final void copyInto(MetaInstruction[] array) {
 	for (int i = 0; i < size; i++) {
-	    array[i] = instructionArray[i];
+	    array[i] = metaInstructionArray[i];
 	}
     }
 
-    public final Instruction getInstruction(int ipIndex) {
-	return instructionArray[ipIndex];
+    public final MetaInstruction getInstruction(int ipIndex) {
+	return metaInstructionArray[ipIndex];
     }
 
     @Override
     public final String toString() {
 	if (size > 0) {
-	    return Arrays.toString(instructionArray);
+	    return Arrays.toString(metaInstructionArray);
 	} else {
 	    return Config.EMPTY_CONTAINER_STRING;
 	}
@@ -132,11 +133,11 @@ public class Program {
 	if (size > 0) {
 	    StringBuilder buf = new StringBuilder();
 	    buf.append('[');
-	    buf.append(instructionArray[0]);
+	    buf.append(metaInstructionArray[0]);
 
-	    for (int i = 1; i < instructionArray.length; i++) {
+	    for (int i = 1; i < metaInstructionArray.length; i++) {
 		buf.append(", ");
-		buf.append(instructionArray[i]);
+		buf.append(metaInstructionArray[i]);
 	    }
 
 	    buf.append("]");
@@ -146,17 +147,16 @@ public class Program {
 	    return Config.EMPTY_CONTAINER_STRING;
 	}
     }
-
 
     public final String toTranslatedString(int n) {
 	if (size > 0) {
 	    StringBuilder buf = new StringBuilder();
 	    buf.append('[');
-	    buf.append(instructionArray[0]);
+	    buf.append(metaInstructionArray[0]);
 
 	    for (int i = 1; i < n; i++) {
 		buf.append(", ");
-		buf.append(instructionArray[i]);
+		buf.append(metaInstructionArray[i]);
 	    }
 
 	    buf.append("]");
@@ -167,17 +167,13 @@ public class Program {
 	}
     }
 
-    
-    
-    public long getLongHashCode() {
-	return HashUtils.getLongHash(instructionArray, size);
-    }
-
-    @Override
-    public final int hashCode() {
-	return Arrays.hashCode(instructionArray);
-    }
-
+    /*
+     * public long getLongHashCode() { return
+     * HashUtils.getLongHash(metaInstructionArray, size); }
+     * 
+     * @Override public final int hashCode() { return
+     * Arrays.hashCode(metaInstructionArray); }
+     */
     @Override
     public boolean equals(Object obj) {
 	if (this == obj)
@@ -187,7 +183,7 @@ public class Program {
 	if (!(obj instanceof Program))
 	    return false;
 	Program other = (Program) obj;
-	if (!Arrays.equals(instructionArray, other.instructionArray))
+	if (!Arrays.equals(metaInstructionArray, other.metaInstructionArray))
 	    return false;
 
 	if (size != other.size)
@@ -213,8 +209,7 @@ public class Program {
 	    program = createEmpty(randomNumberGenerator);
 
 	    for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-		program.instructionArray[i] = InstructionTranslator
-			.getRandomInstruction(randomNumberGenerator);
+		program.metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	    }
 	    program.size = Config.DEFAULT_PROGRAM_ARRAY_SIZE;
 
@@ -230,8 +225,7 @@ public class Program {
 		program.size = size;
 
 		for (int i = 0; i < size; i++) {
-		    program.instructionArray[i] = InstructionTranslator
-			    .getRandomInstruction(randomNumberGenerator);
+		    program.metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 		}
 	    }
 
