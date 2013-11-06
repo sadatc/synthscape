@@ -90,6 +90,17 @@ public class Program {
 	size++;
     }
 
+    public final boolean addInstructionSafely(MetaInstruction instruction) {
+	if (size < getSizeLimit()) {
+	    metaInstructionArray[size] = instruction;
+	    size++;
+	    return true;
+	} else {
+	    return false;
+
+	}
+    }
+
     /*
      * public final void addCode(int code) { metaInstructionArray[size] =
      * InstructionTranslator.toInstruction(code); size++; }

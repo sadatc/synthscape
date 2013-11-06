@@ -109,7 +109,12 @@ public abstract class Simulation extends SimState implements Constants {
 
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
+
     public Stats simStats = new Stats();
+    public Stats aggregateSimStats = new Stats();
+    public int aggregationCounter = 0;
+    
+    
 
     private int genePoolSize;
 
@@ -129,7 +134,7 @@ public abstract class Simulation extends SimState implements Constants {
 	setGenePoolSize(configGenePoolSize());
 	setReportEvents(configIsReportEvents());
 	setReportPerformance(configIsReportPerformance());
-	
+
 	setEventFileName(configEventFileName());
 
 	// now set these up based on the concrete simulation
@@ -297,8 +302,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    random = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
-	
-	
+
 	for (int i = 0; i < numberOfObstacles; i++) {
 
 	    int randomX = random.nextInt(gridWidth);
@@ -346,7 +350,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void initAgents() {
 	// populate with agents
-	
+
 	MersenneTwisterFast random = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    random = controlledRandom;
@@ -417,7 +421,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    if (simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
-			//logger.info("*** end of simulation");
+			// logger.info("*** end of simulation");
 		    } else {
 			logger.info("*** end of experiment");
 			setEndDate();
@@ -441,12 +445,32 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
+    private boolean statsHasCollectionEvent(Stats stats) {
+	for (Event event : stats.getEvents()) {
+	    if (event == Event.COLLECTED_RESOURCE) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
     protected void startNextSimulation() {
+	/*
+	if (statsHasCollectionEvent(simStats)) {
+	    D.p("CAPTURE!!!!");
+	}
+
+	 */
+	simStats.aggregateStatsTo(aggregateSimStats);
+	aggregationCounter++;
 	simStats.clear();
+	//D.p(aggregationCounter+": simStats cleared and aggregated...");
+
+	// D.p("startNextSimulation called...simStats cleared!");
+
 	resetEnvironment();
 	initEnvironment();
 	initAgents();
-	
 
     }
 
@@ -503,7 +527,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter, simStats, fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
     }
 
     public void setStartDate() {
@@ -584,7 +608,7 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract int configMaxStepsPerAgent();
 
     public abstract boolean configIsReportEvents();
-    
+
     public abstract boolean configIsReportPerformance();
 
     public abstract String configExperimentName();
@@ -742,11 +766,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public boolean isReportPerformance() {
-        return reportPerformance;
+	return reportPerformance;
     }
 
     public void setReportPerformance(boolean reportPerformance) {
-        this.reportPerformance = reportPerformance;
+	this.reportPerformance = reportPerformance;
     }
 
 }

@@ -49,7 +49,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public Agent getAgent(Species species, int x, int y) {
 	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
 	Agent result = islandEvolver.getAgent(species, x, y);
-	//logger.info(result.getProgram().toTranslatedString());
+	// logger.info(result.getProgram().toTranslatedString());
 	return result;
     }
 
@@ -67,7 +67,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
-	double fitness = computeFitness(simStats,agents);
+	double fitness = computeFitness(simStats, agents);
 
 	for (Agent agent : agents) {
 	    agent.setFitness(fitness);
@@ -103,9 +103,9 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	switch (event) {
 
 	case DETECTED_RAW_RESOURCE:
-	    return 4.0;
+	    return 0.0;
 	case EXTRACTED_RESOURCE:
-	    return 4.0;
+	    return 0.0;
 
 	    /*
 	     * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
@@ -117,7 +117,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	     */
 	case COLLECTED_RESOURCE:
 	    //D.p("encountered collection!!!!!");
-	    return 5.0;
+	    return 1.0;
 
 	}
 	return 0;

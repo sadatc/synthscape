@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.synthverse.util.DateUtils;
@@ -249,17 +250,18 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformance(int generationCounter, Stats simStats, DescriptiveStatistics fitnessStats) {
+    public void reportPerformance(int generationCounter, Stats simStats, Stats aggregateSimStats,
+	    DescriptiveStatistics fitnessStats) {
 	try {
 
-	    if (simulation.isReportPerformance()) {
+	    // was the last aggregation done?
+	    int captures = aggregateSimStats.getValue(Event.COLLECTED_RESOURCE);
+	    
+	    //D.p(generationCounter+": captures="+captures);
+	    this.simulation.aggregationCounter = 0;
+	    aggregateSimStats.clear();
 
-		int captures = 0;
-		for (Event event : simStats.getEvents()) {
-		    if (event == Event.COLLECTED_RESOURCE) {
-			captures++;
-		    }
-		}
+	    if (simulation.isReportPerformance()) {
 
 		sbPerformance.delete(0, sbPerformance.length());
 		sbPerformance.append(fitnessStats.getN());

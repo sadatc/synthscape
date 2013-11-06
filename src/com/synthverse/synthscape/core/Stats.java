@@ -1,7 +1,6 @@
 package com.synthverse.synthscape.core;
 
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.Set;
 
 public class Stats {
@@ -18,7 +17,7 @@ public class Stats {
 	    eventCounterMap.put(event, 1);
 	}
     }
-    
+
     public Set<Event> getEvents() {
 	return eventCounterMap.keySet();
     }
@@ -42,8 +41,8 @@ public class Stats {
     public void aggregateStatsTo(Stats accumulatingStats) {
 	for (Event event : eventCounterMap.keySet()) {
 	    if (accumulatingStats.eventCounterMap.containsKey(event)) {
-		accumulatingStats.eventCounterMap.put(event,
-			accumulatingStats.eventCounterMap.get(event) + eventCounterMap.get(event));
+		accumulatingStats.eventCounterMap.put(event, accumulatingStats.eventCounterMap.get(event)
+			+ eventCounterMap.get(event));
 	    } else {
 		accumulatingStats.eventCounterMap.put(event, eventCounterMap.get(event));
 	    }
@@ -59,6 +58,20 @@ public class Stats {
 	    }
 	    D.p("/////////////////////////////////");
 	}
+    }
+
+    @Override
+    public String toString() {
+	String str = "";
+	if (eventCounterMap.size() > 0) {
+
+	    for (Event event : eventCounterMap.keySet()) {
+		str += (event + " = " + eventCounterMap.get(event));
+	    }
+
+	}
+
+	return str;
     }
 
 }
