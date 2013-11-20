@@ -34,6 +34,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 
 	public void setSim(Simulation sim) {
 		this.sim = sim;
+		sim.setUiObject(this);
 	}
 
 	public Object getSimulationInspectedObject() {
@@ -83,6 +84,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 
 	public void load(SimState state) {
 		super.load(state);
+		setSim((Simulation) state);
 		initPortrayals();
 	}
 
@@ -94,7 +96,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	public SimulationUI(SimState state) {
 		super(state);
 		initStructures();
-		this.sim = (Simulation) state;
+		setSim((Simulation) state);
 	}
 
 	public static String getName() {

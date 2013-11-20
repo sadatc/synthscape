@@ -55,11 +55,13 @@ public class FancySimulationUI extends SimulationUI {
 		displayFrame.setVisible(true);
 
 		// attach all the portrayals
+		
 		display.attach(obstaclesPortrayal, "Obstacles");
 		display.attach(collectionSitePortrayal, "Collection Sites");
 		display.attach(resourcePortrayal, "Resources");
 		display.attach(trailPortrayal, "Trails");
 		display.attach(agentPortrayal, "Agents");
+		//display.detatchAll();
 	}
 
 	public void initPortrayals() {

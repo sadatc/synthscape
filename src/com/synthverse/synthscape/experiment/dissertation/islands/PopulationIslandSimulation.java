@@ -68,7 +68,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public ProblemComplexity configProblemComplexity() {
-	return ProblemComplexity.THREE_SEQUENTIAL_TASKS;
+	return PROBLEM_COMPLEXITY;
     }
 
     @Override

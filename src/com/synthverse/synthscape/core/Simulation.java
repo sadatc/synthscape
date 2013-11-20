@@ -46,7 +46,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected ExperimentReporter experimentReporter;
 
-    protected int simulationCounter;
+    protected long simulationCounter;
 
     protected int simStepCounter;
 
@@ -73,8 +73,12 @@ public abstract class Simulation extends SimState implements Constants {
     protected int numberOfObstacles;
 
     protected int numberOfResources;
+    
+    protected double resourceCaptureGoal;
 
     protected int numberOfCollectedResources;
+    
+    protected int maxResourcesEverCollected = 0;
 
     protected int numberOfCollectionSites;
 
@@ -113,10 +117,10 @@ public abstract class Simulation extends SimState implements Constants {
     public Stats simStats = new Stats();
     public Stats aggregateSimStats = new Stats();
     public int aggregationCounter = 0;
-    
-    
 
     private int genePoolSize;
+
+    private SimulationUI uiObject;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -178,6 +182,9 @@ public abstract class Simulation extends SimState implements Constants {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
+	resourceCaptureGoal = (double)numberOfResources*RESOURCE_CAPTURE_GOAL;
+
+	D.p("obstacles=" + numberOfObstacles + " resources=" + numberOfResources);
 
 	createDataStructures();
 
@@ -238,6 +245,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setNumberOfResources(int numberOfResources) {
 	this.numberOfResources = numberOfResources;
+	this.resourceCaptureGoal = numberOfResources*RESOURCE_CAPTURE_GOAL;
 
     }
 
@@ -419,10 +427,16 @@ public abstract class Simulation extends SimState implements Constants {
 		    simStepCounter = 0;
 		    simulationCounter++;
 
-		    if (simulationCounter < simulationsPerExperiment) {
+		    //D.p("simulationsPerExperiment="+simulationsPerExperiment);
+		    
+		       
+		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
-			// logger.info("*** end of simulation");
+			// logger.info("*** end of simulation: collected="+numberOfCollectedResources);
 		    } else {
+			if(collectedAllResources()) {
+			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
+			}
 			logger.info("*** end of experiment");
 			setEndDate();
 			experimentReporter.cleanupReporter();
@@ -456,26 +470,46 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void startNextSimulation() {
 	/*
-	if (statsHasCollectionEvent(simStats)) {
-	    D.p("CAPTURE!!!!");
-	}
-
+	 * D.p("starting the next simulation...:"+simulationCounter);
+	 * if(simulationCounter%getGenePoolSize()==0) {
+	 * this.getUiObject().display.requestUpdateFreeze(); } else {
+	 * this.getUiObject().display.requestUpdateUnFreeze(); }
 	 */
 	simStats.aggregateStatsTo(aggregateSimStats);
 	aggregationCounter++;
 	simStats.clear();
-	//D.p(aggregationCounter+": simStats cleared and aggregated...");
+	// D.p(aggregationCounter+": simStats cleared and aggregated...");
 
 	// D.p("startNextSimulation called...simStats cleared!");
 
 	resetEnvironment();
+	
+	if(this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+	    D.p("collected Resources="+this.numberOfCollectedResources);
+	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
+	}
+	
+	
+	
 	initEnvironment();
 	initAgents();
+	
+	/*
+	D.p("Next simulation started with: world=" + (this.gridHeight * this.gridWidth) + " obstacles="
+		+ numberOfObstacles + " sites=" + numberOfCollectionSites + " resources=" + numberOfResources
+		+ " agents=" + agents.size());
+	*/
 
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
-	return (this.numberOfCollectedResources >= this.numberOfResources || this.simStepCounter > stepsPerSimulation);
+	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal) || (this.simStepCounter > stepsPerSimulation);
+	return result;
+    }
+    
+    protected boolean collectedAllResources() {
+	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal) ;
+	return result;
     }
 
     private void doEndOfStepTasks() {
@@ -771,6 +805,14 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setReportPerformance(boolean reportPerformance) {
 	this.reportPerformance = reportPerformance;
+    }
+
+    public SimulationUI getUiObject() {
+	return uiObject;
+    }
+
+    public void setUiObject(SimulationUI uiObject) {
+	this.uiObject = uiObject;
     }
 
 }

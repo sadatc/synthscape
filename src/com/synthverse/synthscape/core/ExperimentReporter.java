@@ -158,7 +158,7 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(int simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
+    public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
 	    Event event, String source, String destination) {
 	try {
 	    if (simulation.isReportEvents()) {

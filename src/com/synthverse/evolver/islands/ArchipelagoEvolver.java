@@ -101,12 +101,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     private double getEventWeight(Event event) {
 
 	switch (event) {
-
+	/*
 	case DETECTED_RAW_RESOURCE:
-	    return 0.0;
+	    return 0.10;
 	case EXTRACTED_RESOURCE:
-	    return 0.0;
-
+	    return 0.25;
+	*/
 	    /*
 	     * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
 	     * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
@@ -116,7 +116,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	     * MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
 	     */
 	case COLLECTED_RESOURCE:
-	    //D.p("encountered collection!!!!!");
+	    // D.p("encountered collection!!!!!");
 	    return 1.0;
 
 	}
