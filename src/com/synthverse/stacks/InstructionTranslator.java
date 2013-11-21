@@ -17,6 +17,7 @@
 
 package com.synthverse.stacks;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,13 +42,22 @@ public class InstructionTranslator {
 
     private static Instruction[] instructions = null;
 
+    private static HashMap<String, Instruction> instructionTable = new HashMap<String, Instruction>();
+
     private static int numInstructions;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
 	instructions = Instruction.values();
 	numInstructions = instructions.length;
+	setupInstructionTable();
 	logStatus();
+    }
+
+    private static void setupInstructionTable() {
+	for (Instruction instruction : instructions) {
+	    instructionTable.put(instruction.toString(), instruction);
+	}
     }
 
     private InstructionTranslator() {
@@ -87,14 +97,62 @@ public class InstructionTranslator {
 	return randomNumberGenerator.nextInt(numInstructions);
     }
 
+    private static boolean isNumeric(String string) {
+
+	if (string != null) {
+	    string = string.trim();
+	    boolean foundDotBefore = false;
+	    for (int i = 0; i < string.length(); i++) {
+		char c = string.charAt(i);
+		if (c == '.') {
+		    if (foundDotBefore) {
+			return false;
+		    } else {
+			foundDotBefore = true;
+		    }
+		} else {
+		    if (!Character.isDigit(c)) {
+			return false;
+		    }
+		}
+	    }
+	    return true;
+	}
+
+	return false;
+    }
+
+    public static final MetaInstruction decodeFromString(String instruction) {
+	MetaInstruction result = MetaInstruction.NOOP;
+
+	if (instruction != null) {
+	    instruction = instruction.trim();
+	    instruction = instruction.toUpperCase();	    
+	    if (instructionTable.containsKey(instruction)) {
+		result = new MetaInstruction(instructionTable.get(instruction));
+	    } else if (instruction.equals("TRUE")) {
+		result = new MetaInstruction(true);
+	    } else if (instruction.equals("FALSE")) {
+		result = new MetaInstruction(false);
+	    } else if (isNumeric(instruction)) {
+		if (instruction.contains(".")) {
+		    result = new MetaInstruction(Double.parseDouble(instruction));
+		} else {
+		    result = new MetaInstruction(Integer.parseInt(instruction));
+		}
+	    }
+	}
+
+	return result;
+    }
+
     /**
      * This will return a valid random instruction. Useful for random code
      * generation.
      * 
      * @return
      */
-    public static final MetaInstruction getRandomInstruction(
-	    MersenneTwisterFast randomNumberGenerator) {
+    public static final MetaInstruction getRandomInstruction(MersenneTwisterFast randomNumberGenerator) {
 
 	MetaInstruction result = MetaInstruction.NOOP;
 	// instructions, literals (bool, double, int) are all equally likely...

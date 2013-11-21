@@ -100,7 +100,23 @@ public class Program {
 
 	}
     }
-
+    
+    public final boolean addInstructionsSafely(String csvString) {
+	boolean result = true;
+	
+	if(csvString!=null) {
+	    String[] instructions = csvString.split(",");
+	    for(String instruction: instructions) {
+		if(!addInstructionSafely(InstructionTranslator.decodeFromString(instruction))) {
+		    result = false;
+		}
+	    }
+	}
+	
+	return result;
+    }
+    
+    
     /*
      * public final void addCode(int code) { metaInstructionArray[size] =
      * InstructionTranslator.toInstruction(code); size++; }

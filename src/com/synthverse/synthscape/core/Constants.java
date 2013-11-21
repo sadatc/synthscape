@@ -13,7 +13,7 @@ public interface Constants {
     public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
     
     
-    public static final double RESOURCE_CAPTURE_GOAL = 0.5;
+    public static final double RESOURCE_CAPTURE_GOAL = 1.0;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
 
