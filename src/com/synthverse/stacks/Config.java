@@ -26,16 +26,11 @@ package com.synthverse.stacks;
 public final class Config {
     
     public final static int DEFAULT_ARRAY_SIZE = 64;
-    public final static int DEFAULT_PROGRAM_ARRAY_SIZE = 128;
-   
-    
+    public final static int DEFAULT_PROGRAM_ARRAY_SIZE = 256;
+    public final static int DEFAULT_ENTITY_CPU_CYCLES = 256;
 
     public final static boolean USE_DEFAULT_RANDOM_SEED = true;
-
     public final static boolean USE_ENTITY_POOL = false;
-
-    public final static int DEFAULT_ENTITY_CPU_CYCLES = 128;
-
     public final static int DEFAULT_ENTITY_CACHE_SIZE = 8096;
 
     public final static int DEFAULT_RANDOM_SEED = 123456789;

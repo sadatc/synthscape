@@ -8,12 +8,11 @@ public interface Constants {
     public static final int CLONES_PER_SPECIES = 10;
     public static final int EE_DEF_GENE_POOL_SIZE = 1000;
     public static final int MAX_STEPS_PER_AGENT = 256;
-    
-    
+
     public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
-    
-    
-    public static final double RESOURCE_CAPTURE_GOAL = 1.0;
+    public static final int NUMBER_OF_COLLECTION_SITES = 3;
+
+    public static final double RESOURCE_CAPTURE_GOAL = 0.5;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
 
@@ -66,10 +65,6 @@ public interface Constants {
     public static final double OBSTACLE_DENSITY = 0.05;
 
     public static final double RESOURCE_DENSITY = 0.06;
-
-    public static final int NUMBER_OF_COLLECTION_SITES = 15;
-
-    public static final int MAX_STEPS_PER_SIM = MAX_STEPS_PER_AGENT;
 
     public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.85;
 
