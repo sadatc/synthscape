@@ -1,5 +1,7 @@
 package com.synthverse.stacks;
 
+import java.util.HashMap;
+
 import com.synthverse.synthscape.core.D;
 
 public class MetaInstruction {
@@ -70,23 +72,44 @@ public class MetaInstruction {
     public void setBooleanValue(boolean booleanValue) {
 	this.booleanValue = booleanValue;
     }
+    
+    private MetaInstruction() {
+	throw new AssertionError("Evolver constructor is restricted");
+    }
+    
+    static HashMap<Instruction,MetaInstruction> cachedMetaInstructions = new HashMap<Instruction,MetaInstruction>();
+    
+    public static MetaInstruction fromInstruction(Instruction instruction) {
+	MetaInstruction result = cachedMetaInstructions.get(instruction);
+	if(result == null) {
+	    result = new MetaInstruction(instruction);
+	    cachedMetaInstructions.put(instruction, result);
+	}
+	return result;
+    }
+    
+     
 
-    public MetaInstruction(Instruction instruction) {
+    private MetaInstruction(Instruction instruction) {
+	//D.p("==> MetaInstruction(instruction)");
 	setMetaInstructionType(MetaInstructionType.INSTRUCTION);
 	setInstruction(instruction);
     }
 
     public MetaInstruction(int intValue) {
+	//D.p("==> MetaInstruction(int)");
 	setMetaInstructionType(MetaInstructionType.INT_VALUE);
 	setIntValue(intValue);
     }
 
     public MetaInstruction(double floatValue) {
+	//D.p("==> MetaInstruction(double)");
 	setMetaInstructionType(MetaInstructionType.FLOAT_VALUE);
 	setFloatValue(floatValue);
     }
 
     public MetaInstruction(boolean booleanValue) {
+	//D.p("==> MetaInstruction(boolean)");
 	setMetaInstructionType(MetaInstructionType.BOOL_VALUE);
 	setBooleanValue(booleanValue);
     }

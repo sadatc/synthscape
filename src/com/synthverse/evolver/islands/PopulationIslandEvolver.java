@@ -8,6 +8,7 @@ import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
@@ -85,7 +86,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    // we have reached next generation
 	    // reset all counters and re-run...	    
 	    generation++;
-	    //logger.info("$$$ starting new generation: "+generation);
+	    D.p("$$$ starting new generation: "+generation);
 	    requestCounter = 0;
 	    genePoolIndex = 0;
 	    cloneCounter = 0;

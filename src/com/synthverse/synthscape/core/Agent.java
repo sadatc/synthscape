@@ -42,7 +42,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
+	    .noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -90,30 +91,32 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.setVirtualMachine(vm);
     }
 
-    
-       
     private Agent() {
 	generateAgentId();
 
 	_optimizationAgentCounter++;
-	//logger.fine("Created Agent(): AgentCount = " + _optimizationAgentCounter);
+	// logger.fine("Created Agent(): AgentCount = " +
+	// _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
 	generateAgentId();
 
 	_optimizationAgentCounter++;
-	//logger.fine("Created Agent(sim,species): AgentCount = " + _optimizationAgentCounter);
+	// logger.fine("Created Agent(sim,species): AgentCount = " +
+	// _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
 	initGenotype();
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
+	    int startX, int startY) {
 	generateAgentId();
 	initGenotype();
 	_optimizationAgentCounter++;
-	// logger.fine("Created Agent(sim,species, gen...): AgentCount = " + _optimizationAgentCounter);
+	// logger.fine("Created Agent(sim,species, gen...): AgentCount = " +
+	// _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
@@ -198,8 +201,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
+		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -277,6 +281,44 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	return actionPerformed;
     }
 
+    public void operationFollowBroadcast(SignalType signalType) {
+	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
+		if (broadcast != null) {
+		    //D.p("moving to a broadcast:" + signalType);
+		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
+		}
+	    }
+	}
+    }
+
+    public void operationBroadcast(SignalType signalType) {
+	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		Broadcast broadcast = new Broadcast(this, signalType, this.x, this.y, 0);
+		sim.registerBroadcast(broadcast);
+	    }
+	}
+    }
+
+    public boolean operationDetectBroadcast(SignalType signalType) {
+	boolean result = false;
+	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
+		if (broadcast != null) {
+		    result = true;
+		}
+	    }
+	}
+	return result;
+    }
+
     public final void _operationFollowTrail(DoubleGrid2D trail) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
@@ -309,7 +351,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -428,7 +471,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
+		Simulation.PRIMARY_COLLECTION_SITE_Y);
 	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
@@ -580,7 +624,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource
+		    || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -596,7 +641,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource
+		    && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -615,16 +661,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    //D.p("CAPTURE!! 3 complex");
+			    // D.p("CAPTURE!! 3 complex");
 			}
 
-		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity
+			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    //D.p("CAPTURE!! 4 complex");
+			    // D.p("CAPTURE!! 4 complex");
 			}
 
 		    } else {
@@ -852,19 +899,27 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public boolean isCarryingResource() {
-        return isCarryingResource;
+	return isCarryingResource;
     }
 
     public void setCarryingResource(boolean isCarryingResource) {
-        this.isCarryingResource = isCarryingResource;
+	this.isCarryingResource = isCarryingResource;
     }
 
     public ResourceState getStateOfCarriedResource() {
-        return stateOfCarriedResource;
+	return stateOfCarriedResource;
     }
 
     public void setStateOfCarriedResource(ResourceState stateOfCarriedResource) {
-        this.stateOfCarriedResource = stateOfCarriedResource;
+	this.stateOfCarriedResource = stateOfCarriedResource;
+    }
+
+    @Override
+    public String toString() {
+	return "Agent [agentId=" + agentId + ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps
+		+ ", x=" + x + ", y=" + y + ", interactionMechanisms=" + interactionMechanisms + ", species=" + species
+		+ ", isCarryingResource=" + isCarryingResource + ", generation=" + generation + ", program=" + program
+		+ "]";
     }
     
     

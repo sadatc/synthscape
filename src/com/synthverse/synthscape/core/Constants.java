@@ -10,9 +10,11 @@ public interface Constants {
     public static final int MAX_STEPS_PER_AGENT = 256;
 
     public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
-    public static final int NUMBER_OF_COLLECTION_SITES = 3;
+    public static final int NUMBER_OF_COLLECTION_SITES = 5;
 
     public static final double RESOURCE_CAPTURE_GOAL = 0.5;
+    
+    public static final int NUMBER_OF_STEPS_FOR_BROADCASTED_SIGNAL = 2;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
 
@@ -66,7 +68,7 @@ public interface Constants {
 
     public static final double RESOURCE_DENSITY = 0.06;
 
-    public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.85;
+    public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.998;
 
     public static final int SEED_GENERATION_NUMBER = 0;
 

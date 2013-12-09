@@ -5,6 +5,7 @@ package com.synthverse.synthscape.core;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,11 +74,11 @@ public abstract class Simulation extends SimState implements Constants {
     protected int numberOfObstacles;
 
     protected int numberOfResources;
-    
+
     protected double resourceCaptureGoal;
 
     protected int numberOfCollectedResources;
-    
+
     protected int maxResourcesEverCollected = 0;
 
     protected int numberOfCollectionSites;
@@ -121,6 +122,10 @@ public abstract class Simulation extends SimState implements Constants {
     private int genePoolSize;
 
     private SimulationUI uiObject;
+
+    private HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
+    private HashMap<SignalType, Broadcast> tmpBroadcasts = new HashMap<SignalType, Broadcast>();
+    // need this for efficiency
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -182,7 +187,7 @@ public abstract class Simulation extends SimState implements Constants {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (double)numberOfResources*RESOURCE_CAPTURE_GOAL;
+	resourceCaptureGoal = (double) numberOfResources * RESOURCE_CAPTURE_GOAL;
 
 	D.p("obstacles=" + numberOfObstacles + " resources=" + numberOfResources);
 
@@ -220,6 +225,8 @@ public abstract class Simulation extends SimState implements Constants {
 	resourceGrid.setTo(ResourceState.NULL);
 	trailGrid.setTo(ABSENT);
 
+	registeredBroadcasts.clear();
+
     }
 
     private void resetAll() {
@@ -245,7 +252,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setNumberOfResources(int numberOfResources) {
 	this.numberOfResources = numberOfResources;
-	this.resourceCaptureGoal = numberOfResources*RESOURCE_CAPTURE_GOAL;
+	this.resourceCaptureGoal = numberOfResources * RESOURCE_CAPTURE_GOAL;
 
     }
 
@@ -402,6 +409,30 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
+    private void ageBroadcasts() {
+
+	if (!registeredBroadcasts.isEmpty()) {
+	    tmpBroadcasts.clear();
+
+	    // first age all of them...
+	    for (Broadcast broadcast : registeredBroadcasts.values()) {
+		int stepClock = broadcast.getStepClock();
+		stepClock++;
+		if (stepClock <= Constants.NUMBER_OF_STEPS_FOR_BROADCASTED_SIGNAL) {
+		    broadcast.setStepClock(stepClock);
+		    tmpBroadcasts.put(broadcast.getSignalType(), broadcast);
+		}
+	    }
+	    // then add them all...
+	    registeredBroadcasts.clear();
+	    if (!tmpBroadcasts.isEmpty()) {
+		registeredBroadcasts.putAll(tmpBroadcasts);
+	    }
+	    // D.p("=> Num of Broadcasts:" +registeredBroadcasts.size());
+	}
+
+    }
+
     private void startSimulation() {
 
 	initEnvironment();
@@ -416,6 +447,7 @@ public abstract class Simulation extends SimState implements Constants {
 		simStepCounter++;
 
 		fadeTrails();
+		ageBroadcasts();
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
@@ -427,14 +459,13 @@ public abstract class Simulation extends SimState implements Constants {
 		    simStepCounter = 0;
 		    simulationCounter++;
 
-		    //D.p("simulationsPerExperiment="+simulationsPerExperiment);
-		    
-		       
+		    // D.p("simulationsPerExperiment="+simulationsPerExperiment);
+
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 			startNextSimulation();
 			// logger.info("*** end of simulation: collected="+numberOfCollectedResources);
 		    } else {
-			if(collectedAllResources()) {
+			if (collectedAllResources()) {
 			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
 			}
 			logger.info("*** end of experiment");
@@ -483,32 +514,32 @@ public abstract class Simulation extends SimState implements Constants {
 	// D.p("startNextSimulation called...simStats cleared!");
 
 	resetEnvironment();
-	
-	if(this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    D.p("collected Resources="+this.numberOfCollectedResources);
+
+	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+	    D.p("collected Resources=" + this.numberOfCollectedResources);
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
-	
-	
-	
+
 	initEnvironment();
 	initAgents();
-	
+
 	/*
-	D.p("Next simulation started with: world=" + (this.gridHeight * this.gridWidth) + " obstacles="
-		+ numberOfObstacles + " sites=" + numberOfCollectionSites + " resources=" + numberOfResources
-		+ " agents=" + agents.size());
-	*/
+	 * D.p("Next simulation started with: world=" + (this.gridHeight *
+	 * this.gridWidth) + " obstacles=" + numberOfObstacles + " sites=" +
+	 * numberOfCollectionSites + " resources=" + numberOfResources +
+	 * " agents=" + agents.size());
+	 */
 
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
-	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal) || (this.simStepCounter > stepsPerSimulation);
+	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
+		|| (this.simStepCounter > stepsPerSimulation);
 	return result;
     }
-    
+
     protected boolean collectedAllResources() {
-	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal) ;
+	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal);
 	return result;
     }
 
@@ -532,6 +563,13 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void doEndOfSimulationTasks() {
+	/*
+	for(Agent agent: agents) {
+	    D.p("agent.species:"+agent.getSpecies());
+	}
+	*/
+	D.p("$ called doEndOfSimulationTasks");
+	
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
 
@@ -555,13 +593,15 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
+		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
+		event, source, destination);
 
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats,
+		fitnessStats);
     }
 
     public void setStartDate() {
@@ -813,6 +853,21 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setUiObject(SimulationUI uiObject) {
 	this.uiObject = uiObject;
+    }
+
+    public void registerBroadcast(Broadcast broadcast) {
+	SignalType signalType = broadcast.getSignalType();
+	registeredBroadcasts.put(signalType, broadcast);
+
+    }
+
+    public Broadcast getRegisteredBroadcast(SignalType signalType) {
+	Broadcast result = null;
+	if (registeredBroadcasts.containsKey(signalType)) {
+	    result = registeredBroadcasts.get(signalType);
+
+	}
+	return result;
     }
 
 }

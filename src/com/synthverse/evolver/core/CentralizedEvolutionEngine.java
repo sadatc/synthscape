@@ -314,7 +314,7 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
-
+	D.p("======> generateNextGeneration() on "+this.species);
 	reportPerformance();
 
 	// clear up values from previous generation

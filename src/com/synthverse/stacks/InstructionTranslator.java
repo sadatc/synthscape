@@ -129,7 +129,8 @@ public class InstructionTranslator {
 	    instruction = instruction.trim();
 	    instruction = instruction.toUpperCase();	    
 	    if (instructionTable.containsKey(instruction)) {
-		result = new MetaInstruction(instructionTable.get(instruction));
+		//result = new MetaInstruction(instructionTable.get(instruction));
+		result = MetaInstruction.fromInstruction(instructionTable.get(instruction));
 	    } else if (instruction.equals("TRUE")) {
 		result = new MetaInstruction(true);
 	    } else if (instruction.equals("FALSE")) {
@@ -168,7 +169,8 @@ public class InstructionTranslator {
 	    result = new MetaInstruction(randomNumberGenerator.nextInt(100));
 
 	} else {
-	    result = new MetaInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	    //result = new MetaInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	    result = MetaInstruction.fromInstruction(instructions[getRandomCode(randomNumberGenerator)]);
 	}
 
 	return result;

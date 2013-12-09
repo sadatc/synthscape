@@ -36,22 +36,24 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configGridWidth() {
-	return WORLD_WIDTH;
+	return 64;
     }
 
     @Override
     public int configGridHeight() {
-	return WORLD_HEIGHT;
+	return 64;
     }
 
     @Override
     public double configObstacleDensity() {
-	return OBSTACLE_DENSITY;
+	//return OBSTACLE_DENSITY;
+	return 0.001;
     }
 
     @Override
     public double configResourceDensity() {
-	return RESOURCE_DENSITY;
+	//return RESOURCE_DENSITY;
+	return 0.001;
     }
 
     @Override
@@ -78,7 +80,8 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configClonesPerSpecies() {
-	return CLONES_PER_SPECIES;
+	//return CLONES_PER_SPECIES;
+	return 500;
     }
 
     @Override
@@ -88,7 +91,8 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configMaxStepsPerAgent() {
-	return MAX_STEPS_PER_AGENT;
+	//return MAX_STEPS_PER_AGENT;
+	return 10000;
     }
 
     @Override
@@ -114,7 +118,8 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configStepsPerSimulation() {
-	return MAX_STEPS_PER_AGENT;
+	//return MAX_STEPS_PER_AGENT;
+	return 10000;
     }
 
     @Override

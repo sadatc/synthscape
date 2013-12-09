@@ -13,16 +13,18 @@ public class Broadcast {
 	private SignalType signalType;
 	private int x;
 	private int y;
+	private int stepClock;
 
 	public Broadcast() {
-		this(null, SignalType.GENERIC, -1, -1);
+		this(null, SignalType.GENERIC, -1, -1, 0);
 	}
 
-	public Broadcast(Agent senderAgent, SignalType signalType, int x, int y) {
+	public Broadcast(Agent senderAgent, SignalType signalType, int x, int y, int stepClock) {
 		this.senderAgent = senderAgent;
 		this.x = x;
 		this.y = y;
 		this.signalType = signalType;
+		this.stepClock = stepClock;
 
 	}
 
@@ -57,6 +59,22 @@ public class Broadcast {
 	public void setSenderAgent(Agent senderAgent) {
 		this.senderAgent = senderAgent;
 	}
+
+	public int getStepClock() {
+	    return stepClock;
+	}
+
+	public void setStepClock(int stepClock) {
+	    this.stepClock = stepClock;
+	}
+
+	@Override
+	public String toString() {
+	    return "Broadcast [senderAgent=" + senderAgent.getAgentId() + ", signalType=" + signalType + ", x="
+		    + x + ", y=" + y + ", stepClock=" + stepClock + "]";
+	}
+	
+	
 	
 
 }

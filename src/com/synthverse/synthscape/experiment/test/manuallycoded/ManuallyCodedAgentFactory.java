@@ -15,7 +15,9 @@ public class ManuallyCodedAgentFactory extends AgentFactory implements Constants
 
     @Override
     public Agent createNewFactoryAgent(Species species) {
-	return new ManuallyCodedAgent(simulation, species);
+	Agent result = new ManuallyCodedAgent(simulation, species); 
+	result.setInteractionMechanisms(simulation.getInteractionMechanisms());
+	return result;
     }
 
 }

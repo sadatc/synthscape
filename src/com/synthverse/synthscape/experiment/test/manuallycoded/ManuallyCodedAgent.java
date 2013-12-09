@@ -24,14 +24,38 @@ public class ManuallyCodedAgent extends Agent {
 
     }
 
-    public ManuallyCodedAgent(Simulation sim, Species species,
-	    int generationNumber, int maxSteps, int startX, int startY) {
+    public ManuallyCodedAgent(Simulation sim, Species species, int generationNumber, int maxSteps, int startX,
+	    int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
+
+    }
+
+    public void leaveFollowTrail(SimState state) {
+	// the main idea is as follows
+	// the agent is in a particular state
+	// given it's state, it can only execute
+	// an operation and move to a newer state
+	Simulation theSim = (Simulation) state;
+	boolean isSender = ((this.getAgentId() % 497)==0);
+
+	this.operationRandomMove();
+	if(isSender) {
+	    this.operationLeaveTrail();
+	} else {
+	    this.operationFollowTrail();
+	}
+	
 
     }
 
     @Override
     public void stepAction(SimState state) {
+	// detectExtractProcessCollect(state);
+	leaveFollowTrail(state);
+
+    }
+
+    private void detectExtractProcessCollect(SimState state) {
 	// the main idea is as follows
 	// the agent is in a particular state
 	// given it's state, it can only execute
@@ -46,6 +70,7 @@ public class ManuallyCodedAgent extends Agent {
 	    } else {
 		myMode = AgentState.DETECT_EXTRACT;
 	    }
+
 	    break;
 	case DETECT_EXTRACT:
 	    if (this.operationDetectExtractedResource()) {

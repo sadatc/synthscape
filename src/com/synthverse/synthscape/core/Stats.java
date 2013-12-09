@@ -1,10 +1,12 @@
 package com.synthverse.synthscape.core;
 
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Stats {
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
+    private Set<Event> events = new HashSet<Event>();
 
     public Stats() {
 	eventCounterMap.clear();
@@ -15,22 +17,23 @@ public class Stats {
 	    eventCounterMap.put(event, eventCounterMap.get(event) + 1);
 	} else {
 	    eventCounterMap.put(event, 1);
+	    events.add(event);
 	}
     }
 
     public Set<Event> getEvents() {
-	return eventCounterMap.keySet();
+
+	return events;
     }
 
     public int getValue(Event event) {
-
 	int result = eventCounterMap.containsKey(event) ? eventCounterMap.get(event) : 0;
-
 	return result;
     }
 
     public void clear() {
 	eventCounterMap.clear();
+	events.clear();
     }
 
     /**
@@ -39,12 +42,14 @@ public class Stats {
      * @param accumulatingStats
      */
     public void aggregateStatsTo(Stats accumulatingStats) {
-	for (Event event : eventCounterMap.keySet()) {
+
+	for (Event event : getEvents()) {
 	    if (accumulatingStats.eventCounterMap.containsKey(event)) {
 		accumulatingStats.eventCounterMap.put(event, accumulatingStats.eventCounterMap.get(event)
 			+ eventCounterMap.get(event));
 	    } else {
 		accumulatingStats.eventCounterMap.put(event, eventCounterMap.get(event));
+		accumulatingStats.events.add(event);
 	    }
 	}
 
@@ -53,7 +58,7 @@ public class Stats {
     public void printValues() {
 	if (eventCounterMap.size() > 0) {
 	    D.p("/////////////////////////////////");
-	    for (Event event : eventCounterMap.keySet()) {
+	    for (Event event : getEvents()) {
 		D.p(event + " = " + eventCounterMap.get(event));
 	    }
 	    D.p("/////////////////////////////////");
@@ -65,7 +70,7 @@ public class Stats {
 	String str = "";
 	if (eventCounterMap.size() > 0) {
 
-	    for (Event event : eventCounterMap.keySet()) {
+	    for (Event event : getEvents()) {
 		str += (event + " = " + eventCounterMap.get(event));
 	    }
 

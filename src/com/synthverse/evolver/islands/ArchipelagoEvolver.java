@@ -48,6 +48,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public Agent getAgent(Species species, int x, int y) {
 	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
+	// TODO: This layer is aware of how many islands there are...
 	Agent result = islandEvolver.getAgent(species, x, y);
 	// logger.info(result.getProgram().toTranslatedString());
 	return result;
@@ -67,6 +68,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
+	D.p("$$ called provideFeedback");
 	double fitness = computeFitness(simStats, agents);
 
 	for (Agent agent : agents) {
@@ -102,19 +104,16 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	switch (event) {
 	/*
-	case DETECTED_RAW_RESOURCE:
-	    return 0.10;
-	case EXTRACTED_RESOURCE:
-	    return 0.25;
-	*/
-	    /*
-	     * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
-	     * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
-	     * return 12.0; case LOADED_RESOURCE: return 6.0; case
-	     * UNLOADED_RESOURCE: return 5.0; case
-	     * MOVE_TO_CLOSEST_COLLECTION_SITE: return 1.0; case
-	     * MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
-	     */
+	 * case DETECTED_RAW_RESOURCE: return 0.10; case EXTRACTED_RESOURCE:
+	 * return 0.25;
+	 */
+	/*
+	 * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
+	 * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
+	 * return 12.0; case LOADED_RESOURCE: return 6.0; case
+	 * UNLOADED_RESOURCE: return 5.0; case MOVE_TO_CLOSEST_COLLECTION_SITE:
+	 * return 1.0; case MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
+	 */
 	case COLLECTED_RESOURCE:
 	    // D.p("encountered collection!!!!!");
 	    return 1.0;
