@@ -885,7 +885,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void cloneGenotypeFrom(Agent archetype) {
-	this.getVirtualMachine().loadProgram(new Program(archetype.getProgram()));
+	
+	Program p = new Program(archetype.getProgram());
+	
+	this.getVirtualMachine().loadProgram(p);
+	
 	this.getVirtualMachine().setCpuCycles(archetype.getVirtualMachine().getCpuCycles());
 	genotypicalParent = archetype;
     }

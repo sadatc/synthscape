@@ -49,8 +49,8 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public Agent getAgent(Species species, int x, int y) {
 	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
 	// TODO: This layer is aware of how many islands there are...
-	Agent result = islandEvolver.getAgent(species, x, y);
-	// logger.info(result.getProgram().toTranslatedString());
+	
+	Agent result = islandEvolver.getAgent(species, x, y);	
 	return result;
     }
 
@@ -68,7 +68,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
-	D.p("$$ called provideFeedback");
+	//D.p("$$ called provideFeedback");
 	double fitness = computeFitness(simStats, agents);
 
 	for (Agent agent : agents) {

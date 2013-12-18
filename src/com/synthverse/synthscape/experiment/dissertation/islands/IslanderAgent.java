@@ -55,6 +55,7 @@ public class IslanderAgent extends Agent {
 	 * this.setVirtualMachine(vm);
 	 */
 
+	/*
 	this.program = Program.Factory.createEmpty(sim.random);
 	boolean spaceLeft = true;
 
@@ -89,6 +90,7 @@ public class IslanderAgent extends Agent {
 	vm.setCpuCycles(sim.getMaxStepsPerAgent());
 	this.setVirtualMachine(vm);
 
+	*/
 	//
 	// this.program.addInstructionSafely(Instruction.ACTION_DETECT_RAW_RESOURCE);
 	// logger.info(this.program.toTranslatedString());

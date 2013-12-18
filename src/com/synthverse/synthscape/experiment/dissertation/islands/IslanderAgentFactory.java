@@ -3,11 +3,12 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.experiment.test.manuallycoded.ManuallyCodedAgent;
 
 public class IslanderAgentFactory extends AgentFactory implements Constants {
+    
 
     protected IslanderAgentFactory(Simulation simulation) {
 	super(simulation);
@@ -19,7 +20,11 @@ public class IslanderAgentFactory extends AgentFactory implements Constants {
 	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
 	
-
+	if(species==null) {
+	    D.p("===================> created brand new agent:"+agent.getAgentId()+" for species: null");
+	} else {
+	    D.p("===================> created brand new agent:"+agent.getAgentId()+" for species: "+species);
+	}
 
 	return agent;
     }

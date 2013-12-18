@@ -3,6 +3,8 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 import java.util.HashSet;
 import java.util.Set;
 
+import sim.util.Int2D;
+
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
@@ -12,6 +14,8 @@ import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+
+import ec.util.MersenneTwisterFast;
 
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
@@ -28,6 +32,49 @@ public class PopulationIslandSimulation extends Simulation {
 
 	System.exit(0);
     }
+    
+    
+    @Override
+    protected void initAgents() {
+ 	// populate with agents
+	D.p("PopulationIslandSimulation.initAgents()");
+
+ 	MersenneTwisterFast random = this.random;
+ 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+ 	    random = controlledRandom;
+ 	    controlledRandom.setSeed(1);
+ 	}
+ 	agents.clear();
+
+ 	for (Species species : speciesComposition) {
+ 	    for (int i = 0; i < clonesPerSpecies; i++) {
+
+ 		int randomX = random.nextInt(gridWidth);
+ 		int randomY = random.nextInt(gridHeight);
+
+ 		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+ 		    randomX = random.nextInt(gridWidth);
+ 		    randomY = random.nextInt(gridHeight);
+ 		}
+ 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+
+ 		Agent agent = evolver.getAgent(species, randomX, randomY);
+
+ 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
+ 		agents.add(agent);
+
+ 		// add agents to the scheduler
+
+ 		if (!agent.isScheduled()) {
+ 		    schedule.scheduleRepeating(agent);
+
+ 		    agent.setScheduled(true);
+ 		}
+
+ 	    }
+ 	}
+
+     }
 
     @Override
     public int configGridWidth() {
