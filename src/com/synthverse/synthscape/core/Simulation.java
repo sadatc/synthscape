@@ -39,11 +39,11 @@ public abstract class Simulation extends SimState implements Constants {
     private static final long serialVersionUID = 2700375028430112699L;
     protected static Logger logger = Logger.getLogger(Agent.class.getName());
 
-    private MersenneTwisterFast controlledRandom = new MersenneTwisterFast(1);
+    protected MersenneTwisterFast controlledRandom = new MersenneTwisterFast(1);
 
     protected Evolver evolver;
 
-    private AgentFactory agentFactory;
+    protected AgentFactory agentFactory;
 
     protected ExperimentReporter experimentReporter;
 
@@ -85,32 +85,32 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected double trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
 
-    private int gridWidth;
+    protected int gridWidth;
 
-    private int gridHeight;
+    protected int gridHeight;
 
-    private String experimentName;
-    private boolean reportEvents = false;
-    private boolean reportPerformance = false;
-    private String serverName;
-    private String batchId;
+    protected String experimentName;
+    protected boolean reportEvents = false;
+    protected boolean reportPerformance = false;
+    protected String serverName;
+    protected String batchId;
 
-    private Date startDate;
-    private Date endDate;
+    protected Date startDate;
+    protected Date endDate;
 
-    private double obstacleDensity;
-    private double resourceDensity;
-    private int clonesPerSpecies;
+    protected double obstacleDensity;
+    protected double resourceDensity;
+    protected int clonesPerSpecies;
 
-    private int maxStepsPerAgent;
+    protected int maxStepsPerAgent;
 
-    private int simulationsPerExperiment;
-    private int stepsPerSimulation;
+    protected int simulationsPerExperiment;
+    protected int stepsPerSimulation;
 
-    private Set<Species> speciesComposition = new LinkedHashSet<Species>();
-    private Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
+    protected Set<Species> speciesComposition = new LinkedHashSet<Species>();
+    protected Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
 
-    private String eventFileName;
+    protected String eventFileName;
 
     public Stats stepStats = new Stats();
     public List<Stats> stepStatsList = new ArrayList<Stats>();
@@ -363,7 +363,8 @@ public abstract class Simulation extends SimState implements Constants {
 	initResources();
     }
 
-    private void initAgents() {
+    protected void initAgents() {
+	D.p("Simulation.initAgents()");
 	// populate with agents
 
 	MersenneTwisterFast random = this.random;
@@ -568,7 +569,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    D.p("agent.species:"+agent.getSpecies());
 	}
 	*/
-	D.p("$ called doEndOfSimulationTasks");
+	
 	
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
