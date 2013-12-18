@@ -19,6 +19,7 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
+import com.synthverse.synthscape.core.D;
 import com.synthverse.util.ArrayUtils;
 
 /**
@@ -72,8 +73,11 @@ public class MetaInstructionArray {
 	return (index >= 0 && index < size);
     }
 
-    public final void loadProgram(Program program) {
-	program.copyInto(this.program);
+    public final void loadProgram(Program program2) {
+	D.p(""+program2.getSignature());
+	D.p(""+getSignature());
+	program2.copyInto(this.program);
+	D.p(""+getSignature());
     }
 
     public final void fill(MetaInstruction instruction) {
@@ -131,6 +135,19 @@ public class MetaInstructionArray {
 
 	return -1;
     }
+    
+    public final int getSignature() {
+   	int result = 0;
+   	if (size > 0) {
+   	    for(int i=0;i<size;i++) {
+   		result+= program[i].getSignature();
+   	    }
+   	} else {
+   	    return 0;
+   	}
+   	return result;
+       }
+
 
     @Override
     public int hashCode() {
