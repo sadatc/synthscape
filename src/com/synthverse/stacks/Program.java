@@ -147,6 +147,19 @@ public class Program {
 	return metaInstructionArray[ipIndex];
     }
 
+    public final int getSignature() {
+	int result = 0;
+	if (size > 0) {
+	    for(int i=0;i<size;i++) {
+		result+= metaInstructionArray[i].getSignature();
+	    }
+	} else {
+	    return 0;
+	}
+	return result;
+    }
+    
+    
     @Override
     public final String toString() {
 	if (size > 0) {

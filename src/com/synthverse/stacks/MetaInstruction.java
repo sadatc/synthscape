@@ -5,6 +5,28 @@ import java.util.HashMap;
 import com.synthverse.synthscape.core.D;
 
 public class MetaInstruction {
+    
+    public int getSignature() {
+	
+	int result = 0;
+	if (metaInstructionType == MetaInstructionType.INSTRUCTION) {
+	    result = instruction.ordinal();
+	} else if (metaInstructionType == MetaInstructionType.INT_VALUE) {
+	    result = intValue;
+	} else if (metaInstructionType == MetaInstructionType.BOOL_VALUE) {
+	    result = booleanValue?1:0;
+	} else if (metaInstructionType == MetaInstructionType.FLOAT_VALUE) {
+	    result = (int)floatValue;
+	} else {
+	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    System.exit(1);
+	}
+	
+	
+	return result;
+	
+    }
+    
 
     @Override
     public String toString() {
