@@ -6,7 +6,7 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 import sim.engine.SimState;
 
 import com.synthverse.stacks.Instruction;
-import com.synthverse.stacks.MetaInstruction;
+import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
@@ -61,28 +61,28 @@ public class IslanderAgent extends Agent {
 
 	do {
 	    this.program
-		    .addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_DETECT_HOME));
+		    .addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_HOME));
 	    this.program
-		    .addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_DETECT_TRAIL));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_EXTRACTED_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_PROCESSED_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_RAW_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_RESOURCE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_E));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_W));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_NE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_NW));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_SE));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_SW));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_MOVE_TO_CLOSEST_HOME));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
-	    this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
-	    spaceLeft = this.program.addInstructionSafely(MetaInstruction.fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
+		    .addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_EXTRACTED_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_PROCESSED_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_RAW_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_RESOURCE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_E));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_W));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NW));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SE));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SW));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_TO_CLOSEST_HOME));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
+	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
+	    spaceLeft = this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
 	} while (spaceLeft);
 
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);

@@ -35,7 +35,7 @@ import ec.util.MersenneTwisterFast;
  */
 public class Program {
 
-    private MetaInstruction[] metaInstructionArray = null;
+    private GenotypeInstruction[] metaInstructionArray = null;
     private int size;
 
     public MersenneTwisterFast randomNumberGenerator = null;
@@ -46,11 +46,11 @@ public class Program {
 	}
     }
 
-    public final MetaInstruction[] getMetaInstructionArray() {
+    public final GenotypeInstruction[] getMetaInstructionArray() {
 	return metaInstructionArray;
     }
 
-    public final void setInstructionArray(MetaInstruction[] instructionArray) {
+    public final void setInstructionArray(GenotypeInstruction[] instructionArray) {
 	this.metaInstructionArray = instructionArray;
     }
 
@@ -66,7 +66,7 @@ public class Program {
 	this.size = p.size;
 	this.randomNumberGenerator = p.randomNumberGenerator;
 	if (this.size > 0) {
-	    this.metaInstructionArray = new MetaInstruction[this.size];
+	    this.metaInstructionArray = new GenotypeInstruction[this.size];
 	    for (int i = 0; i < this.size; i++) {
 		this.metaInstructionArray[i] = p.metaInstructionArray[i];
 	    }
@@ -77,20 +77,20 @@ public class Program {
 	// restricted, use Factory methods to create programs.
 	this.randomNumberGenerator = randomNumberGenerator;
 	size = 0;
-	metaInstructionArray = new MetaInstruction[maxSize];
+	metaInstructionArray = new GenotypeInstruction[maxSize];
     }
 
     public final void fillWithNOOP() {
 	Arrays.fill(metaInstructionArray, Instruction.NOOP);
     }
 
-    public final void addInstruction(MetaInstruction instruction) {
+    public final void addInstruction(GenotypeInstruction instruction) {
 	// addCode(InstructionTranslator.toCode(instruction));
 	metaInstructionArray[size] = instruction;
 	size++;
     }
 
-    public final boolean addInstructionSafely(MetaInstruction instruction) {
+    public final boolean addInstructionSafely(GenotypeInstruction instruction) {
 	if (size < getSizeLimit()) {
 	    metaInstructionArray[size] = instruction;
 	    size++;
@@ -137,13 +137,13 @@ public class Program {
      * public final int getCode(int ipIndex) { return
      * InstructionTranslator.toCode(metaInstructionArray[ipIndex]); }
      */
-    public final void copyInto(MetaInstruction[] array) {
+    public final void copyInto(GenotypeInstruction[] array) {
 	for (int i = 0; i < size; i++) {
 	    array[i] = metaInstructionArray[i];
 	}
     }
 
-    public final MetaInstruction getInstruction(int ipIndex) {
+    public final GenotypeInstruction getInstruction(int ipIndex) {
 	return metaInstructionArray[ipIndex];
     }
 

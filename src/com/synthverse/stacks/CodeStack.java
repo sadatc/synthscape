@@ -42,24 +42,24 @@ import ec.util.MersenneTwisterFast;
  */
 public final class CodeStack extends AbstractStack {
 
-    private MetaInstruction[] stack = null;
+    private GenotypeInstruction[] stack = null;
 
-    public final MetaInstruction[] getInternalArray() {
+    public final GenotypeInstruction[] getInternalArray() {
 	return stack;
     }
 
-    public final void copyFrom(MetaInstruction[] array) {
+    public final void copyFrom(GenotypeInstruction[] array) {
 	for (int i = 0; i < array.length; i++) {
 	    stack[i] = array[i];
 	}
     }
 
-    public final void setInternalArray(MetaInstruction[] array) {
+    public final void setInternalArray(GenotypeInstruction[] array) {
 	stack = array;
 
     }
 
-    public final CodeStack push(MetaInstruction instruction) {
+    public final CodeStack push(GenotypeInstruction instruction) {
 	if (!isFull()) {
 	    index++;
 	    size++;
@@ -76,12 +76,12 @@ public final class CodeStack extends AbstractStack {
      * 
      * @return
      */
-    public final MetaInstruction pop() {
-	MetaInstruction returnValue = MetaInstruction.NOOP;
+    public final GenotypeInstruction pop() {
+	GenotypeInstruction returnValue = GenotypeInstruction.NOOP;
 
 	if (!isEmpty()) {
 
-	    MetaInstruction value = stack[index];
+	    GenotypeInstruction value = stack[index];
 	    index--;
 	    size--;
 	    returnValue = value;
@@ -96,8 +96,8 @@ public final class CodeStack extends AbstractStack {
      * 
      * @return
      */
-    public final MetaInstruction glance() {
-	MetaInstruction returnValue = MetaInstruction.NOOP;
+    public final GenotypeInstruction glance() {
+	GenotypeInstruction returnValue = GenotypeInstruction.NOOP;
 
 	if (size > 0) {
 	    returnValue = stack[index];
@@ -113,7 +113,7 @@ public final class CodeStack extends AbstractStack {
      */
     public final void dup() {
 	if (size > 0) {
-	    MetaInstruction topMostValue = stack[index];
+	    GenotypeInstruction topMostValue = stack[index];
 	    push(topMostValue);
 	}
     }
@@ -132,8 +132,8 @@ public final class CodeStack extends AbstractStack {
      */
     public final boolean equal() {
 	if (size > 1) {
-	    MetaInstruction topMostValue = pop();
-	    MetaInstruction secondTopMostValue = pop();
+	    GenotypeInstruction topMostValue = pop();
+	    GenotypeInstruction secondTopMostValue = pop();
 	    if (topMostValue == secondTopMostValue) {
 		return true;
 	    }
@@ -148,8 +148,8 @@ public final class CodeStack extends AbstractStack {
      */
     public final void swap() {
 	if (size > 1) {
-	    MetaInstruction topMostValue = pop();
-	    MetaInstruction secondTopMostValue = pop();
+	    GenotypeInstruction topMostValue = pop();
+	    GenotypeInstruction secondTopMostValue = pop();
 
 	    push(topMostValue);
 	    push(secondTopMostValue);
@@ -164,9 +164,9 @@ public final class CodeStack extends AbstractStack {
     public final void rot() {
 	if (size > 2) {
 
-	    MetaInstruction topMostValue = pop();
-	    MetaInstruction secondTopMostValue = pop();
-	    MetaInstruction thirdTopMostValue = pop();
+	    GenotypeInstruction topMostValue = pop();
+	    GenotypeInstruction secondTopMostValue = pop();
+	    GenotypeInstruction thirdTopMostValue = pop();
 
 	    push(secondTopMostValue);
 	    push(topMostValue);
@@ -207,7 +207,7 @@ public final class CodeStack extends AbstractStack {
 	    }
 
 	    // save value
-	    MetaInstruction yankValue = stack[arrayYankIndex];
+	    GenotypeInstruction yankValue = stack[arrayYankIndex];
 
 	    // now move everything from right to left
 	    for (int i = 0; i < (size - arrayYankIndex - 1); i++) {
@@ -242,7 +242,7 @@ public final class CodeStack extends AbstractStack {
 	    }
 
 	    // save value
-	    MetaInstruction yankValue = stack[arrayYankIndex];
+	    GenotypeInstruction yankValue = stack[arrayYankIndex];
 
 	    push(yankValue);
 
@@ -255,7 +255,7 @@ public final class CodeStack extends AbstractStack {
     }
 
     public final void fromBoolean(boolean boolValue) {
-	push(boolValue ? MetaInstruction.CONST_TRUE : MetaInstruction.CONST_FALSE);
+	push(boolValue ? GenotypeInstruction.CONST_TRUE : GenotypeInstruction.CONST_FALSE);
     }
 
     public final void fromFloat(double floatValue) {
@@ -271,9 +271,9 @@ public final class CodeStack extends AbstractStack {
     public CodeStack(MersenneTwisterFast randomNumberGenerator) {
 	super(randomNumberGenerator);
 	capacity = Config.DEFAULT_CODE_STACK_CAPACITY;
-	stack = new MetaInstruction[capacity];
+	stack = new GenotypeInstruction[capacity];
 	index = AbstractStack.BOTTOM_INDEX;
-	Arrays.fill(stack, MetaInstruction.NOOP);
+	Arrays.fill(stack, GenotypeInstruction.NOOP);
 	size = 0;
     }
 
@@ -303,7 +303,7 @@ public final class CodeStack extends AbstractStack {
 	}
 
 	// create the new stack
-	MetaInstruction[] newStack = new MetaInstruction[newCapacity];
+	GenotypeInstruction[] newStack = new GenotypeInstruction[newCapacity];
 
 	// change capacity
 	capacity = newCapacity;

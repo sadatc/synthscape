@@ -33,26 +33,26 @@ import com.synthverse.util.ArrayUtils;
  */
 public class Genotype {
 
-    private MetaInstruction[] genotypeArray = null;
+    private GenotypeInstruction[] genotypeArray = null;
     private int size;
 
     Genotype() {
 	this.size = Config.DEFAULT_PROGRAM_ARRAY_SIZE;
-	this.genotypeArray = new MetaInstruction[size];
-	Arrays.fill(genotypeArray, MetaInstruction.NOOP);
+	this.genotypeArray = new GenotypeInstruction[size];
+	Arrays.fill(genotypeArray, GenotypeInstruction.NOOP);
     }
 
-    public final void copyFromArray(MetaInstruction[] array, int size) {
+    public final void copyFromArray(GenotypeInstruction[] array, int size) {
 	for (int i = 0; i < size; i++) {
 	    genotypeArray[i] = array[i];
 	}
     }
 
-    public final MetaInstruction[] getInternalArray() {
+    public final GenotypeInstruction[] getInternalArray() {
 	return genotypeArray;
     }
 
-    public final void setInternalArray(MetaInstruction[] array) {
+    public final void setInternalArray(GenotypeInstruction[] array) {
 	genotypeArray = array;
     }
 
@@ -61,11 +61,11 @@ public class Genotype {
 	return size;
     }
 
-    public final void setValue(int index,MetaInstruction instruction) {
+    public final void setValue(int index,GenotypeInstruction instruction) {
 	this.genotypeArray[index] = instruction;
     }
 
-    public final MetaInstruction getValue(int index) {
+    public final GenotypeInstruction getValue(int index) {
 	return this.genotypeArray[index];
     }
 
@@ -80,7 +80,7 @@ public class Genotype {
 	D.p(""+getSignature());
     }
 
-    public final void fill(MetaInstruction instruction) {
+    public final void fill(GenotypeInstruction instruction) {
 	Arrays.fill(genotypeArray, instruction);
     }
 
@@ -90,8 +90,8 @@ public class Genotype {
 
     public final void noop_left() {
 	for (int i = 0; i < size; i++) {
-	    if (genotypeArray[i] !=MetaInstruction.NOOP) {
-		genotypeArray[i] =MetaInstruction.NOOP;
+	    if (genotypeArray[i] !=GenotypeInstruction.NOOP) {
+		genotypeArray[i] =GenotypeInstruction.NOOP;
 		return;
 	    }
 	}
@@ -99,8 +99,8 @@ public class Genotype {
 
     public final void noop_right() {
 	for (int i = size - 1; i >= 0; i--) {
-	    if (genotypeArray[i] !=MetaInstruction.NOOP) {
-		genotypeArray[i] =MetaInstruction.NOOP;
+	    if (genotypeArray[i] !=GenotypeInstruction.NOOP) {
+		genotypeArray[i] =GenotypeInstruction.NOOP;
 		return;
 	    }
 	}
@@ -108,7 +108,7 @@ public class Genotype {
 
     public final void exchange_left(int index) {
 	if (index > 0 && index < size) {
-	   MetaInstruction tmp = genotypeArray[0];
+	   GenotypeInstruction tmp = genotypeArray[0];
 	    genotypeArray[0] = genotypeArray[index];
 	    genotypeArray[index] = tmp;
 	}
@@ -117,7 +117,7 @@ public class Genotype {
     public final void exchange_right(int index) {
 	int lastIndex = size - 1;
 	if (index >= 0 && index < lastIndex) {
-	   MetaInstruction tmp = genotypeArray[lastIndex];
+	   GenotypeInstruction tmp = genotypeArray[lastIndex];
 	    genotypeArray[lastIndex] = genotypeArray[index];
 	    genotypeArray[index] = tmp;
 	}
@@ -127,7 +127,7 @@ public class Genotype {
 	int i = startIndex;
 
 	while (i < size) {
-	    if (genotypeArray[i] == MetaInstruction.NOOP) {
+	    if (genotypeArray[i] == GenotypeInstruction.NOOP) {
 		return i;
 	    }
 	    i++;

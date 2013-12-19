@@ -181,13 +181,13 @@ public final class VirtualMachine {
     public final boolean step() {
 	boolean result = false;
 	if (cpuCycles > 0 && genotype.isValidIndex(IP)) {
-	    MetaInstruction instruction = genotype.getValue(IP);
+	    GenotypeInstruction instruction = genotype.getValue(IP);
 	    instruction.execute(this);
 	    decrementCpuCycles();
 	    result = true;
 	} else if(cpuCycles > 0 && Config.RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES) {
 	    this.resetIP();
-	    MetaInstruction instruction = genotype.getValue(IP);
+	    GenotypeInstruction instruction = genotype.getValue(IP);
 	    instruction.execute(this);
 	    decrementCpuCycles();
 	    result = true;

@@ -1043,7 +1043,7 @@ public enum Instruction {
 	    CodeStack cs = virtualMachine.getCodeStack();
 	    Genotype ia = virtualMachine.getInstructionArray();
 
-	    MetaInstruction[] saved_cs = cs.getInternalArray();
+	    GenotypeInstruction[] saved_cs = cs.getInternalArray();
 	    cs.setInternalArray(ia.getInternalArray());
 	    ia.setInternalArray(saved_cs);
 	    virtualMachine.incrementIP();
@@ -1056,7 +1056,7 @@ public enum Instruction {
 	    CodeStack cs = virtualMachine.getCodeStack();
 	    Genotype ia = virtualMachine.getInstructionArray();
 
-	    MetaInstruction[] saved_cs = cs.getInternalArray();
+	    GenotypeInstruction[] saved_cs = cs.getInternalArray();
 	    cs.setInternalArray(ia.getInternalArray());
 	    ia.setInternalArray(saved_cs);
 	    virtualMachine.setIP(0);
@@ -1068,7 +1068,7 @@ public enum Instruction {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
 	    Genotype ia = virtualMachine.getInstructionArray();
-	    MetaInstruction[] cs_array = cs.getInternalArray();
+	    GenotypeInstruction[] cs_array = cs.getInternalArray();
 	    int size = cs.size();
 	    ia.copyFromArray(cs_array, size);
 	    virtualMachine.incrementIP();
@@ -1081,7 +1081,7 @@ public enum Instruction {
 
 	    CodeStack cs = virtualMachine.getCodeStack();
 	    Genotype ia = virtualMachine.getInstructionArray();
-	    MetaInstruction[] ia_array = ia.getInternalArray();
+	    GenotypeInstruction[] ia_array = ia.getInternalArray();
 	    cs.copyFrom(ia_array);
 	    virtualMachine.incrementIP();
 

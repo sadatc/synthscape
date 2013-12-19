@@ -17,7 +17,7 @@
 
 package com.synthverse.util;
 
-import com.synthverse.stacks.MetaInstruction;
+import com.synthverse.stacks.GenotypeInstruction;
 
 public class ArrayUtils {
 
@@ -59,18 +59,18 @@ public class ArrayUtils {
 	}
     }
 
-    public static final void reverseInstructionArray(MetaInstruction[] b) {
+    public static final void reverseInstructionArray(GenotypeInstruction[] b) {
 	for (int left = 0, right = b.length - 1; left < right; left++, right--) {
-	    MetaInstruction temp = b[left];
+	    GenotypeInstruction temp = b[left];
 	    b[left] = b[right];
 	    b[right] = temp;
 	}
     }
 
-    public static final void reverseInstructionArrayInRange(MetaInstruction[] b,
+    public static final void reverseInstructionArrayInRange(GenotypeInstruction[] b,
 	    int rightIndex) {
 	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    MetaInstruction temp = b[left];
+	    GenotypeInstruction temp = b[left];
 	    b[left] = b[right];
 	    b[right] = temp;
 	}

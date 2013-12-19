@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import com.synthverse.synthscape.core.D;
 
-public class MetaInstruction {
+public class GenotypeInstruction {
     
     public int getSignature() {
 	
@@ -95,16 +95,16 @@ public class MetaInstruction {
 	this.booleanValue = booleanValue;
     }
     
-    private MetaInstruction() {
+    private GenotypeInstruction() {
 	throw new AssertionError("Evolver constructor is restricted");
     }
     
-    static HashMap<Instruction,MetaInstruction> cachedMetaInstructions = new HashMap<Instruction,MetaInstruction>();
+    static HashMap<Instruction,GenotypeInstruction> cachedMetaInstructions = new HashMap<Instruction,GenotypeInstruction>();
     
-    public static MetaInstruction fromInstruction(Instruction instruction) {
-	MetaInstruction result = cachedMetaInstructions.get(instruction);
+    public static GenotypeInstruction fromInstruction(Instruction instruction) {
+	GenotypeInstruction result = cachedMetaInstructions.get(instruction);
 	if(result == null) {
-	    result = new MetaInstruction(instruction);
+	    result = new GenotypeInstruction(instruction);
 	    cachedMetaInstructions.put(instruction, result);
 	}
 	return result;
@@ -112,33 +112,33 @@ public class MetaInstruction {
     
      
 
-    private MetaInstruction(Instruction instruction) {
-	//D.p("==> MetaInstruction(instruction)");
+    private GenotypeInstruction(Instruction instruction) {
+	//D.p("==> GenotypeInstruction(instruction)");
 	setMetaInstructionType(MetaInstructionType.INSTRUCTION);
 	setInstruction(instruction);
     }
 
-    public MetaInstruction(int intValue) {
-	//D.p("==> MetaInstruction(int)");
+    public GenotypeInstruction(int intValue) {
+	//D.p("==> GenotypeInstruction(int)");
 	setMetaInstructionType(MetaInstructionType.INT_VALUE);
 	setIntValue(intValue);
     }
 
-    public MetaInstruction(double floatValue) {
-	//D.p("==> MetaInstruction(double)");
+    public GenotypeInstruction(double floatValue) {
+	//D.p("==> GenotypeInstruction(double)");
 	setMetaInstructionType(MetaInstructionType.FLOAT_VALUE);
 	setFloatValue(floatValue);
     }
 
-    public MetaInstruction(boolean booleanValue) {
-	//D.p("==> MetaInstruction(boolean)");
+    public GenotypeInstruction(boolean booleanValue) {
+	//D.p("==> GenotypeInstruction(boolean)");
 	setMetaInstructionType(MetaInstructionType.BOOL_VALUE);
 	setBooleanValue(booleanValue);
     }
 
-    public static MetaInstruction NOOP = new MetaInstruction(Instruction.NOOP);
-    public static MetaInstruction CONST_TRUE = new MetaInstruction(Instruction.CONST_TRUE);
-    public static MetaInstruction CONST_FALSE = new MetaInstruction(Instruction.CONST_FALSE);
+    public static GenotypeInstruction NOOP = new GenotypeInstruction(Instruction.NOOP);
+    public static GenotypeInstruction CONST_TRUE = new GenotypeInstruction(Instruction.CONST_TRUE);
+    public static GenotypeInstruction CONST_FALSE = new GenotypeInstruction(Instruction.CONST_FALSE);
 
     public void execute(VirtualMachine virtualMachine) {
 	if (metaInstructionType == MetaInstructionType.INSTRUCTION) {

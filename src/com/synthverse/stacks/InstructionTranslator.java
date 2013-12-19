@@ -122,24 +122,24 @@ public class InstructionTranslator {
 	return false;
     }
 
-    public static final MetaInstruction decodeFromString(String instruction) {
-	MetaInstruction result = MetaInstruction.NOOP;
+    public static final GenotypeInstruction decodeFromString(String instruction) {
+	GenotypeInstruction result = GenotypeInstruction.NOOP;
 
 	if (instruction != null) {
 	    instruction = instruction.trim();
 	    instruction = instruction.toUpperCase();	    
 	    if (instructionTable.containsKey(instruction)) {
-		//result = new MetaInstruction(instructionTable.get(instruction));
-		result = MetaInstruction.fromInstruction(instructionTable.get(instruction));
+		//result = new GenotypeInstruction(instructionTable.get(instruction));
+		result = GenotypeInstruction.fromInstruction(instructionTable.get(instruction));
 	    } else if (instruction.equals("TRUE")) {
-		result = new MetaInstruction(true);
+		result = new GenotypeInstruction(true);
 	    } else if (instruction.equals("FALSE")) {
-		result = new MetaInstruction(false);
+		result = new GenotypeInstruction(false);
 	    } else if (isNumeric(instruction)) {
 		if (instruction.contains(".")) {
-		    result = new MetaInstruction(Double.parseDouble(instruction));
+		    result = new GenotypeInstruction(Double.parseDouble(instruction));
 		} else {
-		    result = new MetaInstruction(Integer.parseInt(instruction));
+		    result = new GenotypeInstruction(Integer.parseInt(instruction));
 		}
 	    }
 	}
@@ -153,24 +153,24 @@ public class InstructionTranslator {
      * 
      * @return
      */
-    public static final MetaInstruction getRandomInstruction(MersenneTwisterFast randomNumberGenerator) {
+    public static final GenotypeInstruction getRandomInstruction(MersenneTwisterFast randomNumberGenerator) {
 
-	MetaInstruction result = MetaInstruction.NOOP;
+	GenotypeInstruction result = GenotypeInstruction.NOOP;
 	// instructions, literals (bool, double, int) are all equally likely...
 
 	double dice = randomNumberGenerator.nextDouble();
 	if (dice > 0.9) {
-	    result = new MetaInstruction(randomNumberGenerator.nextDouble());
+	    result = new GenotypeInstruction(randomNumberGenerator.nextDouble());
 
 	} else if (dice > 0.85) {
-	    result = new MetaInstruction(randomNumberGenerator.nextBoolean());
+	    result = new GenotypeInstruction(randomNumberGenerator.nextBoolean());
 
 	} else if (dice > 0.7) {
-	    result = new MetaInstruction(randomNumberGenerator.nextInt(100));
+	    result = new GenotypeInstruction(randomNumberGenerator.nextInt(100));
 
 	} else {
-	    //result = new MetaInstruction(instructions[getRandomCode(randomNumberGenerator)]);
-	    result = MetaInstruction.fromInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	    //result = new GenotypeInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	    result = GenotypeInstruction.fromInstruction(instructions[getRandomCode(randomNumberGenerator)]);
 	}
 
 	return result;
@@ -193,8 +193,8 @@ public class InstructionTranslator {
     }
 
     /*
-     * public static final MetaInstruction guessFromInt(int anyInt) {
-     * MetaInstruction instruction = MetaInstruction.NOOP;
+     * public static final GenotypeInstruction guessFromInt(int anyInt) {
+     * GenotypeInstruction instruction = GenotypeInstruction.NOOP;
      * 
      * anyInt = (anyInt < 0) ? 0 : anyInt; anyInt = (anyInt < numInstructions) ?
      * anyInt : anyInt % numInstructions;
