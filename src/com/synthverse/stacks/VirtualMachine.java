@@ -43,7 +43,7 @@ public final class VirtualMachine {
     private IntegerStack integerStack = null;
     private FloatStack floatStack = null;
     private CodeStack codeStack = null;
-    private MetaInstructionArray metaInstructionArray = null;
+    private Genotype genotype = null;
     private Agent agent = null;
 
     public Agent getAgent() {
@@ -98,7 +98,7 @@ public final class VirtualMachine {
     }
 
     public final int getMaxIP() {
-	return metaInstructionArray.getSize();
+	return genotype.getSize();
     }
 
     public final void setIP(int iP) {
@@ -106,11 +106,11 @@ public final class VirtualMachine {
     }
 
     public final void setExitState() {
-	IP = metaInstructionArray.getSize() + 1;
+	IP = genotype.getSize() + 1;
     }
 
     public final boolean setValidatedIP(int iP) {
-	if (metaInstructionArray.isValidIndex(iP)) {
+	if (genotype.isValidIndex(iP)) {
 	    IP = iP;
 	    return true;
 	} else {
@@ -158,12 +158,12 @@ public final class VirtualMachine {
 	return floatStack;
     }
 
-    public final MetaInstructionArray getInstructionArray() {
-	return metaInstructionArray;
+    public final Genotype getInstructionArray() {
+	return genotype;
     }
 
-    public final void setInstructionArray(MetaInstructionArray metaInstructionArray) {
-	this.metaInstructionArray = metaInstructionArray;
+    public final void setInstructionArray(Genotype genotype) {
+	this.genotype = genotype;
     }
 
     public final CodeStack getCodeStack() {
@@ -175,19 +175,19 @@ public final class VirtualMachine {
     }
 
     public final void loadProgram(Program program) {
-	this.metaInstructionArray.loadProgram(program);
+	this.genotype.loadProgram(program);
     }
 
     public final boolean step() {
 	boolean result = false;
-	if (cpuCycles > 0 && metaInstructionArray.isValidIndex(IP)) {
-	    MetaInstruction instruction = metaInstructionArray.getValue(IP);
+	if (cpuCycles > 0 && genotype.isValidIndex(IP)) {
+	    MetaInstruction instruction = genotype.getValue(IP);
 	    instruction.execute(this);
 	    decrementCpuCycles();
 	    result = true;
 	} else if(cpuCycles > 0 && Config.RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES) {
 	    this.resetIP();
-	    MetaInstruction instruction = metaInstructionArray.getValue(IP);
+	    MetaInstruction instruction = genotype.getValue(IP);
 	    instruction.execute(this);
 	    decrementCpuCycles();
 	    result = true;
@@ -216,7 +216,7 @@ public final class VirtualMachine {
 		.append(booleanStack).append(", integerStack=")
 		.append(integerStack).append(", floatStack=")
 		.append(floatStack).append(", codeStack=").append(codeStack)
-		.append(", metaInstructionArray=").append(metaInstructionArray)
+		.append(", genotype=").append(genotype)
 		.append("]");
 	return builder.toString();
     }
@@ -235,7 +235,7 @@ public final class VirtualMachine {
 		+ ((floatStack == null) ? 0 : floatStack.hashCode());
 	result = prime
 		* result
-		+ ((metaInstructionArray == null) ? 0 : metaInstructionArray.hashCode());
+		+ ((genotype == null) ? 0 : genotype.hashCode());
 	result = prime * result
 		+ ((integerStack == null) ? 0 : integerStack.hashCode());
 	result = prime
@@ -289,11 +289,11 @@ public final class VirtualMachine {
 	} else if (!floatStack.equals(other.floatStack)) {
 	    return false;
 	}
-	if (metaInstructionArray == null) {
-	    if (other.metaInstructionArray != null) {
+	if (genotype == null) {
+	    if (other.genotype != null) {
 		return false;
 	    }
-	} else if (!metaInstructionArray.equals(other.metaInstructionArray)) {
+	} else if (!genotype.equals(other.genotype)) {
 	    return false;
 	}
 	if (integerStack == null) {
@@ -352,7 +352,7 @@ public final class VirtualMachine {
 	    vm.setIntegerStack(new IntegerStack(randomNumberGenerator));
 	    vm.setFloatStack(new FloatStack(randomNumberGenerator));
 	    vm.setCodeStack(new CodeStack(randomNumberGenerator));
-	    vm.setInstructionArray(new MetaInstructionArray());
+	    vm.setInstructionArray(new Genotype());
 	    vm.setCpuCycles(Config.DEFAULT_ENTITY_CPU_CYCLES);
 	    vm.resetIP();
 	    return vm;
