@@ -1,6 +1,6 @@
 package com.synthverse.stacks;
 
-public enum MetaInstructionType {
+public enum GenotypeInstructionType {
     INT_VALUE, FLOAT_VALUE, BOOL_VALUE, INSTRUCTION;
 
 }
