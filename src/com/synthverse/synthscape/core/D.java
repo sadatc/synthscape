@@ -25,5 +25,14 @@ public class D {
 	D.p("total:" + nonZeroCounter);
 
     }
+    
+    public static void check(boolean b, String message) {
+	if(!b) {
+	    p(message);
+	    p("Exiting Program!!");
+	    System.exit(1);
+	}
+    }
+    
 
 }
