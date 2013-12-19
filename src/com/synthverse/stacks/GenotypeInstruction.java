@@ -9,13 +9,13 @@ public class GenotypeInstruction {
     public int getSignature() {
 	
 	int result = 0;
-	if (genotypeInstructionType == GenotypeInstructionType.INSTRUCTION) {
+	if (instructionType == InstructionType.INSTRUCTION) {
 	    result = instruction.ordinal();
-	} else if (genotypeInstructionType == GenotypeInstructionType.INT_VALUE) {
+	} else if (instructionType == InstructionType.INT_VALUE) {
 	    result = intValue;
-	} else if (genotypeInstructionType == GenotypeInstructionType.BOOL_VALUE) {
+	} else if (instructionType == InstructionType.BOOL_VALUE) {
 	    result = booleanValue?1:0;
-	} else if (genotypeInstructionType == GenotypeInstructionType.FLOAT_VALUE) {
+	} else if (instructionType == InstructionType.FLOAT_VALUE) {
 	    result = (int)floatValue;
 	} else {
 	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
@@ -32,13 +32,13 @@ public class GenotypeInstruction {
     public String toString() {
 	
 	String result = "";
-	if (genotypeInstructionType == GenotypeInstructionType.INSTRUCTION) {
+	if (instructionType == InstructionType.INSTRUCTION) {
 	    result = instruction.toString();
-	} else if (genotypeInstructionType == GenotypeInstructionType.INT_VALUE) {
+	} else if (instructionType == InstructionType.INT_VALUE) {
 	    result = ""+intValue;
-	} else if (genotypeInstructionType == GenotypeInstructionType.BOOL_VALUE) {
+	} else if (instructionType == InstructionType.BOOL_VALUE) {
 	    result = ""+booleanValue;
-	} else if (genotypeInstructionType == GenotypeInstructionType.FLOAT_VALUE) {
+	} else if (instructionType == InstructionType.FLOAT_VALUE) {
 	    result = ""+floatValue;
 	} else {
 	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
@@ -49,18 +49,18 @@ public class GenotypeInstruction {
 	return result;
     }
 
-    private GenotypeInstructionType genotypeInstructionType;
+    private InstructionType instructionType;
     private Instruction instruction;
     private int intValue;
     private double floatValue;
     private boolean booleanValue;
 
-    public GenotypeInstructionType getMetaInstructionType() {
-	return genotypeInstructionType;
+    public InstructionType getMetaInstructionType() {
+	return instructionType;
     }
 
-    public void setMetaInstructionType(GenotypeInstructionType genotypeInstructionType) {
-	this.genotypeInstructionType = genotypeInstructionType;
+    public void setMetaInstructionType(InstructionType instructionType) {
+	this.instructionType = instructionType;
     }
 
     public Instruction getInstruction() {
@@ -114,25 +114,25 @@ public class GenotypeInstruction {
 
     private GenotypeInstruction(Instruction instruction) {
 	//D.p("==> GenotypeInstruction(instruction)");
-	setMetaInstructionType(GenotypeInstructionType.INSTRUCTION);
+	setMetaInstructionType(InstructionType.INSTRUCTION);
 	setInstruction(instruction);
     }
 
     public GenotypeInstruction(int intValue) {
 	//D.p("==> GenotypeInstruction(int)");
-	setMetaInstructionType(GenotypeInstructionType.INT_VALUE);
+	setMetaInstructionType(InstructionType.INT_VALUE);
 	setIntValue(intValue);
     }
 
     public GenotypeInstruction(double floatValue) {
 	//D.p("==> GenotypeInstruction(double)");
-	setMetaInstructionType(GenotypeInstructionType.FLOAT_VALUE);
+	setMetaInstructionType(InstructionType.FLOAT_VALUE);
 	setFloatValue(floatValue);
     }
 
     public GenotypeInstruction(boolean booleanValue) {
 	//D.p("==> GenotypeInstruction(boolean)");
-	setMetaInstructionType(GenotypeInstructionType.BOOL_VALUE);
+	setMetaInstructionType(InstructionType.BOOL_VALUE);
 	setBooleanValue(booleanValue);
     }
 
@@ -141,15 +141,15 @@ public class GenotypeInstruction {
     public static GenotypeInstruction CONST_FALSE = new GenotypeInstruction(Instruction.CONST_FALSE);
 
     public void execute(VirtualMachine virtualMachine) {
-	if (genotypeInstructionType == GenotypeInstructionType.INSTRUCTION) {
+	if (instructionType == InstructionType.INSTRUCTION) {
 	    instruction.execute(virtualMachine);
-	} else if (genotypeInstructionType == GenotypeInstructionType.INT_VALUE) {
+	} else if (instructionType == InstructionType.INT_VALUE) {
 	    virtualMachine.getIntegerStack().push(intValue);
 	    virtualMachine.incrementIP();
-	} else if (genotypeInstructionType == GenotypeInstructionType.BOOL_VALUE) {
+	} else if (instructionType == InstructionType.BOOL_VALUE) {
 	    virtualMachine.getBooleanStack().push(booleanValue);
 	    virtualMachine.incrementIP();
-	} else if (genotypeInstructionType == GenotypeInstructionType.FLOAT_VALUE) {
+	} else if (instructionType == InstructionType.FLOAT_VALUE) {
 	    virtualMachine.getFloatStack().push(floatValue);
 	    virtualMachine.incrementIP();
 	} else {
