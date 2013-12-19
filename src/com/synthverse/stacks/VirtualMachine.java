@@ -175,7 +175,7 @@ public final class VirtualMachine {
     }
 
     public final void loadProgram(Program program) {
-	this.genotype.loadProgram(program);
+	this.genotype.overwriteWith(program);
     }
 
     public final boolean step() {

@@ -19,7 +19,7 @@ public final class GeneticOperator {
 
     public final static void pointMutate(MersenneTwisterFast randomNumberGenerator, Agent parent, Agent offspring,
 	    double mutationRate) {
-	GenotypeInstruction[] offspringDNA = offspring.getProgram().getMetaInstructionArray();
+	GenotypeInstruction[] offspringDNA = offspring.getProgram().getGenotypeArray();
 	parent.getProgram().copyInto(offspringDNA);
 
 	for (int i = 0; i < offspringDNA.length; i++) {
@@ -35,9 +35,9 @@ public final class GeneticOperator {
 
     public final static void cross(MersenneTwisterFast randomNumberGenerator, Agent parentA, Agent parentB,
 	    Agent offspring) {
-	GenotypeInstruction[] offspringDNA = offspring.getProgram().getMetaInstructionArray();
-	GenotypeInstruction[] parentA_DNA = parentA.getProgram().getMetaInstructionArray();
-	GenotypeInstruction[] parentB_DNA = parentB.getProgram().getMetaInstructionArray();
+	GenotypeInstruction[] offspringDNA = offspring.getProgram().getGenotypeArray();
+	GenotypeInstruction[] parentA_DNA = parentA.getProgram().getGenotypeArray();
+	GenotypeInstruction[] parentB_DNA = parentB.getProgram().getGenotypeArray();
 
 	for (int i = 0; i < offspringDNA.length; i++) {
 	    if (randomNumberGenerator.nextBoolean()) {

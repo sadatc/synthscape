@@ -35,23 +35,23 @@ import ec.util.MersenneTwisterFast;
  */
 public class Program {
 
-    private GenotypeInstruction[] metaInstructionArray = null;
+    private GenotypeInstruction[] genotypeArray = null;
     private int size;
 
     public MersenneTwisterFast randomNumberGenerator = null;
 
     public final void randomizeInstructions() {
 	for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-	    metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
+	    genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	}
     }
 
-    public final GenotypeInstruction[] getMetaInstructionArray() {
-	return metaInstructionArray;
+    public final GenotypeInstruction[] getGenotypeArray() {
+	return genotypeArray;
     }
 
     public final void setInstructionArray(GenotypeInstruction[] instructionArray) {
-	this.metaInstructionArray = instructionArray;
+	this.genotypeArray = instructionArray;
     }
 
     public final void setSize(int size) {
@@ -66,9 +66,9 @@ public class Program {
 	this.size = p.size;
 	this.randomNumberGenerator = p.randomNumberGenerator;
 	if (this.size > 0) {
-	    this.metaInstructionArray = new GenotypeInstruction[this.size];
+	    this.genotypeArray = new GenotypeInstruction[this.size];
 	    for (int i = 0; i < this.size; i++) {
-		this.metaInstructionArray[i] = p.metaInstructionArray[i];
+		this.genotypeArray[i] = p.genotypeArray[i];
 	    }
 	}
     }
@@ -77,22 +77,22 @@ public class Program {
 	// restricted, use Factory methods to create programs.
 	this.randomNumberGenerator = randomNumberGenerator;
 	size = 0;
-	metaInstructionArray = new GenotypeInstruction[maxSize];
+	genotypeArray = new GenotypeInstruction[maxSize];
     }
 
     public final void fillWithNOOP() {
-	Arrays.fill(metaInstructionArray, Instruction.NOOP);
+	Arrays.fill(genotypeArray, Instruction.NOOP);
     }
 
     public final void addInstruction(GenotypeInstruction instruction) {
 	// addCode(InstructionTranslator.toCode(instruction));
-	metaInstructionArray[size] = instruction;
+	genotypeArray[size] = instruction;
 	size++;
     }
 
     public final boolean addInstructionSafely(GenotypeInstruction instruction) {
 	if (size < getSizeLimit()) {
-	    metaInstructionArray[size] = instruction;
+	    genotypeArray[size] = instruction;
 	    size++;
 	    return true;
 	} else {
@@ -118,7 +118,7 @@ public class Program {
     
     
     /*
-     * public final void addCode(int code) { metaInstructionArray[size] =
+     * public final void addCode(int code) { genotypeArray[size] =
      * InstructionTranslator.toInstruction(code); size++; }
      */
     public final int getSize() {
@@ -126,7 +126,7 @@ public class Program {
     }
 
     public final int getSizeLimit() {
-	return metaInstructionArray.length;
+	return genotypeArray.length;
     }
 
     public final boolean isIPValid(int ipIndex) {
@@ -135,23 +135,23 @@ public class Program {
 
     /*
      * public final int getCode(int ipIndex) { return
-     * InstructionTranslator.toCode(metaInstructionArray[ipIndex]); }
+     * InstructionTranslator.toCode(genotypeArray[ipIndex]); }
      */
     public final void copyInto(GenotypeInstruction[] array) {
 	for (int i = 0; i < size; i++) {
-	    array[i] = metaInstructionArray[i];
+	    array[i] = genotypeArray[i];
 	}
     }
 
     public final GenotypeInstruction getInstruction(int ipIndex) {
-	return metaInstructionArray[ipIndex];
+	return genotypeArray[ipIndex];
     }
 
     public final int getSignature() {
 	int result = 0;
 	if (size > 0) {
 	    for(int i=0;i<size;i++) {
-		result+= metaInstructionArray[i].getSignature();
+		result+= genotypeArray[i].getSignature();
 	    }
 	} else {
 	    return 0;
@@ -163,7 +163,7 @@ public class Program {
     @Override
     public final String toString() {
 	if (size > 0) {
-	    return Arrays.toString(metaInstructionArray);
+	    return Arrays.toString(genotypeArray);
 	} else {
 	    return Config.EMPTY_CONTAINER_STRING;
 	}
@@ -173,11 +173,11 @@ public class Program {
 	if (size > 0) {
 	    StringBuilder buf = new StringBuilder();
 	    buf.append('[');
-	    buf.append(metaInstructionArray[0]);
+	    buf.append(genotypeArray[0]);
 
-	    for (int i = 1; i < metaInstructionArray.length; i++) {
+	    for (int i = 1; i < genotypeArray.length; i++) {
 		buf.append(", ");
-		buf.append(metaInstructionArray[i]);
+		buf.append(genotypeArray[i]);
 	    }
 
 	    buf.append("]");
@@ -192,11 +192,11 @@ public class Program {
 	if (size > 0) {
 	    StringBuilder buf = new StringBuilder();
 	    buf.append('[');
-	    buf.append(metaInstructionArray[0]);
+	    buf.append(genotypeArray[0]);
 
 	    for (int i = 1; i < n; i++) {
 		buf.append(", ");
-		buf.append(metaInstructionArray[i]);
+		buf.append(genotypeArray[i]);
 	    }
 
 	    buf.append("]");
@@ -209,10 +209,10 @@ public class Program {
 
     /*
      * public long getLongHashCode() { return
-     * HashUtils.getLongHash(metaInstructionArray, size); }
+     * HashUtils.getLongHash(genotypeArray, size); }
      * 
      * @Override public final int hashCode() { return
-     * Arrays.hashCode(metaInstructionArray); }
+     * Arrays.hashCode(genotypeArray); }
      */
     @Override
     public boolean equals(Object obj) {
@@ -223,7 +223,7 @@ public class Program {
 	if (!(obj instanceof Program))
 	    return false;
 	Program other = (Program) obj;
-	if (!Arrays.equals(metaInstructionArray, other.metaInstructionArray))
+	if (!Arrays.equals(genotypeArray, other.genotypeArray))
 	    return false;
 
 	if (size != other.size)
@@ -249,7 +249,7 @@ public class Program {
 	    program = createEmpty(randomNumberGenerator);
 
 	    for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-		program.metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
+		program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	    }
 	    program.size = Config.DEFAULT_PROGRAM_ARRAY_SIZE;
 
@@ -265,7 +265,7 @@ public class Program {
 		program.size = size;
 
 		for (int i = 0; i < size; i++) {
-		    program.metaInstructionArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
+		    program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 		}
 	    }
 
