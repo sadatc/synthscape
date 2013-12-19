@@ -86,7 +86,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected void initGenotype() {
 	this.program = Program.Factory.createRandom(sim.random);
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
-	vm.loadProgram(this.program);
+	vm.overwriteGenotypeWithProgram(this.program);
 	vm.setCpuCycles(sim.getMaxStepsPerAgent());
 	this.setVirtualMachine(vm);
     }
@@ -774,7 +774,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void loadProgramInVirtualMachine() {
-	virtualMachine.loadProgram(program);
+	virtualMachine.overwriteGenotypeWithProgram(program);
 
     }
 
@@ -888,7 +888,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	
 	Program p = new Program(archetype.getProgram());
 	
-	this.getVirtualMachine().loadProgram(p);
+	this.getVirtualMachine().overwriteGenotypeWithProgram(p);
 	
 	this.getVirtualMachine().setCpuCycles(archetype.getVirtualMachine().getCpuCycles());
 	genotypicalParent = archetype;

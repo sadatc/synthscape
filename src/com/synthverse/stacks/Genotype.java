@@ -73,10 +73,10 @@ public class Genotype {
 	return (index >= 0 && index < size);
     }
 
-    public final void overwriteWith(Program program2) {
-	D.p(""+program2.getSignature());
+    public final void overwriteWithProgram(Program program) {
+	D.p(""+program.getSignature());
 	D.p(""+getSignature());
-	program2.copyInto(this.genotypeArray);
+	program.copyInto(this.genotypeArray);
 	D.p(""+getSignature());
     }
 

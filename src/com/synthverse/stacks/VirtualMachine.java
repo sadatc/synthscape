@@ -174,8 +174,8 @@ public final class VirtualMachine {
 	this.codeStack = codeStack;
     }
 
-    public final void loadProgram(Program program) {
-	this.genotype.overwriteWith(program);
+    public final void overwriteGenotypeWithProgram(Program program) {
+	this.genotype.overwriteWithProgram(program);
     }
 
     public final boolean step() {
