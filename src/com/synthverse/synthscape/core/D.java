@@ -26,8 +26,8 @@ public class D {
 
     }
     
-    public static void check(boolean b, String message) {
-	if(!b) {
+    public static void check(boolean condition, String message) {
+	if(!condition) {
 	    p(message);
 	    p("Exiting Program!!");
 	    System.exit(1);
