@@ -22,13 +22,13 @@ import com.synthverse.util.LogUtils;
  * 
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
-    
+
     protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
     }
-    
+
     private Species species;
     private int clonesPerSpecies;
     private int totalPopulation;
@@ -63,21 +63,30 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    Agent archetype = activeBuffer.get(genePoolIndex);
 	    // now clone this and give it.
 
-	    D.p("archeType="+archetype.getProgram().getSignature());
 	    
+
 	    returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
-	    D.p("returnAgent1="+returnAgent.getProgram().getSignature());
+
+	    
+
+	    
+
 	    returnAgent.cloneGenotypeFrom(archetype);
-	    D.p("returnAgent2="+returnAgent.getProgram().getSignature());
+	    D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature() , "expected clone");
+	    
 	    returnAgent.getVirtualMachine().resetAll();
-	    D.p("returnAgent3="+returnAgent.getProgram().getSignature());
+	    
 
 	    returnAgent.reset();
+	    
+	    D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature() , "expected clone");
 	    returnAgent.setGeneration(generation);
 	    returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	    returnAgent.setX(x);
 	    returnAgent.setY(y);
-	    D.p("returning agent: requestCounter:"+requestCounter+" cloneCounter:"+cloneCounter+" genePoolIndex:"+genePoolIndex+" generation:"+generation+" Agent Signature:"+returnAgent.getProgram().getSignature());
+	    D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter
+		    + " genePoolIndex:" + genePoolIndex + " generation:" + generation + " Agent Signature:"
+		    + returnAgent.getProgram().getSignature());
 
 	    if (cloneCounter > clonesPerSpecies) {
 		genePoolIndex++;
@@ -88,9 +97,9 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
 	} else {
 	    // we have reached next generation
-	    // reset all counters and re-run...	    
+	    // reset all counters and re-run...
 	    generation++;
-	    D.p("$$$ starting new generation: "+generation);
+	    D.p("$$$ starting new generation: " + generation);
 	    requestCounter = 0;
 	    genePoolIndex = 0;
 	    cloneCounter = 0;
@@ -98,14 +107,14 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    activeBuffer = evolutionEngine.getActiveBuffer();
 	    // recursive call!
 	    returnAgent = getAgent(species, x, y);
-	    D.p("returning agent: requestCounter:"+requestCounter+" cloneCounter:"+cloneCounter+" genePoolIndex:"+genePoolIndex+" generation:"+generation+" Agent Signature:"+returnAgent.getProgram().getSignature());
-	    
-	}
-	
+	    D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter
+		    + " genePoolIndex:" + genePoolIndex + " generation:" + generation + " Agent Signature:"
+		    + returnAgent.getProgram().getSignature());
 
-	
+	}
+
 	requestCounter++;
-	
+
 	return returnAgent;
     }
 
@@ -114,13 +123,11 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	// TODO Auto-generated method stub
 
     }
-    
+
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 	// do nothing, we don't need it.
-	
-    }
 
-   
+    }
 
 }
