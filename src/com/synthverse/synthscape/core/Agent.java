@@ -128,12 +128,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	initGenotype();
     }
 
-    public Agent randomizeGenotype() {
-	if (program != null) {
-	    program.randomizeInstructions();
-	}
-	return this;
-    }
 
     public final boolean locationHasObstacle(int x, int y) {
 	return (sim.obstacleGrid.field[x][y] == PRESENT);
