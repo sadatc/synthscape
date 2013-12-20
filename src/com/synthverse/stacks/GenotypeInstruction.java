@@ -110,7 +110,7 @@ public class GenotypeInstruction {
 	return result;
     }
     
-     
+    
 
     private GenotypeInstruction(Instruction instruction) {
 	//D.p("==> GenotypeInstruction(instruction)");
