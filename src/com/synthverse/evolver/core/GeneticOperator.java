@@ -1,8 +1,8 @@
 package com.synthverse.evolver.core;
 
-import com.synthverse.stacks.Instruction;
-import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.stacks.GenotypeInstruction;
+import com.synthverse.stacks.InstructionTranslator;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 
 import ec.util.MersenneTwisterFast;
@@ -20,7 +20,11 @@ public final class GeneticOperator {
     public final static void pointMutate(MersenneTwisterFast randomNumberGenerator, Agent parent, Agent offspring,
 	    double mutationRate) {
 	GenotypeInstruction[] offspringDNA = offspring.getProgram().getGenotypeArray();
-	parent.getProgram().copyInto(offspringDNA);
+	Program parentProgram = parent.getProgram();
+	for(int i=0;i<parentProgram.getSize();i++) {
+	    offspringDNA[i] = parentProgram.getInstruction(i);
+	}
+	
 
 	for (int i = 0; i < offspringDNA.length; i++) {
 	    if (randomNumberGenerator.nextBoolean(mutationRate)) {

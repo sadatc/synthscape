@@ -74,10 +74,9 @@ public class Genotype {
     }
 
     public final void overwriteWithProgram(Program program) {
-	D.p(""+program.getSignature());
-	D.p(""+getSignature());
-	program.copyInto(this.genotypeArray);
-	D.p(""+getSignature());
+	for(int i=0;i<program.getSize();i++) {
+	    this.genotypeArray[i]  = program.getInstruction(i);
+	}
     }
 
     public final void fill(GenotypeInstruction instruction) {
