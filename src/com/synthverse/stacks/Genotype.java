@@ -74,10 +74,10 @@ public class Genotype {
     }
 
     public final void overwriteWithProgram(Program program) {
-	//D.p("Program Signature:"+program.getSignature());
-	//D.p("Current Signature before overwrite:"+getSignature());
+	D.p(""+program.getSignature());
+	D.p(""+getSignature());
 	program.copyInto(this.genotypeArray);
-	//D.p("Current Signature after overwrite:"+getSignature());
+	D.p(""+getSignature());
     }
 
     public final void fill(GenotypeInstruction instruction) {

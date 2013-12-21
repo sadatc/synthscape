@@ -37,7 +37,6 @@ public class Program {
 
     private GenotypeInstruction[] genotypeArray = null;
     private int size;
-    private int addIndex = 0;
 
     public MersenneTwisterFast randomNumberGenerator = null;
 
@@ -55,7 +54,10 @@ public class Program {
 	this.genotypeArray = instructionArray;
     }
 
-   
+    public final void setSize(int size) {
+	this.size = size;
+    }
+
     private Program() {
 
     }
@@ -82,15 +84,16 @@ public class Program {
 	Arrays.fill(genotypeArray, Instruction.NOOP);
     }
 
-    
-    public final void clearAddIndex() {
-	this.addIndex = 0;
+    public final void addInstruction(GenotypeInstruction instruction) {
+	// addCode(InstructionTranslator.toCode(instruction));
+	genotypeArray[size] = instruction;
+	size++;
     }
-    
+
     public final boolean addInstructionSafely(GenotypeInstruction instruction) {
-	if (addIndex < size) {
-	    genotypeArray[addIndex] = instruction;
-	    addIndex++;
+	if (size < getSizeLimit()) {
+	    genotypeArray[size] = instruction;
+	    size++;
 	    return true;
 	} else {
 	    return false;
@@ -122,12 +125,23 @@ public class Program {
 	return size;
     }
 
-    
+    public final int getSizeLimit() {
+	return genotypeArray.length;
+    }
+
     public final boolean isIPValid(int ipIndex) {
 	return (ipIndex >= 0 && ipIndex < size);
     }
 
-   
+    /*
+     * public final int getCode(int ipIndex) { return
+     * InstructionTranslator.toCode(genotypeArray[ipIndex]); }
+     */
+    public final void copyInto(GenotypeInstruction[] array) {
+	for (int i = 0; i < size; i++) {
+	    array[i] = genotypeArray[i];
+	}
+    }
 
     public final GenotypeInstruction getInstruction(int ipIndex) {
 	return genotypeArray[ipIndex];
