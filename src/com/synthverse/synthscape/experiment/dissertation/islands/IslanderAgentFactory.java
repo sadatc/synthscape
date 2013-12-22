@@ -21,9 +21,9 @@ public class IslanderAgentFactory extends AgentFactory implements Constants {
 	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
 	
 	if(species==null) {
-	    D.p("===================> created brand new agent:"+agent.getAgentId()+" for species: null");
+	    D.p("=> created brand new agent:"+agent.getSignature()+" for species: null");
 	} else {
-	    D.p("===================> created brand new agent:"+agent.getAgentId()+" for species: "+species);
+	    D.p("=> created brand new agent:"+agent.getSignature()+" for species: "+species);
 	}
 
 	return agent;
