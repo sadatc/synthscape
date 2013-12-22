@@ -761,6 +761,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public Program getProgram() {
 	return this.program;
     }
+    
+    public String getSignature() {
+	String result = ""+this.getAgentId();
+	if(this.program!=null) {
+	    result += ":"+this.program.getSignature();
+	}
+	return result;
+	
+    }
 
     public void setVirtualMachine(VirtualMachine virtualMachine) {
 	this.virtualMachine = virtualMachine;
