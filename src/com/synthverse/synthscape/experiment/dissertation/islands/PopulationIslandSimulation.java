@@ -1,6 +1,8 @@
 package com.synthverse.synthscape.experiment.dissertation.islands;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import sim.util.Int2D;
@@ -47,6 +49,10 @@ public class PopulationIslandSimulation extends Simulation {
  	agents.clear();
 
  	for (Species species : speciesComposition) {
+ 	    
+ 	    List<Integer> signatureTest = new ArrayList<Integer>();
+ 	    
+ 	    
  	    for (int i = 0; i < clonesPerSpecies; i++) {
 
  		int randomX = random.nextInt(gridWidth);
@@ -62,7 +68,7 @@ public class PopulationIslandSimulation extends Simulation {
 
  		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
  		agents.add(agent);
-
+ 		signatureTest.add(agent.getProgram().getSignature());
  		// add agents to the scheduler
 
  		if (!agent.isScheduled()) {
@@ -72,6 +78,14 @@ public class PopulationIslandSimulation extends Simulation {
  		}
 
  	    }
+ 	    
+ 	    int sig = signatureTest.get(0);
+ 	    for(int i=1;i<signatureTest.size();i++) {
+ 		if(signatureTest.get(i)!=sig) {
+ 		    D.p("no match!");
+ 		}
+ 	    }
+ 	    
  	}
 
      }

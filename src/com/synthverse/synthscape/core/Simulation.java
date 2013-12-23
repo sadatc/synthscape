@@ -501,8 +501,9 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
+	D.p("starting the next simulation...:"+simulationCounter);
 	/*
-	 * D.p("starting the next simulation...:"+simulationCounter);
+	 * 
 	 * if(simulationCounter%getGenePoolSize()==0) {
 	 * this.getUiObject().display.requestUpdateFreeze(); } else {
 	 * this.getUiObject().display.requestUpdateUnFreeze(); }
