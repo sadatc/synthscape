@@ -501,20 +501,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-	D.p("starting the next simulation...:"+simulationCounter);
-	/*
-	 * 
-	 * if(simulationCounter%getGenePoolSize()==0) {
-	 * this.getUiObject().display.requestUpdateFreeze(); } else {
-	 * this.getUiObject().display.requestUpdateUnFreeze(); }
-	 */
+	
 	simStats.aggregateStatsTo(aggregateSimStats);
 	aggregationCounter++;
 	simStats.clear();
-	// D.p(aggregationCounter+": simStats cleared and aggregated...");
-
-	// D.p("startNextSimulation called...simStats cleared!");
-
+	
 	resetEnvironment();
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {

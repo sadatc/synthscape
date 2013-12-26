@@ -59,62 +59,42 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public Agent getAgent(Species species, int x, int y) {
 	Agent returnAgent = null;
 
-	if (requestCounter < totalPopulation) {
-	    Agent archetype = activeBuffer.get(genePoolIndex);
-	    // now clone this and give it.
-
-	    
-
-	    returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
-
-	    
-
-	    
-
-	    returnAgent.cloneGenotypeFrom(archetype);
-	    //D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature() , "expected clone");
-	    
-	    returnAgent.getVirtualMachine().resetAll();
-	    
-
-	    returnAgent.reset();
-	    
-	    D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature() , "expected clone");
-	    returnAgent.setGeneration(generation);
-	    returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	    returnAgent.setX(x);
-	    returnAgent.setY(y);
-	    D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter
-		    + " genePoolIndex:" + genePoolIndex + " generation:" + generation + " Agent Signature:"
-		    + returnAgent.getProgram().getSignature());
-
-	    if (cloneCounter > clonesPerSpecies) {
-		genePoolIndex++;
-		cloneCounter = 0;
-	    } else {
-		cloneCounter++;
-	    }
-
-	} else {
-	    // we have reached next generation
-	    // reset all counters and re-run...
+	if (requestCounter >= totalPopulation) {
+	    // time to generate next generation
 	    generation++;
-	    D.p("$$$ starting new generation: " + generation);
+	    //D.p("$$$ starting new generation: " + generation);
 	    requestCounter = 0;
 	    genePoolIndex = 0;
 	    cloneCounter = 0;
 	    evolutionEngine.generateNextGeneration(simulation.random);
 	    activeBuffer = evolutionEngine.getActiveBuffer();
-	    // recursive call!
-	    returnAgent = getAgent(species, x, y);
-	    D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter
-		    + " genePoolIndex:" + genePoolIndex + " generation:" + generation + " Agent Signature:"
-		    + returnAgent.getProgram().getSignature());
-
 	}
+	
+	if(cloneCounter >= clonesPerSpecies) {
+	    cloneCounter = 0;
+	    genePoolIndex++;
+	}
+	
+	// get next agent from the gene-pool and clone it
+	Agent archetype = activeBuffer.get(genePoolIndex);
+	returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
+	returnAgent.cloneGenotypeFrom(archetype);
+	returnAgent.getVirtualMachine().resetAll();
+	returnAgent.reset();
+	returnAgent.setGeneration(generation);
+	returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
+	returnAgent.setX(x);
+	returnAgent.setY(y);
+	D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature(), "expected clone");
 
+	/*
+	D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter + " genePoolIndex:"
+		+ genePoolIndex + " generation:" + generation + " Agent Signature:"
+		+ returnAgent.getProgram().getSignature());
+	*/
 	requestCounter++;
-
+	cloneCounter++;
+	
 	return returnAgent;
     }
 

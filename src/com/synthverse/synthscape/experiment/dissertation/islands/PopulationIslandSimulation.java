@@ -39,7 +39,7 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     protected void initAgents() {
  	// populate with agents
-	D.p("PopulationIslandSimulation.initAgents()");
+	
 
  	MersenneTwisterFast random = this.random;
  	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {

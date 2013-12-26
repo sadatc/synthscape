@@ -6,7 +6,7 @@ public interface Constants {
 
     public static final int GENERATIONS = 3000;
     public static final int CLONES_PER_SPECIES = 10;
-    public static final int EE_DEF_GENE_POOL_SIZE = 20;
+    public static final int EE_DEF_GENE_POOL_SIZE = 2000;
     public static final int MAX_STEPS_PER_AGENT = 256;
 
     public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;

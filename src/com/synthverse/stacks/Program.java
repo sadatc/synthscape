@@ -42,7 +42,7 @@ public class Program {
     public MersenneTwisterFast randomNumberGenerator = null;
 
     public final void randomizeInstructions() {
-	for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
+	for (int i = 0; i < this.size; i++) {
 	    genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	}
     }
@@ -55,7 +55,6 @@ public class Program {
 	this.genotypeArray = instructionArray;
     }
 
-   
     private Program() {
 
     }
@@ -71,22 +70,21 @@ public class Program {
 	}
     }
 
-    private Program(MersenneTwisterFast randomNumberGenerator, int maxSize) {
+    private Program(MersenneTwisterFast randomNumberGenerator, int size) {
 	// restricted, use Factory methods to create programs.
 	this.randomNumberGenerator = randomNumberGenerator;
-	size = 0;
-	genotypeArray = new GenotypeInstruction[maxSize];
+	this.size = size;
+	genotypeArray = new GenotypeInstruction[size];
     }
 
     public final void fillWithNOOP() {
 	Arrays.fill(genotypeArray, Instruction.NOOP);
     }
 
-    
     public final void clearAddIndex() {
 	this.addIndex = 0;
     }
-    
+
     public final boolean addInstructionSafely(GenotypeInstruction instruction) {
 	if (addIndex < size) {
 	    genotypeArray[addIndex] = instruction;
@@ -97,23 +95,22 @@ public class Program {
 
 	}
     }
-    
+
     public final boolean addInstructionsSafely(String csvString) {
 	boolean result = true;
-	
-	if(csvString!=null) {
+
+	if (csvString != null) {
 	    String[] instructions = csvString.split(",");
-	    for(String instruction: instructions) {
-		if(!addInstructionSafely(InstructionTranslator.decodeFromString(instruction))) {
+	    for (String instruction : instructions) {
+		if (!addInstructionSafely(InstructionTranslator.decodeFromString(instruction))) {
 		    result = false;
 		}
 	    }
 	}
-	
+
 	return result;
     }
-    
-    
+
     /*
      * public final void addCode(int code) { genotypeArray[size] =
      * InstructionTranslator.toInstruction(code); size++; }
@@ -122,12 +119,9 @@ public class Program {
 	return size;
     }
 
-    
     public final boolean isIPValid(int ipIndex) {
 	return (ipIndex >= 0 && ipIndex < size);
     }
-
-   
 
     public final GenotypeInstruction getInstruction(int ipIndex) {
 	return genotypeArray[ipIndex];
@@ -136,16 +130,15 @@ public class Program {
     public final int getSignature() {
 	int result = 0;
 	if (size > 0) {
-	    for(int i=0;i<size;i++) {
-		result+= genotypeArray[i].getSignature();
+	    for (int i = 0; i < size; i++) {
+		result += genotypeArray[i].getSignature();
 	    }
 	} else {
 	    return 0;
 	}
 	return result;
     }
-    
-    
+
     @Override
     public final String toString() {
 	if (size > 0) {
@@ -193,13 +186,6 @@ public class Program {
 	}
     }
 
-    /*
-     * public long getLongHashCode() { return
-     * HashUtils.getLongHash(genotypeArray, size); }
-     * 
-     * @Override public final int hashCode() { return
-     * Arrays.hashCode(genotypeArray); }
-     */
     @Override
     public boolean equals(Object obj) {
 	if (this == obj)
@@ -223,40 +209,29 @@ public class Program {
 	    return createRandom(randomNumberGenerator);
 	}
 
-	public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator) {
-	    Program program = new Program(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
-	    program.size = 0;
+	public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator, int size) {
+	    Program program = new Program(randomNumberGenerator, size);
 	    return program;
 	}
 
-	public static final Program createRandom(MersenneTwisterFast randomNumberGenerator) {
-	    Program program = null;
-
-	    program = createEmpty(randomNumberGenerator);
-
-	    for (int i = 0; i < Config.DEFAULT_PROGRAM_ARRAY_SIZE; i++) {
-		program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
-	    }
-	    program.size = Config.DEFAULT_PROGRAM_ARRAY_SIZE;
-
-	    return program;
-
+	public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator) {
+	    return createEmpty(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
 	}
 
 	public static final Program createRandom(MersenneTwisterFast randomNumberGenerator, int size) {
-	    Program program = null;
 
-	    if (size > 0 && size < Config.DEFAULT_PROGRAM_ARRAY_SIZE) {
-		program = createEmpty(randomNumberGenerator);
-		program.size = size;
+	    Program program = createEmpty(randomNumberGenerator, size);
 
-		for (int i = 0; i < size; i++) {
-		    program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
-		}
+	    for (int i = 0; i < size; i++) {
+		program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 	    }
 
 	    return program;
 
+	}
+
+	public static final Program createRandom(MersenneTwisterFast randomNumberGenerator) {
+	    return createRandom(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
 	}
 
     }
