@@ -55,6 +55,7 @@ public class IslanderAgent extends Agent {
 	 * this.setVirtualMachine(vm);
 	 */
 
+	
 	this.program = Program.Factory.createEmpty(sim.random);
 	boolean spaceLeft = true;
 

@@ -139,6 +139,16 @@ public class Program {
 	return result;
     }
 
+    public final String getFingerPrint(int n) {
+	String result = "";
+	if (size > 0 && n <= size) {
+	    for (int i = 0,count=0; count < n;count++, i+=10) {
+		result += genotypeArray[i].getSignature()+" ";
+	    }
+	} 
+	return result;
+    }
+
     @Override
     public final String toString() {
 	if (size > 0) {

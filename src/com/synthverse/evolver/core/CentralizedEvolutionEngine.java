@@ -303,12 +303,12 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private void printActiveBuffer() {
+    private void printActiveBuffer(int numAgents) {
 	D.p("==========ACTIVE BUFFER =============");
-	for (int i = 0; i < genePoolSize; i++) {
+	for (int i = 0, count=0; count < numAgents; count++,i+=5) {
 	    Agent agent = activeBuffer.get(i);
 	    Program p = agent.getProgram();
-	    D.p("--->" + agent.getAgentId() + ":" + p.getSignature());
+	    D.p("--->" + agent.getAgentId() + ":" + p.getFingerPrint(10));
 	}
 	D.p("=====================================");
 
@@ -399,7 +399,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	// printActiveBuffer();
 
 	generationCounter++;
-//	printActiveBuffer();
+	//printActiveBuffer(10);
 
     }
 
