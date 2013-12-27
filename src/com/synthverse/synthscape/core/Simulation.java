@@ -288,19 +288,19 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void initNonPrimaryCollectionSites() {
-	MersenneTwisterFast random = this.random;
+	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    random = controlledRandom;
+	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
 
 	for (int i = 0; i < (numberOfCollectionSites - 1); i++) {
-	    int randomX = random.nextInt(gridWidth);
-	    int randomY = random.nextInt(gridHeight);
+	    int randomX = randomPrime.nextInt(gridWidth);
+	    int randomY = randomPrime.nextInt(gridHeight);
 	    // make sure there isn't an obstacle there already...
 	    while (collectionSiteGrid.field[randomX][randomY] == PRESENT) {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
+		randomX = randomPrime.nextInt(gridWidth);
+		randomY = randomPrime.nextInt(gridHeight);
 
 	    }
 	    collectionSiteGrid.field[randomX][randomY] = PRESENT;
@@ -312,20 +312,20 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void initObstacles() {
 	// create obstacles in random locations
-	MersenneTwisterFast random = this.random;
+	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    random = controlledRandom;
+	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
 
 	for (int i = 0; i < numberOfObstacles; i++) {
 
-	    int randomX = random.nextInt(gridWidth);
-	    int randomY = random.nextInt(gridHeight);
+	    int randomX = randomPrime.nextInt(gridWidth);
+	    int randomY = randomPrime.nextInt(gridHeight);
 	    // make sure there isn't an obstacle there already...
 	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
+		randomX = randomPrime.nextInt(gridWidth);
+		randomY = randomPrime.nextInt(gridHeight);
 	    }
 	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 	    obstacleGrid.field[randomX][randomY] = PRESENT;
@@ -335,7 +335,12 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void initResources() {
-	MersenneTwisterFast random = new MersenneTwisterFast(1);
+
+	MersenneTwisterFast randomPrime = this.random;
+	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	    randomPrime = controlledRandom;
+	    controlledRandom.setSeed(1);
+	}
 
 	for (int i = 0; i < numberOfResources; i++) {
 
@@ -345,8 +350,8 @@ public abstract class Simulation extends SimState implements Constants {
 	    // make sure there are no resources, collectionSites, and obstacles
 	    // here
 	    do {
-		randomX = random.nextInt(gridWidth);
-		randomY = random.nextInt(gridHeight);
+		randomX = randomPrime.nextInt(gridWidth);
+		randomY = randomPrime.nextInt(gridHeight);
 	    } while (initCollisionGrid.field[randomX][randomY] == PRESENT);
 	    resourceGrid.field[randomX][randomY] = ResourceState.RAW;
 	    initCollisionGrid.field[randomX][randomY] = PRESENT;
@@ -367,9 +372,9 @@ public abstract class Simulation extends SimState implements Constants {
 	D.p("Simulation.initAgents()");
 	// populate with agents
 
-	MersenneTwisterFast random = this.random;
+	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    random = controlledRandom;
+	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
 	agents.clear();
@@ -377,12 +382,12 @@ public abstract class Simulation extends SimState implements Constants {
 	for (Species species : speciesComposition) {
 	    for (int i = 0; i < clonesPerSpecies; i++) {
 
-		int randomX = random.nextInt(gridWidth);
-		int randomY = random.nextInt(gridHeight);
+		int randomX = randomPrime.nextInt(gridWidth);
+		int randomY = randomPrime.nextInt(gridHeight);
 
 		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		    randomX = random.nextInt(gridWidth);
-		    randomY = random.nextInt(gridHeight);
+		    randomX = randomPrime.nextInt(gridWidth);
+		    randomY = randomPrime.nextInt(gridHeight);
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
@@ -501,11 +506,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-	
+
 	simStats.aggregateStatsTo(aggregateSimStats);
 	aggregationCounter++;
 	simStats.clear();
-	
+
 	resetEnvironment();
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
@@ -557,12 +562,10 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void doEndOfSimulationTasks() {
 	/*
-	for(Agent agent: agents) {
-	    D.p("agent.species:"+agent.getSpecies());
-	}
-	*/
-	
-	
+	 * for(Agent agent: agents) { D.p("agent.species:"+agent.getSpecies());
+	 * }
+	 */
+
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
 
@@ -586,15 +589,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
-		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
-		event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats,
-		fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
     }
 
     public void setStartDate() {
