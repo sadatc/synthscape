@@ -30,65 +30,53 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
-	D.p("Diagnosis: total # of agents created: "+Agent.get_optimizationAgentCounter());
+	D.p("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
 
 	System.exit(0);
     }
-    
-    
+
     @Override
     protected void initAgents() {
- 	// populate with agents
-	
+	// populate with agents
 
- 	MersenneTwisterFast random = this.random;
- 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
- 	    random = controlledRandom;
- 	    controlledRandom.setSeed(1);
- 	}
- 	agents.clear();
+	MersenneTwisterFast randomPrime = this.random;
+	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	    randomPrime = controlledRandom;
+	    controlledRandom.setSeed(1);
+	}
+	agents.clear();
 
- 	for (Species species : speciesComposition) {
- 	    
- 	    List<Integer> signatureTest = new ArrayList<Integer>();
- 	    
- 	    
- 	    for (int i = 0; i < clonesPerSpecies; i++) {
+	for (Species species : speciesComposition) {
 
- 		int randomX = random.nextInt(gridWidth);
- 		int randomY = random.nextInt(gridHeight);
+	    for (int i = 0; i < clonesPerSpecies; i++) {
 
- 		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
- 		    randomX = random.nextInt(gridWidth);
- 		    randomY = random.nextInt(gridHeight);
- 		}
- 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+		int randomX = randomPrime.nextInt(gridWidth);
+		int randomY = randomPrime.nextInt(gridHeight);
 
- 		Agent agent = evolver.getAgent(species, randomX, randomY);
+		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+		    randomX = randomPrime.nextInt(gridWidth);
+		    randomY = randomPrime.nextInt(gridHeight);
+		}
+		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
- 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
- 		agents.add(agent);
- 		signatureTest.add(agent.getProgram().getSignature());
- 		// add agents to the scheduler
+		Agent agent = evolver.getAgent(species, randomX, randomY);
 
- 		if (!agent.isScheduled()) {
- 		    schedule.scheduleRepeating(agent);
+		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
+		agents.add(agent);
 
- 		    agent.setScheduled(true);
- 		}
+		// add agents to the scheduler
 
- 	    }
- 	    
- 	    int sig = signatureTest.get(0);
- 	    for(int i=1;i<signatureTest.size();i++) {
- 		if(signatureTest.get(i)!=sig) {
- 		    D.p("no match!");
- 		}
- 	    }
- 	    
- 	}
+		if (!agent.isScheduled()) {
+		    schedule.scheduleRepeating(agent);
 
-     }
+		    agent.setScheduled(true);
+		}
+
+	    }
+
+	}
+
+    }
 
     @Override
     public int configGridWidth() {
@@ -113,21 +101,21 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	//speciesSet.add(Species.DETECTOR);
-	//speciesSet.add(Species.EXTRACTOR);
-	//speciesSet.add(Species.TRANSPORTER);
-	
-	speciesSet.add(Species.SUPER);
+	speciesSet.add(Species.DETECTOR);
+	speciesSet.add(Species.EXTRACTOR);
+	speciesSet.add(Species.TRANSPORTER);
+
+	// speciesSet.add(Species.SUPER);
 	return speciesSet;
     }
 
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
 	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
-	//mechanisms.add(InteractionMechanism.TRAIL);
-	//mechanisms.add(InteractionMechanism.BROADCAST);
-	//mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	//mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+	// mechanisms.add(InteractionMechanism.TRAIL);
+	// mechanisms.add(InteractionMechanism.BROADCAST);
+	// mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+	// mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
 	return mechanisms;
     }
 
@@ -155,7 +143,7 @@ public class PopulationIslandSimulation extends Simulation {
     public boolean configIsReportEvents() {
 	return REPORT_EVENTS;
     }
-    
+
     @Override
     public boolean configIsReportPerformance() {
 	return REPORT_PERFORMANCE;
@@ -183,7 +171,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	
+
 	return new ArchipelagoEvolver(this);
     }
 
