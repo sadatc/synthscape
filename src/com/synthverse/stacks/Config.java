@@ -66,6 +66,10 @@ public final class Config {
     public final static int DEFAULT_INTEGER_VALUE = 0;
     
     
+    //public static final String LOG_FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
+    
+    
     public final static String EMPTY_CONTAINER_STRING = "[]";
 
     public final static String LINE_SEPARATOR = System

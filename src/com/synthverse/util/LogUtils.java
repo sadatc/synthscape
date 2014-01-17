@@ -39,7 +39,8 @@ public final class LogUtils {
     public static final Level DEFAULT_LOG_LEVEL = Level.CONFIG;
     public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
 
-    private static final String FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    //private static final String FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    private static final String FORMAT_STRING = Config.LOG_FORMAT_STRING;
 
     private static final String WARNING_SYMBOL = "***";
     private static final String SEVERE_SYMBOL = "!!!";
