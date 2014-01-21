@@ -85,7 +85,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	returnAgent.setX(x);
 	returnAgent.setY(y);
-	D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature(), "expected clone");
+	//D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature(), "expected clone");
 
 	/*
 	D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter + " genePoolIndex:"

@@ -5,47 +5,64 @@ import java.util.HashMap;
 import com.synthverse.synthscape.core.D;
 
 public class GenotypeInstruction {
-    
+
     public int getSignature() {
-	
+
 	int result = 0;
 	if (instructionType == InstructionType.INSTRUCTION) {
 	    result = instruction.ordinal();
 	} else if (instructionType == InstructionType.INT_VALUE) {
 	    result = intValue;
 	} else if (instructionType == InstructionType.BOOL_VALUE) {
-	    result = booleanValue?1:0;
+	    result = booleanValue ? 1 : 0;
 	} else if (instructionType == InstructionType.FLOAT_VALUE) {
-	    result = (int)floatValue;
+	    result = (int) floatValue;
 	} else {
 	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
-	
-	
+
 	return result;
-	
+
     }
-    
+
+    public char getFingerPrint() {
+
+	char result = '_';
+	if (instructionType == InstructionType.INSTRUCTION) {
+	    result = instruction.getMnemonic().charAt(0);
+	} else if (instructionType == InstructionType.INT_VALUE) {
+	    result = (""+intValue).charAt(0);
+	} else if (instructionType == InstructionType.BOOL_VALUE) {
+	    result = booleanValue ? 'T' : 'F';
+	} else if (instructionType == InstructionType.FLOAT_VALUE) {
+	    result = (""+ floatValue).charAt(0);
+	} else {
+	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    System.exit(1);
+	}
+
+	return result;
+
+    }
 
     @Override
     public String toString() {
-	
+
 	String result = "";
 	if (instructionType == InstructionType.INSTRUCTION) {
 	    result = instruction.toString();
 	} else if (instructionType == InstructionType.INT_VALUE) {
-	    result = ""+intValue;
+	    result = "" + intValue;
 	} else if (instructionType == InstructionType.BOOL_VALUE) {
-	    result = ""+booleanValue;
+	    result = "" + booleanValue;
 	} else if (instructionType == InstructionType.FLOAT_VALUE) {
-	    result = ""+floatValue;
+	    result = "" + floatValue;
 	} else {
 	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
-	
-	
+
 	return result;
     }
 
@@ -94,44 +111,42 @@ public class GenotypeInstruction {
     public void setBooleanValue(boolean booleanValue) {
 	this.booleanValue = booleanValue;
     }
-    
+
     private GenotypeInstruction() {
 	throw new AssertionError("Evolver constructor is restricted");
     }
-    
-    static HashMap<Instruction,GenotypeInstruction> cachedMetaInstructions = new HashMap<Instruction,GenotypeInstruction>();
-    
+
+    static HashMap<Instruction, GenotypeInstruction> cachedMetaInstructions = new HashMap<Instruction, GenotypeInstruction>();
+
     public static GenotypeInstruction fromInstruction(Instruction instruction) {
 	GenotypeInstruction result = cachedMetaInstructions.get(instruction);
-	if(result == null) {
+	if (result == null) {
 	    result = new GenotypeInstruction(instruction);
 	    cachedMetaInstructions.put(instruction, result);
 	}
 	return result;
     }
-    
-    
 
     private GenotypeInstruction(Instruction instruction) {
-	//D.p("==> GenotypeInstruction(instruction)");
+	// D.p("==> GenotypeInstruction(instruction)");
 	setMetaInstructionType(InstructionType.INSTRUCTION);
 	setInstruction(instruction);
     }
 
     public GenotypeInstruction(int intValue) {
-	//D.p("==> GenotypeInstruction(int)");
+	// D.p("==> GenotypeInstruction(int)");
 	setMetaInstructionType(InstructionType.INT_VALUE);
 	setIntValue(intValue);
     }
 
     public GenotypeInstruction(double floatValue) {
-	//D.p("==> GenotypeInstruction(double)");
+	// D.p("==> GenotypeInstruction(double)");
 	setMetaInstructionType(InstructionType.FLOAT_VALUE);
 	setFloatValue(floatValue);
     }
 
     public GenotypeInstruction(boolean booleanValue) {
-	//D.p("==> GenotypeInstruction(boolean)");
+	// D.p("==> GenotypeInstruction(boolean)");
 	setMetaInstructionType(InstructionType.BOOL_VALUE);
 	setBooleanValue(booleanValue);
     }
@@ -156,7 +171,7 @@ public class GenotypeInstruction {
 	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
-	//D.p("executing"+this);
+	// D.p("executing"+this);
 
     }
 

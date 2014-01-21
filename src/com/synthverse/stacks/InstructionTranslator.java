@@ -51,7 +51,6 @@ public class InstructionTranslator {
 	instructions = Instruction.values();
 	numInstructions = instructions.length;
 	setupInstructionTable();
-	logStatus();
     }
 
     private static void setupInstructionTable() {

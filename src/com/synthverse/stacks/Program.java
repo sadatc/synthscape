@@ -139,13 +139,13 @@ public class Program {
 	return result;
     }
 
-    public final String getFingerPrint(int n) {
+    public final String getFingerPrint() {
 	String result = "";
-	if (size > 0 && n <= size) {
-	    for (int i = 0,count=0; count < n;count++, i+=10) {
-		result += genotypeArray[i].getSignature()+" ";
+	if (size > 0) {
+	    for (int i = 0; i < size; i++) {
+		result += genotypeArray[i].getFingerPrint();
 	    }
-	} 
+	}
 	return result;
     }
 

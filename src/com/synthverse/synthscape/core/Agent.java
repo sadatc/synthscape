@@ -42,8 +42,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
-	    .noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -93,30 +92,25 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private Agent() {
 	generateAgentId();
-
 	_optimizationAgentCounter++;
-	// logger.fine("Created Agent(): AgentCount = " +
-	// _optimizationAgentCounter);
+	logger.info("Created Agent(): AgentCount = " + _optimizationAgentCounter);
     }
 
     protected Agent(Simulation simulation, Species species) {
-	generateAgentId();
 
+	generateAgentId();
 	_optimizationAgentCounter++;
-	// logger.fine("Created Agent(sim,species): AgentCount = " +
-	// _optimizationAgentCounter);
+	logger.info("Created Agent(sim,"+species+"): AgentCount = " + _optimizationAgentCounter);
 	setSim(simulation);
 	setSpecies(species);
 	initGenotype();
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
-	    int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	generateAgentId();
 	initGenotype();
 	_optimizationAgentCounter++;
-	// logger.fine("Created Agent(sim,species, gen...): AgentCount = " +
-	// _optimizationAgentCounter);
+	logger.fine("Created Agent(sim,"+species+", "+generationNumber+"...): AgentCount = " + _optimizationAgentCounter);
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
@@ -127,7 +121,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	setInteractionMechanisms(simulation.getInteractionMechanisms());
 	initGenotype();
     }
-
 
     public final boolean locationHasObstacle(int x, int y) {
 	return (sim.obstacleGrid.field[x][y] == PRESENT);
@@ -195,9 +188,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
-		    && yMod >= 0 && yMod < sim.getGridHeight()
-		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
+		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -282,7 +274,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 		if (broadcast != null) {
-		    //D.p("moving to a broadcast:" + signalType);
+		    // D.p("moving to a broadcast:" + signalType);
 		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
 		}
 	    }
@@ -345,8 +337,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
-	    DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -465,8 +456,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X,
-		Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
 	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
@@ -618,8 +608,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource
-		    || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -635,8 +624,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource
-		    && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -658,8 +646,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    // D.p("CAPTURE!! 3 complex");
 			}
 
-		    } else if (this.sim.problemComplexity
-			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
@@ -761,14 +748,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public Program getProgram() {
 	return this.program;
     }
-    
+
     public String getSignature() {
-	String result = ""+this.getAgentId();
-	if(this.program!=null) {
-	    result += ":"+this.program.getSignature();
+	String result = "" + this.getAgentId();
+	if (this.program != null) {
+	    result += ":" + this.program.getSignature();
 	}
 	return result;
-	
+
     }
 
     public void setVirtualMachine(VirtualMachine virtualMachine) {
@@ -925,8 +912,5 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		+ ", isCarryingResource=" + isCarryingResource + ", generation=" + generation + ", program=" + program
 		+ "]";
     }
-    
-    
-    
 
 }
