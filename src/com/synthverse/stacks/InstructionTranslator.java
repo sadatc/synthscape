@@ -180,8 +180,9 @@ public class InstructionTranslator {
 
     public static final void logStatus() {
 
-	StringBuilder sb = new StringBuilder("# of instructions being added: ");
+	StringBuilder sb = new StringBuilder(">>> adding ");
 	sb.append(numInstructions);
+	sb.append(" instructions to the vocabulary...");
 	D.p(sb.toString());
 	for (int i = 0; i < instructions.length; i++) {
 	    sb.setLength(0);
@@ -191,7 +192,7 @@ public class InstructionTranslator {
 	    sb.append(instructions[i]);
 	    D.p(sb.toString());
 	}
-
+	D.p("<<< done adding instructions.\n");
     }
 
     /*

@@ -158,7 +158,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	parentBuffer = new ArrayList<Agent>(genePoolSize);
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
-	D.p(">> started creating agent pool...");
+	D.p(">>> started creating agent pool...");
 	D.p("pre-filling parentBuffer genepool with "+genePoolSize+" agents...");
 	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
@@ -169,7 +169,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	D.p("<< finished creating agent pool...");
+	D.p("<<< finished creating agent pool.\n");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 
