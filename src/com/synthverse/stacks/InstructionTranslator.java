@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.synthverse.synthscape.core.D;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -126,9 +127,10 @@ public class InstructionTranslator {
 
 	if (instruction != null) {
 	    instruction = instruction.trim();
-	    instruction = instruction.toUpperCase();	    
+	    instruction = instruction.toUpperCase();
 	    if (instructionTable.containsKey(instruction)) {
-		//result = new GenotypeInstruction(instructionTable.get(instruction));
+		// result = new
+		// GenotypeInstruction(instructionTable.get(instruction));
 		result = GenotypeInstruction.fromInstruction(instructionTable.get(instruction));
 	    } else if (instruction.equals("TRUE")) {
 		result = new GenotypeInstruction(true);
@@ -168,7 +170,8 @@ public class InstructionTranslator {
 	    result = new GenotypeInstruction(randomNumberGenerator.nextInt(100));
 
 	} else {
-	    //result = new GenotypeInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+	    // result = new
+	    // GenotypeInstruction(instructions[getRandomCode(randomNumberGenerator)]);
 	    result = GenotypeInstruction.fromInstruction(instructions[getRandomCode(randomNumberGenerator)]);
 	}
 
@@ -176,19 +179,19 @@ public class InstructionTranslator {
     }
 
     public static final void logStatus() {
-	if (logger.isLoggable(Level.CONFIG)) {
-	    StringBuilder sb = new StringBuilder("Num of Instructions: ");
-	    sb.append(numInstructions);
-	    logger.config(sb.toString());
-	    for (int i = 0; i < instructions.length; i++) {
-		sb.setLength(0);
-		sb.append(i);
-		sb.append(":");
-		sb.append(instructions[i]);
-		logger.fine(sb.toString());
-	    }
 
+	StringBuilder sb = new StringBuilder("# of instructions being added: ");
+	sb.append(numInstructions);
+	D.p(sb.toString());
+	for (int i = 0; i < instructions.length; i++) {
+	    sb.setLength(0);
+	    sb.append("instruction #");
+	    sb.append(i);
+	    sb.append(":");
+	    sb.append(instructions[i]);
+	    D.p(sb.toString());
 	}
+
     }
 
     /*

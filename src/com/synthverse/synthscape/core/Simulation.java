@@ -141,9 +141,8 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 	batchId = Long.toHexString(System.currentTimeMillis());
 
-	
 	InstructionTranslator.logStatus();
-	
+
 	setGenePoolSize(configGenePoolSize());
 	setReportEvents(configIsReportEvents());
 	setReportPerformance(configIsReportPerformance());
@@ -445,6 +444,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
+	D.p(")))))  EXPERIMENT STARTS");
+
+	D.p("\n]]] starting simulation (" + simulationCounter + ") with: world="
+		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
+		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
+		+ agents.size());
+
 	initEnvironment();
 	initAgents();
 
@@ -454,6 +460,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// this is run at the end of each step
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
+
 		simStepCounter++;
 
 		fadeTrails();
@@ -462,9 +469,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 		// check if simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
-		    // logger.info("end of simulation #" + (simulationCounter +
-		    // 1));
+
 		    doEndOfSimulationTasks();
+
+		    D.p("[[[ end of simulation: collected=" + numberOfCollectedResources);
 
 		    simStepCounter = 0;
 		    simulationCounter++;
@@ -472,16 +480,22 @@ public abstract class Simulation extends SimState implements Constants {
 		    // D.p("simulationsPerExperiment="+simulationsPerExperiment);
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
+
+			D.p("\n]]] starting simulation (" + simulationCounter + ") with: world="
+				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles
+				+ " sites=" + numberOfCollectionSites + " resources="
+				+ numberOfResources + " agents=" + agents.size());
 			startNextSimulation();
-			// logger.info("*** end of simulation: collected="+numberOfCollectedResources);
+
 		    } else {
+			// end of experiment...
 			if (collectedAllResources()) {
-			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
+			    D.p("!!!ALL RESOURCES COLLECTED!!!");
 			}
-			logger.info("*** end of experiment");
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
+			D.p("((((  EXPERIMENT ENDS");
 		    }
 		}
 	    }
@@ -524,13 +538,6 @@ public abstract class Simulation extends SimState implements Constants {
 
 	initEnvironment();
 	initAgents();
-
-	/*
-	 * D.p("Next simulation started with: world=" + (this.gridHeight *
-	 * this.gridWidth) + " obstacles=" + numberOfObstacles + " sites=" +
-	 * numberOfCollectionSites + " resources=" + numberOfResources +
-	 * " agents=" + agents.size());
-	 */
 
     }
 
@@ -593,13 +600,15 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
+		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
+		event, source, destination);
 
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats,
+		fitnessStats);
     }
 
     public void setStartDate() {

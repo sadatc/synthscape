@@ -3,15 +3,21 @@ package com.synthverse.synthscape.core;
 public interface Constants {
 
     // MORE frequently changed constants appear here...
+    
     public static final boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
-    public static final int GENERATIONS = 30;
+    
+    public static final int GENERATIONS = 2;
+    
     public static final int CLONES_PER_SPECIES = 10;
+    
     public static final int EE_DEF_GENE_POOL_SIZE = 20;
+    
     public static final int MAX_STEPS_PER_AGENT = 256;
-
+    
     public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
+    
     public static final int NUMBER_OF_COLLECTION_SITES = 5;
-
+    
     public static final double RESOURCE_CAPTURE_GOAL = 0.5;
     
     public static final int NUMBER_OF_STEPS_FOR_BROADCASTED_SIGNAL = 2;

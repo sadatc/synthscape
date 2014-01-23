@@ -2,6 +2,8 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sim.util.Int2D;
 
@@ -14,11 +16,17 @@ import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
+
+    private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
 
     public PopulationIslandSimulation(long seed) throws Exception {
 	super(seed);
@@ -36,7 +44,8 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     protected void initAgents() {
 	// populate with agents
-
+	D.p(">>> initializing environment with agents...");
+	
 	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
@@ -56,6 +65,7 @@ public class PopulationIslandSimulation extends Simulation {
 		    randomY = randomPrime.nextInt(gridHeight);
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+		
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
 
@@ -74,6 +84,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
+	D.p("<<< done initializing environment with agents...");
     }
 
     @Override
@@ -99,9 +110,9 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	//speciesSet.add(Species.DETECTOR);
-	//speciesSet.add(Species.EXTRACTOR);
-	//speciesSet.add(Species.TRANSPORTER);
+	// speciesSet.add(Species.DETECTOR);
+	// speciesSet.add(Species.EXTRACTOR);
+	// speciesSet.add(Species.TRANSPORTER);
 
 	speciesSet.add(Species.SUPER);
 	return speciesSet;

@@ -36,11 +36,12 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int genePoolIndex;
     private int generation;
     private CentralizedEvolutionEngine evolutionEngine;
-    private int requestCounter = 0;
-    private int cloneCounter = 0;
+    private int requestCounter = 1;
+    private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies)
+	    throws Exception {
 	super(simulation);
 	this.species = species;
 
@@ -51,7 +52,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	genePoolSize = evolutionEngine.getGenePoolSize();
 	totalPopulation = clonesPerSpecies * genePoolSize;
 	activeBuffer = evolutionEngine.getActiveBuffer();
-	this.requestCounter = 0;
+	this.requestCounter = 1;
 	this.genePoolIndex = 0;
     }
 
@@ -59,22 +60,24 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public Agent getAgent(Species species, int x, int y) {
 	Agent returnAgent = null;
 
-	if (requestCounter >= totalPopulation) {
+	if (requestCounter > totalPopulation) {
 	    // time to generate next generation
 	    generation++;
-	    //D.p("$$$ starting new generation: " + generation);
-	    requestCounter = 0;
+	    D.p("***************************************");
+	    D.p("starting new generation: " + generation);
+	    D.p("***************************************");
+	    requestCounter = 1;
 	    genePoolIndex = 0;
-	    cloneCounter = 0;
+	    cloneCounter = 1;
 	    evolutionEngine.generateNextGeneration(simulation.random);
 	    activeBuffer = evolutionEngine.getActiveBuffer();
 	}
-	
-	if(cloneCounter >= clonesPerSpecies) {
-	    cloneCounter = 0;
+
+	if (cloneCounter > clonesPerSpecies) {
+	    cloneCounter = 1;
 	    genePoolIndex++;
 	}
-	
+
 	// get next agent from the gene-pool and clone it
 	Agent archetype = activeBuffer.get(genePoolIndex);
 	returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
@@ -85,16 +88,9 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	returnAgent.setX(x);
 	returnAgent.setY(y);
-	//D.check(archetype.getProgram().getSignature() == returnAgent.getProgram().getSignature(), "expected clone");
-
-	/*
-	D.p("returning agent: requestCounter:" + requestCounter + " cloneCounter:" + cloneCounter + " genePoolIndex:"
-		+ genePoolIndex + " generation:" + generation + " Agent Signature:"
-		+ returnAgent.getProgram().getSignature());
-	*/
 	requestCounter++;
 	cloneCounter++;
-	
+
 	return returnAgent;
     }
 
