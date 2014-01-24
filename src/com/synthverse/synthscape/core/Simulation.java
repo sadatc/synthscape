@@ -192,8 +192,6 @@ public abstract class Simulation extends SimState implements Constants {
 	numberOfResources = (int) (gridArea * resourceDensity);
 	resourceCaptureGoal = (double) numberOfResources * RESOURCE_CAPTURE_GOAL;
 
-	D.p("obstacles=" + numberOfObstacles + " resources=" + numberOfResources);
-
 	createDataStructures();
 
 	simulationCounter = 0;
@@ -444,12 +442,14 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
-	D.p(")))))  EXPERIMENT STARTS");
+	
+		
+	D.p("====>   EXPERIMENT STARTS: simulations=" + simulationsPerExperiment + " stepsPerSimulation="
+		+ stepsPerSimulation);
 
-	D.p("\n]]] starting simulation (" + simulationCounter + ") with: world="
-		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-		+ agents.size());
+	D.p("\n]]] starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
 
 	initEnvironment();
 	initAgents();
@@ -477,14 +477,19 @@ public abstract class Simulation extends SimState implements Constants {
 		    simStepCounter = 0;
 		    simulationCounter++;
 
-		    // D.p("simulationsPerExperiment="+simulationsPerExperiment);
-
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
+			if(simulationCounter % Constants.EE_DEF_GENE_POOL_SIZE == 0) {
+			    D.p("%%% END OF A GENERATION %%%");
+			}
+			
+			
 			D.p("\n]]] starting simulation (" + simulationCounter + ") with: world="
-				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles
-				+ " sites=" + numberOfCollectionSites + " resources="
-				+ numberOfResources + " agents=" + agents.size());
+				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
+				+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
+				+ agents.size());
+			
+			
 			startNextSimulation();
 
 		    } else {
@@ -495,7 +500,7 @@ public abstract class Simulation extends SimState implements Constants {
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
-			D.p("((((  EXPERIMENT ENDS");
+			D.p("<=====  EXPERIMENT ENDS\n");
 		    }
 		}
 	    }
@@ -600,15 +605,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.agentStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
-		agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(),
-		event, source, destination);
+	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats,
-		fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
     }
 
     public void setStartDate() {

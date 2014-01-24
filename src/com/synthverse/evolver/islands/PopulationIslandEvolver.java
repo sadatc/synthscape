@@ -64,7 +64,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    // time to generate next generation
 	    generation++;
 	    D.p("***************************************");
-	    D.p("starting new generation: " + generation);
+	    D.p("starting new generation: " + (generation+1));
 	    D.p("***************************************");
 	    requestCounter = 1;
 	    genePoolIndex = 0;
