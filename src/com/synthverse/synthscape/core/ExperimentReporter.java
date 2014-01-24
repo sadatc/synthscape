@@ -4,11 +4,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.math3.stat.descriptive.AggregateSummaryStatistics;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.synthverse.util.DateUtils;
+import com.synthverse.util.LogUtils;
 
 /**
  * This stores experiment output into physical medium
@@ -17,6 +19,11 @@ import com.synthverse.util.DateUtils;
  * 
  */
 public class ExperimentReporter implements Constants {
+
+    private static Logger logger = Logger.getLogger(ExperimentReporter.class.getName());
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
 
     private static int STRING_BUFFER_MAX_SIZE = 175;
 
@@ -65,7 +72,7 @@ public class ExperimentReporter implements Constants {
 		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -81,7 +88,7 @@ public class ExperimentReporter implements Constants {
 	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    D.p("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -134,7 +141,7 @@ public class ExperimentReporter implements Constants {
 		eventWriter.newLine();
 	    }
 	} catch (Exception e) {
-	    D.p("Exception while reporting event:" + e.getMessage());
+	    logger.info("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 
@@ -150,7 +157,7 @@ public class ExperimentReporter implements Constants {
 	    }
 
 	} catch (Exception e) {
-	    D.p("Exception while reporting event:" + e.getMessage());
+	    logger.severe("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 
@@ -158,8 +165,8 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
-	    Event event, String source, String destination) {
+    public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x,
+	    int y, Event event, String source, String destination) {
 	try {
 	    if (simulation.isReportEvents()) {
 		sbEvent.append(simulationNumber);
@@ -191,7 +198,7 @@ public class ExperimentReporter implements Constants {
 		}
 	    }
 	} catch (Exception e) {
-	    D.p("Exception while reporting event:" + e.getMessage());
+	    logger.severe("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 
@@ -209,7 +216,7 @@ public class ExperimentReporter implements Constants {
 	    }
 
 	} catch (Exception e) {
-	    D.p("Exception while closing:" + e.getMessage());
+	    logger.info("Exception while closing:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -242,7 +249,7 @@ public class ExperimentReporter implements Constants {
 	    }
 
 	} catch (Exception e) {
-	    D.p("Exception while reporting performance:" + e.getMessage());
+	    logger.severe("Exception while reporting performance:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 
@@ -256,8 +263,8 @@ public class ExperimentReporter implements Constants {
 
 	    // was the last aggregation done?
 	    int captures = aggregateSimStats.getValue(Event.COLLECTED_RESOURCE);
-	    
-	    //D.p(generationCounter+": captures="+captures);
+
+	    // logger.info(generationCounter+": captures="+captures);
 	    this.simulation.aggregationCounter = 0;
 	    aggregateSimStats.clear();
 
@@ -293,7 +300,7 @@ public class ExperimentReporter implements Constants {
 		}
 	    }
 	} catch (Exception e) {
-	    D.p("Exception while reporting performance:" + e.getMessage());
+	    logger.severe("Exception while reporting performance:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}

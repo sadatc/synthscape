@@ -158,18 +158,18 @@ public final class CentralizedEvolutionEngine implements Constants {
 	parentBuffer = new ArrayList<Agent>(genePoolSize);
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
-	D.p(">>> started creating agent pool...");
-	D.p("pre-filling parentBuffer genepool with "+genePoolSize+" agents...");
+	logger.info(">>> started creating agent pool...");
+	logger.info("pre-filling parentBuffer genepool with "+genePoolSize+" agents...");
 	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	D.p("pre-filling offspringBuffer genepool with "+genePoolSize+" agents...");
+	logger.info("pre-filling offspringBuffer genepool with "+genePoolSize+" agents...");
 	for (int i = 0; i < genePoolSize; i++) {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	D.p("<<< finished creating agent pool.\n");
+	logger.info("<<< finished creating agent pool.\n");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 
@@ -309,13 +309,13 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     private void printActiveBuffer() {
-	D.p("==========ACTIVE BUFFER =============");
+	logger.info("==========ACTIVE BUFFER =============");
 	for (int i = 0; i < 1; i++) {
 	    Agent agent = activeBuffer.get(i);
 	    Program p = agent.getProgram();
-	    D.p("--->" + agent.getAgentId() + ":" +agent.getFitness()+":"+ p.getFingerPrint());
+	    logger.info("--->" + agent.getAgentId() + ":" +agent.getFitness()+":"+ p.getFingerPrint());
 	}
-	D.p("=====================================");
+	logger.info("=====================================");
 
     }
 

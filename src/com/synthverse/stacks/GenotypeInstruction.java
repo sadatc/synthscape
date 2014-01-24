@@ -1,10 +1,16 @@
 package com.synthverse.stacks;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.synthverse.synthscape.core.D;
+import com.synthverse.util.LogUtils;
 
 public class GenotypeInstruction {
+    private static Logger logger = Logger.getLogger(GenotypeInstruction.class.getName());
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
 
     public int getSignature() {
 
@@ -18,7 +24,7 @@ public class GenotypeInstruction {
 	} else if (instructionType == InstructionType.FLOAT_VALUE) {
 	    result = (int) floatValue;
 	} else {
-	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    logger.severe("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
 
@@ -32,13 +38,13 @@ public class GenotypeInstruction {
 	if (instructionType == InstructionType.INSTRUCTION) {
 	    result = instruction.getMnemonic().charAt(0);
 	} else if (instructionType == InstructionType.INT_VALUE) {
-	    result = (""+intValue).charAt(0);
+	    result = ("" + intValue).charAt(0);
 	} else if (instructionType == InstructionType.BOOL_VALUE) {
 	    result = booleanValue ? 'T' : 'F';
 	} else if (instructionType == InstructionType.FLOAT_VALUE) {
-	    result = (""+ floatValue).charAt(0);
+	    result = ("" + floatValue).charAt(0);
 	} else {
-	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    logger.severe("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
 
@@ -59,7 +65,7 @@ public class GenotypeInstruction {
 	} else if (instructionType == InstructionType.FLOAT_VALUE) {
 	    result = "" + floatValue;
 	} else {
-	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    logger.info("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
 
@@ -128,25 +134,25 @@ public class GenotypeInstruction {
     }
 
     private GenotypeInstruction(Instruction instruction) {
-	// D.p("==> GenotypeInstruction(instruction)");
+	// logger.info("==> GenotypeInstruction(instruction)");
 	setMetaInstructionType(InstructionType.INSTRUCTION);
 	setInstruction(instruction);
     }
 
     public GenotypeInstruction(int intValue) {
-	// D.p("==> GenotypeInstruction(int)");
+	// logger.info("==> GenotypeInstruction(int)");
 	setMetaInstructionType(InstructionType.INT_VALUE);
 	setIntValue(intValue);
     }
 
     public GenotypeInstruction(double floatValue) {
-	// D.p("==> GenotypeInstruction(double)");
+	// logger.info("==> GenotypeInstruction(double)");
 	setMetaInstructionType(InstructionType.FLOAT_VALUE);
 	setFloatValue(floatValue);
     }
 
     public GenotypeInstruction(boolean booleanValue) {
-	// D.p("==> GenotypeInstruction(boolean)");
+	// logger.info("==> GenotypeInstruction(boolean)");
 	setMetaInstructionType(InstructionType.BOOL_VALUE);
 	setBooleanValue(booleanValue);
     }
@@ -168,10 +174,10 @@ public class GenotypeInstruction {
 	    virtualMachine.getFloatStack().push(floatValue);
 	    virtualMachine.incrementIP();
 	} else {
-	    D.p("FATAL error in determining instruction type. Program should have never reached here...");
+	    logger.severe("FATAL error in determining instruction type. Program should have never reached here...");
 	    System.exit(1);
 	}
-	// D.p("executing"+this);
+	// logger.info("executing"+this);
 
     }
 

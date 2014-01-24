@@ -3,19 +3,27 @@
  */
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
-import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sim.display.Console;
 
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.FancySimulationUI;
+import com.synthverse.util.LogUtils;
 
 /**
  * @author sadat
  * 
  */
 public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
+    
+    private static Logger logger = Logger.getLogger(ManuallyCodedAgentSimulationFancyUI.class.getName());
+    static {
+    	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
+
+
 
     public ManuallyCodedAgentSimulationFancyUI() throws Exception {
 	super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
@@ -26,7 +34,7 @@ public class ManuallyCodedAgentSimulationFancyUI extends FancySimulationUI {
 	    Console c = new Console(new ManuallyCodedAgentSimulationFancyUI());
 	    c.setVisible(true);
 	} catch (Exception e) {
-	    D.p("Exception:" + e.getMessage());
+	    logger.severe("Exception:" + e.getMessage());
 	    e.printStackTrace();
 	}
     }

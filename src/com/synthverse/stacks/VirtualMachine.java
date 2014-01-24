@@ -195,7 +195,7 @@ public final class VirtualMachine {
 
 	/*
 	if(result) {
-	   D.p("executed: "+this.toString());
+	   logger.info("executed: "+this.toString());
 	}
 	*/
 	

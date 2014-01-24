@@ -37,9 +37,11 @@ public final class LogUtils {
     public static final boolean APPEND_TO_LOG_FILE = true;
 
     public static final Level DEFAULT_LOG_LEVEL = Level.CONFIG;
-    public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
+    //public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
+    public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.TIMED_BAREBONES;
 
-    //private static final String FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    // private static final String FORMAT_STRING =
+    // "EEE yyyy/MM/dd HH:mm:ss:SSS";
     private static final String FORMAT_STRING = Config.LOG_FORMAT_STRING;
 
     private static final String WARNING_SYMBOL = "***";
@@ -67,7 +69,8 @@ public final class LogUtils {
      */
     public enum LogFormatter {
 
-	DEFAULT(new LogUtils.BareBonesFormatter()), CUSTOM_SIMPLE(new LogUtils.CustomSimplestLogFormatter()), CUSTOM_DETAILED_2(
+	DEFAULT(new LogUtils.BareBonesFormatter()), TIMED_BAREBONES(new LogUtils.TimedBareBonesFormatter()), CUSTOM_SIMPLE(
+		new LogUtils.CustomSimplestLogFormatter()), CUSTOM_DETAILED_2(
 		new LogUtils.CustomDetailedLogFormatter2()), CUSTOM_DETAILED(new LogUtils.CustomDetailedLogFormatter()), CUSTOM_NEAT(
 		new LogUtils.NeatLogFormatter());
 	;
@@ -106,6 +109,19 @@ public final class LogUtils {
 	    return EMPTY_STRING;
 	}
 
+    }
+
+    private static class TimedBareBonesFormatter extends java.util.logging.SimpleFormatter {
+	public String format(LogRecord record) {
+
+	    StringBuilder SB = new StringBuilder("");
+	    SB.append(dateFormat.format(new Date(record.getMillis())));
+	    SB.append("|");
+
+	    SB.append(record.getMessage());
+	    SB.append(Config.LINE_SEPARATOR);
+	    return SB.toString();
+	}
     }
 
     private static class NeatLogFormatter extends java.util.logging.SimpleFormatter {

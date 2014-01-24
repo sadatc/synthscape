@@ -36,7 +36,7 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
-	D.p("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
+	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
 
 	System.exit(0);
     }
@@ -44,7 +44,7 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     protected void initAgents() {
 	// populate with agents
-	D.p(">>> initializing environment with agents...");
+	logger.info(">>> initializing environment with agents...");
 	
 	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
@@ -84,7 +84,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	D.p("<<< done initializing environment with agents...");
+	logger.info("<<< done initializing environment with agents...");
     }
 
     @Override
@@ -110,11 +110,11 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	// speciesSet.add(Species.DETECTOR);
-	// speciesSet.add(Species.EXTRACTOR);
-	// speciesSet.add(Species.TRANSPORTER);
+	speciesSet.add(Species.DETECTOR);
+	speciesSet.add(Species.EXTRACTOR);
+	speciesSet.add(Species.TRANSPORTER);
 
-	speciesSet.add(Species.SUPER);
+	// speciesSet.add(Species.SUPER);
 	return speciesSet;
     }
 

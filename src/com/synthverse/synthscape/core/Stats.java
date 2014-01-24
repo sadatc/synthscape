@@ -3,8 +3,18 @@ package com.synthverse.synthscape.core;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.synthverse.util.LogUtils;
 
 public class Stats {
+
+    private static Logger logger = Logger.getLogger(Stats.class.getName());
+    static {
+	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    }
+
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
     private Set<Event> events = new HashSet<Event>();
 
@@ -57,11 +67,11 @@ public class Stats {
 
     public void printValues() {
 	if (eventCounterMap.size() > 0) {
-	    D.p("/////////////////////////////////");
+	    logger.info("/////////////////////////////////");
 	    for (Event event : getEvents()) {
-		D.p(event + " = " + eventCounterMap.get(event));
+		logger.info(event + " = " + eventCounterMap.get(event));
 	    }
-	    D.p("/////////////////////////////////");
+	    logger.info("/////////////////////////////////");
 	}
     }
 

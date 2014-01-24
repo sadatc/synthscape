@@ -67,6 +67,7 @@ public final class Config {
     
     
     //public static final String LOG_FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    //public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
     public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
     
     

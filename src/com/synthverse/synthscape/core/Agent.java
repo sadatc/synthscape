@@ -93,7 +93,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     private void init() {
 	generateAgentId();
 	_optimizationAgentCounter++;
-	//D.p("agent("+this.agentId+") created. Total #:" + _optimizationAgentCounter);
+	//logger.info("agent("+this.agentId+") created. Total #:" + _optimizationAgentCounter);
     }
     private Agent() {
 	init();
@@ -273,7 +273,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 		if (broadcast != null) {
-		    // D.p("moving to a broadcast:" + signalType);
+		    // logger.info("moving to a broadcast:" + signalType);
 		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
 		}
 	    }
@@ -642,7 +642,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    // D.p("CAPTURE!! 3 complex");
+			    // logger.info("CAPTURE!! 3 complex");
 			}
 
 		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
@@ -651,7 +651,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    // D.p("CAPTURE!! 4 complex");
+			    // logger.info("CAPTURE!! 4 complex");
 			}
 
 		    } else {

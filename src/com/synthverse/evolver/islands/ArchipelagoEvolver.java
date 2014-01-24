@@ -68,7 +68,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
-	//D.p("$$ called provideFeedback");
+	//logger.info("$$ called provideFeedback");
 	double fitness = computeFitness(simStats, agents);
 
 	for (Agent agent : agents) {
@@ -115,7 +115,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	 * return 1.0; case MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
 	 */
 	case COLLECTED_RESOURCE:
-	    // D.p("encountered collection!!!!!");
+	    // logger.info("encountered collection!!!!!");
 	    return 1.0;
 
 	}

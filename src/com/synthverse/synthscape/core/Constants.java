@@ -6,7 +6,7 @@ public interface Constants {
     
     public static final boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
     
-    public static final int GENERATIONS = 3;
+    public static final int GENERATIONS = 4;
     
     public static final int CLONES_PER_SPECIES = 10;
     

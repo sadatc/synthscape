@@ -63,9 +63,9 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	if (requestCounter > totalPopulation) {
 	    // time to generate next generation
 	    generation++;
-	    D.p("***************************************");
-	    D.p("starting new generation: " + (generation+1));
-	    D.p("***************************************");
+	    logger.info("***************************************");
+	    logger.info("starting new generation: " + (generation+1));
+	    logger.info("***************************************");
 	    requestCounter = 1;
 	    genePoolIndex = 0;
 	    cloneCounter = 1;

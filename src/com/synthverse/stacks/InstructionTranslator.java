@@ -183,7 +183,7 @@ public class InstructionTranslator {
 	StringBuilder sb = new StringBuilder(">>> adding ");
 	sb.append(numInstructions);
 	sb.append(" instructions to the vocabulary...");
-	D.p(sb.toString());
+	logger.info(sb.toString());
 	/*
 	for (int i = 0; i < instructions.length; i++) {
 	    sb.setLength(0);
@@ -191,10 +191,10 @@ public class InstructionTranslator {
 	    sb.append(i);
 	    sb.append(":");
 	    sb.append(instructions[i]);
-	    D.p(sb.toString());
+	    logger.info(sb.toString());
 	}
 	*/
-	D.p("<<< done adding.\n");
+	logger.info("<<< done adding.\n");
     }
 
     /*
