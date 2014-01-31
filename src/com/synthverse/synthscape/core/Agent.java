@@ -34,6 +34,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private int agentId;
 
+    private Team team;
+
     protected int agentStepCounter;
 
     protected int maxSteps;
@@ -93,8 +95,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     private void init() {
 	generateAgentId();
 	_optimizationAgentCounter++;
-	//logger.info("agent("+this.agentId+") created. Total #:" + _optimizationAgentCounter);
+	this.team = null;
+	// logger.info("agent("+this.agentId+") created. Total #:" +
+	// _optimizationAgentCounter);
     }
+
     private Agent() {
 	init();
     }
@@ -109,7 +114,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	init();
-	initGenotype();	
+	initGenotype();
 	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
@@ -906,10 +911,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     @Override
     public String toString() {
-	return "Agent [agentId=" + agentId + ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps
-		+ ", x=" + x + ", y=" + y + ", interactionMechanisms=" + interactionMechanisms + ", species=" + species
-		+ ", isCarryingResource=" + isCarryingResource + ", generation=" + generation + ", program=" + program
-		+ "]";
+	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
+		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
+		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
+		+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
+    }
+
+    public Team getTeam() {
+	return team;
+    }
+
+    public void setTeam(Team team) {
+	this.team = team;
     }
 
 }

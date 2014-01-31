@@ -11,17 +11,19 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.Team;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
+    
+    private Team team = new Team();
 
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
     static {
@@ -40,12 +42,25 @@ public class PopulationIslandSimulation extends Simulation {
 
 	System.exit(0);
     }
+    
+    
+    private void initTeam() {
+	int teamId = team.getTeamId();
+	logger.info(">>> initializing team...");
+	teamId++;
+	team.init();
+	team.setTeamId(teamId);
+	team.setExpectedSize(speciesComposition.size()*clonesPerSpecies);
+	logger.info("<<< team "+teamId+" initialized");
+	
+    }
 
     @Override
     protected void initAgents() {
 	// populate with agents
+	initTeam();
 	logger.info(">>> initializing environment with agents...");
-	
+
 	MersenneTwisterFast randomPrime = this.random;
 	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
@@ -65,10 +80,13 @@ public class PopulationIslandSimulation extends Simulation {
 		    randomY = randomPrime.nextInt(gridHeight);
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
-		
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
-
+		
+		logger.info(">>>>>> adding agent:"+agent.getAgentId()+" of type:"+species.toString());
+		team.addMember(agent);
+		agent.setTeam(team);
+		
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 		agents.add(agent);
 
@@ -81,10 +99,18 @@ public class PopulationIslandSimulation extends Simulation {
 		}
 
 	    }
+	    logger.info("/// added " + clonesPerSpecies + " clones of species:" + species.toString());
 
 	}
 
+	logger.info("team "+team.getTeamId()+" has "+team.getMembers().size()+" agents");
 	logger.info("<<< done initializing environment with agents...");
+	
+	if(this.simulationCounter == getGenePoolSize()) {
+	    logger.info("#### fitness evaluated");
+	    
+	}
+	
     }
 
     @Override
