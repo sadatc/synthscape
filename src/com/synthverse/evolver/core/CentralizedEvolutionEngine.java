@@ -159,12 +159,12 @@ public final class CentralizedEvolutionEngine implements Constants {
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
 	logger.info(">>> started creating agent pool...");
-	logger.info("pre-filling parentBuffer genepool with "+genePoolSize+" agents...");
+	logger.info("pre-filling parentBuffer genepool with " + genePoolSize + " agents...");
 	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	logger.info("pre-filling offspringBuffer genepool with "+genePoolSize+" agents...");
+	logger.info("pre-filling offspringBuffer genepool with " + genePoolSize + " agents...");
 	for (int i = 0; i < genePoolSize; i++) {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
@@ -176,9 +176,8 @@ public final class CentralizedEvolutionEngine implements Constants {
 	entityIdDB = new HashSet<Long>();
 
 	activeBuffer = parentBuffer;
-	
 
-	//printActiveBuffer();
+	// printActiveBuffer();
     }
 
     private final void orderActivePopulationByFitness() {
@@ -313,15 +312,18 @@ public final class CentralizedEvolutionEngine implements Constants {
 	for (int i = 0; i < 1; i++) {
 	    Agent agent = activeBuffer.get(i);
 	    Program p = agent.getProgram();
-	    logger.info("--->" + agent.getAgentId() + ":" +agent.getFitness()+":"+ p.getFingerPrint());
+	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getFingerPrint());
 	}
 	logger.info("=====================================");
 
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
-	
+
+	logger.info("about to generate the next generation...");
+	logger.info("reporting on previous generation...");
 	reportPerformance();
+	logger.info("done reporting...");
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -401,10 +403,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 	 */
 
 	orderActivePopulationByFitness();
-	printActiveBuffer();
+	logger.info("=====================>>> EVALUATED FITNESS ");
+	
+	for(Agent agent: activeBuffer) {
+	    logger.info(agent.getAgentId()+":"+agent.getFitness());
+	}
+	logger.info("=====================>>> EVALUATED FITNESS ");
+
+	// printActiveBuffer();
 
 	generationCounter++;
-	//printActiveBuffer(10);
+	// printActiveBuffer(10);
 
     }
 
