@@ -8,11 +8,11 @@ import java.util.logging.Logger;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.core.Team;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -49,8 +49,8 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public Agent getAgent(Species species, int x, int y) {
 	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
 	// TODO: This layer is aware of how many islands there are...
-	
-	Agent result = islandEvolver.getAgent(species, x, y);	
+
+	Agent result = islandEvolver.getAgent(species, x, y);
 	return result;
     }
 
@@ -68,15 +68,28 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
-	//logger.info("$$ called provideFeedback");
+	logger.info("))))))))))) called provideFeedback");
 	double fitness = computeFitness(simStats, agents);
-
+	logger.info("old team fitness="+agents.get(0).getTeam().getMaxFitness());
+	logger.info("fitness computed="+fitness);
+	// all agents will now share the same fitness
 	for (Agent agent : agents) {
 	    agent.setFitness(fitness);
-	    if (agent.getGenotypicalParent() != null) {
-		agent.getGenotypicalParent().setFitness(fitness);
+	    agent.setProvidedFeedback(true);
+	    Agent cloneParentAgent = agent.getGenotypicalParent();
+
+	    if (cloneParentAgent != null) {
+		cloneParentAgent.setAccumulatedMaxFitness(fitness);
 	    }
 	}
+	
+	// new team fitness should change
+	
+	if(fitness>0) {
+	    logger.info("new team fitness="+agents.get(0).getTeam().getMaxFitness());
+	}
+	
+	logger.info("((((((((((( done with provideFeedback");
 
     }
 

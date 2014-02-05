@@ -5,19 +5,18 @@ import java.util.List;
 
 public class Team {
     private int teamId;
-    protected double fitness;
+
     List<Agent> members;
     boolean allMembersEvaluated = false;
     int expectedSize = 0;
-    
-    
+
     public Team() {
 	init();
     }
 
     public void init() {
 	teamId = -1;
-	fitness = 0;
+
 	if (members == null) {
 	    members = new ArrayList<Agent>();
 	} else {
@@ -34,13 +33,7 @@ public class Team {
 	this.teamId = teamId;
     }
 
-    public double getFitness() {
-	return fitness;
-    }
-
-    public void setFitness(double fitness) {
-	this.fitness = fitness;
-    }
+    
 
     public List<Agent> getMembers() {
 	return members;
@@ -67,7 +60,7 @@ public class Team {
 	}
 	return maxFitness;
     }
-    
+
     public void setAllMembersEvaluated(boolean value) {
 	allMembersEvaluated = value;
     }
@@ -77,13 +70,11 @@ public class Team {
     }
 
     public int getExpectedSize() {
-        return expectedSize;
+	return expectedSize;
     }
 
     public void setExpectedSize(int expectedSize) {
-        this.expectedSize = expectedSize;
+	this.expectedSize = expectedSize;
     }
-    
-    
-    
+
 }

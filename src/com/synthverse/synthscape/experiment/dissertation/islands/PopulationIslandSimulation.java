@@ -22,7 +22,7 @@ import ec.util.MersenneTwisterFast;
 
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
-    
+
     private Team team = new Team();
 
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
@@ -42,17 +42,16 @@ public class PopulationIslandSimulation extends Simulation {
 
 	System.exit(0);
     }
-    
-    
+
     private void initTeam() {
 	int teamId = team.getTeamId();
 	logger.info(">>> initializing team...");
 	teamId++;
 	team.init();
 	team.setTeamId(teamId);
-	team.setExpectedSize(speciesComposition.size()*clonesPerSpecies);
-	logger.info("<<< team "+teamId+" initialized");
-	
+	team.setExpectedSize(speciesComposition.size() * clonesPerSpecies);
+	logger.info("<<< team " + teamId + " initialized");
+
     }
 
     @Override
@@ -82,11 +81,13 @@ public class PopulationIslandSimulation extends Simulation {
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
-		
-		logger.info(">>>>>> adding agent:"+agent.getAgentId()+" of type:"+species.toString());
+
+		agent.setProvidedFeedback(false);
+		//logger.info(">>>>>> adding agent:" + agent.getAgentId() + " of type:" + species.toString());
 		team.addMember(agent);
 		agent.setTeam(team);
 		
+
 		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
 		agents.add(agent);
 
@@ -103,14 +104,14 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	logger.info("team "+team.getTeamId()+" has "+team.getMembers().size()+" agents");
+	logger.info("team " + team.getTeamId() + " has " + team.getMembers().size() + " agents");
 	logger.info("<<< done initializing environment with agents...");
-	
-	if(this.simulationCounter == getGenePoolSize()) {
+
+	if (this.simulationCounter == getGenePoolSize()) {
 	    logger.info("#### fitness evaluated");
-	    
+
 	}
-	
+
     }
 
     @Override
@@ -136,11 +137,11 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	speciesSet.add(Species.DETECTOR);
-	speciesSet.add(Species.EXTRACTOR);
-	speciesSet.add(Species.TRANSPORTER);
+	// speciesSet.add(Species.DETECTOR);
+	// speciesSet.add(Species.EXTRACTOR);
+	// speciesSet.add(Species.TRANSPORTER);
 
-	// speciesSet.add(Species.SUPER);
+	speciesSet.add(Species.SUPER);
 	return speciesSet;
     }
 

@@ -66,7 +66,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected boolean locationHasTrail;
 
-    protected double fitness;
+    protected double fitness = 0.0;
 
     protected int generation;
 
@@ -75,6 +75,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected Program program;
 
     public Stats agentStats = new Stats();
+    
+    protected boolean providedFeedback = false; 
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -829,6 +831,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void setFitness(double fitness) {
 	this.fitness = fitness;
     }
+    
+    
+    public void setAccumulatedMaxFitness(double fitness) {
+	if( this.fitness<fitness) {
+	    this.fitness = fitness;
+	}
+    }
 
     public void setGeneration(int generation) {
 	this.generation = generation;
@@ -924,5 +933,16 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void setTeam(Team team) {
 	this.team = team;
     }
+
+    public boolean isProvidedFeedback() {
+        return providedFeedback;
+    }
+
+    public void setProvidedFeedback(boolean providedFeedback) {
+        this.providedFeedback = providedFeedback;
+    }
+    
+    
+    
 
 }
