@@ -330,7 +330,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 
-	printActiveBuffer();
+	//printActiveBuffer();
 	//logger.info("about to generate the next generation...");
 	//logger.info("reporting on previous generation...");
 	reportPerformance();
