@@ -194,6 +194,10 @@ public final class CentralizedEvolutionEngine implements Constants {
 	for (int i = 0; i < numMutants; i++) {
 	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
+	    
+	    //offspring.setFitness(0);
+	    //offspring.setAccumulatedMaxFitness(0);
+	    
 	    GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
 
 	    // do filtering, if needed
@@ -227,6 +231,10 @@ public final class CentralizedEvolutionEngine implements Constants {
 	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateAParents);
 	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateBParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
+
+	    //offspring.setAccumulatedMaxFitness(0);
+	    //offspring.setFitness(0);
+	    
 	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
 
 	    // do filtering, if needed
@@ -258,6 +266,8 @@ public final class CentralizedEvolutionEngine implements Constants {
     private final void generateNew(int numNewEntities, int offspringBufferIndex) {
 	for (int i = 0; i < numNewEntities; i++) {
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
+	    //offspring.setFitness(0);
+	    //offspring.setAccumulatedMaxFitness(0);
 	    GeneticOperator.randomize(offspring);
 
 	    // do filtering, if needed
@@ -309,7 +319,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     private void printActiveBuffer() {
 	logger.info("==========ACTIVE BUFFER =============");
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i< activeBuffer.size(); i++) {
 	    Agent agent = activeBuffer.get(i);
 	    Program p = agent.getProgram();
 	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getFingerPrint());
@@ -320,10 +330,11 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 
-	logger.info("about to generate the next generation...");
-	logger.info("reporting on previous generation...");
+	printActiveBuffer();
+	//logger.info("about to generate the next generation...");
+	//logger.info("reporting on previous generation...");
 	reportPerformance();
-	logger.info("done reporting...");
+	//logger.info("done reporting...");
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -403,17 +414,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 	 */
 
 	orderActivePopulationByFitness();
-	logger.info("=====================>>> EVALUATED FITNESS ");
-	
+
+	/*
 	for(Agent agent: activeBuffer) {
-	    logger.info(agent.getAgentId()+":"+agent.getFitness());
+	    logger.info("making sure "+agent.getAgentId()+" fitness="+agent.getFitness());
+	    if(agent.getFitness()!=0) {
+		logger.info("trap2");
+	    }
 	}
-	logger.info("=====================>>> EVALUATED FITNESS ");
-
-	// printActiveBuffer();
-
+	*/
 	generationCounter++;
-	// printActiveBuffer(10);
+	//printActiveBuffer();
 
     }
 

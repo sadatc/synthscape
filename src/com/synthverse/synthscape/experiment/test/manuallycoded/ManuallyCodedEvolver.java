@@ -14,6 +14,8 @@ import com.synthverse.synthscape.core.Stats;
 import com.synthverse.util.LogUtils;
 
 public class ManuallyCodedEvolver extends Evolver implements Constants {
+    
+    private int generation;
 
     private static Logger logger = Logger.getLogger(ManuallyCodedEvolver.class.getName());
     static {
@@ -25,6 +27,7 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
 
     protected ManuallyCodedEvolver(Simulation simulation) {
 	super(simulation);
+	generation = 0;
     }
 
     @Override
@@ -70,6 +73,18 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 	// TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void evolve() {
+	// TODO Auto-generated method stub
+	generation++;
+    }
+
+    @Override
+    public int getGeneration() {
+	// TODO Auto-generated method stub
+	return generation;
     }
 
 }

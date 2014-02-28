@@ -10,9 +10,12 @@ import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
 
 public class TestAgentEvolver extends Evolver implements Constants {
+    
+    int generation;
 
     protected TestAgentEvolver(Simulation simulation) {
 	super(simulation);
+	generation = 0;
     }
 
     @Override
@@ -37,6 +40,19 @@ public class TestAgentEvolver extends Evolver implements Constants {
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 	// TODO Auto-generated method stub
 	
+    }
+
+    @Override
+    public void evolve() {
+	// TODO Auto-generated method stub
+	generation++;
+	
+    }
+
+    @Override
+    public int getGeneration() {
+	// TODO Auto-generated method stub
+	return generation;
     }
 
 }

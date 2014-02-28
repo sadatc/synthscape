@@ -23,6 +23,8 @@ import com.synthverse.util.LogUtils;
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
+    private int generation;
+
     protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
 
     static {
@@ -34,14 +36,13 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int totalPopulation;
     private int genePoolSize;
     private int genePoolIndex;
-    private int generation;
+
     private CentralizedEvolutionEngine evolutionEngine;
     private int requestCounter = 1;
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies)
-	    throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
 	super(simulation);
 	this.species = species;
 
@@ -61,16 +62,10 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	Agent returnAgent = null;
 
 	if (requestCounter > totalPopulation) {
-	    // time to generate next generation
-	    generation++;
-	    logger.info("***************************************");
-	    logger.info("starting new generation: " + (generation+1));
-	    logger.info("***************************************");
 	    requestCounter = 1;
 	    genePoolIndex = 0;
 	    cloneCounter = 1;
-	    evolutionEngine.generateNextGeneration(simulation.random);
-	    activeBuffer = evolutionEngine.getActiveBuffer();
+
 	}
 
 	if (cloneCounter > clonesPerSpecies) {
@@ -79,6 +74,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	}
 
 	// get next agent from the gene-pool and clone it
+	activeBuffer = evolutionEngine.getActiveBuffer();
 	Agent archetype = activeBuffer.get(genePoolIndex);
 	returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
 	returnAgent.cloneGenotypeFrom(archetype);
@@ -104,6 +100,33 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 	// do nothing, we don't need it.
 
+    }
+
+    @Override
+    public void evolve() {
+	logger.info("PopulationIslandEvolver(" + species + "): evolve()");
+	// time to generate next generation
+
+	//logger.info("***************************************");
+	logger.info("starting new generation: " + (generation + 1));
+	//logger.info("***************************************");
+	
+	/*
+	for(Agent agent: activeBuffer) {
+	    logger.info("inspecting "+agent.getAgentId()+" fitness="+agent.getFitness());
+	}
+	*/
+	
+	
+	evolutionEngine.generateNextGeneration(simulation.random);
+	activeBuffer = evolutionEngine.getActiveBuffer();
+	generation++;
+    }
+
+    @Override
+    public int getGeneration() {
+
+	return generation;
     }
 
 }

@@ -435,22 +435,22 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (!tmpBroadcasts.isEmpty()) {
 		registeredBroadcasts.putAll(tmpBroadcasts);
 	    }
-	    // logger.info("=> Num of Broadcasts:" +registeredBroadcasts.size());
+	    // logger.info("=> Num of Broadcasts:"
+	    // +registeredBroadcasts.size());
 	}
 
     }
 
     private void startSimulation() {
 
-	
-		
 	logger.info("====>   EXPERIMENT STARTS: simulations=" + simulationsPerExperiment + " stepsPerSimulation="
 		+ stepsPerSimulation);
 
+	/*
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
 		+ numberOfResources + " agents=" + agents.size());
-
+	*/
 	initEnvironment();
 	initAgents();
 
@@ -472,25 +472,28 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    doEndOfSimulationTasks();
 
-		    logger.info("---- end of simulation: collected=" + numberOfCollectedResources);
+		    //logger.info("---- end of simulation: collected=" + numberOfCollectedResources);
 
 		    simStepCounter = 0;
 		    simulationCounter++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
-			if(simulationCounter % Constants.EE_DEF_GENE_POOL_SIZE == 0) {
-			    logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~ END OF A GENERATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-			    
+			if (simulationCounter % Constants.EE_DEF_GENE_POOL_SIZE == 0) {
+			    /*
+			    logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~ END OF A GENERATION (" + evolver.getGeneration()
+				    + ")~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+			    */
+			    evolver.evolve();
+
 			}
-			
-			
+			/*
+
 			logger.info("---- starting simulation (" + simulationCounter + ") with: world="
 				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
 				+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
 				+ agents.size());
-			
-			
+			*/
 			startNextSimulation();
 
 		    } else {
@@ -532,16 +535,13 @@ public abstract class Simulation extends SimState implements Constants {
     protected void startNextSimulation() {
 
 	simStats.aggregateStatsTo(aggregateSimStats);
+
 	aggregationCounter++;
 	simStats.clear();
 
 	resetEnvironment();
 
-	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    logger.info("collected Resources=" + this.numberOfCollectedResources);
-	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
-	}
-
+	
 	initEnvironment();
 	initAgents();
 
@@ -578,14 +578,15 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     private void doEndOfSimulationTasks() {
-	/*
-	 * for(Agent agent: agents) { logger.info("agent.species:"+agent.getSpecies());
-	 * }
-	 */
-
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
+	
+	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+	    logger.info("guiness record of resource collection=" + this.numberOfCollectedResources);
+	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
+	}
 
+	
     }
 
     public void start() {
@@ -612,6 +613,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
+
 	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
     }
 

@@ -1,5 +1,9 @@
 package com.synthverse.synthscape.core;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class D {
     public static void p(String debug) {
 	System.out.println(debug);
@@ -32,6 +36,16 @@ public class D {
 	    p("Exiting Program!!");
 	    System.exit(1);
 	}
+    }
+    
+    public static void pause() {
+	BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+
+	try {
+	    stdin.readLine();
+	} catch (IOException e) {
+	    
+	} 
     }
     
 
