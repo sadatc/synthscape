@@ -72,8 +72,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     public void provideFeedback(List<Agent> agents, Stats simStats) {
 
 	double fitness = computeFitness(simStats, agents);
-	
-	
+
 	// all agents will now share the same fitness
 	for (Agent agent : agents) {
 	    agent.setFitness(fitness);
@@ -99,17 +98,15 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	}
 	if (result > maxFitness) {
-	    logger.info("Fitness=" + result);
-	    //logger.info(agents.get(0).getVirtualMachine().toString());
+	    logger.info("###### Record Fitness=" + result +" at generation="+generation);
+
 	    maxFitness = result;
 	}
 
 	/*
-	if(result>0.0) {
-	    logger.info("trap");
-	}
-	*/
-	
+	 * if(result>0.0) { logger.info("trap"); }
+	 */
+
 	return result;
     }
 
@@ -138,12 +135,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public void evolve() {
-	logger.info("ArchipelagoEvolver: evolve()");
+	//logger.info("ArchipelagoEvolver: evolve()");
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
 	generation++;
-	//D.pause();
+	// D.pause();
 	// System.exit(1);
 
     }
