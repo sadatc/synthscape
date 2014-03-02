@@ -99,6 +99,11 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
+	if (this.simulationCounter == getGenePoolSize()) {
+	    logger.info("#### fitness evaluated");
+
+	}
+
     }
 
     @Override

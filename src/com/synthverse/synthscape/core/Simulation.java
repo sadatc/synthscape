@@ -582,7 +582,7 @@ public abstract class Simulation extends SimState implements Constants {
 	this.evolver.provideFeedback(agents, simStats);
 	
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    //logger.info("guiness record of resource collection=" + this.numberOfCollectedResources);
+	    logger.info("guiness record of resource collection=" + this.numberOfCollectedResources);
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
 
