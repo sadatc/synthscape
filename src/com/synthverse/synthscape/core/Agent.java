@@ -75,8 +75,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected Program program;
 
     public Stats agentStats = new Stats();
-    
-    protected boolean providedFeedback = false; 
+
+    protected boolean providedFeedback = false;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Level.ALL);
@@ -649,7 +649,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    // logger.info("CAPTURE!! 3 complex");
+			    logger.info("CAPTURE!! 3 complex");
 			}
 
 		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
@@ -658,7 +658,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    // logger.info("CAPTURE!! 4 complex");
+			    logger.info("CAPTURE!! 4 complex");
 			}
 
 		    } else {
@@ -831,10 +831,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void setFitness(double fitness) {
 	this.fitness = fitness;
     }
-    
-    
+
     public void setAccumulatedMaxFitness(double fitness) {
-	if( this.fitness<fitness) {
+	if (this.fitness < fitness) {
 	    this.fitness = fitness;
 	}
     }
@@ -935,14 +934,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public boolean isProvidedFeedback() {
-        return providedFeedback;
+	return providedFeedback;
     }
 
     public void setProvidedFeedback(boolean providedFeedback) {
-        this.providedFeedback = providedFeedback;
+	this.providedFeedback = providedFeedback;
     }
-    
-    
-    
 
 }
