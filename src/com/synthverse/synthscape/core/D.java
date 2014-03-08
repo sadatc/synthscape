@@ -39,6 +39,7 @@ public class D {
     }
     
     public static void pause() {
+	D.p("Press ENTER to continue...");
 	BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
 	try {

@@ -446,11 +446,11 @@ public abstract class Simulation extends SimState implements Constants {
 	logger.info("====>   EXPERIMENT STARTS: simulations=" + simulationsPerExperiment + " stepsPerSimulation="
 		+ stepsPerSimulation);
 
-	/*
+	
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
 		+ numberOfResources + " agents=" + agents.size());
-	*/
+	
 	initEnvironment();
 	initAgents();
 

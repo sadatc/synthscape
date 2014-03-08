@@ -264,7 +264,7 @@ public class ExperimentReporter implements Constants {
 	    // was the last aggregation done?
 	    int captures = aggregateSimStats.getValue(Event.COLLECTED_RESOURCE);
 
-	    // logger.info(generationCounter+": captures="+captures);
+	    logger.info(generationCounter + ": captures=" + captures);
 	    this.simulation.aggregationCounter = 0;
 	    aggregateSimStats.clear();
 

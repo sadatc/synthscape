@@ -112,10 +112,10 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	//logger.info("***************************************");
 	
 	
-	for(Agent agent: activeBuffer) {
+	/*for(Agent agent: activeBuffer) {
 	    logger.info("inspecting "+agent.getAgentId()+" fitness="+agent.getFitness());
 	}
-	
+	*/
 	
 	
 	evolutionEngine.generateNextGeneration(simulation.random);

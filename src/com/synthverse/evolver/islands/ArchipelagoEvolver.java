@@ -140,7 +140,8 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	    evolver.evolve();
 	}
 	generation++;
-	// D.pause();
+	
+	//D.pause();
 	// System.exit(1);
 
     }
