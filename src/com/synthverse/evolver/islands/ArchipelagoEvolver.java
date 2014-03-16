@@ -80,7 +80,8 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	    Agent cloneParentAgent = agent.getGenotypicalParent();
 
 	    if (cloneParentAgent != null) {
-		cloneParentAgent.setAccumulatedMaxFitness(fitness);
+		//cloneParentAgent.setAccumulatedMaxFitness(fitness);
+		cloneParentAgent.setFitness(fitness);
 	    }
 	}
 
