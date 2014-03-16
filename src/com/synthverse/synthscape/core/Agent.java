@@ -649,7 +649,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    logger.info("CAPTURE!! 3 complex");
+			    //logger.info("CAPTURE!! 3 complex");
 			}
 
 		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
@@ -658,7 +658,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    logger.info("CAPTURE!! 4 complex");
+			    //logger.info("CAPTURE!! 4 complex");
 			}
 
 		    } else {

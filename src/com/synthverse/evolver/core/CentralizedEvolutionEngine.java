@@ -177,7 +177,9 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	activeBuffer = parentBuffer;
 
-	// printActiveBuffer();
+	printActiveBuffer();
+	
+	D.pause();
     }
 
     private final void orderActivePopulationByFitness() {
@@ -318,11 +320,16 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     private void printActiveBuffer() {
+	int counter = 0;
 	logger.info("==========ACTIVE BUFFER =============");
-	for (int i = 0; i< activeBuffer.size(); i++) {
+	for (int i = 0; i< activeBuffer.size(); i+=5) {
 	    Agent agent = activeBuffer.get(i);
-	    Program p = agent.getProgram();
-	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getFingerPrint());
+	    Program p = agent.getProgram();	   
+	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getSignature());
+	    counter++;
+	    if(counter>=10) {
+		break;
+	    }
 	}
 	logger.info("=====================================");
 
@@ -424,7 +431,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	}
 	*/
 	generationCounter++;
-	//printActiveBuffer();
+	printActiveBuffer();
 
     }
 

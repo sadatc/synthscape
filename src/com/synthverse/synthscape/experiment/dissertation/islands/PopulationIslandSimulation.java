@@ -135,7 +135,7 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
 	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
-	mechanisms.add(InteractionMechanism.TRAIL);
+	//mechanisms.add(InteractionMechanism.TRAIL);
 	// mechanisms.add(InteractionMechanism.BROADCAST);
 	// mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
 	// mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
