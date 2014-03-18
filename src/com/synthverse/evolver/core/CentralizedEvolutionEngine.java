@@ -174,8 +174,8 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	activeBuffer = parentBuffer;
 
-	// printActiveBufferSample();
-	printActiveBufferFull();
+	printActiveBufferSample();
+	//printActiveBufferFull();
 
     }
 
@@ -367,7 +367,8 @@ public final class CentralizedEvolutionEngine implements Constants {
 	orderActivePopulationByFitness();
 
 	generationCounter++;
-	printActiveBufferFull();
+	//printActiveBufferFull();
+	printActiveBufferSample();
 
     }
 
