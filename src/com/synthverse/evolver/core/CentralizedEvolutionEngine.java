@@ -40,7 +40,6 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     ArrayList<Agent> topPerformers = null;
     ArrayList<Agent> bottomPerformers = null;
-    HashSet<Long> entityIdDB = null;
 
     int aTop;
     int aTopXTop;
@@ -172,8 +171,6 @@ public final class CentralizedEvolutionEngine implements Constants {
 	logger.info("<<< finished creating agent pool.\n");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
-
-	entityIdDB = new HashSet<Long>();
 
 	activeBuffer = parentBuffer;
 
