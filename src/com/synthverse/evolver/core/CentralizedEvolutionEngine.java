@@ -177,9 +177,9 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	activeBuffer = parentBuffer;
 
-	printActiveBuffer();
-	
-	D.pause();
+	// printActiveBufferSample();
+	printActiveBufferFull();
+
     }
 
     private final void orderActivePopulationByFitness() {
@@ -196,31 +196,9 @@ public final class CentralizedEvolutionEngine implements Constants {
 	for (int i = 0; i < numMutants; i++) {
 	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
-	    
-	    //offspring.setFitness(0);
-	    //offspring.setAccumulatedMaxFitness(0);
-	    
+
 	    GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
 
-	    // do filtering, if needed
-	    if (Config.FILTER_ENTITY_DUPLICATES) {
-		int numRetries = 0;
-		long offspringId;
-
-		// now make sure we don't have offspring from before
-		while (numRetries < Config.MAX_RETRIES_FOR_ENTITY_FILTERS) {
-		    offspringId = offspring.getId();
-
-		    if (entityIdDB.contains(offspringId)) {
-			parent = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateParents);
-			GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
-			numRetries++;
-		    } else {
-			entityIdDB.add(offspringId);
-			break;
-		    }
-		}
-	    }
 	    offspringBufferIndex++;
 	}
 
@@ -234,32 +212,8 @@ public final class CentralizedEvolutionEngine implements Constants {
 	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateBParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
 
-	    //offspring.setAccumulatedMaxFitness(0);
-	    //offspring.setFitness(0);
-	    
 	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
 
-	    // do filtering, if needed
-	    if (Config.FILTER_ENTITY_DUPLICATES) {
-		int numRetries = 0;
-		long offspringId;
-
-		// now make sure we don't have offspring from before
-		while (numRetries < Config.MAX_RETRIES_FOR_ENTITY_FILTERS) {
-		    offspringId = offspring.getId();
-
-		    if (entityIdDB.contains(offspringId)) {
-			parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateAParents);
-			parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateBParents);
-			GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
-
-			numRetries++;
-		    } else {
-			entityIdDB.add(offspringId);
-			break;
-		    }
-		}
-	    }
 	    offspringBufferIndex++;
 	}
 
@@ -268,28 +222,9 @@ public final class CentralizedEvolutionEngine implements Constants {
     private final void generateNew(int numNewEntities, int offspringBufferIndex) {
 	for (int i = 0; i < numNewEntities; i++) {
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
-	    //offspring.setFitness(0);
-	    //offspring.setAccumulatedMaxFitness(0);
+
 	    GeneticOperator.randomize(offspring);
 
-	    // do filtering, if needed
-	    if (Config.FILTER_ENTITY_DUPLICATES) {
-		int numRetries = 0;
-		long offspringId;
-
-		// now make sure we don't have offspring from before
-		while (numRetries < Config.MAX_RETRIES_FOR_ENTITY_FILTERS) {
-		    offspringId = offspring.getId();
-
-		    if (entityIdDB.contains(offspringId)) {
-			GeneticOperator.randomize(offspring);
-			numRetries++;
-		    } else {
-			entityIdDB.add(offspringId);
-			break;
-		    }
-		}
-	    }
 	    offspringBufferIndex++;
 	}
 
@@ -319,15 +254,15 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private void printActiveBuffer() {
+    private void printActiveBufferSample() {
 	int counter = 0;
-	logger.info("==========ACTIVE BUFFER =============");
-	for (int i = 0; i< activeBuffer.size(); i+=5) {
+	logger.info("=======SAMPLING ACTIVE BUFFER ========");
+	for (int i = 0; i < activeBuffer.size(); i += 5) {
 	    Agent agent = activeBuffer.get(i);
-	    Program p = agent.getProgram();	   
+	    Program p = agent.getProgram();
 	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getSignature());
 	    counter++;
-	    if(counter>=10) {
+	    if (counter >= 15) {
 		break;
 	    }
 	}
@@ -335,13 +270,34 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
+    private void printActiveBufferFull() {
+
+	logger.info("=======FULL ACTIVE BUFFER ========");
+	for (int i = 0; i < activeBuffer.size(); i++) {
+	    Agent agent = activeBuffer.get(i);
+	    Program p = agent.getProgram();
+	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getSignature());
+
+	}
+	logger.info("=====================================");
+
+    }
+
+    private void verifyActiveBuffer() {
+
+	// 1. verify that all agents are accounted for
+	// 2. print fitness variety
+	// 3. print genotype variety
+
+    }
+
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 
-	//printActiveBuffer();
+	// printActiveBuffer();
 	logger.info("about to generate the next generation...");
 	logger.info("reporting on previous generation...");
 	reportPerformance();
-	//logger.info("done reporting...");
+	// logger.info("done reporting...");
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -411,27 +367,10 @@ public final class CentralizedEvolutionEngine implements Constants {
 	offspringBuffer = savedSwapBuffer;
 	activeBuffer = parentBuffer;
 
-	/*
-	 * String msg = "t=" + aTop + ", tXt=" + aTopXTop + ", tM=" +
-	 * aTopMutants + ", tXb=" + aTopXBottom + ", b=" + aBottom + ", bM=" +
-	 * aBottomMutants + ", bXb=" + aBottomXBottom + ", n=" + aRandom;
-	 * 
-	 * logger.fine("[GENERATION " + generationCounter +
-	 * "] REGENERATION COMPLETED:" + msg);
-	 */
-
 	orderActivePopulationByFitness();
 
-	/*
-	for(Agent agent: activeBuffer) {
-	    logger.info("making sure "+agent.getAgentId()+" fitness="+agent.getFitness());
-	    if(agent.getFitness()!=0) {
-		logger.info("trap2");
-	    }
-	}
-	*/
 	generationCounter++;
-	printActiveBuffer();
+	printActiveBufferFull();
 
     }
 

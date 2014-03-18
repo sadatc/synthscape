@@ -832,11 +832,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.fitness = fitness;
     }
 
-    public void setAccumulatedMaxFitness(double fitness) {
-	if (this.fitness < fitness) {
-	    this.fitness = fitness;
-	}
-    }
+
 
     public void setGeneration(int generation) {
 	this.generation = generation;

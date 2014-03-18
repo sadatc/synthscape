@@ -443,14 +443,15 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
-	logger.info("====>   EXPERIMENT STARTS: simulations=" + simulationsPerExperiment + " stepsPerSimulation="
+	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment + " stepsPerSimulation="
 		+ stepsPerSimulation);
 
-	
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
 		+ numberOfResources + " agents=" + agents.size());
 	
+	
+
 	initEnvironment();
 	initAgents();
 
@@ -472,7 +473,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    doEndOfSimulationTasks();
 
-		    //logger.info("---- end of simulation: collected=" + numberOfCollectedResources);
+		    // logger.info("---- end of simulation: collected=" +
+		    // numberOfCollectedResources);
 
 		    simStepCounter = 0;
 		    simulationCounter++;
@@ -480,20 +482,18 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % Constants.EE_DEF_GENE_POOL_SIZE == 0) {
-			    /*
-			    logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~ END OF A GENERATION (" + evolver.getGeneration()
-				    + ")~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-			    */
+			   logger.info("completed running generation:"+evolver.getGeneration());
 			    evolver.evolve();
 
 			}
 			/*
-
-			logger.info("---- starting simulation (" + simulationCounter + ") with: world="
-				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-				+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-				+ agents.size());
-			*/
+			 * 
+			 * logger.info("---- starting simulation (" +
+			 * simulationCounter + ") with: world=" + (gridHeight *
+			 * gridWidth) + " obstacles=" + numberOfObstacles +
+			 * " sites=" + numberOfCollectionSites + " resources=" +
+			 * numberOfResources + " agents=" + agents.size());
+			 */
 			startNextSimulation();
 
 		    } else {
@@ -541,7 +541,6 @@ public abstract class Simulation extends SimState implements Constants {
 
 	resetEnvironment();
 
-	
 	initEnvironment();
 	initAgents();
 
@@ -580,13 +579,11 @@ public abstract class Simulation extends SimState implements Constants {
     private void doEndOfSimulationTasks() {
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
-	
+
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    //logger.info("guiness record of resource collection=" + this.numberOfCollectedResources);
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
 
-	
     }
 
     public void start() {

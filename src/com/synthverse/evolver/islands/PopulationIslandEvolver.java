@@ -8,7 +8,6 @@ import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
@@ -104,20 +103,19 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void evolve() {
-	//logger.info("PopulationIslandEvolver(" + species + "): evolve()");
+	// logger.info("PopulationIslandEvolver(" + species + "): evolve()");
 	// time to generate next generation
 
-	//logger.info("***************************************");
-	//logger.info("starting new generation: " + (generation + 1));
-	//logger.info("***************************************");
-	
-	
-	/*for(Agent agent: activeBuffer) {
-	    logger.info("inspecting "+agent.getAgentId()+" fitness="+agent.getFitness());
-	}
-	*/
-	
-	
+	// logger.info("***************************************");
+	// logger.info("starting new generation: " + (generation + 1));
+	// logger.info("***************************************");
+
+	/*
+	 * for(Agent agent: activeBuffer) {
+	 * logger.info("inspecting "+agent.getAgentId
+	 * ()+" fitness="+agent.getFitness()); }
+	 */
+
 	evolutionEngine.generateNextGeneration(simulation.random);
 	activeBuffer = evolutionEngine.getActiveBuffer();
 	generation++;

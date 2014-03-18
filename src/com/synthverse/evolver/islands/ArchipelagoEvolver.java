@@ -73,14 +73,14 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	double fitness = computeFitness(simStats, agents);
 
-	// all agents will now share the same fitness
+	// here all agents are forced to have the same fitness
 	for (Agent agent : agents) {
 	    agent.setFitness(fitness);
 	    agent.setProvidedFeedback(true);
 	    Agent cloneParentAgent = agent.getGenotypicalParent();
 
 	    if (cloneParentAgent != null) {
-		//cloneParentAgent.setAccumulatedMaxFitness(fitness);
+
 		cloneParentAgent.setFitness(fitness);
 	    }
 	}
@@ -99,7 +99,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	}
 	if (result > maxFitness) {
-	    logger.info("###### Record Fitness=" + result +" at generation="+generation);
+	    logger.info("###### Record Fitness=" + result + " at generation=" + generation);
 
 	    maxFitness = result;
 	}
@@ -136,13 +136,13 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public void evolve() {
-	//logger.info("ArchipelagoEvolver: evolve()");
+	// logger.info("ArchipelagoEvolver: evolve()");
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
 	generation++;
-	
-	//D.pause();
+
+	// D.pause();
 	// System.exit(1);
 
     }

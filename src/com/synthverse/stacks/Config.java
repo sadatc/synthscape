@@ -24,7 +24,7 @@ package com.synthverse.stacks;
  * 
  */
 public final class Config {
-    
+
     public final static int DEFAULT_ARRAY_SIZE = 64;
     public final static int DEFAULT_PROGRAM_ARRAY_SIZE = 256;
     public final static int DEFAULT_ENTITY_CPU_CYCLES = 256;
@@ -35,14 +35,6 @@ public final class Config {
 
     public final static int DEFAULT_RANDOM_SEED = 123456789;
 
-    public final static int MAX_RETRIES_FOR_ENTITY_FILTERS = 40;
-
-    public final static boolean FILTER_ENTITY_DUPLICATES = false;
-
-    
-    
-    
-    
     //
     // The constants below should not be changed.
     //
@@ -53,7 +45,6 @@ public final class Config {
     public final static int DEFAULT_BOOLEAN_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
     public final static int DEFAULT_FLOAT_STACK_CAPACITY = DEFAULT_STACK_CAPACITY;
 
-    
     public final static boolean RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES = true;
 
     /**
@@ -64,17 +55,15 @@ public final class Config {
     public final static boolean DEFAULT_BOOLEAN_VALUE = false;
     public final static float DEFAULT_FLOAT_VALUE = 0F;
     public final static int DEFAULT_INTEGER_VALUE = 0;
-    
-    
-    //public static final String LOG_FORMAT_STRING = "EEE yyyy/MM/dd HH:mm:ss:SSS";
-    //public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
+
+    // public static final String LOG_FORMAT_STRING =
+    // "EEE yyyy/MM/dd HH:mm:ss:SSS";
+    // public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
     public static final String LOG_FORMAT_STRING = "MM/dd HH:mm:ss:SSS";
-    
-    
+
     public final static String EMPTY_CONTAINER_STRING = "[]";
 
-    public final static String LINE_SEPARATOR = System
-	    .getProperty("line.separator");
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private Config() {
 	throw new AssertionError("Config constructor is restricted");
