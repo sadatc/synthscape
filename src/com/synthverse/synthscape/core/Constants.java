@@ -3,23 +3,9 @@ package com.synthverse.synthscape.core;
 public interface Constants {
 
     // MORE frequently changed constants appear here...
-    
-    public static final boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
-    
-    public static final int GENERATIONS = 3000;
-    
-    public static final int CLONES_PER_SPECIES = 10;
-    
-    public static final int EE_DEF_GENE_POOL_SIZE = 2000;
-    
+
     public static final int MAX_STEPS_PER_AGENT = 256;
-    
-    public static final ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
-    
-    public static final int NUMBER_OF_COLLECTION_SITES = 5;
-    
-    public static final double RESOURCE_CAPTURE_GOAL = 0.5;
-    
+
     public static final int NUMBER_OF_STEPS_FOR_BROADCASTED_SIGNAL = 2;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
@@ -47,14 +33,6 @@ public interface Constants {
     public static final String EE_DEF_EVOLUTION_PROGRESS_LOG = "/tmp/progress.log";
 
     // SIMULATION RELATED CONSTANTS
-
-    public static final int WORLD_WIDTH = 16;
-
-    public static final int WORLD_HEIGHT = 16;
-
-    public static final int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
-
-    public static final int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 
     public static final int PRESENT = 1;
 
@@ -107,7 +85,5 @@ public interface Constants {
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
 
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
-
-    public static final int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
 }

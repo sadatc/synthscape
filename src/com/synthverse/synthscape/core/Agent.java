@@ -44,7 +44,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
+	    .noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -114,7 +115,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	initGenotype();
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
+	    int startX, int startY) {
 	init();
 	initGenotype();
 	// set the basic stuff:
@@ -194,8 +196,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
+		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -343,7 +346,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -462,7 +466,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(Simulation.PRIMARY_COLLECTION_SITE_X, Simulation.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X,
+		sim.settings.PRIMARY_COLLECTION_SITE_Y);
 	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
@@ -614,7 +619,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource
+		    || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -630,7 +636,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource
+		    && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -649,16 +656,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    //logger.info("CAPTURE!! 3 complex");
+			    // logger.info("CAPTURE!! 3 complex");
 			}
 
-		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity
+			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    //logger.info("CAPTURE!! 4 complex");
+			    // logger.info("CAPTURE!! 4 complex");
 			}
 
 		    } else {
@@ -832,8 +840,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.fitness = fitness;
     }
 
-
-
     public void setGeneration(int generation) {
 	this.generation = generation;
     }
@@ -916,9 +922,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     @Override
     public String toString() {
 	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
-		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
-		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
-		+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
+		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x
+		+ ", y=" + y + ", interactionMechanisms=" + interactionMechanisms + ", species="
+		+ species + ", isCarryingResource=" + isCarryingResource + ", generation="
+		+ generation + ", program=" + program + "]";
     }
 
     public Team getTeam() {

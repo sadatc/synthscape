@@ -7,18 +7,22 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
+import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.util.StringUtils;
 
 @SuppressWarnings("serial")
 public class ManuallyCodedAgentSimulation extends Simulation {
+    Settings settings = Settings.getInstance();
+    
 
     public ManuallyCodedAgentSimulation(long seed) throws Exception {
 	super(seed);
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat 1 -seed 2");
 	doLoop(ManuallyCodedAgentSimulation.class, manualArgs);
 
 	System.exit(0);
@@ -86,7 +90,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configNumberOfCollectionSites() {
-	return NUMBER_OF_COLLECTION_SITES;
+	return settings.NUMBER_OF_COLLECTION_SITES;
     }
 
     @Override
@@ -113,7 +117,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configSimulationsPerExperiment() {
-	return SIMS_PER_EXPERIMENT;
+	return settings.SIMS_PER_EXPERIMENT;
     }
 
     @Override
@@ -129,7 +133,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     
     @Override
     public int configGenePoolSize() {
-	return EE_DEF_GENE_POOL_SIZE;
+	return settings.EE_DEF_GENE_POOL_SIZE;
     }
 
 

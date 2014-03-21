@@ -11,12 +11,15 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
+import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.util.LogUtils;
+import com.synthverse.util.StringUtils;
 
 import ec.util.MersenneTwisterFast;
 
@@ -36,10 +39,9 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat 1 -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
-
 	System.exit(0);
     }
 
@@ -59,7 +61,7 @@ public class PopulationIslandSimulation extends Simulation {
 	initTeam();
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
@@ -103,12 +105,12 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public int configGridWidth() {
-	return WORLD_WIDTH;
+	return settings.WORLD_WIDTH;
     }
 
     @Override
     public int configGridHeight() {
-	return WORLD_HEIGHT;
+	return settings.WORLD_HEIGHT;
     }
 
     @Override
@@ -135,7 +137,7 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
 	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
-	//mechanisms.add(InteractionMechanism.TRAIL);
+	// mechanisms.add(InteractionMechanism.TRAIL);
 	// mechanisms.add(InteractionMechanism.BROADCAST);
 	// mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
 	// mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
@@ -144,17 +146,17 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public ProblemComplexity configProblemComplexity() {
-	return PROBLEM_COMPLEXITY;
+	return settings.PROBLEM_COMPLEXITY;
     }
 
     @Override
     public int configClonesPerSpecies() {
-	return CLONES_PER_SPECIES;
+	return settings.CLONES_PER_SPECIES;
     }
 
     @Override
     public int configNumberOfCollectionSites() {
-	return NUMBER_OF_COLLECTION_SITES;
+	return settings.NUMBER_OF_COLLECTION_SITES;
     }
 
     @Override
@@ -179,7 +181,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public int configSimulationsPerExperiment() {
-	return SIMS_PER_EXPERIMENT;
+	return settings.SIMS_PER_EXPERIMENT;
     }
 
     @Override
@@ -205,7 +207,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public int configGenePoolSize() {
-	return EE_DEF_GENE_POOL_SIZE;
+	return settings.EE_DEF_GENE_POOL_SIZE;
     }
 
 }

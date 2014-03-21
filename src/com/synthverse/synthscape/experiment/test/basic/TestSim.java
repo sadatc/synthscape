@@ -9,12 +9,13 @@ import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.util.StringUtils;
 
 @SuppressWarnings("serial")
 public class TestSim extends Simulation {
 
     public static void main(String[] arg) {
-	String[] manualArgs = parseArguments("-repeat 1 -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat 1 -seed 2");
 	doLoop(TestSim.class, manualArgs);
 
 	System.exit(0);
@@ -36,12 +37,12 @@ public class TestSim extends Simulation {
 
     @Override
     public int configGridWidth() {
-	return WORLD_WIDTH;
+	return settings.WORLD_WIDTH;
     }
 
     @Override
     public int configGridHeight() {
-	return WORLD_HEIGHT;
+	return settings.WORLD_HEIGHT;
     }
 
     @Override
@@ -78,12 +79,12 @@ public class TestSim extends Simulation {
 
     @Override
     public int configClonesPerSpecies() {
-	return CLONES_PER_SPECIES;
+	return settings.CLONES_PER_SPECIES;
     }
 
     @Override
     public int configNumberOfCollectionSites() {
-	return NUMBER_OF_COLLECTION_SITES;
+	return settings.NUMBER_OF_COLLECTION_SITES;
     }
 
     @Override
@@ -108,7 +109,7 @@ public class TestSim extends Simulation {
 
     @Override
     public int configSimulationsPerExperiment() {
-	return SIMS_PER_EXPERIMENT;
+	return settings.SIMS_PER_EXPERIMENT;
     }
 
     @Override
@@ -123,7 +124,7 @@ public class TestSim extends Simulation {
     
     @Override
     public int configGenePoolSize() {
-	return EE_DEF_GENE_POOL_SIZE;
+	return settings.EE_DEF_GENE_POOL_SIZE;
     }
 
 

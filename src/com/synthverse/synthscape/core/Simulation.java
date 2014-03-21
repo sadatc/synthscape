@@ -36,6 +36,8 @@ import ec.util.MersenneTwisterFast;
  */
 
 public abstract class Simulation extends SimState implements Constants {
+    
+    public Settings settings = Settings.getInstance();
 
     private static final long serialVersionUID = 2700375028430112699L;
     protected static Logger logger = Logger.getLogger(Agent.class.getName());
@@ -190,7 +192,7 @@ public abstract class Simulation extends SimState implements Constants {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (double) numberOfResources * RESOURCE_CAPTURE_GOAL;
+	resourceCaptureGoal = (double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL;
 
 	createDataStructures();
 
@@ -253,7 +255,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setNumberOfResources(int numberOfResources) {
 	this.numberOfResources = numberOfResources;
-	this.resourceCaptureGoal = numberOfResources * RESOURCE_CAPTURE_GOAL;
+	this.resourceCaptureGoal = numberOfResources * settings.RESOURCE_CAPTURE_GOAL;
 
     }
 
@@ -283,14 +285,14 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void initPrimaryCollectionSite() {
 	// set the primary collection site
-	collectionSiteGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	initCollisionGrid.field[PRIMARY_COLLECTION_SITE_X][PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(PRIMARY_COLLECTION_SITE_X, PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
+	initCollisionGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
+	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
     }
 
     private void initNonPrimaryCollectionSites() {
 	MersenneTwisterFast randomPrime = this.random;
-	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
@@ -314,7 +316,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void initObstacles() {
 	// create obstacles in random locations
 	MersenneTwisterFast randomPrime = this.random;
-	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
@@ -338,7 +340,7 @@ public abstract class Simulation extends SimState implements Constants {
     private void initResources() {
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
@@ -374,7 +376,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// populate with agents
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
+	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
 	    controlledRandom.setSeed(1);
 	}
@@ -443,14 +445,12 @@ public abstract class Simulation extends SimState implements Constants {
 
     private void startSimulation() {
 
-	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment + " stepsPerSimulation="
-		+ stepsPerSimulation);
+	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+		+ " stepsPerSimulation=" + stepsPerSimulation);
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
 		+ numberOfResources + " agents=" + agents.size());
-	
-	
 
 	initEnvironment();
 	initAgents();
@@ -481,8 +481,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
-			if (simulationCounter % Constants.EE_DEF_GENE_POOL_SIZE == 0) {
-			   logger.info("completed running generation:"+evolver.getGeneration());
+			if (simulationCounter % settings.EE_DEF_GENE_POOL_SIZE == 0) {
+			    logger.info("completed running generation:" + evolver.getGeneration());
 			    evolver.evolve();
 
 			}
@@ -593,11 +593,6 @@ public abstract class Simulation extends SimState implements Constants {
 	this.simStepCounter = 0;
 	resetAll();
 	startSimulation();
-    }
-
-    public static String[] parseArguments(String string) {
-	String[] array = string.split(" ");
-	return array;
     }
 
     public void reportEvent(Agent agent, Event event, String source, String destination) {
