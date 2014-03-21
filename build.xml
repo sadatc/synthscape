@@ -1,33 +1,47 @@
-<project basedir="." default="build" name="synthscape">
-  <description>synthscape</description>
-  <property file="build.properties" />
-  
-  <target name="init">
-    <mkdir dir="${build.dir}"/>
-  </target>
-  
-  <target name="clean">
-    <delete dir="${build.dir}"/>
-  </target>
-  
-  <target name="build" depends="init">
-    <javac 
+<project basedir="." default="compile" name="synthscape">
+	<description>synthscape</description>
+	<property file="build.properties" />
+
+	<target name="clean">
+		<delete dir="${build.dir}/classes"/>
+		<delete dir="${build.dir}/jar"/>
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${build.dir}/classes"/>
+		<javac 
        includeantruntime="false"
-       destdir="${build.dir}" 
+       destdir="${build.dir}/classes" 
        deprecation="${javac.deprecation}" 
        debug="${javac.debug}" 
        debuglevel="${javac.debuglevel}" 
        optimize="${javac.optimize}" >
-      
-      <classpath>
-	<fileset dir="${lib.dir}">
-	  <include name="**/*.jar"/> 
-	</fileset>
-      </classpath>
-      <src>
-	<pathelement location="${source.main.dir}" />
-      </src>
-    </javac>
-  </target>
-  
+
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+			<src>
+				<pathelement location="${source.dir}" />
+			</src>
+		</javac>
+	</target>
+
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${build.dir}/jar"/>
+		<jar destfile="${build.dir}/jar/synthscape.jar" basedir="${build.dir}/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.synthverse.Main"/>
+			</manifest>
+		</jar>
+	</target>
+
+
+
+	<target name="run" depends="jar">
+		<java jar="${build.dir}/jar/synthscape.jar" fork="true"/>
+	</target>
+
 </project>
