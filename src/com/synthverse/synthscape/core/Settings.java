@@ -18,7 +18,7 @@ public class Settings {
 
     public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 
-    public int GENERATIONS = 3000;
+    public int GENERATIONS = 500000;
 
     public int CLONES_PER_SPECIES = 10;
 
@@ -38,9 +38,13 @@ public class Settings {
 
     public String MODEL_INTERACTIONS = "none";
 
-    public int WORLD_WIDTH = 16;
+    public int WORLD_WIDTH = 20;
 
-    public int WORLD_HEIGHT = 16;
+    public int WORLD_HEIGHT = 20;
+
+    public double OBSTACLE_DENSITY = 0.05;
+
+    public double RESOURCE_DENSITY = 0.06;
 
     public int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
@@ -56,10 +60,8 @@ public class Settings {
 	Options options = new Options();
 
 	options.addOption(new Option("help", "print this message"));
-	options.addOption(new Option("randomize_each_sim", "randomize each simulation"));
-	options.addOption(new Option("use_4_tasks", "use 4 tasks instead of 3"));
-	options.addOption(new Option("collect_all_resources",
-		"collect all resources instead of half"));
+	options.addOption(new Option("randomize_each_sim", "randomize each sim [true]"));
+	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
 		.withDescription("island,embedded,alife").create("model"));
@@ -70,26 +72,33 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
 		.withDescription("interactions names (CSV)").create("interactions"));
 
-	options.addOption(OptionBuilder.withArgName("generations").isRequired().hasArg()
-		.withType(Integer.class).withDescription("maximum generations")
-		.create("generations"));
+	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
+		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
 
-	options.addOption(OptionBuilder.withArgName("clones_per_species").isRequired().hasArg()
-		.withType(Integer.class).withDescription("clones per species")
-		.create("clones_per_species"));
+	options.addOption(OptionBuilder.withArgName("clones").hasArg().withType(Integer.class)
+		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]").create("clones"));
 
-	options.addOption(OptionBuilder.withArgName("genepool_size").isRequired().hasArg()
-		.withType(Integer.class).withDescription("gene pool size").create("genepool_size"));
+	options.addOption(OptionBuilder.withArgName("pool_size").hasArg().withType(Integer.class)
+		.withDescription("gene pool size [" + EE_DEF_GENE_POOL_SIZE + "]").create("pool_size"));
 
-	options.addOption(OptionBuilder.withArgName("collection_sites").isRequired().hasArg()
-		.withType(Integer.class).withDescription("number of collection sites")
+	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg().withType(Integer.class)
+		.withDescription("number of collection sites [" + NUMBER_OF_COLLECTION_SITES + "]")
 		.create("collection_sites"));
 
-	options.addOption(OptionBuilder.withArgName("width").isRequired().hasArg()
-		.withType(Integer.class).withDescription("world width").create("width"));
+	options.addOption(OptionBuilder.withArgName("width").hasArg().withType(Integer.class)
+		.withDescription("world width [" + WORLD_WIDTH + "]").create("width"));
 
-	options.addOption(OptionBuilder.withArgName("height").isRequired().hasArg()
-		.withType(Integer.class).withDescription("world height").create("height"));
+	options.addOption(OptionBuilder.withArgName("height").hasArg().withType(Integer.class)
+		.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
+
+	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg().withType(Double.class)
+		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("obstacle_density"));
+
+	options.addOption(OptionBuilder.withArgName("resource_density").hasArg().withType(Double.class)
+		.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("resource_density"));
+
+	options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
+		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("resource_density"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -114,12 +123,20 @@ public class Settings {
 	    }
 	    D.p("PROBLEM_COMPLEXITY=" + PROBLEM_COMPLEXITY);
 
-	    if (line.hasOption("collect_all_resources")) {
-		RESOURCE_CAPTURE_GOAL = 1.0;
-	    } else {
-		RESOURCE_CAPTURE_GOAL = 0.5;
+	    if (line.hasOption("goal")) {
+		RESOURCE_CAPTURE_GOAL = new Double(line.getOptionValue("goal")).doubleValue();
 	    }
 	    D.p("RESOURCE_CAPTURE_GOAL=" + RESOURCE_CAPTURE_GOAL);
+
+	    if (line.hasOption("obstacle_density")) {
+		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density")).doubleValue();
+	    }
+	    D.p("OBSTACLE_DENSITY=" + OBSTACLE_DENSITY);
+
+	    if (line.hasOption("resource_density")) {
+		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density")).doubleValue();
+	    }
+	    D.p("RESOURCE_DENSITY=" + RESOURCE_DENSITY);
 
 	    if (line.hasOption("model")) {
 		String modelName = line.getOptionValue("model");
@@ -144,21 +161,18 @@ public class Settings {
 		D.p("GENERATIONS=" + GENERATIONS);
 	    }
 
-	    if (line.hasOption("clones_per_species")) {
-		CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones_per_species"))
-			.intValue();
+	    if (line.hasOption("clones")) {
+		CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
 		D.p("CLONES_PER_SPECIES=" + CLONES_PER_SPECIES);
 	    }
 
-	    if (line.hasOption("genepool_size")) {
-		EE_DEF_GENE_POOL_SIZE = new Integer(line.getOptionValue("genepool_size"))
-			.intValue();
+	    if (line.hasOption("pool_size")) {
+		EE_DEF_GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
 		D.p("EE_DEF_GENE_POOL_SIZE=" + EE_DEF_GENE_POOL_SIZE);
 	    }
 
 	    if (line.hasOption("collection_sites")) {
-		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites"))
-			.intValue();
+		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();
 		D.p("NUMBER_OF_COLLECTION_SITES=" + NUMBER_OF_COLLECTION_SITES);
 	    }
 

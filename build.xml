@@ -39,6 +39,8 @@
 				<path refid="classpath" />
 				<path location="${build.dir}/jar/synthscape.jar" />
 			</classpath>
+			<arg line="${args}"/>
+			
 		</java>
 	</target>
 

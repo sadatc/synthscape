@@ -47,12 +47,12 @@ public class TestSim extends Simulation {
 
     @Override
     public double configObstacleDensity() {
-	return OBSTACLE_DENSITY;
+	return settings.OBSTACLE_DENSITY;
     }
 
     @Override
     public double configResourceDensity() {
-	return RESOURCE_DENSITY;
+	return settings.RESOURCE_DENSITY;
     }
 
     @Override

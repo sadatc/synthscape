@@ -48,10 +48,6 @@ public interface Constants {
 
     public static final boolean TOROIDAL_FLAG = true;
 
-    public static final double OBSTACLE_DENSITY = 0.05;
-
-    public static final double RESOURCE_DENSITY = 0.06;
-
     public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.998;
 
     public static final int SEED_GENERATION_NUMBER = 0;
