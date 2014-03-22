@@ -9,7 +9,6 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}/classes" />
-		<delete dir="${build.dir}/jar" />
 	</target>
 
 	<target name="compile" depends="clean">
@@ -31,8 +30,6 @@
 			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
 		</jar>
 	</target>
-
-
 
 	<target name="run">
 		<java fork="false" classname="${main.class}">
