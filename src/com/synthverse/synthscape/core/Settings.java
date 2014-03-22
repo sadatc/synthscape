@@ -67,10 +67,10 @@ public class Settings {
 		.withDescription("island,embedded,alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names (CSV)").create("species"));
+		.withDescription("species names (detector,extractor,transporter,super)").create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
-		.withDescription("interactions names (CSV)").create("interactions"));
+		.withDescription("interactions names (trail,broadcast,unicast_n,unicast_g)").create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
 		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
@@ -98,7 +98,7 @@ public class Settings {
 		.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("resource_density"));
 
 	options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
-		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("resource_density"));
+		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("goal"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -142,6 +142,8 @@ public class Settings {
 		String modelName = line.getOptionValue("model");
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
+		} else {
+		    throw new ParseException("model name:"+modelName+" was not recognized");
 		}
 		D.p("EVOLUTIONARY_MODEL=" + EVOLUTIONARY_MODEL);
 	    }
@@ -191,16 +193,17 @@ public class Settings {
 	    PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 	    SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
-	    if (line.hasOption("help")) {
-		formatter.printHelp("com.synthverse.Main", options);
-	    }
-
 	} catch (ParseException exp) {
 	    // oops, something went wrong
-	    System.err.println("Parsing failed.  Reason: " + exp.getMessage());
-	    formatter.printHelp("com.synthverse.Main", options);
-	    System.exit(1);
-
+	    if (args.length == 1 && args[0].toLowerCase().contains("help")) {
+		// check if this was a request for help...
+		formatter.printHelp("com.synthverse.Main", options);
+		System.exit(0);
+	    } else {
+		System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+		formatter.printHelp("com.synthverse.Main", options);
+		System.exit(1);
+	    }
 	}
 
     }

@@ -126,6 +126,7 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
+	
 	// speciesSet.add(Species.DETECTOR);
 	// speciesSet.add(Species.EXTRACTOR);
 	// speciesSet.add(Species.TRANSPORTER);
