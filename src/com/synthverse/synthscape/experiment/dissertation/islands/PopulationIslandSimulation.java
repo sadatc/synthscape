@@ -127,25 +127,58 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	
-	
-	
-	
-	// speciesSet.add(Species.DETECTOR);
-	// speciesSet.add(Species.EXTRACTOR);
-	// speciesSet.add(Species.TRANSPORTER);
 
-	speciesSet.add(Species.SUPER);
+	if (settings.MODEL_SPECIES.contains("detector")) {
+	    speciesSet.add(Species.DETECTOR);
+	    logger.info("adding DETECTORs...");
+	}
+
+	if (settings.MODEL_SPECIES.contains("extractor")) {
+	    speciesSet.add(Species.EXTRACTOR);
+	    logger.info("adding EXTRACTORs...");
+	}
+
+	if (settings.MODEL_SPECIES.contains("transporter")) {
+	    speciesSet.add(Species.TRANSPORTER);
+	    logger.info("adding TRANSPORTERs...");
+	}
+
+	if (settings.MODEL_SPECIES.contains("super")) {
+	    speciesSet.add(Species.SUPER);
+	    logger.info("adding SUPERs...");
+	}
+
 	return speciesSet;
     }
 
     @Override
     public Set<InteractionMechanism> configInteractionMechanisms() {
 	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
-	// mechanisms.add(InteractionMechanism.TRAIL);
-	// mechanisms.add(InteractionMechanism.BROADCAST);
-	// mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-	// mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+
+	if (settings.MODEL_INTERACTIONS.contains("none")) {
+	    logger.info("Agents will not use any interaction instructions");
+	} else {
+
+	    if (settings.MODEL_INTERACTIONS.contains("trail")) {
+		mechanisms.add(InteractionMechanism.TRAIL);
+		logger.info("Agents will use any TRAIL interactions...");
+	    }
+
+	    if (settings.MODEL_INTERACTIONS.contains("broadcast")) {
+		mechanisms.add(InteractionMechanism.BROADCAST);
+		logger.info("Agents will use any BROADCAST interactions...");
+	    }
+
+	    if (settings.MODEL_INTERACTIONS.contains("unicast_n")) {
+		mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+		logger.info("Agents will use any UNICAST_CLOSEST_AGENT interactions...");
+	    }
+
+	    if (settings.MODEL_INTERACTIONS.contains("unicast_g")) {
+		mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+		logger.info("Agents will use any UNICAST_CLIQUE_MEMBER interactions...");
+	    }
+	}
 	return mechanisms;
     }
 
