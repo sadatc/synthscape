@@ -74,7 +74,8 @@ public class Settings {
 		.withDescription("species names (detector,extractor,transporter,super)").create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
-		.withDescription("interactions names (trail,broadcast,unicast_n,unicast_g)").create("interactions"));
+		.withDescription("interactions names (none,trail,broadcast,unicast_n,unicast_g)")
+		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
 		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
@@ -153,9 +154,8 @@ public class Settings {
 
 		else if (logLevel.equalsIgnoreCase("info")) {
 		    REQUESTED_LOG_LEVEL = Level.INFO;
-		}
-		else {
-		    throw new ParseException("log level:" + logLevel + " was not recognized");
+		} else {
+		    throw new ParseException("log level: " + logLevel + " was not recognized");
 		}
 		D.p("LOG.LEVEL=" + REQUESTED_LOG_LEVEL.toString());
 	    }
@@ -165,18 +165,30 @@ public class Settings {
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 		} else {
-		    throw new ParseException("model name:" + modelName + " was not recognized");
+		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}
 		D.p("EVOLUTIONARY_MODEL=" + EVOLUTIONARY_MODEL);
 	    }
 
 	    if (line.hasOption("species")) {
-		MODEL_SPECIES = line.getOptionValue("species");
+
+		String speciesNames = line.getOptionValue("species").toLowerCase();
+		if (!(speciesNames.contains("super") || speciesNames.contains("extractor")
+			|| speciesNames.contains("detector") || speciesNames.contains("transporter"))) {
+		    throw new ParseException("species: " + speciesNames + " was not recognized");
+		}
+		MODEL_SPECIES = speciesNames;
 		D.p("MODEL_SPECIES=" + MODEL_SPECIES);
 	    }
 
 	    if (line.hasOption("interactions")) {
-		MODEL_INTERACTIONS = line.getOptionValue("interactions");
+		String interactions = line.getOptionValue("interactions").toLowerCase();
+		if (!(interactions.contains("none") || interactions.contains("trail")
+			|| interactions.contains("broadcast") || interactions.contains("unicast_n") || interactions
+			    .contains("unicast_g"))) {
+		    throw new ParseException("interactions: " + interactions + " was not recognized");
+		}
+		MODEL_INTERACTIONS = interactions;
 		D.p("MODEL_INTERACTIONS=" + MODEL_INTERACTIONS);
 	    }
 
