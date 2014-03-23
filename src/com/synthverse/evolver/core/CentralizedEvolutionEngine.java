@@ -273,17 +273,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 	}
 	msg += fitnessBin + ":" + binCount + " ";
 
-	logger.info("Gen: "+generationCounter+ " Cap: " + settings.lastReportedCaptures + " Fit: " + msg);
+	logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " Fit: " + msg);
 
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
-
-	// printActiveBuffer();
-	// logger.info("about to generate the next generation...");
-	// logger.info("reporting on previous generation...");
 	reportPerformance();
-	// logger.info("done reporting...");
+	orderActivePopulationByFitness();
+	printActiveBufferStats();
+	
+	
+	
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -354,11 +354,10 @@ public final class CentralizedEvolutionEngine implements Constants {
 	activeBuffer = parentBuffer;
 
 	orderActivePopulationByFitness();
+	//printActiveBufferStats();
 
 	generationCounter++;
-	// printActiveBufferFull();
-	printActiveBufferStats();
-
+	
     }
 
     public ArrayList<Agent> getActiveBuffer() {
