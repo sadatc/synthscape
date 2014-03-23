@@ -247,7 +247,7 @@ public class Settings {
 		EE_DEF_GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
 
 	    }
-	    D.p("EE_DEF_GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
+	    D.p("GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
 		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites"))
@@ -261,7 +261,7 @@ public class Settings {
 
 	    }
 
-	    D.p("WORLD_WIDTH=" + WORLD_WIDTH);
+	    D.p("WORLD_WIDTH = " + WORLD_WIDTH);
 	    if (line.hasOption("height")) {
 		WORLD_HEIGHT = new Integer(line.getOptionValue("height")).intValue();
 
@@ -272,7 +272,7 @@ public class Settings {
 		REPEAT = new Integer(line.getOptionValue("repeat")).intValue();
 
 	    }
-	    D.p("REPEAT = " + REPEAT);
+	    D.p("NUM_EXPERIMENTS = " + REPEAT);
 
 	    // some calculated values
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
@@ -282,7 +282,7 @@ public class Settings {
 
 	    D.p("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
 	    D.p("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
-	    D.p("SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
+	    D.p("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
 	    D.p("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
 	    double gridArea = WORLD_WIDTH * WORLD_HEIGHT;
@@ -291,9 +291,9 @@ public class Settings {
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
 	    int resourceCaptureGoal = (int) ((double) numberOfResources * RESOURCE_CAPTURE_GOAL);
 
-	    D.p("OBSTACLES: " + numberOfObstacles);
-	    D.p("RESOURCES: " + numberOfResources);
-	    D.p("GOAL     : " + resourceCaptureGoal);
+	    D.p("ACTUAL_OBSTACLES = " + numberOfObstacles);
+	    D.p("ACTUAL_RESOURCES = " + numberOfResources);
+	    D.p("RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
 
 	    D.p("=================================================");
 
