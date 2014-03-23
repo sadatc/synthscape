@@ -272,18 +272,18 @@ public final class CentralizedEvolutionEngine implements Constants {
 	    }
 	}
 	msg += fitnessBin + ":" + binCount + " ";
-
-	logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " Fit: " + msg);
+	if (settings.lastLoggedGeneration != generationCounter) {
+	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " Fit: " + msg);
+	    settings.lastLoggedGeneration = generationCounter;
+	}
 
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 	reportPerformance();
+
 	orderActivePopulationByFitness();
 	printActiveBufferStats();
-	
-	
-	
 
 	// clear up values from previous generation
 	topPerformers.clear();
@@ -354,10 +354,10 @@ public final class CentralizedEvolutionEngine implements Constants {
 	activeBuffer = parentBuffer;
 
 	orderActivePopulationByFitness();
-	//printActiveBufferStats();
+	// printActiveBufferStats();
 
 	generationCounter++;
-	
+
     }
 
     public ArrayList<Agent> getActiveBuffer() {

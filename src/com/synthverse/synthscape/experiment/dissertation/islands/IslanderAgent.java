@@ -56,7 +56,11 @@ public class IslanderAgent extends Agent {
 	 */
 
 	
+	//this.program = Program.Factory.createRandom(sim.random);
+	
 	this.program = Program.Factory.createEmpty(sim.random);
+	
+	
 	boolean spaceLeft = true;
 
 	do {
@@ -85,6 +89,7 @@ public class IslanderAgent extends Agent {
 	    spaceLeft = this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
 	} while (spaceLeft);
 
+	 
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
 	vm.overwriteGenotypeWithProgram(this.program);
 	vm.setCpuCycles(sim.getMaxStepsPerAgent());

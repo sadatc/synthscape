@@ -54,6 +54,8 @@ public class Settings {
     public int MAX_STEPS_PER_AGENT = 256;
     
     public int lastReportedCaptures = 0;
+    public int lastReportedGeneration = 0;
+    public int lastLoggedGeneration = 0;
 
     private Settings() {
 

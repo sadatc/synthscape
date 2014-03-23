@@ -247,7 +247,7 @@ public class ExperimentReporter implements Constants {
 	try {
 	    if (simulation.isReportPerformance()) {
 		performanceWriter
-			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES");
+			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED, TRAIL_SEARCHED");
 		performanceWriter.newLine();
 	    }
 
@@ -267,6 +267,16 @@ public class ExperimentReporter implements Constants {
 	    // was the last aggregation done?
 	    int captures = aggregateSimStats.getValue(Event.COLLECTED_RESOURCE);
 	    settings.lastReportedCaptures = captures;
+	    
+	    if(settings.lastReportedGeneration == generationCounter) {
+		return;
+	    }
+	    
+	    int trailSent = aggregateSimStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailReceived = aggregateSimStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+	    int trailSearched = aggregateSimStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    
+	   
 	    
 
 	    //logger.info(generationCounter + ": captures=" + captures);
@@ -295,6 +305,17 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(captures);
 		sbPerformance.append(COMMA);
 
+		sbPerformance.append(trailSent);
+		sbPerformance.append(COMMA);
+		
+		sbPerformance.append(trailReceived);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(trailSearched);
+		sbPerformance.append(COMMA);
+
+		
+		
 		performanceWriter.write(sbPerformance.toString());
 
 		performanceWriter.newLine();
@@ -303,6 +324,7 @@ public class ExperimentReporter implements Constants {
 		if (this.flushAlways) {
 		    performanceWriter.flush();
 		}
+		settings.lastReportedGeneration = generationCounter;
 	    }
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting performance:" + e.getMessage());
