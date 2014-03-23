@@ -96,7 +96,7 @@ public class TestSim extends Simulation {
     public boolean configIsReportEvents() {
 	return REPORT_EVENTS;
     }
-    
+
     @Override
     public boolean configIsReportPerformance() {
 	return REPORT_PERFORMANCE;
@@ -119,13 +119,12 @@ public class TestSim extends Simulation {
 
     @Override
     public String configEventFileName() {
-	return EVENT_LOG_FILE;
+	return settings.EVENT_DATA_FILE;
     }
-    
+
     @Override
     public int configGenePoolSize() {
 	return settings.EE_DEF_GENE_POOL_SIZE;
     }
-
 
 }

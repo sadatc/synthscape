@@ -229,7 +229,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public String configEventFileName() {
-	return EVENT_LOG_FILE;
+	return settings.EVENT_DATA_FILE;
     }
 
     @Override

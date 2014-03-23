@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.core;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import org.apache.commons.cli.BasicParser;
@@ -15,7 +16,7 @@ public class Settings {
 
     private static Settings instance = null;
 
-    public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
+    public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 
     public int GENERATIONS = 500000;
 
@@ -54,6 +55,10 @@ public class Settings {
     public int MAX_STEPS_PER_AGENT = 256;
 
     public int REPEAT = 1;
+
+    public String EVENT_DATA_DIR = "/tmp";
+
+    public String EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
 
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
@@ -127,6 +132,9 @@ public class Settings {
 
 	options.addOption(OptionBuilder.withArgName("repeat").hasArg().withType(Integer.class)
 		.withDescription("repeat experiment [" + REPEAT + "]").create("repeat"));
+
+	options.addOption(OptionBuilder.withArgName("data_dir").hasArg()
+		.withDescription("data dir [" + EVENT_DATA_DIR + "]").create("data_dir"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -273,6 +281,29 @@ public class Settings {
 
 	    }
 	    D.p("NUM_EXPERIMENTS = " + REPEAT);
+
+	    if (line.hasOption("data_dir")) {
+		EVENT_DATA_DIR = line.getOptionValue("data_dir");
+
+		File dir = new File(EVENT_DATA_DIR);
+		if (dir.exists() && dir.isDirectory()) {
+		    D.p(EVENT_DATA_DIR + " already exists; contents might be replaced");
+		} else if (dir.exists() && !dir.isDirectory()) {
+		    throw new ParseException("A file by the name: " + EVENT_DATA_DIR
+			    + " exists and needs to be removed first");
+		} else {
+		    if (!dir.mkdir()) {
+			throw new ParseException("Unable to create: " + EVENT_DATA_DIR
+				+ "directory; check permissions");
+		    } else {
+			D.p(EVENT_DATA_DIR + " created.");
+		    }
+		}
+
+		EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
+
+	    }
+	    D.p("EVENT_DATA_DIR = " + EVENT_DATA_DIR);
 
 	    // some calculated values
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
