@@ -273,7 +273,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	}
 	msg += fitnessBin + ":" + binCount + " ";
 	if (settings.lastLoggedGeneration != generationCounter) {
-	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " Fit: " + msg);
+	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " FComp: " + msg);
 	    settings.lastLoggedGeneration = generationCounter;
 	}
 
