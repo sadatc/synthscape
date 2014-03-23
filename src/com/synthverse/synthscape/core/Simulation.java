@@ -78,7 +78,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected int numberOfResources;
 
-    protected double resourceCaptureGoal;
+    protected int resourceCaptureGoal;
 
     protected int numberOfCollectedResources;
 
@@ -192,7 +192,7 @@ public abstract class Simulation extends SimState implements Constants {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL;
+	resourceCaptureGoal = (int)((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
 
 	createDataStructures();
 
@@ -255,7 +255,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setNumberOfResources(int numberOfResources) {
 	this.numberOfResources = numberOfResources;
-	this.resourceCaptureGoal = numberOfResources * settings.RESOURCE_CAPTURE_GOAL;
+	this.resourceCaptureGoal = (int)((double)numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
 
     }
 
@@ -484,7 +484,7 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.EE_DEF_GENE_POOL_SIZE == 0) {
-			    logger.info("completed running generation:" + evolver.getGeneration());
+			    //logger.info("completed running generation:" + evolver.getGeneration());
 			    evolver.evolve();
 
 			}

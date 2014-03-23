@@ -21,6 +21,9 @@ import com.synthverse.util.LogUtils;
 public class ExperimentReporter implements Constants {
 
     private static Logger logger = Logger.getLogger(ExperimentReporter.class.getName());
+    
+    Settings settings = Settings.getInstance();
+    
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -263,8 +266,10 @@ public class ExperimentReporter implements Constants {
 
 	    // was the last aggregation done?
 	    int captures = aggregateSimStats.getValue(Event.COLLECTED_RESOURCE);
+	    settings.lastReportedCaptures = captures;
+	    
 
-	    logger.info(generationCounter + ": captures=" + captures);
+	    //logger.info(generationCounter + ": captures=" + captures);
 	    this.simulation.aggregationCounter = 0;
 	    aggregateSimStats.clear();
 

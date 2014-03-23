@@ -52,6 +52,8 @@ public class Settings {
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
     public int MAX_STEPS_PER_AGENT = 256;
+    
+    public int lastReportedCaptures = 0;
 
     private Settings() {
 

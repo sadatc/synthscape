@@ -11,6 +11,7 @@ import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.CollectionUtils;
@@ -174,7 +175,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	activeBuffer = parentBuffer;
 
-	printActiveBufferSample();
+	printActiveBufferStats();
 	// printActiveBufferFull();
 
     }
@@ -251,12 +252,13 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private void printActiveBufferSample() {
+    private void printActiveBufferStats() {
 	String msg = "";
 
-	int fitnessBin = (int)activeBuffer.get(0).getFitness();
+	int fitnessBin = (int) activeBuffer.get(0).getFitness();
+
 	int binCount = 1;
-	
+
 	for (int i = 1; i < activeBuffer.size(); i++) {
 	    Agent agent = activeBuffer.get(i);
 	    int currentAgentFitness = (int) agent.getFitness();
@@ -269,38 +271,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 		fitnessBin = currentAgentFitness;
 	    }
 	}
-	logger.info("Fitness Stats: "+msg);
+	msg += fitnessBin + ":" + binCount + " ";
 
-	
-
-    }
-
-    private void printActiveBufferFull() {
-
-	logger.info("=======FULL ACTIVE BUFFER ========");
-	for (int i = 0; i < activeBuffer.size(); i++) {
-	    Agent agent = activeBuffer.get(i);
-	    Program p = agent.getProgram();
-	    logger.info("--->" + agent.getAgentId() + ":" + agent.getFitness() + ":" + p.getSignature());
-
-	}
-	logger.info("=====================================");
-
-    }
-
-    private void verifyActiveBuffer() {
-
-	// 1. verify that all agents are accounted for
-	// 2. print fitness variety
-	// 3. print genotype variety
+	logger.info("Captures: " + settings.lastReportedCaptures + " Fitness Stats: " + msg);
 
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 
 	// printActiveBuffer();
-	//logger.info("about to generate the next generation...");
-	//logger.info("reporting on previous generation...");
+	// logger.info("about to generate the next generation...");
+	// logger.info("reporting on previous generation...");
 	reportPerformance();
 	// logger.info("done reporting...");
 
@@ -376,7 +357,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	generationCounter++;
 	// printActiveBufferFull();
-	printActiveBufferSample();
+	printActiveBufferStats();
 
     }
 
