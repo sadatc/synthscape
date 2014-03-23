@@ -37,8 +37,8 @@ public final class LogUtils {
     public static final boolean APPEND_TO_LOG_FILE = true;
 
     public static final Level DEFAULT_LOG_LEVEL = Level.CONFIG;
-    public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
-    //public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.TIMED_BAREBONES;
+    //public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
+    public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.TIMED_BAREBONES;
 
     // private static final String FORMAT_STRING =
     // "EEE yyyy/MM/dd HH:mm:ss:SSS";

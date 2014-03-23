@@ -97,7 +97,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	}
 	if (result > maxFitness) {
-	    logger.info("###### Record Fitness=" + result + " at generation=" + generation);
+	    logger.info("*** Record Fitness=" + result + " at Generation: " + generation +" ***");
 
 	    maxFitness = result;
 	}
