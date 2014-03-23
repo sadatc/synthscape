@@ -2,6 +2,11 @@
 	<description>synthscape</description>
 	<property file="build.properties" />
 
+
+
+
+
+
 	<path id="classpath">
 		<fileset dir="${lib.dir}" includes="**/*.jar" />
 	</path>
@@ -41,6 +46,27 @@
 
 		</java>
 	</target>
+
+	<target name="jar_tmp">
+		<local name="build.dir" />
+		<property name="build.dir" value="${tmp.build.dir}" />
+		<delete dir="${build.dir}/classes" />
+		<mkdir dir="${build.dir}/classes" />
+		<javac includeantruntime="false" destdir="${build.dir}/classes" deprecation="${javac.deprecation}" debug="${javac.debug}" debuglevel="${javac.debuglevel}" optimize="${javac.optimize}" classpathref="classpath">
+			<src>
+				<pathelement location="${source.dir}" />
+			</src>
+		</javac>
+		<jar destfile="${build.dir}/synthscape.jar" basedir="${build.dir}/classes">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+			</manifest>
+			<fileset dir="${build.dir}/classes" includes="**/*.class" />
+			<zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+		</jar>
+
+	</target>
+
 
 
 </project>
