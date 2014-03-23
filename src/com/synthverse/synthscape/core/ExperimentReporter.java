@@ -247,7 +247,7 @@ public class ExperimentReporter implements Constants {
 	try {
 	    if (simulation.isReportPerformance()) {
 		performanceWriter
-			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED, TRAIL_SEARCHED");
+			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED");
 		performanceWriter.newLine();
 	    }
 
