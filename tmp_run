@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar /tmp/synthscape/synthscape.jar "$@"
+java -jar /tmp/synthscape_build/synthscape.jar "$@"
