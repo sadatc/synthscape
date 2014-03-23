@@ -1,5 +1,7 @@
 package com.synthverse;
 
+import com.synthverse.synthscape.core.D;
+import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.experiment.dissertation.islands.PopulationIslandSimulation;
 
@@ -8,7 +10,17 @@ public class Main {
 
     public static void main(String[] args) {
 	settings.processCommandLineInput(args);
-	PopulationIslandSimulation.main(args);
+
+	if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
+	    // island model
+	    PopulationIslandSimulation.main(args);
+	} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBEDDED_MODEL) {
+	    // embedded model
+	    D.p(settings.EVOLUTIONARY_MODEL+" is not ready yet"); 
+	} else {
+	    // alife model
+	    D.p(settings.EVOLUTIONARY_MODEL+" is not ready yet");
+	}
 
     }
 }

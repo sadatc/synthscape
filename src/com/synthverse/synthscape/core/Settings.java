@@ -114,6 +114,7 @@ public class Settings {
 	    // parse the command line arguments
 	    CommandLine line = parser.parse(options, args);
 
+	    D.p("=============== INPUT PARAMETERS ===============");
 	    if (line.hasOption("randomize_each_sim")) {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 	    } else {
@@ -168,9 +169,11 @@ public class Settings {
 	    D.p("LOG.LEVEL=" + REQUESTED_LOG_LEVEL.toString());
 
 	    if (line.hasOption("model")) {
-		String modelName = line.getOptionValue("model");
+		String modelName = line.getOptionValue("model").toLowerCase();
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
+		} else if (modelName.equalsIgnoreCase("embedded")) {
+		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBEDDED_MODEL;
 		} else {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}
@@ -245,6 +248,9 @@ public class Settings {
 	    D.p("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
 	    D.p("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
 	    D.p("SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
+	    
+	    D.p("=================================================");
+	    
 
 	} catch (ParseException exp) {
 	    // oops, something went wrong
