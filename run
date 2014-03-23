@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar client/synthscape.jar
+java -jar client/synthscape.jar "$@"
