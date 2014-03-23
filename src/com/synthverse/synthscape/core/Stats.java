@@ -3,16 +3,16 @@ package com.synthverse.synthscape.core;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
 public class Stats {
 
     private static Logger logger = Logger.getLogger(Stats.class.getName());
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);

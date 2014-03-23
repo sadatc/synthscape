@@ -1,15 +1,15 @@
 package com.synthverse.stacks;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
 public class GenotypeInstruction {
     private static Logger logger = Logger.getLogger(GenotypeInstruction.class.getName());
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     public int getSignature() {

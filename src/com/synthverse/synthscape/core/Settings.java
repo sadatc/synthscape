@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.core;
 
+import java.util.logging.Level;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -8,9 +10,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import com.synthverse.evolver.islands.PopulationIslandEvolver;
-import com.synthverse.synthscape.experiment.dissertation.islands.PopulationIslandSimulation;
 
 public class Settings {
 
@@ -50,6 +49,8 @@ public class Settings {
 
     public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 
+    public Level REQUESTED_LOG_LEVEL = Level.ALL;
+
     private Settings() {
 
     }
@@ -62,6 +63,9 @@ public class Settings {
 	options.addOption(new Option("help", "print this message"));
 	options.addOption(new Option("randomize_each_sim", "randomize each sim [true]"));
 	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
+
+	options.addOption(OptionBuilder.withArgName("log").isRequired().hasArg()
+		.withDescription("(off,all,info) [all]").create("log"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
 		.withDescription("island,embedded,alife").create("model"));
@@ -138,12 +142,30 @@ public class Settings {
 	    }
 	    D.p("RESOURCE_DENSITY=" + RESOURCE_DENSITY);
 
+	    if (line.hasOption("log")) {
+		String logLevel = line.getOptionValue("log");
+		if (logLevel.equalsIgnoreCase("all")) {
+		    REQUESTED_LOG_LEVEL = Level.ALL;
+
+		} else if (logLevel.equalsIgnoreCase("off")) {
+		    REQUESTED_LOG_LEVEL = Level.OFF;
+		}
+
+		else if (logLevel.equalsIgnoreCase("info")) {
+		    REQUESTED_LOG_LEVEL = Level.INFO;
+		}
+		else {
+		    throw new ParseException("log level:" + logLevel + " was not recognized");
+		}
+		D.p("LOG.LEVEL=" + REQUESTED_LOG_LEVEL.toString());
+	    }
+
 	    if (line.hasOption("model")) {
 		String modelName = line.getOptionValue("model");
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 		} else {
-		    throw new ParseException("model name:"+modelName+" was not recognized");
+		    throw new ParseException("model name:" + modelName + " was not recognized");
 		}
 		D.p("EVOLUTIONARY_MODEL=" + EVOLUTIONARY_MODEL);
 	    }

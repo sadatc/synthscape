@@ -1,12 +1,9 @@
 package com.synthverse.synthscape.core;
 
 import java.util.ArrayDeque;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
-import com.synthverse.evolver.core.CentralizedEvolutionEngine;
+import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
 public abstract class AgentFactory implements Constants {
@@ -14,7 +11,7 @@ public abstract class AgentFactory implements Constants {
     private static Logger logger = Logger.getLogger(AgentFactory.class.getName());
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     protected Simulation simulation;

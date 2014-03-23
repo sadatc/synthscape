@@ -3,11 +3,11 @@
  */
 package com.synthverse.synthscape.experiment.test.manuallycoded;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sim.display.Console;
 
+import com.synthverse.Main;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.SimpleSimulationUI;
 import com.synthverse.util.LogUtils;
@@ -20,7 +20,7 @@ public class ManuallyCodedAgentSimulationUI extends SimpleSimulationUI {
     
     private static Logger logger = Logger.getLogger(ManuallyCodedAgentSimulationUI.class.getName());
     static {
-    	LogUtils.applyDefaultSettings(logger, Level.ALL);
+    	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
 

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import sim.util.Int2D;
 
+import com.synthverse.Main;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
@@ -30,7 +31,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     public PopulationIslandSimulation(long seed) throws Exception {
@@ -126,6 +127,9 @@ public class PopulationIslandSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
+	
+	
+	
 	
 	// speciesSet.add(Species.DETECTOR);
 	// speciesSet.add(Species.EXTRACTOR);

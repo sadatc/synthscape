@@ -2,11 +2,11 @@ package com.synthverse.evolver.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
@@ -26,7 +26,7 @@ public final class CentralizedEvolutionEngine implements Constants {
     private DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     private Species species;

@@ -18,10 +18,9 @@
 package com.synthverse.stacks;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.synthverse.synthscape.core.D;
+import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -48,7 +47,7 @@ public class InstructionTranslator {
     private static int numInstructions;
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	instructions = Instruction.values();
 	numInstructions = instructions.length;
 	setupInstructionTable();

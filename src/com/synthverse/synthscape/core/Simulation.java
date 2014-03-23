@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -23,6 +22,7 @@ import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
+import com.synthverse.Main;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.util.DateUtils;
@@ -131,7 +131,7 @@ public abstract class Simulation extends SimState implements Constants {
     // need this for efficiency
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     private void init() {

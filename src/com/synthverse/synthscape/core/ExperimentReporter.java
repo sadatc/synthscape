@@ -4,11 +4,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import com.synthverse.Main;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
@@ -22,7 +22,7 @@ public class ExperimentReporter implements Constants {
 
     private static Logger logger = Logger.getLogger(ExperimentReporter.class.getName());
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     private static int STRING_BUFFER_MAX_SIZE = 175;

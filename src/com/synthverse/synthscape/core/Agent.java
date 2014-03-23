@@ -3,7 +3,6 @@ package com.synthverse.synthscape.core;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sim.engine.SimState;
@@ -14,6 +13,7 @@ import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.Valuable;
 
+import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.util.LogUtils;
@@ -80,7 +80,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected boolean providedFeedback = false;
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     abstract public double doubleValue();

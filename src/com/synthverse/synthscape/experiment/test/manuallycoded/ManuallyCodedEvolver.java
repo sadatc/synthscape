@@ -2,9 +2,9 @@ package com.synthverse.synthscape.experiment.test.manuallycoded;
 
 import java.util.EnumMap;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.synthverse.Main;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
@@ -19,7 +19,7 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
 
     private static Logger logger = Logger.getLogger(ManuallyCodedEvolver.class.getName());
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     EnumMap<Species, Integer> speciesAgentRequestCounter = new EnumMap<Species, Integer>(Species.class);

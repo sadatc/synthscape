@@ -1,9 +1,9 @@
 package com.synthverse.evolver.islands;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.synthverse.Main;
 import com.synthverse.evolver.core.CentralizedEvolutionEngine;
 import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
@@ -27,7 +27,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
 
     static {
-	LogUtils.applyDefaultSettings(logger, Level.ALL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
     private Species species;
