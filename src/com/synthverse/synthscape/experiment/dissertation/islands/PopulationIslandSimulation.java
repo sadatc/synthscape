@@ -199,7 +199,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public int configMaxStepsPerAgent() {
-	return MAX_STEPS_PER_AGENT;
+	return settings.MAX_STEPS_PER_AGENT;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public int configStepsPerSimulation() {
-	return MAX_STEPS_PER_AGENT;
+	return settings.MAX_STEPS_PER_AGENT;
     }
 
     @Override

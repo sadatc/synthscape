@@ -89,7 +89,7 @@ public class TestSim extends Simulation {
 
     @Override
     public int configMaxStepsPerAgent() {
-	return MAX_STEPS_PER_AGENT;
+	return settings.MAX_STEPS_PER_AGENT;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class TestSim extends Simulation {
 
     @Override
     public int configStepsPerSimulation() {
-	return MAX_STEPS_PER_AGENT;
+	return settings.MAX_STEPS_PER_AGENT;
     }
 
     @Override
