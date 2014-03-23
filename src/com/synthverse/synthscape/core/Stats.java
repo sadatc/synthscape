@@ -81,7 +81,7 @@ public class Stats {
 	if (eventCounterMap.size() > 0) {
 
 	    for (Event event : getEvents()) {
-		str += (event + " = " + eventCounterMap.get(event));
+		str += (event + ":" + eventCounterMap.get(event)+" ");
 	    }
 
 	}

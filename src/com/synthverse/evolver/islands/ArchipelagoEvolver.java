@@ -68,18 +68,25 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
-
-	double fitness = computeFitness(simStats, agents);
+	// FITNESS EVALUATION: 
+	// In this model, for each generation, the number of simulations run corresponds
+	// to the size of the gene pool. During each simulation, an individual gene 
+	// from the pool is taken, cloned (into a team), and fitness evaluated
+	// collectively
+	
+	//logger.info("evaluating generation:"+this.generation+"-"+ simStats.toString());
+	double collectiveFitness = computeFitness(simStats, agents);
+	
 
 	// here all agents are forced to have the same fitness
+	// all agents here belong to a single genotypical parent 
 	for (Agent agent : agents) {
-	    agent.setFitness(fitness);
+	    agent.setFitness(collectiveFitness);
 	    agent.setProvidedFeedback(true);
 	    Agent cloneParentAgent = agent.getGenotypicalParent();
-
+	    //logger.info("agent parent="+cloneParentAgent.getAgentId());
 	    if (cloneParentAgent != null) {
-
-		cloneParentAgent.setFitness(fitness);
+		cloneParentAgent.setFitness(collectiveFitness);
 	    }
 	}
 
