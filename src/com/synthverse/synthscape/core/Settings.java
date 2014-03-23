@@ -52,7 +52,9 @@ public class Settings {
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
     public int MAX_STEPS_PER_AGENT = 256;
-    
+
+    public int REPEAT = 1;
+
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
     public int lastLoggedGeneration = 0;
@@ -70,16 +72,20 @@ public class Settings {
 	options.addOption(new Option("randomize_each_sim", "randomize each sim [true]"));
 	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
 
-	options.addOption(OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]")
-		.create("log"));
+	options.addOption(OptionBuilder.withArgName("log").hasArg()
+		.withDescription("(off,all,info) [all]").create("log"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
 		.withDescription("island, embedded, alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names (detector, extractor, transporter, super)").create("species"));
+		.withDescription("species names (detector, extractor, transporter, super)")
+		.create("species"));
 
-	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
+	options.addOption(OptionBuilder
+		.withArgName("interactions")
+		.isRequired()
+		.hasArg()
 		.withDescription("interactions names (none, trail, broadcast, unicast_n,unicast_g)")
 		.create("interactions"));
 
@@ -87,12 +93,15 @@ public class Settings {
 		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
 
 	options.addOption(OptionBuilder.withArgName("clones").hasArg().withType(Integer.class)
-		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]").create("clones"));
+		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]")
+		.create("clones"));
 
 	options.addOption(OptionBuilder.withArgName("pool_size").hasArg().withType(Integer.class)
-		.withDescription("gene pool size [" + EE_DEF_GENE_POOL_SIZE + "]").create("pool_size"));
+		.withDescription("gene pool size [" + EE_DEF_GENE_POOL_SIZE + "]")
+		.create("pool_size"));
 
-	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg().withType(Integer.class)
+	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg()
+		.withType(Integer.class)
 		.withDescription("number of collection sites [" + NUMBER_OF_COLLECTION_SITES + "]")
 		.create("collection_sites"));
 
@@ -102,14 +111,22 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("height").hasArg().withType(Integer.class)
 		.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
 
-	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg().withType(Double.class)
-		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("obstacle_density"));
+	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg()
+		.withType(Double.class)
+		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]")
+		.create("obstacle_density"));
 
-	options.addOption(OptionBuilder.withArgName("resource_density").hasArg().withType(Double.class)
-		.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("resource_density"));
+	options.addOption(OptionBuilder.withArgName("resource_density").hasArg()
+		.withType(Double.class)
+		.withDescription("resource density [" + RESOURCE_DENSITY + "]")
+		.create("resource_density"));
 
 	options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
-		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("goal"));
+		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]")
+		.create("goal"));
+
+	options.addOption(OptionBuilder.withArgName("repeat").hasArg().withType(Integer.class)
+		.withDescription("repeat experiment [" + REPEAT + "]").create("repeat"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -144,13 +161,15 @@ public class Settings {
 	    D.p("RESOURCE_CAPTURE_GOAL = " + RESOURCE_CAPTURE_GOAL);
 
 	    if (line.hasOption("obstacle_density")) {
-		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density")).doubleValue();
+		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density"))
+			.doubleValue();
 	    }
 
 	    D.p("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
 
 	    if (line.hasOption("resource_density")) {
-		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density")).doubleValue();
+		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density"))
+			.doubleValue();
 	    }
 
 	    D.p("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
@@ -190,20 +209,22 @@ public class Settings {
 
 		String speciesNames = line.getOptionValue("species").toLowerCase();
 		if (!(speciesNames.contains("super") || speciesNames.contains("extractor")
-			|| speciesNames.contains("detector") || speciesNames.contains("transporter"))) {
+			|| speciesNames.contains("detector") || speciesNames
+			    .contains("transporter"))) {
 		    throw new ParseException("species: " + speciesNames + " was not recognized");
 		}
 		MODEL_SPECIES = speciesNames;
 
 	    }
-	    D.p("MODEL_SPECIES=" + MODEL_SPECIES);
+	    D.p("MODEL_SPECIES = " + MODEL_SPECIES);
 
 	    if (line.hasOption("interactions")) {
 		String interactions = line.getOptionValue("interactions").toLowerCase();
 		if (!(interactions.contains("none") || interactions.contains("trail")
 			|| interactions.contains("broadcast") || interactions.contains("unicast_n") || interactions
 			    .contains("unicast_g"))) {
-		    throw new ParseException("interactions: " + interactions + " was not recognized");
+		    throw new ParseException("interactions: " + interactions
+			    + " was not recognized");
 		}
 		MODEL_INTERACTIONS = interactions;
 
@@ -229,7 +250,8 @@ public class Settings {
 	    D.p("EE_DEF_GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
-		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();
+		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites"))
+			.intValue();
 
 	    }
 	    D.p("NUMBER_OF_COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
@@ -245,6 +267,12 @@ public class Settings {
 
 	    }
 	    D.p("WORLD_HEIGHT = " + WORLD_HEIGHT);
+
+	    if (line.hasOption("repeat")) {
+		REPEAT = new Integer(line.getOptionValue("repeat")).intValue();
+
+	    }
+	    D.p("REPEAT = " + REPEAT);
 
 	    // some calculated values
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);

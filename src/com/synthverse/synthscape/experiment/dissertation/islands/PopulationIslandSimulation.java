@@ -2,7 +2,6 @@ package com.synthverse.synthscape.experiment.dissertation.islands;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sim.util.Int2D;
@@ -12,7 +11,6 @@ import com.synthverse.evolver.core.Evolver;
 import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
@@ -29,6 +27,8 @@ public class PopulationIslandSimulation extends Simulation {
 
     private Team team = new Team();
 
+    public static Settings settings = Settings.getInstance();
+
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -40,7 +40,7 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat 1 -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
 	System.exit(0);
