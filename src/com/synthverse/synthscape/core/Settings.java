@@ -64,17 +64,17 @@ public class Settings {
 	options.addOption(new Option("randomize_each_sim", "randomize each sim [true]"));
 	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
 
-	options.addOption(OptionBuilder.withArgName("log").isRequired().hasArg()
-		.withDescription("(off,all,info) [all]").create("log"));
+	options.addOption(OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]")
+		.create("log"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
-		.withDescription("island,embedded,alife").create("model"));
+		.withDescription("island, embedded, alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names (detector,extractor,transporter,super)").create("species"));
+		.withDescription("species names (detector, extractor, transporter, super)").create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
-		.withDescription("interactions names (none,trail,broadcast,unicast_n,unicast_g)")
+		.withDescription("interactions names (none, trail, broadcast, unicast_n,unicast_g)")
 		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
