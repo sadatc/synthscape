@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -123,9 +124,36 @@ public class ExperimentReporter implements Constants {
 		detailWriter.write(line);
 		detailWriter.newLine();
 	    }
+	    detailWriter.write("EXPERIMENT_START = " + new Date());
+	    detailWriter.newLine();
 
 	    detailWriter.flush();
 	    detailWriter.close();
+
+	} catch (Exception e) {
+	    logger.severe("Exception while trying to open experiment details file: "
+		    + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+
+    }
+
+    private void writeExperimentEndDate() {
+
+	File file = new File(settings.EXPERIMENT_DETAILS_FILE);
+	try {
+
+	    if (file.exists() && file.isFile()) {
+		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(
+			file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+		detailWriter.write("EXPERIMENT_END = " + new Date());
+		detailWriter.newLine();
+
+		detailWriter.flush();
+		detailWriter.close();
+
+	    }
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment details file: "
@@ -268,6 +296,8 @@ public class ExperimentReporter implements Constants {
 	if (simulation.isReportEvents() || simulation.isReportPerformance()) {
 	    closeFiles();
 	}
+
+	writeExperimentEndDate();
     }
 
     public void initReporter() {
