@@ -36,7 +36,7 @@ import ec.util.MersenneTwisterFast;
  */
 
 public abstract class Simulation extends SimState implements Constants {
-    
+
     public Settings settings = Settings.getInstance();
 
     private static final long serialVersionUID = 2700375028430112699L;
@@ -119,8 +119,7 @@ public abstract class Simulation extends SimState implements Constants {
     public List<Stats> stepStatsList = new ArrayList<Stats>();
 
     public Stats simStats = new Stats();
-    public Stats aggregateSimStats = new Stats();
-    public int aggregationCounter = 0;
+    public Stats poolStats = new Stats();
 
     private int genePoolSize;
 
@@ -192,7 +191,7 @@ public abstract class Simulation extends SimState implements Constants {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (int)((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
+	resourceCaptureGoal = (int) ((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
 
 	createDataStructures();
 
@@ -255,7 +254,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void setNumberOfResources(int numberOfResources) {
 	this.numberOfResources = numberOfResources;
-	this.resourceCaptureGoal = (int)((double)numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
+	this.resourceCaptureGoal = (int) ((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
 
     }
 
@@ -448,14 +447,12 @@ public abstract class Simulation extends SimState implements Constants {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	
 	initEnvironment();
 	initAgents();
-	
+
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
 		+ numberOfResources + " agents=" + agents.size());
-
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -484,7 +481,8 @@ public abstract class Simulation extends SimState implements Constants {
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.EE_DEF_GENE_POOL_SIZE == 0) {
-			    //logger.info("completed running generation:" + evolver.getGeneration());
+			    // logger.info("completed running generation:" +
+			    // evolver.getGeneration());
 			    evolver.evolve();
 
 			}
@@ -525,20 +523,10 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private boolean statsHasCollectionEvent(Stats stats) {
-	for (Event event : stats.getEvents()) {
-	    if (event == Event.COLLECTED_RESOURCE) {
-		return true;
-	    }
-	}
-	return false;
-    }
-
     protected void startNextSimulation() {
 
-	simStats.aggregateStatsTo(aggregateSimStats);
+	simStats.aggregateStatsTo(poolStats);
 
-	aggregationCounter++;
 	simStats.clear();
 
 	resetEnvironment();
@@ -608,7 +596,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
 
-	experimentReporter.reportPerformance(generationCounter, simStats, aggregateSimStats, fitnessStats);
+	experimentReporter.reportPerformance(generationCounter, simStats, poolStats, fitnessStats);
     }
 
     public void setStartDate() {
@@ -649,10 +637,10 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (eventFileName.indexOf(".") != -1) {
 		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
 		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp()+"_" +this.job()+ postPart;
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job() + postPart;
 
 	    } else {
-		eventFileName += "_" + batchId+	"_" +this.job();
+		eventFileName += "_" + batchId + "_" + this.job();
 	    }
 
 	}

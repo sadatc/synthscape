@@ -221,17 +221,12 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     private void reportPerformance() {
+	//fitnessStats will contain all the fitnesses of all the active agents
 	fitnessStats.clear();
 	for (int i = 0; i < genePoolSize; i++) {
 	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
 	}
 	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
-
-	/*
-	 * logger.fine("generation="+generationCounter+"; n=" +
-	 * fitnessStats.getN() + "; max=" + fitnessStats.getMax() + "; mean=" +
-	 * fitnessStats.getMean() + "; var=" + fitnessStats.getVariance());
-	 */
 
     }
 
