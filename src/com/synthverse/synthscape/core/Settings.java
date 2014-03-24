@@ -1,6 +1,8 @@
 package com.synthverse.synthscape.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.commons.cli.BasicParser;
@@ -59,6 +61,10 @@ public class Settings {
     public String EVENT_DATA_DIR = "/tmp";
 
     public String EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
+    
+    public String EXPERIMENT_DETAILS_FILE = EVENT_DATA_DIR + "/experiment_details.txt";
+
+    public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
@@ -67,6 +73,12 @@ public class Settings {
     private Settings() {
 
     }
+    
+    private void printAndStore(String msg) {
+	D.p(msg);
+	EXPERIMENT_DETAILS.add(msg);
+    }
+    
 
     @SuppressWarnings("static-access")
     public void processCommandLineInput(String[] args) {
@@ -74,7 +86,7 @@ public class Settings {
 	Options options = new Options();
 
 	options.addOption(new Option("help", "print this message"));
-	options.addOption(new Option("randomize_each_sim", "randomize each sim [true]"));
+	options.addOption(new Option("no_randomize", "do not randomize each sim [default: randomize]"));
 	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
 
 	options.addOption(OptionBuilder.withArgName("log").hasArg()
@@ -146,13 +158,13 @@ public class Settings {
 	    CommandLine line = parser.parse(options, args);
 
 	    D.p("=============== INPUT PARAMETERS ===============");
-	    if (line.hasOption("randomize_each_sim")) {
+	    if (line.hasOption("no_randomize")) {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 	    } else {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 	    }
 
-	    D.p("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
+	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
 
 	    if (line.hasOption("use_4_tasks")) {
 		PROBLEM_COMPLEXITY = ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
@@ -160,27 +172,27 @@ public class Settings {
 		PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
 	    }
 
-	    D.p("PROBLEM_COMPLEXITY = " + PROBLEM_COMPLEXITY);
+	    printAndStore("PROBLEM_COMPLEXITY = " + PROBLEM_COMPLEXITY);
 
 	    if (line.hasOption("goal")) {
 		RESOURCE_CAPTURE_GOAL = new Double(line.getOptionValue("goal")).doubleValue();
 	    }
 
-	    D.p("RESOURCE_CAPTURE_GOAL = " + RESOURCE_CAPTURE_GOAL);
+	    printAndStore("RESOURCE_CAPTURE_GOAL = " + RESOURCE_CAPTURE_GOAL);
 
 	    if (line.hasOption("obstacle_density")) {
 		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density"))
 			.doubleValue();
 	    }
 
-	    D.p("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
+	    printAndStore("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
 
 	    if (line.hasOption("resource_density")) {
 		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density"))
 			.doubleValue();
 	    }
 
-	    D.p("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
+	    printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
@@ -199,7 +211,7 @@ public class Settings {
 
 	    }
 
-	    D.p("LOG.LEVEL = " + REQUESTED_LOG_LEVEL.toString());
+	    printAndStore("LOG.LEVEL = " + REQUESTED_LOG_LEVEL.toString());
 
 	    if (line.hasOption("model")) {
 		String modelName = line.getOptionValue("model").toLowerCase();
@@ -211,7 +223,7 @@ public class Settings {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}
 	    }
-	    D.p("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
+	    printAndStore("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
 
 	    if (line.hasOption("species")) {
 
@@ -224,7 +236,7 @@ public class Settings {
 		MODEL_SPECIES = speciesNames;
 
 	    }
-	    D.p("MODEL_SPECIES = " + MODEL_SPECIES);
+	    printAndStore("MODEL_SPECIES = " + MODEL_SPECIES);
 
 	    if (line.hasOption("interactions")) {
 		String interactions = line.getOptionValue("interactions").toLowerCase();
@@ -237,50 +249,50 @@ public class Settings {
 		MODEL_INTERACTIONS = interactions;
 
 	    }
-	    D.p("MODEL_INTERACTIONS = " + MODEL_INTERACTIONS);
+	    printAndStore("MODEL_INTERACTIONS = " + MODEL_INTERACTIONS);
 
 	    if (line.hasOption("generations")) {
 		GENERATIONS = new Integer(line.getOptionValue("generations")).intValue();
 
 	    }
-	    D.p("GENERATIONS = " + GENERATIONS);
+	    printAndStore("GENERATIONS = " + GENERATIONS);
 
 	    if (line.hasOption("clones")) {
 		CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
 
 	    }
-	    D.p("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
+	    printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
 	    if (line.hasOption("pool_size")) {
 		EE_DEF_GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
 
 	    }
-	    D.p("GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
+	    printAndStore("GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
 		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites"))
 			.intValue();
 
 	    }
-	    D.p("NUMBER_OF_COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
+	    printAndStore("NUMBER_OF_COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
 
 	    if (line.hasOption("width")) {
 		WORLD_WIDTH = new Integer(line.getOptionValue("width")).intValue();
 
 	    }
 
-	    D.p("WORLD_WIDTH = " + WORLD_WIDTH);
+	    printAndStore("WORLD_WIDTH = " + WORLD_WIDTH);
 	    if (line.hasOption("height")) {
 		WORLD_HEIGHT = new Integer(line.getOptionValue("height")).intValue();
 
 	    }
-	    D.p("WORLD_HEIGHT = " + WORLD_HEIGHT);
+	    printAndStore("WORLD_HEIGHT = " + WORLD_HEIGHT);
 
 	    if (line.hasOption("repeat")) {
 		REPEAT = new Integer(line.getOptionValue("repeat")).intValue();
 
 	    }
-	    D.p("NUM_EXPERIMENTS = " + REPEAT);
+	    printAndStore("NUM_EXPERIMENTS = " + REPEAT);
 
 	    if (line.hasOption("data_dir")) {
 		EVENT_DATA_DIR = line.getOptionValue("data_dir");
@@ -301,9 +313,10 @@ public class Settings {
 		}
 
 		EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
+		EXPERIMENT_DETAILS_FILE = EVENT_DATA_DIR + "/experiment_details.txt";
 
 	    }
-	    D.p("EVENT_DATA_DIR = " + EVENT_DATA_DIR);
+	    printAndStore("EVENT_DATA_DIR = " + EVENT_DATA_DIR);
 
 	    // some calculated values
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
@@ -311,10 +324,10 @@ public class Settings {
 	    SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 	    MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT;
 
-	    D.p("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
-	    D.p("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
-	    D.p("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
-	    D.p("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
+	    printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
+	    printAndStore("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
+	    printAndStore("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
+	    printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
 	    double gridArea = WORLD_WIDTH * WORLD_HEIGHT;
 
@@ -322,9 +335,9 @@ public class Settings {
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
 	    int resourceCaptureGoal = (int) ((double) numberOfResources * RESOURCE_CAPTURE_GOAL);
 
-	    D.p("ACTUAL_OBSTACLES = " + numberOfObstacles);
-	    D.p("ACTUAL_RESOURCES = " + numberOfResources);
-	    D.p("RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
+	    printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
+	    printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
+	    printAndStore("RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
 
 	    D.p("=================================================");
 

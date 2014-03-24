@@ -649,10 +649,10 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (eventFileName.indexOf(".") != -1) {
 		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
 		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + postPart;
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp()+"_" +this.job()+ postPart;
 
 	    } else {
-		eventFileName += "_" + batchId;
+		eventFileName += "_" + batchId+	"_" +this.job();
 	    }
 
 	}
