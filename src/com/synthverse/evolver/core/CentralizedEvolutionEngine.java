@@ -142,8 +142,6 @@ public final class CentralizedEvolutionEngine implements Constants {
 	    throw new Exception("aRandom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 
-	this.genePoolSize = genePoolSize;
-
 	this.maxMutationRate = maxMutationRate;
 	this.evolutionProgressLog = evolutionProgressLog;
 
@@ -221,21 +219,12 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     private void reportPerformance() {
-	//fitnessStats will contain all the fitnesses of all the active agents
+	// fitnessStats will contain all the fitnesses of all the active agents
 	fitnessStats.clear();
 	for (int i = 0; i < genePoolSize; i++) {
 	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
 	}
 	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
-
-    }
-
-    private void compareBuffers() {
-	String msg = "COMPARISON:\n";
-	for (int i = 0; i < genePoolSize; i++) {
-	    msg += "\t" + activeBuffer.get(i).getFitness() + "\t\t" + offspringBuffer.get(i).getFitness() + "\n";
-	}
-	logger.fine(msg);
 
     }
 
