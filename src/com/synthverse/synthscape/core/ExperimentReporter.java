@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -312,7 +313,7 @@ public class ExperimentReporter implements Constants {
 	try {
 	    if (simulation.isReportPerformance()) {
 		performanceWriter
-			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED");
+			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
 		performanceWriter.newLine();
 	    }
 
@@ -323,6 +324,31 @@ public class ExperimentReporter implements Constants {
 
 	}
 
+    }
+
+    public String getPoolCompositionString(DescriptiveStatistics fitnessStats) {
+	String msg = "";
+
+	double[] fitnessValues = fitnessStats.getSortedValues();
+
+	int fitnessBin = (int) fitnessValues[fitnessValues.length - 1];
+
+	int binCount = 1;
+
+	for (int i = fitnessValues.length - 2; i >= 0; i--) {
+
+	    int currentAgentFitness = (int) fitnessValues[i];
+	    if (currentAgentFitness == fitnessBin) {
+		binCount++;
+	    } else {
+		msg += fitnessBin + ":" + binCount + " ";
+		// reseta
+		binCount = 1;
+		fitnessBin = currentAgentFitness;
+	    }
+	}
+	msg += fitnessBin + ":" + binCount + " ";
+	return msg;
     }
 
     public void reportPerformance(int generationCounter, Stats simStats, Stats poolStats,
@@ -340,8 +366,9 @@ public class ExperimentReporter implements Constants {
 	    int trailReceived = poolStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
 	    int trailSearched = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
-	    
 	    poolStats.clear();
+
+	    String poolComposition = getPoolCompositionString(fitnessStats);
 
 	    if (simulation.isReportPerformance()) {
 
@@ -373,6 +400,9 @@ public class ExperimentReporter implements Constants {
 
 		sbPerformance.append(trailSearched);
 		sbPerformance.append(COMMA);
+
+		sbPerformance.append(poolComposition);
+
 
 		performanceWriter.write(sbPerformance.toString());
 
