@@ -24,11 +24,11 @@ public class Settings {
 
     public int CLONES_PER_SPECIES = 10;
 
-    public int EE_DEF_GENE_POOL_SIZE = 2000;
+    public int EE_DEF_GENE_POOL_SIZE = 1000;
 
     public int NUMBER_OF_COLLECTION_SITES = 5;
 
-    public double RESOURCE_CAPTURE_GOAL = 0.5;
+    public double RESOURCE_CAPTURE_GOAL = 0.55;
 
     public int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
 
