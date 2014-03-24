@@ -31,7 +31,7 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     private Species species;
-    double averageFitness = 0.0f;
+
     int generationCounter = 0;
     boolean terminationRequested = false;
 
@@ -63,10 +63,10 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @throws Exception
      */
     public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species) throws Exception {
-	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP,
-		EE_DEF_PERCENT_TOP_MUTANT, EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM,
-		EE_DEF_PERCENT_BOTTOM_MUTANT, EE_DEF_PERCENT_BOTTOM_X_BOTTOM,
-		EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE, EE_DEF_EVOLUTION_PROGRESS_LOG);
+	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
+		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
+		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
+		EE_DEF_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -77,12 +77,11 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @param genePoolSize
      * @throws Exception
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize)
-	    throws Exception {
-	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP,
-		EE_DEF_PERCENT_TOP_MUTANT, EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM,
-		EE_DEF_PERCENT_BOTTOM_MUTANT, EE_DEF_PERCENT_BOTTOM_X_BOTTOM,
-		EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE, EE_DEF_EVOLUTION_PROGRESS_LOG);
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) throws Exception {
+	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
+		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
+		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
+		EE_DEF_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -102,10 +101,9 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @param evolutionProgressLog
      * @throws Exception
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species,
-	    double percentTop, double percentTopXTop, double percentTopMutant,
-	    double percentTopXBottom, double percentBottom, double percentBottomMutant,
-	    double percentBottomXBottom, double percentRandom, double maxMutationRate,
+    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
+	    double percentTopXTop, double percentTopMutant, double percentTopXBottom, double percentBottom,
+	    double percentBottomMutant, double percentBottomXBottom, double percentRandom, double maxMutationRate,
 	    String evolutionProgressLog) throws Exception {
 
 	this.agentFactory = agentFactory;
@@ -113,43 +111,35 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	aTop = (int) ((double) genePoolSize * percentTop);
 	if (aTop <= 0) {
-	    throw new Exception("aTop is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aTop is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aTopXTop = (int) ((double) genePoolSize * percentTopXTop);
 	if (aTopXTop <= 0) {
-	    throw new Exception("aTopXTop is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aTopXTop is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aTopMutants = (int) ((double) genePoolSize * percentTopMutant);
 	if (aTopMutants <= 0) {
-	    throw new Exception("aTopMutants is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aTopMutants is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aTopXBottom = (int) ((double) genePoolSize * percentTopXBottom);
 	if (aTopXBottom <= 0) {
-	    throw new Exception("aTopXBottom is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aTopXBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aBottom = (int) ((double) genePoolSize * percentBottom);
 	if (aBottom <= 0) {
-	    throw new Exception("aBottom is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aBottomMutants = (int) ((double) genePoolSize * percentBottomMutant);
 	if (aBottomMutants <= 0) {
-	    throw new Exception("aBottomMutants is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aBottomMutants is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aBottomXBottom = (int) ((double) genePoolSize * percentBottomXBottom);
 	if (aBottomXBottom <= 0) {
-	    throw new Exception("aBottomXBottom is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aBottomXBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 	aRandom = (int) ((double) genePoolSize * percentRandom);
 	if (aRandom <= 0) {
-	    throw new Exception("aRandom is too low. Most likely, genePool=" + genePoolSize
-		    + ", is too small");
+	    throw new Exception("aRandom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
 	}
 
 	this.genePoolSize = genePoolSize;
@@ -190,20 +180,11 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private final void orderActivePopulationByFitness() {
-
-	Collections.sort(activeBuffer, Collections.reverseOrder());
-
-	computeStats();
-
-    }
-
-    private final void generateMutants(MersenneTwisterFast randomNumberGenerator,
-	    ArrayList<Agent> candidateParents, int numMutants, int offspringBufferIndex) {
+    private final void generateMutants(MersenneTwisterFast randomNumberGenerator, ArrayList<Agent> candidateParents,
+	    int numMutants, int offspringBufferIndex) {
 
 	for (int i = 0; i < numMutants; i++) {
-	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator,
-		    candidateParents);
+	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
 
 	    GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
@@ -213,15 +194,12 @@ public final class CentralizedEvolutionEngine implements Constants {
 
     }
 
-    private final void generateCrosses(MersenneTwisterFast randomNumberGenerator,
-	    ArrayList<Agent> candidateAParents, ArrayList<Agent> candidateBParents,
-	    int numOffsprings, int offspringBufferIndex) {
+    private final void generateCrosses(MersenneTwisterFast randomNumberGenerator, ArrayList<Agent> candidateAParents,
+	    ArrayList<Agent> candidateBParents, int numOffsprings, int offspringBufferIndex) {
 
 	for (int i = 0; i < numOffsprings; i++) {
-	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator,
-		    candidateAParents);
-	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator,
-		    candidateBParents);
+	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateAParents);
+	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateBParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
 
 	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
@@ -260,8 +238,7 @@ public final class CentralizedEvolutionEngine implements Constants {
     private void compareBuffers() {
 	String msg = "COMPARISON:\n";
 	for (int i = 0; i < genePoolSize; i++) {
-	    msg += "\t" + activeBuffer.get(i).getFitness() + "\t\t"
-		    + offspringBuffer.get(i).getFitness() + "\n";
+	    msg += "\t" + activeBuffer.get(i).getFitness() + "\t\t" + offspringBuffer.get(i).getFitness() + "\n";
 	}
 	logger.fine(msg);
 
@@ -270,8 +247,12 @@ public final class CentralizedEvolutionEngine implements Constants {
     private void printActiveBufferStats() {
 
 	if (settings.lastLoggedGeneration != generationCounter) {
-	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures
-		    + " PoolComp: " + getPoolCompositionString());
+	    // the above check is mainly being done so that
+	    // in the case of multiple species, this line is not printed
+	    // multiple times. The above checks if this generation
+	    // has already been logged.
+	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
+		    + getPoolCompositionString());
 	    settings.lastLoggedGeneration = generationCounter;
 	}
 
@@ -303,7 +284,7 @@ public final class CentralizedEvolutionEngine implements Constants {
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 	reportPerformance();
 
-	orderActivePopulationByFitness();
+	Collections.sort(activeBuffer, Collections.reverseOrder());
 	printActiveBufferStats();
 
 	// clear up values from previous generation
@@ -330,14 +311,12 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	// adding bottoms
 
-	swapBufferElements(activeBuffer, offspringBuffer, genePoolSize - aBottom - 1, aBottom,
-		offspringBufferIndex);
+	swapBufferElements(activeBuffer, offspringBuffer, genePoolSize - aBottom - 1, aBottom, offspringBufferIndex);
 	offspringBufferIndex += aBottom;
 
 	// adding top x top
 
-	generateCrosses(randomNumberGenerator, topPerformers, topPerformers, aTopXTop,
-		offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, topPerformers, aTopXTop, offspringBufferIndex);
 	offspringBufferIndex += aTopXTop;
 
 	// adding top mutants
@@ -347,20 +326,17 @@ public final class CentralizedEvolutionEngine implements Constants {
 
 	// adding top x bottom
 
-	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers, aTopXBottom,
-		offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers, aTopXBottom, offspringBufferIndex);
 	offspringBufferIndex += aTopXBottom;
 
 	// adding bottom mutants
 
-	generateMutants(randomNumberGenerator, bottomPerformers, aBottomMutants,
-		offspringBufferIndex);
+	generateMutants(randomNumberGenerator, bottomPerformers, aBottomMutants, offspringBufferIndex);
 	offspringBufferIndex += aBottomMutants;
 
 	// adding bottom x bottom
 
-	generateCrosses(randomNumberGenerator, bottomPerformers, bottomPerformers, aBottomXBottom,
-		offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, bottomPerformers, bottomPerformers, aBottomXBottom, offspringBufferIndex);
 	offspringBufferIndex += aBottomXBottom;
 
 	// add new random programs
@@ -379,8 +355,7 @@ public final class CentralizedEvolutionEngine implements Constants {
 	offspringBuffer = savedSwapBuffer;
 	activeBuffer = parentBuffer;
 
-	orderActivePopulationByFitness();
-	// printActiveBufferStats();
+	Collections.sort(activeBuffer, Collections.reverseOrder());
 
 	generationCounter++;
 
@@ -399,31 +374,20 @@ public final class CentralizedEvolutionEngine implements Constants {
     }
 
     @SuppressWarnings("unused")
-    private final void swapBufferElement(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer,
-	    int srcIndex, int targetIndex) {
+    private final void swapBufferElement(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer, int srcIndex,
+	    int targetIndex) {
 	Agent savedBaseAgent = targetBuffer.get(targetIndex);
 	targetBuffer.set(targetIndex, srcBuffer.get(srcIndex));
 	srcBuffer.set(srcIndex, savedBaseAgent);
     }
 
-    private final void swapBufferElements(ArrayList<Agent> srcBuffer,
-	    ArrayList<Agent> targetBuffer, int srcIndex, int numElements, int targetIndex) {
+    private final void swapBufferElements(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer, int srcIndex,
+	    int numElements, int targetIndex) {
 	for (int i = 0; i < numElements; i++) {
 	    Agent savedBaseAgent = targetBuffer.get(targetIndex + i);
 	    targetBuffer.set(targetIndex + i, srcBuffer.get(srcIndex + i));
 	    srcBuffer.set(srcIndex + i, savedBaseAgent);
 	}
-    }
-
-    private final void computeStats() {
-	double sum = 0.0f;
-
-	for (Agent e : activeBuffer) {
-	    sum += e.getFitness();
-	}
-
-	this.averageFitness = sum / (double) genePoolSize;
-
     }
 
     public int getGenePoolSize() {
