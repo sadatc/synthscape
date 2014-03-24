@@ -68,14 +68,14 @@ public class ExperimentReporter implements Constants {
     }
 
     private void openPerformanceFile(String fileName) {
-	D.p("ATTEMPTING TO OPEN:" + fileName);
+
 	File file = new File(fileName);
 	try {
 	    if (!file.exists()) {
 		file.createNewFile();
-		D.p("created new, didn't exit");
+
 	    } else {
-		D.p("existed, re-using...");
+
 	    }
 	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
 		    REPORT_WRITER_BUFFER_SIZE);

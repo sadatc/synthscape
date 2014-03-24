@@ -61,7 +61,7 @@ public class Settings {
     public String EVENT_DATA_DIR = "/tmp";
 
     public String EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
-    
+
     public String EXPERIMENT_DETAILS_FILE = EVENT_DATA_DIR + "/experiment_details.txt";
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
@@ -73,12 +73,11 @@ public class Settings {
     private Settings() {
 
     }
-    
+
     private void printAndStore(String msg) {
 	D.p(msg);
 	EXPERIMENT_DETAILS.add(msg);
     }
-    
 
     @SuppressWarnings("static-access")
     public void processCommandLineInput(String[] args) {
@@ -86,7 +85,8 @@ public class Settings {
 	Options options = new Options();
 
 	options.addOption(new Option("help", "print this message"));
-	options.addOption(new Option("no_randomize", "do not randomize each sim [default: randomize]"));
+	options.addOption(new Option("no_randomize",
+		"do not randomize each sim [default: randomize]"));
 	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
 
 	options.addOption(OptionBuilder.withArgName("log").hasArg()
@@ -164,7 +164,8 @@ public class Settings {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 	    }
 
-	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
+	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = "
+		    + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
 
 	    if (line.hasOption("use_4_tasks")) {
 		PROBLEM_COMPLEXITY = ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
@@ -299,7 +300,8 @@ public class Settings {
 
 		File dir = new File(EVENT_DATA_DIR);
 		if (dir.exists() && dir.isDirectory()) {
-		    D.p(EVENT_DATA_DIR + " already exists; contents might be replaced");
+		    // D.p(EVENT_DATA_DIR +
+		    // " already exists; contents might be replaced");
 		} else if (dir.exists() && !dir.isDirectory()) {
 		    throw new ParseException("A file by the name: " + EVENT_DATA_DIR
 			    + " exists and needs to be removed first");
@@ -308,7 +310,7 @@ public class Settings {
 			throw new ParseException("Unable to create: " + EVENT_DATA_DIR
 				+ "directory; check permissions");
 		    } else {
-			D.p(EVENT_DATA_DIR + " created.");
+			// D.p(EVENT_DATA_DIR + " created.");
 		    }
 		}
 
