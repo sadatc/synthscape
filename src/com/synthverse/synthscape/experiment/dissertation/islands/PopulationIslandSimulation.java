@@ -143,9 +143,9 @@ public class PopulationIslandSimulation extends Simulation {
 	    logger.info("adding TRANSPORTERs...");
 	}
 
-	if (settings.MODEL_SPECIES.contains("super")) {
-	    speciesSet.add(Species.SUPER);
-	    logger.info("adding SUPERs...");
+	if (settings.MODEL_SPECIES.contains("hetero")) {
+	    speciesSet.add(Species.HETERO);
+	    logger.info("adding HETEROs...");
 	}
 
 	return speciesSet;

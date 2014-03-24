@@ -63,7 +63,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     @Override
     public Set<Species> configSpeciesComposition() {
 	Set<Species> speciesSet = new HashSet<Species>();
-	speciesSet.add(Species.SUPER);
+	speciesSet.add(Species.HETERO);
 	return speciesSet;
     }
 

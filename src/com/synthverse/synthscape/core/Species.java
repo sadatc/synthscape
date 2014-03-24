@@ -49,7 +49,7 @@ public enum Species {
 	    return traits;
 	}
 
-    }), SUPER(4, "super", new TraitsDefiner() {
+    }), HETERO(4, "hetero", new TraitsDefiner() {
 
 	@Override
 	public LinkedHashSet<Trait> define() {

@@ -36,7 +36,7 @@ public class Settings {
 
     public EvolutionaryModel EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 
-    public String MODEL_SPECIES = "super";
+    public String MODEL_SPECIES = "hetero";
 
     public String MODEL_INTERACTIONS = "none";
 
@@ -96,7 +96,7 @@ public class Settings {
 		.withDescription("island, embedded, alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names (detector, extractor, transporter, super)")
+		.withDescription("species names (detector, extractor, transporter, hetero)")
 		.create("species"));
 
 	options.addOption(OptionBuilder
@@ -229,7 +229,7 @@ public class Settings {
 	    if (line.hasOption("species")) {
 
 		String speciesNames = line.getOptionValue("species").toLowerCase();
-		if (!(speciesNames.contains("super") || speciesNames.contains("extractor")
+		if (!(speciesNames.contains("hetero") || speciesNames.contains("extractor")
 			|| speciesNames.contains("detector") || speciesNames
 			    .contains("transporter"))) {
 		    throw new ParseException("species: " + speciesNames + " was not recognized");
