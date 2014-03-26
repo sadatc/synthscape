@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.test.basic;
+package com.synthverse.synthscape.test.basic;
 
 import sim.engine.SimState;
 

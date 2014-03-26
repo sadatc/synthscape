@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.experiment.dissertation.islands;
+package com.synthverse.synthscape.islands;
 
 import java.util.logging.Logger;
 

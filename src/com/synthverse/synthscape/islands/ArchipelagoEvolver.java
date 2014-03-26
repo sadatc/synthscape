@@ -1,14 +1,14 @@
-package com.synthverse.evolver.islands;
+package com.synthverse.synthscape.islands;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
-import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Event;
+import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;

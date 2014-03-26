@@ -1,4 +1,4 @@
-package com.synthverse.evolver.core;
+package com.synthverse.synthscape.islands;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,11 +7,10 @@ import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.synthverse.Main;
-import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
+import com.synthverse.synthscape.core.GeneticOperator;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.CollectionUtils;

@@ -1,58 +1,63 @@
-package com.synthverse.synthscape.experiment.test.basic;
+package com.synthverse.synthscape.test.manuallycoded;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.synthverse.evolver.core.Evolver;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
+import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.util.StringUtils;
 
 @SuppressWarnings("serial")
-public class TestSim extends Simulation {
+public class ManuallyCodedAgentSimulation extends Simulation {
+    Settings settings = Settings.getInstance();
+    
+
+    public ManuallyCodedAgentSimulation(long seed) throws Exception {
+	super(seed);
+    }
 
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat 1 -seed 2");
-	doLoop(TestSim.class, manualArgs);
+	doLoop(ManuallyCodedAgentSimulation.class, manualArgs);
 
 	System.exit(0);
     }
 
-    public TestSim(long seed) throws Exception {
-	super(seed);
-    }
-
     @Override
     public Evolver configEvolver() {
-	return new TestAgentEvolver(this);
+	return new ManuallyCodedEvolver(this);
     }
 
     @Override
     public AgentFactory configAgentFactory() {
-	return new TestAgentFactory(this);
+	return new ManuallyCodedAgentFactory(this);
     }
 
     @Override
     public int configGridWidth() {
-	return settings.WORLD_WIDTH;
+	return 64;
     }
 
     @Override
     public int configGridHeight() {
-	return settings.WORLD_HEIGHT;
+	return 64;
     }
 
     @Override
     public double configObstacleDensity() {
-	return settings.OBSTACLE_DENSITY;
+	//return OBSTACLE_DENSITY;
+	return 0.001;
     }
 
     @Override
     public double configResourceDensity() {
-	return settings.RESOURCE_DENSITY;
+	//return RESOURCE_DENSITY;
+	return 0.001;
     }
 
     @Override
@@ -79,7 +84,8 @@ public class TestSim extends Simulation {
 
     @Override
     public int configClonesPerSpecies() {
-	return settings.CLONES_PER_SPECIES;
+	//return CLONES_PER_SPECIES;
+	return 500;
     }
 
     @Override
@@ -89,22 +95,24 @@ public class TestSim extends Simulation {
 
     @Override
     public int configMaxStepsPerAgent() {
-	return settings.MAX_STEPS_PER_AGENT;
+	//return MAX_STEPS_PER_AGENT;
+	return 10000;
     }
 
     @Override
     public boolean configIsReportEvents() {
 	return REPORT_EVENTS;
     }
-
+    
     @Override
     public boolean configIsReportPerformance() {
 	return REPORT_PERFORMANCE;
     }
+    
 
     @Override
     public String configExperimentName() {
-	return "BasicTest";
+	return "POPULATION_ISLAND_MANUAL";
     }
 
     @Override
@@ -114,17 +122,19 @@ public class TestSim extends Simulation {
 
     @Override
     public int configStepsPerSimulation() {
-	return settings.MAX_STEPS_PER_AGENT;
+	//return MAX_STEPS_PER_AGENT;
+	return 10000;
     }
 
     @Override
     public String configEventFileName() {
 	return settings.EVENT_DATA_FILE;
     }
-
+    
     @Override
     public int configGenePoolSize() {
 	return settings.EE_DEF_GENE_POOL_SIZE;
     }
+
 
 }

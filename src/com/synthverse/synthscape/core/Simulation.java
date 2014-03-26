@@ -23,7 +23,6 @@ import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
-import com.synthverse.evolver.core.Evolver;
 import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;

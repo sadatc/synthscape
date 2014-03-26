@@ -3,7 +3,7 @@ package com.synthverse;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
-import com.synthverse.synthscape.experiment.dissertation.islands.PopulationIslandSimulation;
+import com.synthverse.synthscape.islands.PopulationIslandSimulation;
 
 public class Main {
     public static Settings settings = Settings.getInstance();

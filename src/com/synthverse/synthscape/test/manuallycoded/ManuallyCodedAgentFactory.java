@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.experiment.test.manuallycoded;
+package com.synthverse.synthscape.test.manuallycoded;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;

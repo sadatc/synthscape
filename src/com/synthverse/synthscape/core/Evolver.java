@@ -1,11 +1,6 @@
-package com.synthverse.evolver.core;
+package com.synthverse.synthscape.core;
 
 import java.util.List;
-
-import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.Simulation;
-import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
 
 public abstract class Evolver {
 

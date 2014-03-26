@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.experiment.dissertation.islands;
+package com.synthverse.synthscape.islands;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,10 +7,9 @@ import java.util.logging.Logger;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
-import com.synthverse.evolver.core.Evolver;
-import com.synthverse.evolver.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;

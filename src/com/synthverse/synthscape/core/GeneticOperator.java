@@ -1,4 +1,4 @@
-package com.synthverse.evolver.core;
+package com.synthverse.synthscape.core;
 
 import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.InstructionTranslator;

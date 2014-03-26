@@ -1,7 +1,7 @@
 /**
  * Test Agent
  */
-package com.synthverse.synthscape.experiment.test.manuallycoded;
+package com.synthverse.synthscape.test.manuallycoded;
 
 import sim.engine.SimState;
 

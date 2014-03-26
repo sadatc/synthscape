@@ -1,9 +1,8 @@
-package com.synthverse.synthscape.experiment.dissertation.islands;
+package com.synthverse.synthscape.islands;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
