@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.synthverse.synthscape.islands;
+package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import java.util.logging.Logger;
 

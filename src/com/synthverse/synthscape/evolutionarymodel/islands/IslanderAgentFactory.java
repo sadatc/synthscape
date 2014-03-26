@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.islands;
+package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;

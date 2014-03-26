@@ -1,4 +1,4 @@
-package com.synthverse.synthscape.islands;
+package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import java.util.HashMap;
 import java.util.List;
