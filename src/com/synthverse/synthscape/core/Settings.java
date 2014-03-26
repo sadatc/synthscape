@@ -86,7 +86,7 @@ public class Settings {
 
 	options.addOption(new Option("help", "print this message"));
 	options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
-	options.addOption(new Option("use_4_tasks", "use 4 tasks [3]"));
+	options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
 
 	options.addOption(OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]")
 		.create("log"));
@@ -95,10 +95,10 @@ public class Settings {
 		.withDescription("island, embedded, alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names (detector, extractor, transporter, hetero)").create("species"));
+		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter").create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
-		.withDescription("interactions names (none, trail, broadcast, unicast_n,unicast_g)")
+		.withDescription("interactions names [none OR trail, broadcast, unicast_n,unicast_g] e.g. trail,broadcast")
 		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
