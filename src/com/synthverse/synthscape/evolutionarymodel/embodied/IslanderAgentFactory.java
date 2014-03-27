@@ -5,6 +5,7 @@ import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 
 public class IslanderAgentFactory extends AgentFactory implements Constants {
     

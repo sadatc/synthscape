@@ -2,8 +2,8 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 
 import sim.engine.SimState;
 
-import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.GenotypeInstruction;
+import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
@@ -11,14 +11,14 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
-public class IslanderAgent extends Agent {
+public class EmbodiedAgent extends Agent {
 
-    public IslanderAgent(Simulation simulation, Species species) {
+    public EmbodiedAgent(Simulation simulation, Species species) {
 	super(simulation, species);
 
     }
 
-    public IslanderAgent(Simulation sim, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    public EmbodiedAgent(Simulation sim, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 
     }
