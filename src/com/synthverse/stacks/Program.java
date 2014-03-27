@@ -19,8 +19,6 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
-import com.synthverse.util.HashUtils;
-
 import ec.util.MersenneTwisterFast;
 
 /**
