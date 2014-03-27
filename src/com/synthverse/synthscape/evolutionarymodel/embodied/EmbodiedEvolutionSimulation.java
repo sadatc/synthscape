@@ -233,8 +233,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-
-	return new ArchipelagoEvolver(this);
+	return null;
+	//return new EmbodiedAgentEvolver(this);
     }
 
     @Override

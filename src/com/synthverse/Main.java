@@ -14,7 +14,7 @@ public class Main {
 	if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
 	    // island model
 	    PopulationIslandSimulation.main(args);
-	} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBEDDED_MODEL) {
+	} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
 	    // embedded model
 	    D.p(settings.EVOLUTIONARY_MODEL+" is not ready yet"); 
 	} else {

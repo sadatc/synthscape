@@ -200,7 +200,7 @@ public class Settings {
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 		} else if (modelName.equalsIgnoreCase("embedded")) {
-		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBEDDED_MODEL;
+		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
 		} else {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}
