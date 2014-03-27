@@ -7,10 +7,10 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 
-public class IslanderAgentFactory extends AgentFactory implements Constants {
+public class EmbodiedAgentFactory extends AgentFactory implements Constants {
     
 
-    protected IslanderAgentFactory(Simulation simulation) {
+    protected EmbodiedAgentFactory(Simulation simulation) {
 	super(simulation);
     }
 

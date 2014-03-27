@@ -28,7 +28,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     private int generation;
 
-    HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
+    HashMap<Species, EmbodiedAgentEvolver> speciesIslandMap = new HashMap<Species, EmbodiedAgentEvolver>();
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -41,7 +41,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     public void initPopulationIslands() throws Exception {
 	for (Species species : simulation.getSpeciesComposition()) {
-	    PopulationIslandEvolver island = new PopulationIslandEvolver(simulation, species,
+	    EmbodiedAgentEvolver island = new EmbodiedAgentEvolver(simulation, species,
 		    simulation.getClonesPerSpecies());
 	    speciesIslandMap.put(species, island);
 	}
@@ -49,7 +49,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public Agent getAgent(Species species, int x, int y) {
-	PopulationIslandEvolver islandEvolver = speciesIslandMap.get(species);
+	EmbodiedAgentEvolver islandEvolver = speciesIslandMap.get(species);
 
 	Agent result = islandEvolver.getAgent(species, x, y);
 	return result;

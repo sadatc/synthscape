@@ -102,7 +102,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void evolve() {
-	// logger.info("PopulationIslandEvolver(" + species + "): evolve()");
+	// logger.info("EmbodiedAgentEvolver(" + species + "): evolve()");
 	// time to generate next generation
 
 	// logger.info("***************************************");

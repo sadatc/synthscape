@@ -16,20 +16,20 @@ import com.synthverse.util.LogUtils;
  * @author sadat
  * 
  */
-public class PopulationIslandSimulationFancyUI extends FancySimulationUI {
+public class EmbodiedEvolutionSimulationFancyUI extends FancySimulationUI {
 
-    private static Logger logger = Logger.getLogger(PopulationIslandSimulationFancyUI.class.getName());
+    private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulationFancyUI.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    public PopulationIslandSimulationFancyUI() throws Exception {
-	super(new PopulationIslandSimulation(Constants.SIMULATION_RNG_SEED));
+    public EmbodiedEvolutionSimulationFancyUI() throws Exception {
+	super(new EmbodiedEvolutionSimulation(Constants.SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {
 	try {
-	    Console c = new Console(new PopulationIslandSimulationFancyUI());
+	    Console c = new Console(new EmbodiedEvolutionSimulationFancyUI());
 	    c.setVisible(true);
 	} catch (Exception e) {
 	    logger.severe("Exception:" + e.getMessage());

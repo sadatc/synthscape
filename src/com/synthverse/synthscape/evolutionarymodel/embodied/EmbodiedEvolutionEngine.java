@@ -18,11 +18,11 @@ import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
 
-public final class CentralizedEvolutionEngine implements Constants {
+public final class EmbodiedEvolutionEngine implements Constants {
 
     Settings settings = Settings.getInstance();
 
-    private static Logger logger = Logger.getLogger(CentralizedEvolutionEngine.class.getName());
+    private static Logger logger = Logger.getLogger(EmbodiedEvolutionEngine.class.getName());
     private DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
 
     static {
@@ -61,7 +61,7 @@ public final class CentralizedEvolutionEngine implements Constants {
      * 
      * @throws Exception
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species) throws Exception {
+    public EmbodiedEvolutionEngine(AgentFactory agentFactory, Species species) throws Exception {
 	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
 		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
 		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
@@ -76,7 +76,7 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @param genePoolSize
      * @throws Exception
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) throws Exception {
+    public EmbodiedEvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) throws Exception {
 	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
 		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
 		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
@@ -100,7 +100,7 @@ public final class CentralizedEvolutionEngine implements Constants {
      * @param evolutionProgressLog
      * @throws Exception
      */
-    public CentralizedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
+    public EmbodiedEvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
 	    double percentTopXTop, double percentTopMutant, double percentTopXBottom, double percentBottom,
 	    double percentBottomMutant, double percentBottomXBottom, double percentRandom, double maxMutationRate,
 	    String evolutionProgressLog) throws Exception {

@@ -22,25 +22,25 @@ import com.synthverse.util.StringUtils;
 import ec.util.MersenneTwisterFast;
 
 @SuppressWarnings("serial")
-public class PopulationIslandSimulation extends Simulation {
+public class EmbodiedEvolutionSimulation extends Simulation {
 
     private Team team = new Team();
 
     public static Settings settings = Settings.getInstance();
 
-    private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
+    private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    public PopulationIslandSimulation(long seed) throws Exception {
+    public EmbodiedEvolutionSimulation(long seed) throws Exception {
 	super(seed);
 
     }
 
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
-	doLoop(PopulationIslandSimulation.class, manualArgs);
+	doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
 	System.exit(0);
     }
@@ -239,7 +239,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public AgentFactory configAgentFactory() {
-	return new IslanderAgentFactory(this);
+	return new EmbodiedAgentFactory(this);
     }
 
     @Override

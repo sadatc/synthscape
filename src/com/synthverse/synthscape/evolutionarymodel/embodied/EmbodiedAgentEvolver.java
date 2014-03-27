@@ -19,11 +19,11 @@ import com.synthverse.util.LogUtils;
  * @author sadat
  * 
  */
-public class PopulationIslandEvolver extends Evolver implements Constants {
+public class EmbodiedAgentEvolver extends Evolver implements Constants {
 
     private int generation;
 
-    protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
+    protected static Logger logger = Logger.getLogger(EmbodiedAgentEvolver.class.getName());
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -35,18 +35,18 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int genePoolSize;
     private int genePoolIndex;
 
-    private CentralizedEvolutionEngine evolutionEngine;
+    private EmbodiedEvolutionEngine evolutionEngine;
     private int requestCounter = 1;
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
+    public EmbodiedAgentEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
 	super(simulation);
 	this.species = species;
 
 	this.generation = 0;
 
-	evolutionEngine = new CentralizedEvolutionEngine(simulation.getAgentFactory(), species);
+	evolutionEngine = new EmbodiedEvolutionEngine(simulation.getAgentFactory(), species);
 	this.clonesPerSpecies = clonesPerSpecies;
 	genePoolSize = evolutionEngine.getGenePoolSize();
 	totalPopulation = clonesPerSpecies * genePoolSize;
@@ -102,7 +102,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void evolve() {
-	// logger.info("PopulationIslandEvolver(" + species + "): evolve()");
+	// logger.info("EmbodiedAgentEvolver(" + species + "): evolve()");
 	// time to generate next generation
 
 	// logger.info("***************************************");
