@@ -92,7 +92,7 @@ public class Settings {
 		.create("log"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
-		.withDescription("island, embedded, alife").create("model"));
+		.withDescription("island, embodied, alife").create("model"));
 
 	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
 		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter").create("species"));
@@ -199,7 +199,7 @@ public class Settings {
 		String modelName = line.getOptionValue("model").toLowerCase();
 		if (modelName.equalsIgnoreCase("island")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
-		} else if (modelName.equalsIgnoreCase("embedded")) {
+		} else if (modelName.equalsIgnoreCase("embodied")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
 		} else {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
