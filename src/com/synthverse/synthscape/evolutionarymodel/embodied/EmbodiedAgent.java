@@ -13,14 +13,18 @@ import com.synthverse.synthscape.core.Species;
 @SuppressWarnings("serial")
 public class EmbodiedAgent extends Agent {
 
-    public EmbodiedAgent(Simulation simulation, Species species) {
+    private int poolSize;
+
+    public EmbodiedAgent(Simulation simulation, Species species, int poolSize) {
 	super(simulation, species);
+	this.poolSize = poolSize;
 
     }
 
-    public EmbodiedAgent(Simulation sim, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    public EmbodiedAgent(Simulation sim, Species species, int poolSize, int generationNumber, int maxSteps, int startX,
+	    int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
-
+	setPoolSize(poolSize);
     }
 
     public void stepAction(SimState state) {
@@ -112,6 +116,14 @@ public class EmbodiedAgent extends Agent {
 	 * vm.setCpuCycles(sim.getMaxStepsPerAgent());
 	 * this.setVirtualMachine(vm);
 	 */
+    }
+
+    public int getPoolSize() {
+	return poolSize;
+    }
+
+    public void setPoolSize(int poolSize) {
+	this.poolSize = poolSize;
     }
 
 }

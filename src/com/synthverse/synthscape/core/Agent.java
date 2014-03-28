@@ -98,8 +98,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	generateAgentId();
 	_optimizationAgentCounter++;
 	this.team = null;
-	// logger.info("agent("+this.agentId+") created. Total #:" +
-	// _optimizationAgentCounter);
+
     }
 
     private Agent() {
