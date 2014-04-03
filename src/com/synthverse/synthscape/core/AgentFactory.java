@@ -33,13 +33,10 @@ public abstract class AgentFactory implements Constants {
     }
 
     public Agent getNewFactoryAgent(Species species) {
-	
+
 	Agent result = availableAgents.pollLast();
 	if (result == null) {
 	    result = createNewFactoryAgent(null);
-	    //logger.info("getNewFactoryAgent() returning brand new agent with id:"+result.getAgentId());
-	} else {
-	    //logger.info("getNewFactoryAgent() returning recycled agent with id:"+result.getAgentId());
 	}
 	result.setSpecies(species);
 	return result;
