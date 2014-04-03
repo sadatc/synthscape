@@ -79,5 +79,7 @@ public interface Constants {
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
 
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
+    
+    public static final int UNASSIGNED_AGENT_ID = -99;
 
 }
