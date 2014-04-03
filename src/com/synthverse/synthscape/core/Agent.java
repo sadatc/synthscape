@@ -32,9 +32,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public Simulation sim;
 
-    private int agentId;
+    private int agentId = UNASSIGNED_AGENT_ID;
 
-    private Team team;
+    private Team team = null;
 
     protected int agentStepCounter;
 
@@ -94,29 +94,28 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.setVirtualMachine(vm);
     }
 
-    private void init() {
-	generateAgentId();
-	_optimizationAgentCounter++;
-	this.team = null;
-
+    private void initId() {
+	if (agentId == UNASSIGNED_AGENT_ID) {
+	    generateAgentId();
+	    _optimizationAgentCounter++;
+	}
     }
 
+    @SuppressWarnings("unused")
     private Agent() {
-	init();
+	throw new AssertionError("Agent constructor is restricted");
     }
 
     protected Agent(Simulation simulation, Species species) {
-
-	init();
+	initId();
 	setSim(simulation);
 	setSpecies(species);
 	initGenotype();
     }
 
     protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
-	init();
+	initId();
 	initGenotype();
-	// set the basic stuff:
 	setSim(simulation);
 	setMaxSteps(maxSteps);
 	setX(startX);
@@ -717,7 +716,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
 		// sim.statistics.stepData.trailHits++;
-		sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, ""+this.agentId);
+		sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, "" + this.agentId);
 
 	    }
 	} else {
