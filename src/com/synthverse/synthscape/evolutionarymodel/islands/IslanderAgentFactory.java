@@ -18,8 +18,6 @@ public class IslanderAgentFactory extends AgentFactory implements Constants {
 	IslanderAgent agent = new IslanderAgent(simulation, species);
 	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
-	
-	
 	return agent;
     }
 
