@@ -40,8 +40,15 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
+    public PopulationIslandEvolver(Simulation simulation, Species species) throws Exception {
+	this(simulation, species, 1);
+    }
+
     public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
 	super(simulation);
+	if (clonesPerSpecies < 1) {
+	    throw new Exception("clonesPerSpecies can't be <1");
+	}
 	this.species = species;
 
 	this.generation = 0;
@@ -63,7 +70,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	    requestCounter = 1;
 	    genePoolIndex = 0;
 	    cloneCounter = 1;
-
 	}
 
 	if (cloneCounter > clonesPerSpecies) {
@@ -84,7 +90,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	returnAgent.setY(y);
 	requestCounter++;
 	cloneCounter++;
-
 	return returnAgent;
     }
 
