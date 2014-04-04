@@ -10,6 +10,17 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
+/**
+ * 
+ * An EmbodiedAgent contains within it a Population Island of a particular
+ * species. At any point in time, it is running one the individuals of its own
+ * island. The only distinction is, during run-time, each embodied agent is
+ * running its own instance of an evolution engine, whereas, in island model,
+ * there is a centralized evolution engine that coordinates everything
+ * 
+ * @author sadat
+ * 
+ */
 @SuppressWarnings("serial")
 public class EmbodiedAgent extends Agent {
 
