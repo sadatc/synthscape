@@ -35,7 +35,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int genePoolSize;
     private int genePoolIndex;
 
-    private CentralizedEvolutionEngine evolutionEngine;
+    private EvolutionEngine evolutionEngine;
     private int requestCounter = 1;
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
@@ -46,7 +46,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
 	this.generation = 0;
 
-	evolutionEngine = new CentralizedEvolutionEngine(simulation.getAgentFactory(), species);
+	evolutionEngine = new EvolutionEngine(simulation.getAgentFactory(), species);
 	this.clonesPerSpecies = clonesPerSpecies;
 	genePoolSize = evolutionEngine.getGenePoolSize();
 	totalPopulation = clonesPerSpecies * genePoolSize;
