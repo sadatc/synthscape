@@ -127,4 +127,10 @@ public class TestSim extends Simulation {
 	return settings.GENE_POOL_SIZE;
     }
 
+    @Override
+    public AgentFactory configEmbodiedAgentFactory() {
+
+	return null;
+    }
+
 }

@@ -247,4 +247,10 @@ public class PopulationIslandSimulation extends Simulation {
 	return settings.GENE_POOL_SIZE;
     }
 
+    @Override
+    public AgentFactory configEmbodiedAgentFactory() {
+	// there is no internal agent factory
+	return null;
+    }
+
 }

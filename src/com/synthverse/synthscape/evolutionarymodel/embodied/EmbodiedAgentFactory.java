@@ -14,15 +14,18 @@ public class EmbodiedAgentFactory extends AgentFactory implements Constants {
     }
 
     public Agent createNewFactoryAgent(Species species, int poolSize) {
+	/*
 	EmbodiedAgent agent = new EmbodiedAgent(simulation, species, poolSize);
 	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
 	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
 	return agent;
+	*/
+	return null;
     }
 
     @Override
     public Agent createNewFactoryAgent(Species species) {
-	return createNewFactoryAgent(species, Main.settings.DEFAULT_EMBODIED_AGENT_POOL_SIZE);
+	return createNewFactoryAgent(species, Main.settings.EMBODIED_AGENT_POOL_SIZE);
     }
 
 }

@@ -15,7 +15,6 @@ import com.synthverse.util.StringUtils;
 @SuppressWarnings("serial")
 public class ManuallyCodedAgentSimulation extends Simulation {
     Settings settings = Settings.getInstance();
-    
 
     public ManuallyCodedAgentSimulation(long seed) throws Exception {
 	super(seed);
@@ -50,13 +49,13 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public double configObstacleDensity() {
-	//return OBSTACLE_DENSITY;
+	// return OBSTACLE_DENSITY;
 	return 0.001;
     }
 
     @Override
     public double configResourceDensity() {
-	//return RESOURCE_DENSITY;
+	// return RESOURCE_DENSITY;
 	return 0.001;
     }
 
@@ -84,7 +83,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configClonesPerSpecies() {
-	//return CLONES_PER_SPECIES;
+	// return CLONES_PER_SPECIES;
 	return 500;
     }
 
@@ -95,7 +94,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configMaxStepsPerAgent() {
-	//return MAX_STEPS_PER_AGENT;
+	// return MAX_STEPS_PER_AGENT;
 	return 10000;
     }
 
@@ -103,12 +102,11 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     public boolean configIsReportEvents() {
 	return REPORT_EVENTS;
     }
-    
+
     @Override
     public boolean configIsReportPerformance() {
 	return REPORT_PERFORMANCE;
     }
-    
 
     @Override
     public String configExperimentName() {
@@ -122,7 +120,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public int configStepsPerSimulation() {
-	//return MAX_STEPS_PER_AGENT;
+	// return MAX_STEPS_PER_AGENT;
 	return 10000;
     }
 
@@ -130,11 +128,16 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     public String configEventFileName() {
 	return settings.EVENT_DATA_FILE;
     }
-    
+
     @Override
     public int configGenePoolSize() {
 	return settings.GENE_POOL_SIZE;
     }
 
+    @Override
+    public AgentFactory configEmbodiedAgentFactory() {
+
+	return null;
+    }
 
 }

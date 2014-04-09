@@ -47,7 +47,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected AgentFactory agentFactory;
     
-    protected AgentFactory embodedAgentFactory;
+    protected AgentFactory embodiedAgentFactory;
 
     protected ExperimentReporter experimentReporter;
 
@@ -178,7 +178,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	// agent factory and evolver...
 	setAgentFactory(configAgentFactory());
+	setEmbodiedAgentFactory(configEmbodiedAgentFactory());
+	
 	setEvolver(configEvolver());
+	
+	
 
 	// init any other dependencies...
 	evolver.init();
@@ -694,6 +698,8 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract int configGenePoolSize();
 
     public abstract AgentFactory configAgentFactory();
+    
+    public abstract AgentFactory configEmbodiedAgentFactory();
 
     public Evolver getEvolver() {
 	return evolver;
@@ -866,12 +872,12 @@ public abstract class Simulation extends SimState implements Constants {
 	return result;
     }
 
-    public AgentFactory getEmbodedAgentFactory() {
-        return embodedAgentFactory;
+    public AgentFactory getEmbodiedAgentFactory() {
+        return embodiedAgentFactory;
     }
 
-    public void setEmbodedAgentFactory(AgentFactory embodedAgentFactory) {
-        this.embodedAgentFactory = embodedAgentFactory;
+    public void setEmbodiedAgentFactory(AgentFactory embodiedAgentFactory) {
+        this.embodiedAgentFactory = embodiedAgentFactory;
     }
     
     

@@ -9,6 +9,7 @@ import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 
 /**
  * 
@@ -23,19 +24,22 @@ import com.synthverse.synthscape.core.Species;
  */
 @SuppressWarnings("serial")
 public class EmbodiedAgent extends Agent {
+    
+    private PopulationIslandEvolver island = null;
 
     private int poolSize;
 
-    public EmbodiedAgent(Simulation simulation, Species species, int poolSize) {
+    public EmbodiedAgent(Simulation simulation, Species species, int poolSize) throws Exception {
 	super(simulation, species);
-	this.poolSize = poolSize;
-
+	setPoolSize(poolSize);
+	island = new PopulationIslandEvolver(simulation, species, poolSize);
     }
 
     public EmbodiedAgent(Simulation sim, Species species, int poolSize, int generationNumber, int maxSteps, int startX,
-	    int startY) {
+	    int startY) throws Exception {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 	setPoolSize(poolSize);
+	island = new PopulationIslandEvolver(sim, species, poolSize);
     }
 
     public void stepAction(SimState state) {
