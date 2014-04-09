@@ -29,7 +29,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private Species species;
     private int clonesPerSpecies;
     private int totalPopulation;
     private int genePoolSize;
@@ -49,7 +48,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	if (clonesPerSpecies < 1) {
 	    throw new Exception("clonesPerSpecies can't be <1");
 	}
-	this.species = species;
 
 	this.generation = 0;
 
