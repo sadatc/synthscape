@@ -5,14 +5,18 @@ import java.util.List;
 public abstract class Evolver {
 
     protected Simulation simulation;
-
+    
+    protected AgentFactory agentFactory;
+    
+    
     @SuppressWarnings("unused")
     private Evolver() {
 	throw new AssertionError("Evolver constructor is restricted");
     }
 
-    protected Evolver(Simulation simulation) {
+    protected Evolver(Simulation simulation, AgentFactory agentFactory) {
 	this.simulation = simulation;
+	this.agentFactory = agentFactory;
     }
 
     public abstract void evolve();
