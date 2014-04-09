@@ -50,7 +50,7 @@ public final class EvolutionEngine implements Constants {
     int aBottomXBottom;
     int aRandom;
 
-    int genePoolSize = settings.EE_DEF_GENE_POOL_SIZE;
+    int genePoolSize = settings.GENE_POOL_SIZE;
 
     double maxMutationRate;
     String evolutionProgressLog;

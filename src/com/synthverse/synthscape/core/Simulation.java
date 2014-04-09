@@ -479,7 +479,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
-			if (simulationCounter % settings.EE_DEF_GENE_POOL_SIZE == 0) {
+			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    // logger.info("completed running generation:" +
 			    // evolver.getGeneration());
 			    evolver.evolve();

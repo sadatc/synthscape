@@ -24,13 +24,13 @@ public class Settings {
 
     public int CLONES_PER_SPECIES = 10;
 
-    public int EE_DEF_GENE_POOL_SIZE = 2000;
+    public int GENE_POOL_SIZE = 2000;
 
     public int NUMBER_OF_COLLECTION_SITES = 5;
 
     public double RESOURCE_CAPTURE_GOAL = 0.55;
 
-    public int SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
+    public int SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
     public ProblemComplexity PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
 
@@ -53,6 +53,9 @@ public class Settings {
     public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
+
+    public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
+    // TODO: remember to command-line this.
 
     public int MAX_STEPS_PER_AGENT = 256;
 
@@ -94,11 +97,19 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
 		.withDescription("island, embodied, alife").create("model"));
 
-	options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
-		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter").create("species"));
+	options.addOption(OptionBuilder
+		.withArgName("species")
+		.isRequired()
+		.hasArg()
+		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter")
+		.create("species"));
 
-	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
-		.withDescription("interactions names [none OR trail, broadcast, unicast_n,unicast_g] e.g. trail,broadcast")
+	options.addOption(OptionBuilder
+		.withArgName("interactions")
+		.isRequired()
+		.hasArg()
+		.withDescription(
+			"interactions names [none OR trail, broadcast, unicast_n,unicast_g] e.g. trail,broadcast")
 		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
@@ -108,7 +119,7 @@ public class Settings {
 		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]").create("clones"));
 
 	options.addOption(OptionBuilder.withArgName("pool_size").hasArg().withType(Integer.class)
-		.withDescription("gene pool size [" + EE_DEF_GENE_POOL_SIZE + "]").create("pool_size"));
+		.withDescription("gene pool size [" + GENE_POOL_SIZE + "]").create("pool_size"));
 
 	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg().withType(Integer.class)
 		.withDescription("number of collection sites [" + NUMBER_OF_COLLECTION_SITES + "]")
@@ -244,10 +255,10 @@ public class Settings {
 	    printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
 	    if (line.hasOption("pool_size")) {
-		EE_DEF_GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
+		GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
 
 	    }
-	    printAndStore("GENE_POOL_SIZE = " + EE_DEF_GENE_POOL_SIZE);
+	    printAndStore("GENE_POOL_SIZE = " + GENE_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
 		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();
@@ -300,7 +311,7 @@ public class Settings {
 	    // some calculated values
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 	    PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
-	    SIMS_PER_EXPERIMENT = GENERATIONS * EE_DEF_GENE_POOL_SIZE;
+	    SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 	    MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT;
 
 	    printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);

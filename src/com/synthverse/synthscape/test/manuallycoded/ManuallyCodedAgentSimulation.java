@@ -133,7 +133,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
     
     @Override
     public int configGenePoolSize() {
-	return settings.EE_DEF_GENE_POOL_SIZE;
+	return settings.GENE_POOL_SIZE;
     }
 
 
