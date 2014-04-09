@@ -46,6 +46,8 @@ public abstract class Simulation extends SimState implements Constants {
     protected Evolver evolver;
 
     protected AgentFactory agentFactory;
+    
+    protected AgentFactory embodedAgentFactory;
 
     protected ExperimentReporter experimentReporter;
 
@@ -863,5 +865,15 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 	return result;
     }
+
+    public AgentFactory getEmbodedAgentFactory() {
+        return embodedAgentFactory;
+    }
+
+    public void setEmbodedAgentFactory(AgentFactory embodedAgentFactory) {
+        this.embodedAgentFactory = embodedAgentFactory;
+    }
+    
+    
 
 }
