@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
@@ -40,8 +41,8 @@ public class EmbodiedAgentEvolver extends Evolver implements Constants {
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public EmbodiedAgentEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
-	super(simulation);
+    public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory, Species species, int clonesPerSpecies) throws Exception {
+	super(simulation, agentFactory);
 	this.species = species;
 
 	this.generation = 0;

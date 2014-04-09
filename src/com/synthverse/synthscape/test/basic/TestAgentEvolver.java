@@ -3,6 +3,7 @@ package com.synthverse.synthscape.test.basic;
 import java.util.List;
 
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
@@ -13,8 +14,8 @@ public class TestAgentEvolver extends Evolver implements Constants {
     
     int generation;
 
-    protected TestAgentEvolver(Simulation simulation) {
-	super(simulation);
+    protected TestAgentEvolver(Simulation simulation, AgentFactory agentFactory) {
+	super(simulation, agentFactory);
 	generation = 0;
     }
 

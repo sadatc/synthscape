@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
@@ -25,8 +26,8 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
     EnumMap<Species, Integer> speciesAgentRequestCounter = new EnumMap<Species, Integer>(Species.class);
     EnumMap<Species, Integer> speciesAgentGeneration = new EnumMap<Species, Integer>(Species.class);
 
-    protected ManuallyCodedEvolver(Simulation simulation) {
-	super(simulation);
+    protected ManuallyCodedEvolver(Simulation simulation, AgentFactory agentFactory) {
+	super(simulation, agentFactory);
 	generation = 0;
     }
 

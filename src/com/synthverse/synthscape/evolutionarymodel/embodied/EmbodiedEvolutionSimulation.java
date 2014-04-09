@@ -16,6 +16,7 @@ import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Team;
+import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
@@ -245,6 +246,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     public int configGenePoolSize() {
 	return settings.GENE_POOL_SIZE;
+    }
+
+    @Override
+    public AgentFactory configEmbodiedAgentFactory() {
+	return new IslanderAgentFactory(this);
     }
 
 }

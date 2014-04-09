@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
@@ -39,19 +40,20 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, Species species) throws Exception {
-	this(simulation, species, 1);
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
+	this(simulation, agentFactory, species, 1);
     }
 
-    public PopulationIslandEvolver(Simulation simulation, Species species, int clonesPerSpecies) throws Exception {
-	super(simulation);
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
+	    int clonesPerSpecies) throws Exception {
+	super(simulation, agentFactory);
 	if (clonesPerSpecies < 1) {
 	    throw new Exception("clonesPerSpecies can't be <1");
 	}
 
 	this.generation = 0;
 
-	evolutionEngine = new EvolutionEngine(simulation.getAgentFactory(), species);
+	evolutionEngine = new EvolutionEngine(agentFactory, species);
 	this.clonesPerSpecies = clonesPerSpecies;
 	genePoolSize = evolutionEngine.getGenePoolSize();
 	totalPopulation = clonesPerSpecies * genePoolSize;

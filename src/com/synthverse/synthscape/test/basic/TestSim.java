@@ -27,7 +27,7 @@ public class TestSim extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return new TestAgentEvolver(this);
+	return new TestAgentEvolver(this, getAgentFactory());
     }
 
     @Override

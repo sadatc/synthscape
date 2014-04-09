@@ -29,7 +29,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     public Evolver configEvolver() {
-	return new ManuallyCodedEvolver(this);
+	return new ManuallyCodedEvolver(this, getAgentFactory());
     }
 
     @Override

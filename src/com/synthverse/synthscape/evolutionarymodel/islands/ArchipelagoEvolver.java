@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Evolver;
@@ -34,14 +35,14 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    public ArchipelagoEvolver(Simulation simulation) {
-	super(simulation);
+    public ArchipelagoEvolver(Simulation simulation, AgentFactory agentFactory) {
+	super(simulation, agentFactory);
 	this.generation = 0;
     }
 
     public void initPopulationIslands() throws Exception {
 	for (Species species : simulation.getSpeciesComposition()) {
-	    PopulationIslandEvolver island = new PopulationIslandEvolver(simulation, species,
+	    PopulationIslandEvolver island = new PopulationIslandEvolver(simulation, agentFactory, species,
 		    simulation.getClonesPerSpecies());
 	    speciesIslandMap.put(species, island);
 	}
@@ -68,23 +69,25 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
-	// FITNESS EVALUATION: 
-	// In this model, for each generation, the number of simulations run corresponds
-	// to the size of the gene pool. During each simulation, an individual gene 
+	// FITNESS EVALUATION:
+	// In this model, for each generation, the number of simulations run
+	// corresponds
+	// to the size of the gene pool. During each simulation, an individual
+	// gene
 	// from the pool is taken, cloned (into a team), and fitness evaluated
 	// collectively
-	
-	//logger.info("evaluating generation:"+this.generation+"-"+ simStats.toString());
+
+	// logger.info("evaluating generation:"+this.generation+"-"+
+	// simStats.toString());
 	double collectiveFitness = computeFitness(simStats, agents);
-	
 
 	// here all agents are forced to have the same fitness
-	// all agents here belong to a single genotypical parent 
+	// all agents here belong to a single genotypical parent
 	for (Agent agent : agents) {
 	    agent.setFitness(collectiveFitness);
 	    agent.setProvidedFeedback(true);
 	    Agent cloneParentAgent = agent.getGenotypicalParent();
-	    //logger.info("agent parent="+cloneParentAgent.getAgentId());
+	    // logger.info("agent parent="+cloneParentAgent.getAgentId());
 	    if (cloneParentAgent != null) {
 		cloneParentAgent.setFitness(collectiveFitness);
 	    }
@@ -104,7 +107,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
 	}
 	if (result > maxFitness) {
-	    logger.info("*** Record Fitness=" + result + " at Generation: " + generation +" ***");
+	    logger.info("*** Record Fitness=" + result + " at Generation: " + generation + " ***");
 
 	    maxFitness = result;
 	}

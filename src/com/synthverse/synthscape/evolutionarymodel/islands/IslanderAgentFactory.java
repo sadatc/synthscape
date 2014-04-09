@@ -9,7 +9,7 @@ import com.synthverse.synthscape.core.Species;
 public class IslanderAgentFactory extends AgentFactory implements Constants {
     
 
-    protected IslanderAgentFactory(Simulation simulation) {
+    public IslanderAgentFactory(Simulation simulation) {
 	super(simulation);
     }
 
