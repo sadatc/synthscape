@@ -29,10 +29,14 @@ public class EmbodiedAgent extends Agent {
     private PopulationIslandEvolver island = null;
 
     private int poolSize;
+   
+    protected static long _optimizationEmbodiedAgentCounter = 0;
+    
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize)
 	    throws Exception {
 	super(simulation, species);
+	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 	island = new PopulationIslandEvolver(simulation, agentFactory, species, poolSize);
     }
@@ -40,6 +44,7 @@ public class EmbodiedAgent extends Agent {
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
 	    int generationNumber, int maxSteps, int startX, int startY) throws Exception {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
+	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 	island = new PopulationIslandEvolver(sim, agentFactory, species, poolSize);
     }
@@ -142,5 +147,10 @@ public class EmbodiedAgent extends Agent {
     public void setPoolSize(int poolSize) {
 	this.poolSize = poolSize;
     }
+
+    public static long get_optimizationEmbodiedAgentCounter() {
+        return _optimizationEmbodiedAgentCounter;
+    }
+    
 
 }

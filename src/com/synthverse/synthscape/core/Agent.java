@@ -22,7 +22,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected static final long serialVersionUID = -5129827193602692370L;
     protected static Logger logger = Logger.getLogger(Agent.class.getName());
-    protected static long _optimizationAgentCounter = 0;
+    protected static long _optimazationTotalAgentsCounters = 0;
     protected static int _agentCounter = 0;
 
     private boolean scheduled = false;
@@ -97,7 +97,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     private void initId() {
 	if (agentId == UNASSIGNED_AGENT_ID) {
 	    generateAgentId();
-	    _optimizationAgentCounter++;
+	    _optimazationTotalAgentsCounters++;
 	}
     }
 
@@ -896,8 +896,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	return genotypicalParent;
     }
 
-    public static long get_optimizationAgentCounter() {
-	return _optimizationAgentCounter;
+    public static long get_optimazationTotalAgentsCounters() {
+	return _optimazationTotalAgentsCounters;
     }
 
     public boolean isCarryingResource() {

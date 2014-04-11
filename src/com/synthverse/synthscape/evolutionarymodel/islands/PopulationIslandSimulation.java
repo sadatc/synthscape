@@ -16,6 +16,7 @@ import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Team;
+import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
@@ -41,7 +42,10 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
-	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimizationAgentCounter());
+	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
+	logger.info("Diagnosis: total # of islander agents created: " + IslanderAgent.get_optimizationIslanderAgentCounter());
+	logger.info("Diagnosis: total # of embodied agents created: " + EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
+	
 	System.exit(0);
     }
 

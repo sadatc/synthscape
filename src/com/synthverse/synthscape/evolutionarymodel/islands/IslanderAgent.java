@@ -12,15 +12,17 @@ import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
 public class IslanderAgent extends Agent {
+    protected static long _optimizationIslanderAgentCounter = 0;
 
     public IslanderAgent(Simulation simulation, Species species) {
 	super(simulation, species);
+	_optimizationIslanderAgentCounter++;
 
     }
 
     public IslanderAgent(Simulation sim, Species species, int generationNumber, int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
-
+	_optimizationIslanderAgentCounter++;
     }
 
     public void stepAction(SimState state) {
@@ -112,6 +114,10 @@ public class IslanderAgent extends Agent {
 	 * vm.setCpuCycles(sim.getMaxStepsPerAgent());
 	 * this.setVirtualMachine(vm);
 	 */
+    }
+
+    public static long get_optimizationIslanderAgentCounter() {
+        return _optimizationIslanderAgentCounter;
     }
 
 }
