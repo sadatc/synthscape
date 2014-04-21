@@ -40,12 +40,13 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     private int cloneCounter = 1;
     List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species)
+	    throws Exception {
 	this(simulation, agentFactory, species, 1);
     }
 
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
-	    int clonesPerSpecies) throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory,
+	    Species species, int clonesPerSpecies) throws Exception {
 	super(simulation, agentFactory);
 	if (clonesPerSpecies < 1) {
 	    throw new Exception("clonesPerSpecies can't be <1");
@@ -80,7 +81,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	// get next agent from the gene-pool and clone it
 	activeBuffer = evolutionEngine.getActiveBuffer();
 	Agent archetype = activeBuffer.get(genePoolIndex);
-	returnAgent = simulation.getAgentFactory().getNewFactoryAgent(species);
+	returnAgent = agentFactory.getNewFactoryAgent(species);
 	returnAgent.cloneGenotypeFrom(archetype);
 	returnAgent.getVirtualMachine().resetAll();
 	returnAgent.reset();
@@ -95,7 +96,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void init() {
-	// TODO Auto-generated method stub
+	
 
     }
 

@@ -72,19 +72,19 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
 
     @Override
     public void provideFeedback(List<Agent> agents, Stats simStats) {
-	// TODO Auto-generated method stub
+	
 
     }
 
     @Override
     public void evolve() {
-	// TODO Auto-generated method stub
+	
 	generation++;
     }
 
     @Override
     public int getGeneration() {
-	// TODO Auto-generated method stub
+	
 	return generation;
     }
 

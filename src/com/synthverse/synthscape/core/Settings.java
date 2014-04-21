@@ -55,7 +55,7 @@ public class Settings {
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
-    // TODO: remember to command-line this.
+    // TODO: separate this, if needed
 
     public int MAX_STEPS_PER_AGENT = 256;
 
@@ -256,9 +256,11 @@ public class Settings {
 
 	    if (line.hasOption("pool_size")) {
 		GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size")).intValue();
+		EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
 
 	    }
 	    printAndStore("GENE_POOL_SIZE = " + GENE_POOL_SIZE);
+	    printAndStore("EMBODIED_AGENT_POOL_SIZE = " + EMBODIED_AGENT_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
 		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();

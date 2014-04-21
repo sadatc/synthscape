@@ -4,19 +4,23 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import sim.engine.Schedule;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Evolver;
+import com.synthverse.synthscape.core.ExperimentReporter;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Team;
-import com.synthverse.synthscape.evolutionarymodel.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.LogUtils;
@@ -38,15 +42,16 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     public EmbodiedEvolutionSimulation(long seed) throws Exception {
 	super(seed);
-
     }
 
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
-	logger.info("Diagnosis: total # of islander agents created: " + IslanderAgent.get_optimizationIslanderAgentCounter());
-	logger.info("Diagnosis: total # of embodied agents created: " + EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
+	logger.info("Diagnosis: total # of islander agents created: "
+		+ IslanderAgent.get_optimizationIslanderAgentCounter());
+	logger.info("Diagnosis: total # of embodied agents created: "
+		+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
 	System.exit(0);
     }
 
@@ -58,6 +63,70 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	team.setTeamId(teamId);
 	team.setExpectedSize(speciesComposition.size() * clonesPerSpecies);
 
+    }
+
+    protected void init() throws Exception {
+	// we can compute the server name and batch ID right away
+	try {
+	    serverName = java.net.InetAddress.getLocalHost().getHostName();
+	} catch (Exception e) {
+	    serverName = "LOCAL";
+	}
+	batchId = Long.toHexString(System.currentTimeMillis());
+
+	InstructionTranslator.logStatus();
+
+	setGenePoolSize(configGenePoolSize());
+	setReportEvents(configIsReportEvents());
+	setReportPerformance(configIsReportPerformance());
+
+	setEventFileName(configEventFileName());
+
+	// now set these up based on the concrete simulation
+
+	setExperimentName(configExperimentName());
+	setProblemComplexity(configProblemComplexity());
+
+	setMaxStepsPerAgent(configMaxStepsPerAgent());
+
+	// environmental stuff
+	setGridWidth(configGridWidth());
+	setGridHeight(configGridHeight());
+	setNumberOfCollectionSites(configNumberOfCollectionSites());
+	setObstacleDensity(configObstacleDensity());
+	setResourceDensity(configResourceDensity());
+
+	// interactions
+	setInteractionMechanisms(configInteractionMechanisms());
+
+	// species compositions
+	setClonesPerSpecies(configClonesPerSpecies());
+	setSpeciesComposition(configSpeciesComposition());
+
+	// steps and simulations...
+	setStepsPerSimulation(configStepsPerSimulation());
+	setSimulationsPerExperiment(configSimulationsPerExperiment());
+
+	// agent factory and evolver...
+	setAgentFactory(configAgentFactory());
+	setEmbodiedAgentFactory(configEmbodiedAgentFactory());
+
+	// set these variables
+	double gridArea = gridWidth * gridHeight;
+	numberOfObstacles = (int) (gridArea * obstacleDensity);
+	numberOfResources = (int) (gridArea * resourceDensity);
+	resourceCaptureGoal = (int) ((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
+
+	createDataStructures();
+
+	simulationCounter = 0;
+
+	numberOfCollectedResources = 0;
+
+	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
+
+	isToroidalWorld = TOROIDAL_FLAG;
+	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
     }
 
     @Override
@@ -85,26 +154,113 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		Agent agent = evolver.getAgent(species, randomX, randomY);
+		Agent embodiedAgent = agentFactory.getNewFactoryAgent(species);
+		embodiedAgent.setX(randomX);
+		embodiedAgent.setY(randomY);
 
-		agent.setProvidedFeedback(false);
-		team.addMember(agent);
-		agent.setTeam(team);
+		team.addMember(embodiedAgent);
+		embodiedAgent.setTeam(team);
 
-		agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
-		agents.add(agent);
+		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+		agents.add(embodiedAgent);
 
 		// add agents to the scheduler
 
-		if (!agent.isScheduled()) {
-		    schedule.scheduleRepeating(agent);
+		if (!embodiedAgent.isScheduled()) {
+		    schedule.scheduleRepeating(embodiedAgent);
 
-		    agent.setScheduled(true);
+		    embodiedAgent.setScheduled(true);
 		}
 
 	    }
 
 	}
+
+    }
+
+    @Override
+    protected void doEndOfStepTasks() {
+	// accumulate all agent counts to a step count
+	for (Agent agent : agents) {
+	    agent.agentStats.aggregateStatsTo(stepStats);
+	    agent.agentStats.clear();
+	}
+	// add step count to the sim count
+	stepStats.aggregateStatsTo(simStats);
+	// clear step count, it's been used...
+	stepStats.clear();
+
+    }
+
+    @Override
+    protected void startSimulation() {
+
+	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+		+ " stepsPerSimulation=" + stepsPerSimulation);
+
+	initEnvironment();
+	initAgents();
+
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
+
+	setStartDate();
+	experimentReporter.initReporter();
+
+	// this is run at the end of each step
+	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
+	    public void step(SimState state) {
+
+		simStepCounter++;
+
+		fadeTrails();
+		ageBroadcasts();
+		doEndOfStepTasks();
+
+		// check if simulation should continue...
+		if (evaluateSimulationTerminateCondition()) {
+
+		    doEndOfSimulationTasks();
+
+		    // logger.info("---- end of simulation: collected=" +
+		    // numberOfCollectedResources);
+
+		    simStepCounter = 0;
+		    simulationCounter++;
+
+		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
+
+			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+
+			    // TODO: instead of evolver.evolve, we need to
+			    // evolve all population islands
+
+			}
+			/*
+			 * 
+			 * logger.info("---- starting simulation (" +
+			 * simulationCounter + ") with: world=" + (gridHeight *
+			 * gridWidth) + " obstacles=" + numberOfObstacles +
+			 * " sites=" + numberOfCollectionSites + " resources=" +
+			 * numberOfResources + " agents=" + agents.size());
+			 */
+			startNextSimulation();
+
+		    } else {
+			// end of experiment...
+			if (collectedAllResources()) {
+			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
+			}
+			setEndDate();
+			experimentReporter.cleanupReporter();
+			finish();
+			logger.info("<=====  EXPERIMENT ENDS\n");
+		    }
+		}
+	    }
+
+	}, 1);
 
     }
 

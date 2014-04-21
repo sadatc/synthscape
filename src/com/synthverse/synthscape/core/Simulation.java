@@ -46,7 +46,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected Evolver evolver;
 
     protected AgentFactory agentFactory;
-    
+
     protected AgentFactory embodiedAgentFactory;
 
     protected ExperimentReporter experimentReporter;
@@ -134,7 +134,7 @@ public abstract class Simulation extends SimState implements Constants {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private void init() {
+    protected void init() throws Exception {
 	// we can compute the server name and batch ID right away
 	try {
 	    serverName = java.net.InetAddress.getLocalHost().getHostName();
@@ -179,20 +179,13 @@ public abstract class Simulation extends SimState implements Constants {
 	// agent factory and evolver...
 	setAgentFactory(configAgentFactory());
 	setEmbodiedAgentFactory(configEmbodiedAgentFactory());
-	
+
 	setEvolver(configEvolver());
-	
-	
 
 	// init any other dependencies...
 	evolver.init();
 
-    }
-
-    public Simulation(long seed) throws Exception {
-	super(seed);
-	init();
-
+	// set these variables
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
@@ -211,7 +204,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void createDataStructures() {
+    public Simulation(long seed) throws Exception {
+	super(seed);
+	init();
+
+    }
+
+    protected void createDataStructures() {
 	obstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 	collectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 	collectionSiteList = new ArrayList<Int2D>();
@@ -222,7 +221,7 @@ public abstract class Simulation extends SimState implements Constants {
 	agents = new ArrayList<Agent>();
     }
 
-    private void resetEnvironment() {
+    protected void resetEnvironment() {
 
 	obstacleGrid.setTo(ABSENT);
 	collectionSiteGrid.setTo(ABSENT);
@@ -236,7 +235,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void resetAll() {
+    protected void resetAll() {
 	resetEnvironment();
 	agentGrid.clear();
     }
@@ -287,14 +286,14 @@ public abstract class Simulation extends SimState implements Constants {
 	return problemComplexity;
     }
 
-    private void initPrimaryCollectionSite() {
+    protected void initPrimaryCollectionSite() {
 	// set the primary collection site
 	collectionSiteGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	initCollisionGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
     }
 
-    private void initNonPrimaryCollectionSites() {
+    protected void initNonPrimaryCollectionSites() {
 	MersenneTwisterFast randomPrime = this.random;
 	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
 	    randomPrime = controlledRandom;
@@ -317,7 +316,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
     }
 
-    private void initObstacles() {
+    protected void initObstacles() {
 	// create obstacles in random locations
 	MersenneTwisterFast randomPrime = this.random;
 	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
@@ -341,7 +340,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void initResources() {
+    protected void initResources() {
 
 	MersenneTwisterFast randomPrime = this.random;
 	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
@@ -368,7 +367,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void initEnvironment() {
+    protected void initEnvironment() {
 	initPrimaryCollectionSite();
 	initNonPrimaryCollectionSites();
 	initObstacles();
@@ -416,13 +415,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void fadeTrails() {
+    protected void fadeTrails() {
 	trailGrid.lowerBound(0.0);
 	trailGrid.multiply(trailEvaporationConstant);
 
     }
 
-    private void ageBroadcasts() {
+    protected void ageBroadcasts() {
 
 	if (!registeredBroadcasts.isEmpty()) {
 	    tmpBroadcasts.clear();
@@ -447,7 +446,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void startSimulation() {
+    protected void startSimulation() {
 
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
@@ -518,12 +517,12 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void setProblemComplexity(ProblemComplexity problemComplexity) {
+    protected void setProblemComplexity(ProblemComplexity problemComplexity) {
 	this.problemComplexity = problemComplexity;
 
     }
 
-    private void setExperimentName(String experimentName) {
+    protected void setExperimentName(String experimentName) {
 	this.experimentName = experimentName;
 
     }
@@ -552,7 +551,7 @@ public abstract class Simulation extends SimState implements Constants {
 	return result;
     }
 
-    private void doEndOfStepTasks() {
+    protected void doEndOfStepTasks() {
 	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
 	    agent.agentStats.aggregateStatsTo(stepStats);
@@ -565,13 +564,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    private void reclaimAgents() {
+    protected void reclaimAgents() {
 	for (Agent agent : agents) {
 	    agentFactory.reclaimAgent(agent);
 	}
     }
 
-    private void doEndOfSimulationTasks() {
+    protected void doEndOfSimulationTasks() {
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simStats);
 
@@ -698,7 +697,7 @@ public abstract class Simulation extends SimState implements Constants {
     public abstract int configGenePoolSize();
 
     public abstract AgentFactory configAgentFactory();
-    
+
     public abstract AgentFactory configEmbodiedAgentFactory();
 
     public Evolver getEvolver() {
@@ -873,13 +872,11 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     public AgentFactory getEmbodiedAgentFactory() {
-        return embodiedAgentFactory;
+	return embodiedAgentFactory;
     }
 
     public void setEmbodiedAgentFactory(AgentFactory embodiedAgentFactory) {
-        this.embodiedAgentFactory = embodiedAgentFactory;
+	this.embodiedAgentFactory = embodiedAgentFactory;
     }
-    
-    
 
 }

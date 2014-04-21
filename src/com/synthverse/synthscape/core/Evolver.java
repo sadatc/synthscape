@@ -14,7 +14,7 @@ public abstract class Evolver {
 	throw new AssertionError("Evolver constructor is restricted");
     }
 
-    protected Evolver(Simulation simulation, AgentFactory agentFactory) {
+    public Evolver(Simulation simulation, AgentFactory agentFactory) {
 	this.simulation = simulation;
 	this.agentFactory = agentFactory;
     }

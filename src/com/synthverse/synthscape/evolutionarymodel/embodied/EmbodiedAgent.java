@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.logging.Logger;
+
 import sim.engine.SimState;
 
 import com.synthverse.stacks.GenotypeInstruction;
@@ -10,6 +12,7 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.evolutionarymodel.islands.ArchipelagoEvolver;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 
 /**
@@ -26,31 +29,52 @@ import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolv
 @SuppressWarnings("serial")
 public class EmbodiedAgent extends Agent {
 
-    private PopulationIslandEvolver island = null;
+    private static Logger logger = Logger.getLogger(EmbodiedAgent.class.getName());
+
+    private PopulationIslandEvolver islandEvolver = null;
+
+    private Agent activeAgent = null;
 
     private int poolSize;
-   
-    protected static long _optimizationEmbodiedAgentCounter = 0;
-    
 
-    public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize)
-	    throws Exception {
+    protected static long _optimizationEmbodiedAgentCounter = 0;
+
+    public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species,
+	    int poolSize) {
 	super(simulation, species);
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
-	island = new PopulationIslandEvolver(simulation, agentFactory, species, poolSize);
+	try {
+	    islandEvolver = new PopulationIslandEvolver(simulation, agentFactory, species);
+	    
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    System.exit(1);
+	}
+	
+	activeAgent = islandEvolver.getAgent(species, 0, 0);
     }
 
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
-	    int generationNumber, int maxSteps, int startX, int startY) throws Exception {
+	    int generationNumber, int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
-	island = new PopulationIslandEvolver(sim, agentFactory, species, poolSize);
+	try {
+	    islandEvolver = new PopulationIslandEvolver(sim, agentFactory, species);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    System.exit(1);
+	}
+	activeAgent = islandEvolver.getAgent(species, startX, startY);
     }
 
     public void stepAction(SimState state) {
-	this.getVirtualMachine().step();
+	
+	activeAgent.getVirtualMachine().step();
+	// TODO: some mechanism here needs to switch active agent
+	
+	
 
     }
 
@@ -87,13 +111,16 @@ public class EmbodiedAgent extends Agent {
 	do {
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_HOME));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_DETECT_HOME));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_TRAIL));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_DETECT_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_EXTRACTED_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
@@ -102,17 +129,26 @@ public class EmbodiedAgent extends Agent {
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_RAW_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_E));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_W));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NW));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SW));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_E));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_W));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_NE));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_NW));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_SE));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_SW));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_MOVE_TO_CLOSEST_HOME));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
 	    spaceLeft = this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
 	} while (spaceLeft);
@@ -149,8 +185,19 @@ public class EmbodiedAgent extends Agent {
     }
 
     public static long get_optimizationEmbodiedAgentCounter() {
-        return _optimizationEmbodiedAgentCounter;
+	return _optimizationEmbodiedAgentCounter;
     }
-    
 
+    public Agent getActiveAgent() {
+        return activeAgent;
+    }
+
+    public void setActiveAgent(Agent activeAgent) {
+        this.activeAgent = activeAgent;
+    }
+
+    
+    
+    
+    
 }
