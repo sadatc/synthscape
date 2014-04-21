@@ -28,7 +28,7 @@ public class TestAgent extends Agent {
 
     @Override
     public double doubleValue() {
-	// TODO: value will determine color
+
 	return 0;
     }
 
