@@ -14,19 +14,19 @@ public class Main {
 
     public static void main(String[] args) {
 	try {
-	settings.processCommandLineInput(args);
+	    settings.processCommandLineInput(args);
 
-	if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
-	    // island model
-	    PopulationIslandSimulation.main(args);
-	} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
-	    // embodied model
-	    EmbodiedEvolutionSimulation.main(args);
-	    D.p(settings.EVOLUTIONARY_MODEL+" is not ready yet"); 
-	} else {
-	    // alife model
-	    D.p(settings.EVOLUTIONARY_MODEL+" is not ready yet");
-	}
+	    if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
+		// island model
+		PopulationIslandSimulation.main(args);
+	    } else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
+		// embodied model
+		EmbodiedEvolutionSimulation.main(args);
+		D.p(settings.EVOLUTIONARY_MODEL + " is not ready yet");
+	    } else {
+		// alife model
+		D.p(settings.EVOLUTIONARY_MODEL + " is not ready yet");
+	    }
 	} catch (Exception e) {
 	    logger.severe(e.getMessage());
 	}

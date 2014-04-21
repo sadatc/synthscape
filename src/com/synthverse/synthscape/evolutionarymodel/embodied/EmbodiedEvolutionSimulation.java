@@ -193,6 +193,31 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     }
 
     @Override
+    protected void doEndOfSimulationTasks() {
+	reclaimAgents();
+	this.evolver.provideFeedback(agents, simStats);
+
+	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
+	}
+
+    }
+
+    @Override
+    protected void startNextSimulation() {
+
+	simStats.aggregateStatsTo(poolStats);
+
+	simStats.clear();
+
+	resetEnvironment();
+
+	initEnvironment();
+	initAgents();
+
+    }
+
+    @Override
     protected void startSimulation() {
 
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
