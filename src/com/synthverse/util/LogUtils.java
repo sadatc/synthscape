@@ -17,6 +17,7 @@
 
 package com.synthverse.util;
 
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +38,8 @@ public final class LogUtils {
     public static final boolean APPEND_TO_LOG_FILE = true;
 
     public static final Level DEFAULT_LOG_LEVEL = Level.CONFIG;
-    //public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.CUSTOM_NEAT;
+    // public static final LogFormatter DEFAULT_LOG_FORMATTER =
+    // LogFormatter.CUSTOM_NEAT;
     public static final LogFormatter DEFAULT_LOG_FORMATTER = LogFormatter.TIMED_BAREBONES;
 
     // private static final String FORMAT_STRING =
@@ -84,6 +86,13 @@ public final class LogUtils {
 	public final Formatter getFormatter() {
 	    return formatter;
 	}
+    }
+
+    private static class StdoutConsoleHandler extends ConsoleHandler {
+	protected void setOutputStream(OutputStream out) {
+	    super.setOutputStream(System.out);
+	}
+
     }
 
     private static class BareBonesFormatter extends Formatter {
@@ -207,7 +216,8 @@ public final class LogUtils {
 
 	// add a console handler
 	if (!consoleHandlerExists) {
-	    Handler consoleHandler = new ConsoleHandler();
+	    //Handler consoleHandler = new ConsoleHandler();
+	    Handler consoleHandler = new StdoutConsoleHandler();
 	    consoleHandler.setLevel(level);
 	    consoleHandler.setFormatter(formatter.getFormatter());
 	    logger.addHandler(consoleHandler);
