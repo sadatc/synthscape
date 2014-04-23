@@ -8,10 +8,10 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Event;
-import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -28,32 +28,19 @@ import com.synthverse.util.LogUtils;
  * @author sadat
  * 
  */
-public class EmbodiedAgentEvolver extends Evolver implements Constants {
+public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Constants {
+
     private static Logger logger = Logger.getLogger(EmbodiedAgentEvolver.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
     private static double maxFitness = Double.MIN_VALUE;
 
-    private int generation;
-
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+    public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
+	super(simulation, agentFactory, species);
     }
 
-    public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory) {
-	super(simulation, agentFactory);
-	this.generation = 0;
-    }
-
-    @Override
-    public Agent getAgent(Species species, int x, int y) {
-
-	// Agent result = islandEvolver.getAgent(species, x, y);
-	// return result;
-	return null;
-    }
-
+   
     @Override
     public void init() {
 

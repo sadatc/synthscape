@@ -687,6 +687,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void reset() {
+	logger.info("agent reset was called");
 	agentStepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
@@ -924,6 +925,16 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
     }
 
+    public String toString2() {
+   	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
+   		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
+   		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
+   		+ isCarryingResource + ", generation=" + generation + ", program=" + program.getSignature() + "]";
+       }
+
+    
+    
+    
     public Team getTeam() {
 	return team;
     }
@@ -939,5 +950,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void setProvidedFeedback(boolean providedFeedback) {
 	this.providedFeedback = providedFeedback;
     }
+
+    protected void setLocation(int newX, int newY) {
+	setX(newX);
+	setY(newY);
+    }
+
 
 }

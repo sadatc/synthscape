@@ -128,6 +128,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	isToroidalWorld = TOROIDAL_FLAG;
 	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
     }
+    
+    
+   
 
     @Override
     protected void initAgents() {
@@ -154,17 +157,19 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		Agent embodiedAgent = agentFactory.getNewFactoryAgent(species);
-		embodiedAgent.setX(randomX);
-		embodiedAgent.setY(randomY);
+		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+		embodiedAgent.setLocation(randomX,randomY);
+		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+		agentGrid.setObjectLocation(embodiedAgent.getActiveAgent(), new Int2D(randomX, randomY));
 
+		
 		team.addMember(embodiedAgent);
 		embodiedAgent.setTeam(team);
 
-		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+		
 		agents.add(embodiedAgent);
 
-		// add agents to the scheduler
+
 
 		if (!embodiedAgent.isScheduled()) {
 		    schedule.scheduleRepeating(embodiedAgent);
@@ -180,6 +185,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void doEndOfStepTasks() {
+	logger.info("doEndOfStepTasks()");
 	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
 	    agent.agentStats.aggregateStatsTo(stepStats);
@@ -191,12 +197,34 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	stepStats.clear();
 
     }
+    @Override
+    protected void reclaimAgents() {
+	logger.info(">>>reclaimAgents()");
+	for (Agent agent : agents) {
+ 	    agentFactory.reclaimAgent(agent);
+ 	}
+ 	logger.info("<<<<reclaimAgents()");
+     }
 
     @Override
     protected void doEndOfSimulationTasks() {
+	logger.info("doEndOfSimulationTasks()");
 	reclaimAgents();
-	this.evolver.provideFeedback(agents, simStats);
-
+	logger.info("providing local feedback");
+	// each agent now needs to provide local feedback 
+	
+	//logger.info("simStats = "+simStats);
+	
+	// TODO: call embodiedAgent.providefeedback -- this will do a local evaluation based on agent's capabilities
+	
+	
+	//this.evolver.provideFeedback(agents, simStats);
+	for(Agent agent: agents) {
+	    ((EmbodiedAgent)agent).evolve(simStats);
+	}
+	
+	System.exit(1);
+	
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
@@ -206,17 +234,39 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     protected void startNextSimulation() {
 
+	logger.info("startNextSimulation()");
 	simStats.aggregateStatsTo(poolStats);
-
 	simStats.clear();
-
 	resetEnvironment();
-
 	initEnvironment();
 	initAgents();
 
     }
+    
+    @Override
+    protected boolean evaluateSimulationTerminateCondition() {
+	
+  	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
+  		|| (this.simStepCounter > stepsPerSimulation);
+  	
+  	logger.info("evaluateSimulationTerminateCondition()="+result);
+  	
+  	return result;
+      }
 
+    
+    @Override    
+    protected void fadeTrails() {
+	trailGrid.lowerBound(0.0);
+	trailGrid.multiply(trailEvaporationConstant);
+	logger.info("fadeTrails()");
+    }
+
+    
+    
+    
+    
+    
     @Override
     protected void startSimulation() {
 
@@ -242,6 +292,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		fadeTrails();
 		ageBroadcasts();
 		doEndOfStepTasks();
+		logger.info("-----> step()");
 
 		// check if simulation should continue...
 		if (evaluateSimulationTerminateCondition()) {
@@ -257,6 +308,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+			    
+			    logger.info("EVOLVE STEP!!!");
 
 			    // TODO: instead of evolver.evolve, we need to
 			    // evolve all population islands
@@ -282,6 +335,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			finish();
 			logger.info("<=====  EXPERIMENT ENDS\n");
 		    }
+		} else {
+		    logger.info("simulation not terminated...");
 		}
 	    }
 

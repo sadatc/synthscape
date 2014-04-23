@@ -3,7 +3,9 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 import java.util.logging.Logger;
 
 import sim.engine.SimState;
+import sim.util.Int2D;
 
+import com.synthverse.Main;
 import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.Program;
@@ -12,8 +14,9 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.evolutionarymodel.islands.ArchipelagoEvolver;
+import com.synthverse.synthscape.core.Stats;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
+import com.synthverse.util.LogUtils;
 
 /**
  * 
@@ -30,8 +33,13 @@ import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolv
 public class EmbodiedAgent extends Agent {
 
     private static Logger logger = Logger.getLogger(EmbodiedAgent.class.getName());
+    static {
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+    }
 
-    private PopulationIslandEvolver islandEvolver = null;
+    private EmbodiedAgentEvolver evolver;
+
+    // private PopulationIslandEvolver islandEvolver = null;
 
     private Agent activeAgent = null;
 
@@ -43,15 +51,16 @@ public class EmbodiedAgent extends Agent {
 	super(simulation, species);
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
+
 	try {
-	    islandEvolver = new PopulationIslandEvolver(simulation, agentFactory, species);
+	    evolver = new EmbodiedAgentEvolver(simulation, agentFactory, species);
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    System.exit(1);
 	}
 
-	activeAgent = islandEvolver.getAgent(species, 0, 0);
+	activeAgent = evolver.getAgent(species, 0, 0);
     }
 
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
@@ -60,19 +69,38 @@ public class EmbodiedAgent extends Agent {
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 	try {
-	    islandEvolver = new PopulationIslandEvolver(sim, agentFactory, species);
+	    evolver = new EmbodiedAgentEvolver(sim, agentFactory, species);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    System.exit(1);
 	}
-	activeAgent = islandEvolver.getAgent(species, startX, startY);
+	activeAgent = evolver.getAgent(species, startX, startY);
+    }
+
+    final public void synchronizeLocationFromActiveAgent() {
+	Int2D location = sim.agentGrid.getObjectLocation(activeAgent);
+	this.setX(activeAgent.getX());
+	this.setY(activeAgent.getY());
+	sim.agentGrid.setObjectLocation(this, location);
     }
 
     public void stepAction(SimState state) {
 
 	activeAgent.getVirtualMachine().step();
-	// TODO: some mechanism here needs to switch active agent
 
+	// synchronize location
+	synchronizeLocationFromActiveAgent();
+
+	// TODO: some mechanism here needs to switch active agent
+	logger.info("<---" + this.getId() + " called step " + agentStepCounter);
+
+    }
+
+    public void evolve(Stats simStats) {
+	logger.info("" + this.getId() + " called evolve() ");
+	logger.info("agent:" + this.getActiveAgent().toString2());
+	logger.info("agentStats:" + this.getActiveAgent().agentStats);
+	evolver.evolve();
     }
 
     @Override
@@ -179,6 +207,14 @@ public class EmbodiedAgent extends Agent {
 
     public void setActiveAgent(Agent activeAgent) {
 	this.activeAgent = activeAgent;
+    }
+
+    @Override
+    protected void setLocation(int newX, int newY) {
+	setX(newX);
+	setY(newY);
+	activeAgent.setX(newX);
+	activeAgent.setY(newY);
     }
 
 }

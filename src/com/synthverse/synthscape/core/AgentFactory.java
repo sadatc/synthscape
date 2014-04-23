@@ -18,7 +18,7 @@ public abstract class AgentFactory implements Constants {
 
     ArrayDeque<Agent> availableAgents = new ArrayDeque<Agent>();
 
-    protected void reclaimAgent(Agent agent) {
+    public void reclaimAgent(Agent agent) {
 	availableAgents.add(agent);
     }
 

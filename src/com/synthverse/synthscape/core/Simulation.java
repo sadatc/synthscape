@@ -69,7 +69,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected DoubleGrid2D trailGrid;
 
-    protected SparseGrid2D agentGrid;
+    public SparseGrid2D agentGrid;
 
     protected ArrayList<Agent> agents;
 
@@ -418,7 +418,6 @@ public abstract class Simulation extends SimState implements Constants {
     protected void fadeTrails() {
 	trailGrid.lowerBound(0.0);
 	trailGrid.multiply(trailEvaporationConstant);
-
     }
 
     protected void ageBroadcasts() {
@@ -443,7 +442,6 @@ public abstract class Simulation extends SimState implements Constants {
 	    // logger.info("=> Num of Broadcasts:"
 	    // +registeredBroadcasts.size());
 	}
-
     }
 
     protected void startSimulation() {
@@ -464,7 +462,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// this is run at the end of each step
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
-
+		
 		simStepCounter++;
 
 		fadeTrails();
@@ -472,6 +470,7 @@ public abstract class Simulation extends SimState implements Constants {
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
+		
 		if (evaluateSimulationTerminateCondition()) {
 
 		    doEndOfSimulationTasks();
@@ -530,19 +529,18 @@ public abstract class Simulation extends SimState implements Constants {
     protected void startNextSimulation() {
 
 	simStats.aggregateStatsTo(poolStats);
-
 	simStats.clear();
-
 	resetEnvironment();
-
 	initEnvironment();
 	initAgents();
 
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
+	
 	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
 		|| (this.simStepCounter > stepsPerSimulation);
+	
 	return result;
     }
 

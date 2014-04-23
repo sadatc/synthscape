@@ -22,7 +22,7 @@ import com.synthverse.util.LogUtils;
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
-    private int generation;
+    protected int generation;
 
     protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
 
@@ -30,15 +30,15 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private int clonesPerSpecies;
-    private int totalPopulation;
-    private int genePoolSize;
-    private int genePoolIndex;
-    private  Species species;
+    protected int clonesPerSpecies;
+    protected int totalPopulation;
+    protected int genePoolSize;
+    protected int genePoolIndex;
+    protected  Species species;
 
-    private EvolutionEngine evolutionEngine;
-    private int requestCounter = 1;
-    private int cloneCounter = 1;
+    protected EvolutionEngine evolutionEngine;
+    protected int requestCounter = 1;
+    protected int cloneCounter = 1;
     List<Agent> activeBuffer;
 
     public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species)
