@@ -155,18 +155,18 @@ public final class EvolutionEngine implements Constants {
 	parentBuffer = new ArrayList<Agent>(genePoolSize);
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
-	logger.info(">>> started creating agent pool...");
-	logger.info("pre-filling parentBuffer genepool with " + genePoolSize + " agents...");
+	
+	
 	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	logger.info("pre-filling offspringBuffer genepool with " + genePoolSize + " agents...");
+	
 	for (int i = 0; i < genePoolSize; i++) {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	logger.info("<<< finished creating agent pool.\n");
+	logger.info("created gene pool with " + genePoolSize + " agents...");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 
