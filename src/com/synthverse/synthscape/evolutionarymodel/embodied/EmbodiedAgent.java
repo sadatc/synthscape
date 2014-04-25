@@ -51,6 +51,7 @@ public class EmbodiedAgent extends Agent {
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
 	super(simulation, species);
+
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 
@@ -63,13 +64,12 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	activeAgent = evolver.getAgent(species, 0, 0);
-	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
-		+ activeAgent.getAgentId());
     }
 
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
 	    int generationNumber, int maxSteps, int startX, int startY) {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
+
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 	try {
@@ -79,8 +79,7 @@ public class EmbodiedAgent extends Agent {
 	    System.exit(1);
 	}
 	activeAgent = evolver.getAgent(species, startX, startY);
-	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
-		+ activeAgent.getAgentId());
+
     }
 
     final public void synchronizeLocationFromActiveAgent() {
@@ -99,8 +98,7 @@ public class EmbodiedAgent extends Agent {
 
     public void setNextActiveAgent(int newX, int newY) {
 	activeAgent = evolver.getAgent(species, newX, newY);
-	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
-		+ activeAgent.getAgentId());
+
     }
 
     public void stepAction(SimState state) {
@@ -124,8 +122,13 @@ public class EmbodiedAgent extends Agent {
 	this.activeAgent.setFitness(this.fitness);
 	this.activeAgent.setProvidedFeedback(true);
 
-	logger.info("agent:" + this.getAgentId() + " fitness:" + fitness);
+	if (fitness > 0)
+	    logger.info("agent:" + this.getAgentId() + " fitness:" + fitness);
 
+    }
+
+    public final void reclaimActiveAgent() {
+	evolver.reclaimEmbodiedAgent(activeAgent);
     }
 
     private double computeFitness(Trait trait) {
@@ -235,7 +238,6 @@ public class EmbodiedAgent extends Agent {
     }
 
     public void evolve(Stats simStats) {
-	logger.info("embodied agent " + this.getId() + " called evolve() ");
 	evolver.evolve();
     }
 

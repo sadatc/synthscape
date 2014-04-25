@@ -3,6 +3,7 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Simulation;
@@ -34,5 +35,12 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Con
     public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
 	super(simulation, agentFactory, species);
     }
+    
+    public final void reclaimEmbodiedAgent(final Agent agent) {
+	agentFactory.reclaimAgent(agent);
+	
+    }
+    
+    
 
 }

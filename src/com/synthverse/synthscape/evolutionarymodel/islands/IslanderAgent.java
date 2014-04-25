@@ -117,7 +117,7 @@ public class IslanderAgent extends Agent {
     }
 
     public static long get_optimizationIslanderAgentCounter() {
-        return _optimizationIslanderAgentCounter;
+	return _optimizationIslanderAgentCounter;
     }
 
 }

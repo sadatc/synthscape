@@ -106,7 +106,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	throw new AssertionError("Agent constructor is restricted");
     }
 
-    protected Agent(Simulation simulation, Species species) {
+    protected Agent(Simulation simulation, Species species) {	
 	initId();
 	setSim(simulation);
 	setSpecies(species);

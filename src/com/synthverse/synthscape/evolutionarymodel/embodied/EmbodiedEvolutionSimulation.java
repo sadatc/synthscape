@@ -213,10 +213,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     }
 
     protected void evolveEmbodiedAgents() {
+	logger.info("evolving embodied agents... number of simulations run:"+this.simulationCounter);
+
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.evolve(simStats);
 	}
+
     }
 
     @Override
@@ -243,8 +246,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	// this.evolver.provideFeedback(agents, simStats);
 	for (Agent agent : agents) {
-	    // ((EmbodiedAgent)agent).evolve(simStats);
 	    ((EmbodiedAgent) agent).evaluateLocalFitness();
+	    // now reclaim the internal agents...
+
+	    ((EmbodiedAgent) agent).reclaimActiveAgent();
+
 	}
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
@@ -256,7 +262,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     protected void startNextSimulation() {
 
-	logger.info("startNextSimulation()");
+	// logger.info("startNextSimulation()");
 	simStats.aggregateStatsTo(poolStats);
 	simStats.clear();
 	resetEnvironment();
