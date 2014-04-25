@@ -1,16 +1,12 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
-import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 import com.synthverse.util.LogUtils;
 
@@ -34,102 +30,9 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Con
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
-    private static double maxFitness = Double.MIN_VALUE;
 
     public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
 	super(simulation, agentFactory, species);
     }
 
-   
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void provideFeedback(List<Agent> agents, Stats simStats) {
-	// FITNESS EVALUATION:
-	// In this model, for each generation, the number of simulations run
-	// corresponds
-	// to the size of the gene pool. During each simulation, an individual
-	// gene
-	// from the pool is taken, cloned (into a team), and fitness evaluated
-	// collectively
-
-	// logger.info("evaluating generation:"+this.generation+"-"+
-	// simStats.toString());
-	double collectiveFitness = computeFitness(simStats, agents);
-
-	// here all agents are forced to have the same fitness
-	// all agents here belong to a single genotypical parent
-	for (Agent agent : agents) {
-	    agent.setFitness(collectiveFitness);
-	    agent.setProvidedFeedback(true);
-	    Agent cloneParentAgent = agent.getGenotypicalParent();
-	    // logger.info("agent parent="+cloneParentAgent.getAgentId());
-	    if (cloneParentAgent != null) {
-		cloneParentAgent.setFitness(collectiveFitness);
-	    }
-	}
-
-    }
-
-    private double computeFitness(Stats simStats, List<Agent> agents) {
-	double result = 0.0;
-
-	// collecting a resource gets the highest point
-	// simStats.printValues();
-
-	for (Event event : simStats.getEvents()) {
-
-	    result += getEventWeight(event) * simStats.getValue(event);
-
-	}
-	if (result > maxFitness) {
-	    logger.info("*** Record Fitness=" + result + " at Generation: " + generation + " ***");
-
-	    maxFitness = result;
-	}
-
-	/*
-	 * if(result>0.0) { logger.info("trap"); }
-	 */
-
-	return result;
-    }
-
-    private double getEventWeight(Event event) {
-
-	switch (event) {
-	/*
-	 * case DETECTED_RAW_RESOURCE: return 0.10; case EXTRACTED_RESOURCE:
-	 * return 0.25;
-	 */
-	/*
-	 * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
-	 * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
-	 * return 12.0; case LOADED_RESOURCE: return 6.0; case
-	 * UNLOADED_RESOURCE: return 5.0; case MOVE_TO_CLOSEST_COLLECTION_SITE:
-	 * return 1.0; case MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
-	 */
-	case COLLECTED_RESOURCE:
-	    // logger.info("encountered collection!!!!!");
-	    return 1.0;
-
-	}
-	return 0;
-
-    }
-
-    @Override
-    public void evolve() {
-
-	generation++;
-
-    }
-
-    @Override
-    public int getGeneration() {
-	return generation;
-    }
 }

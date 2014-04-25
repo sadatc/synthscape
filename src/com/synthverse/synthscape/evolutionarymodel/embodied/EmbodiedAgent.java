@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 import sim.engine.SimState;
@@ -12,10 +13,11 @@ import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
-import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
+import com.synthverse.synthscape.core.Trait;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -61,6 +63,8 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	activeAgent = evolver.getAgent(species, 0, 0);
+	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
+		+ activeAgent.getAgentId());
     }
 
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
@@ -75,13 +79,28 @@ public class EmbodiedAgent extends Agent {
 	    System.exit(1);
 	}
 	activeAgent = evolver.getAgent(species, startX, startY);
+	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
+		+ activeAgent.getAgentId());
     }
 
     final public void synchronizeLocationFromActiveAgent() {
 	Int2D location = sim.agentGrid.getObjectLocation(activeAgent);
-	this.setX(activeAgent.getX());
-	this.setY(activeAgent.getY());
+	this.setX(location.getX());
+	this.setY(location.getY());
 	sim.agentGrid.setObjectLocation(this, location);
+    }
+
+    final public void synchronizeLocationToActiveAgent() {
+	Int2D location = sim.agentGrid.getObjectLocation(this);
+	activeAgent.setX(location.getX());
+	activeAgent.setY(location.getY());
+	sim.agentGrid.setObjectLocation(activeAgent, location);
+    }
+
+    public void setNextActiveAgent(int newX, int newY) {
+	activeAgent = evolver.getAgent(species, newX, newY);
+	logger.info("embodied agent:" + this.getAgentId() + " set with active islander agent:"
+		+ activeAgent.getAgentId());
     }
 
     public void stepAction(SimState state) {
@@ -91,15 +110,132 @@ public class EmbodiedAgent extends Agent {
 	// synchronize location
 	synchronizeLocationFromActiveAgent();
 
-	// TODO: some mechanism here needs to switch active agent
-	logger.info("<---" + this.getId() + " called step " + agentStepCounter);
+    }
+
+    public void evaluateLocalFitness() {
+	// local fitness is evaluated based on what traits this agent has
+	this.fitness = 0.0;
+
+	Set<Trait> traits = this.species.getTraits();
+
+	for (Trait trait : traits) {
+	    this.fitness += computeFitness(trait);
+	}
+	this.activeAgent.setFitness(this.fitness);
+	this.activeAgent.setProvidedFeedback(true);
+
+	logger.info("agent:" + this.getAgentId() + " fitness:" + fitness);
 
     }
 
+    private double computeFitness(Trait trait) {
+	double result = 0.0;
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) {
+	    result += computeDetectionFitness();
+	}
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
+	    result += computeExtractionFitness();
+	}
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
+	    result += computeProcessingFitness();
+	}
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.TRANSPORTATION) {
+	    result += computeTransportationFitness();
+	}
+
+	return result;
+    }
+
+    private double computeDetectionFitness() {
+	double result = 0.0;
+
+	for (Event event : agentStats.getEvents()) {
+	    switch (event) {
+	    case DETECTED_EXTRACTED_RESOURCE:
+	    case DETECTED_RAW_RESOURCE:
+	    case DETECTED_PROCESSED_RESOURCE:
+		result += agentStats.getValue(event);
+		break;
+	    default:
+		break;
+	    }
+	}
+
+	if (result > 0)
+	    logger.info("computeDetectionFitness=" + result);
+	return result;
+    }
+
+    private double computeExtractionFitness() {
+	double result = 0.0;
+
+	for (Event event : agentStats.getEvents()) {
+	    switch (event) {
+	    case EXTRACTED_RESOURCE:
+		result += agentStats.getValue(event);
+		break;
+	    default:
+		break;
+	    }
+	}
+
+	if (result > 0)
+	    logger.info("computeExtractionFitness=" + result);
+	return result;
+    }
+
+    private double computeProcessingFitness() {
+	double result = 0.0;
+
+	for (Event event : agentStats.getEvents()) {
+	    switch (event) {
+	    case PROCESSED_RESOURCE:
+		result += agentStats.getValue(event);
+		break;
+	    default:
+		break;
+	    }
+	}
+
+	if (result > 0)
+	    logger.info("computeProcessingFitness=" + result);
+	return result;
+    }
+
+    private double computeTransportationFitness() {
+	double result = 0.0;
+
+	for (Event event : agentStats.getEvents()) {
+	    switch (event) {
+	    case LOADED_RESOURCE:
+		// TODO: wouldn't this make the agents just keep wanting to load
+		// and unload resources to maximize fitness?
+		result += (0.0005 * agentStats.getValue(event));
+		break;
+	    case UNLOADED_RESOURCE:
+		// TODO: wouldn't this make the agents just keep wanting to load
+		// and unload resources to maximize fitness?
+		result += (0.0005 * agentStats.getValue(event));
+		break;
+	    case COLLECTED_RESOURCE:
+		result += agentStats.getValue(event);
+		break;
+	    default:
+		break;
+	    }
+	}
+
+	if (result > 0)
+	    logger.info("computeTransportationFitness=" + result);
+	return result;
+    }
+
     public void evolve(Stats simStats) {
-	logger.info("" + this.getId() + " called evolve() ");
-	logger.info("agent:" + this.getActiveAgent().toString2());
-	logger.info("agentStats:" + this.getActiveAgent().agentStats);
+	logger.info("embodied agent " + this.getId() + " called evolve() ");
 	evolver.evolve();
     }
 

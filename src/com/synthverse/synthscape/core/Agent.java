@@ -687,7 +687,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void reset() {
-	logger.info("agent reset was called");
+	//logger.info("agent reset was called");
 	agentStepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
