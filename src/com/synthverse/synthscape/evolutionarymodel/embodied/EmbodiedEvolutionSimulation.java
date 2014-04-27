@@ -163,6 +163,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		embodiedAgent.setTeam(team);
 
 		agents.add(embodiedAgent);
+		
 
 		if (!embodiedAgent.isScheduled()) {
 		    schedule.scheduleRepeating(embodiedAgent);
@@ -187,6 +188,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	for (Agent agent : agents) {
+
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
 	    int randomX = randomPrime.nextInt(gridWidth);
@@ -203,17 +205,19 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.setLocation(randomX, randomY);
 	    agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 	    embodiedAgent.synchronizeLocationToActiveAgent();
+	    embodiedAgent.setStepCounter(0);
 
 	    if (!embodiedAgent.isScheduled()) {
 		schedule.scheduleRepeating(embodiedAgent);
 		embodiedAgent.setScheduled(true);
 	    }
+	    
 
 	}
     }
 
     protected void evolveEmbodiedAgents() {
-	logger.info("evolving embodied agents... number of simulations run:"+this.simulationCounter);
+	logger.info("evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
@@ -329,14 +333,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolveEmbodiedAgents();
 			}
+
 			/*
-			 * 
-			 * logger.info("---- starting simulation (" +
-			 * simulationCounter + ") with: world=" + (gridHeight *
-			 * gridWidth) + " obstacles=" + numberOfObstacles +
-			 * " sites=" + numberOfCollectionSites + " resources=" +
-			 * numberOfResources + " agents=" + agents.size());
-			 */
+			logger.info("---- starting simulation (" + simulationCounter + ") with: world="
+				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
+				+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
+				+ agents.size());
+			*/
+
 			startNextSimulation();
 
 		    } else {
