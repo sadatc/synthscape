@@ -43,7 +43,7 @@ public class EmbodiedAgent extends Agent {
 
     // private PopulationIslandEvolver islandEvolver = null;
 
-    private Agent activeAgent = null;
+    Agent activeAgent = null;
 
     private int poolSize;
 
@@ -122,9 +122,6 @@ public class EmbodiedAgent extends Agent {
 	this.activeAgent.setFitness(this.fitness);
 	this.activeAgent.setProvidedFeedback(true);
 
-	if (fitness > 0)
-	    logger.info("agent:" + this.getAgentId() + " fitness:" + fitness);
-
     }
 
     public final void reclaimActiveAgent() {
@@ -156,84 +153,76 @@ public class EmbodiedAgent extends Agent {
     private double computeDetectionFitness() {
 	double result = 0.0;
 
-	for (Event event : agentStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
 	    case DETECTED_RAW_RESOURCE:
 	    case DETECTED_PROCESSED_RESOURCE:
-		result += agentStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
 	    }
 	}
 
-	if (result > 0)
-	    logger.info("computeDetectionFitness=" + result);
 	return result;
     }
 
     private double computeExtractionFitness() {
 	double result = 0.0;
 
-	for (Event event : agentStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case EXTRACTED_RESOURCE:
-		result += agentStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
 	    }
 	}
 
-	if (result > 0)
-	    logger.info("computeExtractionFitness=" + result);
 	return result;
     }
 
     private double computeProcessingFitness() {
 	double result = 0.0;
 
-	for (Event event : agentStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case PROCESSED_RESOURCE:
-		result += agentStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
 	    }
 	}
 
-	if (result > 0)
-	    logger.info("computeProcessingFitness=" + result);
 	return result;
     }
 
     private double computeTransportationFitness() {
 	double result = 0.0;
 
-	for (Event event : agentStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case LOADED_RESOURCE:
 		// TODO: wouldn't this make the agents just keep wanting to load
 		// and unload resources to maximize fitness?
-		result += (0.0005 * agentStats.getValue(event));
+		result += (0.0005 * activeAgent.agentStats.getValue(event));
 		break;
 	    case UNLOADED_RESOURCE:
 		// TODO: wouldn't this make the agents just keep wanting to load
 		// and unload resources to maximize fitness?
-		result += (0.0005 * agentStats.getValue(event));
+		result += (0.0005 * activeAgent.agentStats.getValue(event));
 		break;
 	    case COLLECTED_RESOURCE:
-		result += agentStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
 	    }
 	}
 
-	if (result > 0)
-	    logger.info("computeTransportationFitness=" + result);
 	return result;
     }
 

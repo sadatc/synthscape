@@ -163,7 +163,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		embodiedAgent.setTeam(team);
 
 		agents.add(embodiedAgent);
-		
 
 		if (!embodiedAgent.isScheduled()) {
 		    schedule.scheduleRepeating(embodiedAgent);
@@ -211,7 +210,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		schedule.scheduleRepeating(embodiedAgent);
 		embodiedAgent.setScheduled(true);
 	    }
-	    
 
 	}
     }
@@ -229,16 +227,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     protected void doEndOfStepTasks() {
 
-	// accumulate all agent counts to a step count
-	for (Agent agent : agents) {
-	    agent.agentStats.aggregateStatsTo(stepStats);
-	    agent.agentStats.clear();
-	}
-	// add step count to the sim count
-	stepStats.aggregateStatsTo(simStats);
-	// clear step count, it's been used...
-	stepStats.clear();
-
+	// do nothing special
     }
 
     @Override
@@ -250,12 +239,16 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	// this.evolver.provideFeedback(agents, simStats);
 	for (Agent agent : agents) {
-	    ((EmbodiedAgent) agent).evaluateLocalFitness();
+	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(simStats);
+
+	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
-	    ((EmbodiedAgent) agent).reclaimActiveAgent();
+	    embodiedAgent.reclaimActiveAgent();
 
 	}
+	// System.exit(1);
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
@@ -335,11 +328,12 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			}
 
 			/*
-			logger.info("---- starting simulation (" + simulationCounter + ") with: world="
-				+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-				+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-				+ agents.size());
-			*/
+			 * logger.info("---- starting simulation (" +
+			 * simulationCounter + ") with: world=" + (gridHeight *
+			 * gridWidth) + " obstacles=" + numberOfObstacles +
+			 * " sites=" + numberOfCollectionSites + " resources=" +
+			 * numberOfResources + " agents=" + agents.size());
+			 */
 
 			startNextSimulation();
 
