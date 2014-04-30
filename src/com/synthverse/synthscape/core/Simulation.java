@@ -598,7 +598,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
 
-	experimentReporter.reportPerformance(generationCounter, simStats, poolStats, fitnessStats);
+	experimentReporter.reportPerformanceIslandModel(generationCounter, simStats, poolStats, fitnessStats);
     }
 
     public void setStartDate() {

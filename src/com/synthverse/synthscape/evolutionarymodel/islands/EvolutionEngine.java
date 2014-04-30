@@ -10,6 +10,7 @@ import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.GeneticOperator;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Species;
@@ -100,10 +101,10 @@ public final class EvolutionEngine implements Constants {
      * @param evolutionProgressLog
      * @throws Exception
      */
-    public EvolutionEngine(AgentFactory agentFactory, Species species, double percentTop,
-	    double percentTopXTop, double percentTopMutant, double percentTopXBottom, double percentBottom,
-	    double percentBottomMutant, double percentBottomXBottom, double percentRandom, double maxMutationRate,
-	    String evolutionProgressLog) throws Exception {
+    public EvolutionEngine(AgentFactory agentFactory, Species species, double percentTop, double percentTopXTop,
+	    double percentTopMutant, double percentTopXBottom, double percentBottom, double percentBottomMutant,
+	    double percentBottomXBottom, double percentRandom, double maxMutationRate, String evolutionProgressLog)
+	    throws Exception {
 
 	this.agentFactory = agentFactory;
 	this.species = species;
@@ -155,13 +156,10 @@ public final class EvolutionEngine implements Constants {
 	parentBuffer = new ArrayList<Agent>(genePoolSize);
 	offspringBuffer = new ArrayList<Agent>(genePoolSize);
 
-	
-	
 	for (int i = 0; i < genePoolSize; i++) {
 	    parentBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	
 	for (int i = 0; i < genePoolSize; i++) {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
@@ -229,14 +227,20 @@ public final class EvolutionEngine implements Constants {
 
     private void printActiveBufferStats() {
 
-	if (settings.lastLoggedGeneration != generationCounter) {
-	    // the above check is mainly being done so that
-	    // in the case of multiple species, this line is not printed
-	    // multiple times. The above checks if this generation
-	    // has already been logged.
+	if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL
+		|| settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
 	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
 		    + getPoolCompositionString());
-	    settings.lastLoggedGeneration = generationCounter;
+	} else {
+	    if (settings.lastLoggedGeneration != generationCounter) {
+		// the above check is mainly being done so that
+		// in the case of multiple species, this line is not printed
+		// multiple times. The above checks if this generation
+		// has already been logged.
+		logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
+			+ getPoolCompositionString());
+		settings.lastLoggedGeneration = generationCounter;
+	    }
 	}
 
     }

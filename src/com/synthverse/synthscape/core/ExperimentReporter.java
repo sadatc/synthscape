@@ -351,7 +351,7 @@ public class ExperimentReporter implements Constants {
 	return msg;
     }
 
-    public void reportPerformance(int generationCounter, Stats simStats, Stats poolStats,
+    public void reportPerformanceIslandModel(int generationCounter, Stats simStats, Stats poolStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
@@ -422,4 +422,77 @@ public class ExperimentReporter implements Constants {
 
     }
 
+/*    
+    public void reportPerformance(int generationCounter, Stats simStats, Stats poolStats,
+	    DescriptiveStatistics fitnessStats) {
+	try {
+
+	    int captures = poolStats.getValue(Event.COLLECTED_RESOURCE);
+	    settings.lastReportedCaptures = captures;
+
+	    if (settings.lastReportedGeneration == generationCounter) {
+		return;
+	    }
+
+	    int trailSent = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailReceived = poolStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+	    int trailSearched = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+
+	    poolStats.clear();
+
+	    String poolComposition = getPoolCompositionString(fitnessStats);
+
+	    if (simulation.isReportPerformance()) {
+
+		sbPerformance.delete(0, sbPerformance.length());
+		sbPerformance.append(fitnessStats.getN());
+		sbPerformance.append(COMMA);
+		sbPerformance.append(generationCounter);
+		sbPerformance.append(COMMA);
+		sbPerformance.append(fitnessStats.getMean());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getVariance());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getMin());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(fitnessStats.getMax());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captures);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(trailSent);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(trailReceived);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(trailSearched);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(poolComposition);
+
+
+		performanceWriter.write(sbPerformance.toString());
+
+		performanceWriter.newLine();
+		sbPerformance.delete(0, sbPerformance.length());
+
+		if (this.flushAlways) {
+		    performanceWriter.flush();
+		}
+		settings.lastReportedGeneration = generationCounter;
+	    }
+	} catch (Exception e) {
+	    logger.severe("Exception while reporting performance:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+
+    }
+*/
+    
 }

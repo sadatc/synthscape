@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -222,6 +224,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.evolve(simStats);
 	}
 
+    }
+
+    @Override
+    public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
+	experimentReporter.reportPerformanceIslandModel(generationCounter, simStats, poolStats, fitnessStats);
     }
 
     @Override
