@@ -26,7 +26,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     protected static int _agentCounter = 0;
 
     private boolean scheduled = false;
-    private Agent genotypicalParent = null;
+    private Agent archetypeReference = null;
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 
@@ -106,7 +106,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	throw new AssertionError("Agent constructor is restricted");
     }
 
-    protected Agent(Simulation simulation, Species species) {	
+    protected Agent(Simulation simulation, Species species) {
 	initId();
 	setSim(simulation);
 	setSpecies(species);
@@ -687,7 +687,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void reset() {
-	//logger.info("agent reset was called");
+	// logger.info("agent reset was called");
 	agentStepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
@@ -886,15 +886,21 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.scheduled = scheduled;
     }
 
-    public void cloneGenotypeFrom(Agent archetype) {
+    /**
+     * Given an agent, this makes a deep copy of its genotype and sets a link
+     * back to the original archetype
+     * 
+     * @param archetype
+     */
+    public void cloneAndLinkGeneArcheType(Agent archetype) {
 	this.program = new Program(archetype.getProgram());
 	this.getVirtualMachine().overwriteGenotypeWithProgram(this.program);
 	this.getVirtualMachine().setCpuCycles(archetype.getVirtualMachine().getCpuCycles());
-	genotypicalParent = archetype;
+	archetypeReference = archetype;
     }
 
-    public Agent getGenotypicalParent() {
-	return genotypicalParent;
+    public Agent getArchetypeReference() {
+	return archetypeReference;
     }
 
     public static long get_optimazationTotalAgentsCounters() {
@@ -926,15 +932,12 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public String toString2() {
-   	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
-   		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
-   		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
-   		+ isCarryingResource + ", generation=" + generation + ", program=" + program.getSignature() + "]";
-       }
+	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
+		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
+		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
+		+ isCarryingResource + ", generation=" + generation + ", program=" + program.getSignature() + "]";
+    }
 
-    
-    
-    
     public Team getTeam() {
 	return team;
     }
@@ -955,6 +958,5 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	setX(newX);
 	setY(newY);
     }
-
 
 }

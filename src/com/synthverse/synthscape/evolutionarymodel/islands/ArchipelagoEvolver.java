@@ -86,10 +86,9 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	for (Agent agent : agents) {
 	    agent.setFitness(collectiveFitness);
 	    agent.setProvidedFeedback(true);
-	    Agent cloneParentAgent = agent.getGenotypicalParent();
-	    // logger.info("agent parent="+cloneParentAgent.getAgentId());
-	    if (cloneParentAgent != null) {
-		cloneParentAgent.setFitness(collectiveFitness);
+	    Agent archetypeAgent = agent.getArchetypeReference();
+	    if (archetypeAgent != null) {
+		archetypeAgent.setFitness(collectiveFitness);
 	    }
 	}
 
