@@ -122,6 +122,11 @@ public class EmbodiedAgent extends Agent {
 	this.activeAgent.setFitness(this.fitness);
 	this.activeAgent.setProvidedFeedback(true);
 
+	Agent archetypeAgent = this.activeAgent.getArchetypeReference();
+	if (archetypeAgent != null) {
+	    archetypeAgent.setFitness(this.fitness);
+	}
+
     }
 
     public final void reclaimActiveAgent() {
