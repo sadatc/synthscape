@@ -44,6 +44,8 @@ public class EmbodiedAgent extends Agent {
     // private PopulationIslandEvolver islandEvolver = null;
 
     Agent activeAgent = null;
+    
+    public Stats embodiedAgentPoolStats = new Stats();
 
     private int poolSize;
 
@@ -231,7 +233,7 @@ public class EmbodiedAgent extends Agent {
 	return result;
     }
 
-    public void evolve(Stats simStats) {
+    public void evolve() {
 	evolver.evolve();
     }
 

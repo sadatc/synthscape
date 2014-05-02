@@ -403,7 +403,6 @@ public class ExperimentReporter implements Constants {
 
 		sbPerformance.append(poolComposition);
 
-
 		performanceWriter.write(sbPerformance.toString());
 
 		performanceWriter.newLine();
@@ -422,17 +421,11 @@ public class ExperimentReporter implements Constants {
 
     }
 
-/*    
-    public void reportPerformance(int generationCounter, Stats simStats, Stats poolStats,
+    public void reportPerformanceEmbodiedModel(int generationCounter, Stats simStats, Stats poolStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
 	    int captures = poolStats.getValue(Event.COLLECTED_RESOURCE);
-	    settings.lastReportedCaptures = captures;
-
-	    if (settings.lastReportedGeneration == generationCounter) {
-		return;
-	    }
 
 	    int trailSent = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 	    int trailReceived = poolStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
@@ -475,7 +468,6 @@ public class ExperimentReporter implements Constants {
 
 		sbPerformance.append(poolComposition);
 
-
 		performanceWriter.write(sbPerformance.toString());
 
 		performanceWriter.newLine();
@@ -484,7 +476,7 @@ public class ExperimentReporter implements Constants {
 		if (this.flushAlways) {
 		    performanceWriter.flush();
 		}
-		settings.lastReportedGeneration = generationCounter;
+
 	    }
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting performance:" + e.getMessage());
@@ -493,6 +485,5 @@ public class ExperimentReporter implements Constants {
 	}
 
     }
-*/
-    
+
 }

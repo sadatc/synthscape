@@ -221,14 +221,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.evolve(simStats);
+	    embodiedAgent.evolve();
 	}
 
     }
 
     @Override
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformanceIslandModel(generationCounter, simStats, poolStats, fitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, simStats, poolStats, fitnessStats);
     }
 
     @Override
