@@ -44,8 +44,10 @@ public class EmbodiedAgent extends Agent {
     // private PopulationIslandEvolver islandEvolver = null;
 
     Agent activeAgent = null;
-    
+
     public Stats embodiedAgentPoolStats = new Stats();
+    public Stats embodiedAgentStepStats = new Stats();
+    public Stats embodiedAgentSimStats = new Stats();
 
     private int poolSize;
 
@@ -58,7 +60,7 @@ public class EmbodiedAgent extends Agent {
 	setPoolSize(poolSize);
 
 	try {
-	    evolver = new EmbodiedAgentEvolver(simulation, agentFactory, species);
+	    evolver = new EmbodiedAgentEvolver(this, simulation, agentFactory, species);
 
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -75,7 +77,7 @@ public class EmbodiedAgent extends Agent {
 	_optimizationEmbodiedAgentCounter++;
 	setPoolSize(poolSize);
 	try {
-	    evolver = new EmbodiedAgentEvolver(sim, agentFactory, species);
+	    evolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	    System.exit(1);
@@ -109,6 +111,7 @@ public class EmbodiedAgent extends Agent {
 
 	// synchronize location
 	synchronizeLocationFromActiveAgent();
+	activeAgent.agentStats.aggregateStatsTo(embodiedAgentStepStats);
 
     }
 
@@ -128,6 +131,7 @@ public class EmbodiedAgent extends Agent {
 	if (archetypeAgent != null) {
 	    archetypeAgent.setFitness(this.fitness);
 	}
+	// logger.info("id:"+this.getAgentId()+" fitness="+this.fitness);
 
     }
 
@@ -137,6 +141,7 @@ public class EmbodiedAgent extends Agent {
 
     private double computeFitness(Trait trait) {
 	double result = 0.0;
+	/*
 
 	if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) {
 	    result += computeDetectionFitness();
@@ -149,7 +154,7 @@ public class EmbodiedAgent extends Agent {
 	if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
 	    result += computeProcessingFitness();
 	}
-
+	*/
 	if (trait == Trait.MULTICAPABLE || trait == Trait.TRANSPORTATION) {
 	    result += computeTransportationFitness();
 	}
@@ -160,12 +165,12 @@ public class EmbodiedAgent extends Agent {
     private double computeDetectionFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : embodiedAgentSimStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
 	    case DETECTED_RAW_RESOURCE:
 	    case DETECTED_PROCESSED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += embodiedAgentSimStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -178,10 +183,10 @@ public class EmbodiedAgent extends Agent {
     private double computeExtractionFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : embodiedAgentSimStats.getEvents()) {
 	    switch (event) {
 	    case EXTRACTED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += embodiedAgentSimStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -194,10 +199,10 @@ public class EmbodiedAgent extends Agent {
     private double computeProcessingFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : embodiedAgentSimStats.getEvents()) {
 	    switch (event) {
 	    case PROCESSED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += embodiedAgentSimStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -210,20 +215,19 @@ public class EmbodiedAgent extends Agent {
     private double computeTransportationFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : embodiedAgentSimStats.getEvents()) {
 	    switch (event) {
-	    case LOADED_RESOURCE:
-		// TODO: wouldn't this make the agents just keep wanting to load
-		// and unload resources to maximize fitness?
-		result += (0.0005 * activeAgent.agentStats.getValue(event));
-		break;
-	    case UNLOADED_RESOURCE:
-		// TODO: wouldn't this make the agents just keep wanting to load
-		// and unload resources to maximize fitness?
-		result += (0.0005 * activeAgent.agentStats.getValue(event));
-		break;
+	    /*
+	     * case LOADED_RESOURCE: // TODO: wouldn't this make the agents just
+	     * keep wanting to load // and unload resources to maximize fitness?
+	     * result += (0.0005 * embodiedAgentSimStats.getValue(event));
+	     * break; case UNLOADED_RESOURCE: // TODO: wouldn't this make the
+	     * agents just keep wanting to load // and unload resources to
+	     * maximize fitness? result += (0.0005 *
+	     * embodiedAgentSimStats.getValue(event)); break;
+	     */
 	    case COLLECTED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += embodiedAgentSimStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -235,6 +239,13 @@ public class EmbodiedAgent extends Agent {
 
     public void evolve() {
 	evolver.evolve();
+
+	// embodiedAgentPoolStats.aggregateStatsTo(embodiedAgentSimStats);
+	embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
+	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
+	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
+	logger.info("-------------------------------------------------------");
+	embodiedAgentSimStats.clear();
     }
 
     @Override
@@ -349,6 +360,13 @@ public class EmbodiedAgent extends Agent {
 	setY(newY);
 	activeAgent.setX(newX);
 	activeAgent.setY(newY);
+    }
+
+    public void aggregateStepStats() {
+
+	this.activeAgent.agentStats.aggregateStatsTo(embodiedAgentStepStats);
+	this.embodiedAgentStepStats.aggregateStatsTo(embodiedAgentSimStats);
+	this.embodiedAgentStepStats.clear();
     }
 
 }

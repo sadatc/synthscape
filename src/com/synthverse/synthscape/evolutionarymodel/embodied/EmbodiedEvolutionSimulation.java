@@ -233,22 +233,26 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void doEndOfStepTasks() {
+	// accumulate all agent counts to a step count
+	for (Agent agent : agents) {
+	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+	    embodiedAgent.aggregateStepStats();
+	    embodiedAgent.activeAgent.agentStats.clear();
 
-	// do nothing special
+	}
     }
 
     @Override
     protected void doEndOfSimulationTasks() {
 	// each agent now needs to provide local feedback
-
+	// each agent has complete record of everything that happened 
+	// in embodiedAgentSimStats
 	// TODO: call embodiedAgent.providefeedback -- this will do a local
 	// evaluation based on agent's capabilities
 
-	// this.evolver.provideFeedback(agents, simStats);
+	
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(simStats);
-
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
