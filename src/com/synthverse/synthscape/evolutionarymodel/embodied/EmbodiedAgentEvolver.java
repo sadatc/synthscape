@@ -32,15 +32,20 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Con
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    public EmbodiedAgentEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
-	super(simulation, agentFactory, species);
+    public EmbodiedAgentEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
+	    Species species) throws Exception {
+	super(ownerAgent, simulation, agentFactory, species);
     }
-    
+
     public final void reclaimEmbodiedAgent(final Agent agent) {
 	agentFactory.reclaimAgent(agent);
-	
     }
-    
-    
+
+    @Override
+    public void evolve() {
+	evolutionEngine.generateNextGeneration(simulation.random);
+	activeBuffer = evolutionEngine.getActiveBuffer();
+	generation++;
+    }
 
 }
