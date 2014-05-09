@@ -11,6 +11,7 @@ import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -21,6 +22,8 @@ import com.synthverse.util.LogUtils;
  * 
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
+
+    private EmbodiedAgent ownerAgent = null;
 
     protected int generation;
 
@@ -34,28 +37,40 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     protected int totalPopulation;
     protected int genePoolSize;
     protected int genePoolIndex;
-    protected  Species species;
+    protected Species species;
 
     protected EvolutionEngine evolutionEngine;
     protected int requestCounter = 1;
     protected int cloneCounter = 1;
-    List<Agent> activeBuffer;
-
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species)
-	    throws Exception {
-	this(simulation, agentFactory, species, 1);
-    }
+    protected List<Agent> activeBuffer;
 
     public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory,
 	    Species species, int clonesPerSpecies) throws Exception {
+	this(null, simulation, agentFactory, species, clonesPerSpecies);
+    }
+
+    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation,
+	    AgentFactory agentFactory, Species species) throws Exception {
+	this(ownerAgent, simulation, agentFactory, species, 1);
+    }
+
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species)
+	    throws Exception {
+	this(null, simulation, agentFactory, species, 1);
+    }
+
+    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation,
+	    AgentFactory agentFactory, Species species, int clonesPerSpecies) throws Exception {
 	super(simulation, agentFactory);
 	if (clonesPerSpecies < 1) {
 	    throw new Exception("clonesPerSpecies can't be <1");
 	}
 
+	setOwnerAgent(ownerAgent);
+
 	this.generation = 0;
 	this.species = species;
-	evolutionEngine = new EvolutionEngine(agentFactory, species);
+	evolutionEngine = new EvolutionEngine(ownerAgent, agentFactory, species);
 	this.clonesPerSpecies = clonesPerSpecies;
 	genePoolSize = evolutionEngine.getGenePoolSize();
 	totalPopulation = clonesPerSpecies * genePoolSize;
@@ -97,7 +112,6 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
     @Override
     public void init() {
-	
 
     }
 
@@ -119,6 +133,14 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public int getGeneration() {
 
 	return generation;
+    }
+
+    public EmbodiedAgent getOwnerAgent() {
+	return ownerAgent;
+    }
+
+    public void setOwnerAgent(EmbodiedAgent ownerAgent) {
+	this.ownerAgent = ownerAgent;
     }
 
 }
