@@ -10,10 +10,12 @@ import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.GeneticOperator;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.CollectionUtils;
 import com.synthverse.util.LogUtils;
 
@@ -31,6 +33,7 @@ public final class EvolutionEngine implements Constants {
     }
 
     private Species species;
+    private EmbodiedAgent engineOwnerAgent = null;
 
     int generationCounter = 0;
     boolean terminationRequested = false;
@@ -57,16 +60,24 @@ public final class EvolutionEngine implements Constants {
     String evolutionProgressLog;
     private AgentFactory agentFactory;
 
+    public EvolutionEngine(EmbodiedAgent ownerAgent, AgentFactory agentFactory, Species species)
+	    throws Exception {
+	this(ownerAgent, agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP,
+		EE_DEF_PERCENT_TOP_MUTANT, EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM,
+		EE_DEF_PERCENT_BOTTOM_MUTANT, EE_DEF_PERCENT_BOTTOM_X_BOTTOM,
+		EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE, EE_DEF_EVOLUTION_PROGRESS_LOG);
+    }
+
     /**
      * creates an evolver with all default values
      * 
      * @throws Exception
      */
     public EvolutionEngine(AgentFactory agentFactory, Species species) throws Exception {
-	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
-		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
-		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
-		EE_DEF_EVOLUTION_PROGRESS_LOG);
+	this(null, agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP,
+		EE_DEF_PERCENT_TOP_MUTANT, EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM,
+		EE_DEF_PERCENT_BOTTOM_MUTANT, EE_DEF_PERCENT_BOTTOM_X_BOTTOM,
+		EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE, EE_DEF_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -77,11 +88,12 @@ public final class EvolutionEngine implements Constants {
      * @param genePoolSize
      * @throws Exception
      */
-    public EvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize) throws Exception {
-	this(agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP, EE_DEF_PERCENT_TOP_MUTANT,
-		EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM, EE_DEF_PERCENT_BOTTOM_MUTANT,
-		EE_DEF_PERCENT_BOTTOM_X_BOTTOM, EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE,
-		EE_DEF_EVOLUTION_PROGRESS_LOG);
+    public EvolutionEngine(AgentFactory agentFactory, Species species, int genePoolSize)
+	    throws Exception {
+	this(null, agentFactory, species, EE_DEF_PERCENT_TOP, EE_DEF_PERCENT_TOP_X_TOP,
+		EE_DEF_PERCENT_TOP_MUTANT, EE_DEF_PERCENT_TOP_X_BOTTOM, EE_DEF_PERCENT_BOTTOM,
+		EE_DEF_PERCENT_BOTTOM_MUTANT, EE_DEF_PERCENT_BOTTOM_X_BOTTOM,
+		EE_DEF_PERCENT_RANDOM, EE_DEF_MAX_MUTATION_RATE, EE_DEF_EVOLUTION_PROGRESS_LOG);
     }
 
     /**
@@ -101,45 +113,55 @@ public final class EvolutionEngine implements Constants {
      * @param evolutionProgressLog
      * @throws Exception
      */
-    public EvolutionEngine(AgentFactory agentFactory, Species species, double percentTop, double percentTopXTop,
-	    double percentTopMutant, double percentTopXBottom, double percentBottom, double percentBottomMutant,
-	    double percentBottomXBottom, double percentRandom, double maxMutationRate, String evolutionProgressLog)
-	    throws Exception {
+    public EvolutionEngine(EmbodiedAgent engineOwnerAgent, AgentFactory agentFactory,
+	    Species species, double percentTop, double percentTopXTop, double percentTopMutant,
+	    double percentTopXBottom, double percentBottom, double percentBottomMutant,
+	    double percentBottomXBottom, double percentRandom, double maxMutationRate,
+	    String evolutionProgressLog) throws Exception {
 
+	setEngineOwnerAgent(engineOwnerAgent);
 	this.agentFactory = agentFactory;
 	this.species = species;
 
 	aTop = (int) ((double) genePoolSize * percentTop);
 	if (aTop <= 0) {
-	    throw new Exception("aTop is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aTop is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aTopXTop = (int) ((double) genePoolSize * percentTopXTop);
 	if (aTopXTop <= 0) {
-	    throw new Exception("aTopXTop is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aTopXTop is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aTopMutants = (int) ((double) genePoolSize * percentTopMutant);
 	if (aTopMutants <= 0) {
-	    throw new Exception("aTopMutants is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aTopMutants is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aTopXBottom = (int) ((double) genePoolSize * percentTopXBottom);
 	if (aTopXBottom <= 0) {
-	    throw new Exception("aTopXBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aTopXBottom is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aBottom = (int) ((double) genePoolSize * percentBottom);
 	if (aBottom <= 0) {
-	    throw new Exception("aBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aBottom is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aBottomMutants = (int) ((double) genePoolSize * percentBottomMutant);
 	if (aBottomMutants <= 0) {
-	    throw new Exception("aBottomMutants is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aBottomMutants is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aBottomXBottom = (int) ((double) genePoolSize * percentBottomXBottom);
 	if (aBottomXBottom <= 0) {
-	    throw new Exception("aBottomXBottom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aBottomXBottom is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 	aRandom = (int) ((double) genePoolSize * percentRandom);
 	if (aRandom <= 0) {
-	    throw new Exception("aRandom is too low. Most likely, genePool=" + genePoolSize + ", is too small");
+	    throw new Exception("aRandom is too low. Most likely, genePool=" + genePoolSize
+		    + ", is too small");
 	}
 
 	this.maxMutationRate = maxMutationRate;
@@ -175,11 +197,12 @@ public final class EvolutionEngine implements Constants {
 
     }
 
-    private final void generateMutants(MersenneTwisterFast randomNumberGenerator, ArrayList<Agent> candidateParents,
-	    int numMutants, int offspringBufferIndex) {
+    private final void generateMutants(MersenneTwisterFast randomNumberGenerator,
+	    ArrayList<Agent> candidateParents, int numMutants, int offspringBufferIndex) {
 
 	for (int i = 0; i < numMutants; i++) {
-	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateParents);
+	    Agent parent = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
 
 	    GeneticOperator.pointMutate(randomNumberGenerator, parent, offspring, maxMutationRate);
@@ -189,12 +212,15 @@ public final class EvolutionEngine implements Constants {
 
     }
 
-    private final void generateCrosses(MersenneTwisterFast randomNumberGenerator, ArrayList<Agent> candidateAParents,
-	    ArrayList<Agent> candidateBParents, int numOffsprings, int offspringBufferIndex) {
+    private final void generateCrosses(MersenneTwisterFast randomNumberGenerator,
+	    ArrayList<Agent> candidateAParents, ArrayList<Agent> candidateBParents,
+	    int numOffsprings, int offspringBufferIndex) {
 
 	for (int i = 0; i < numOffsprings; i++) {
-	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateAParents);
-	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator, candidateBParents);
+	    Agent parentA = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateAParents);
+	    Agent parentB = CollectionUtils.pickRandomFromList(randomNumberGenerator,
+		    candidateBParents);
 	    Agent offspring = offspringBuffer.get(offspringBufferIndex);
 
 	    GeneticOperator.cross(randomNumberGenerator, parentA, parentB, offspring);
@@ -227,19 +253,37 @@ public final class EvolutionEngine implements Constants {
 
     private void printActiveBufferStats() {
 
-	if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL
-		|| settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
-	    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
-		    + getPoolCompositionString());
-	} else {
-	    if (settings.lastLoggedGeneration != generationCounter) {
-		// the above check is mainly being done so that
-		// in the case of multiple species, this line is not printed
-		// multiple times. The above checks if this generation
-		// has already been logged.
-		logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
-			+ getPoolCompositionString());
-		settings.lastLoggedGeneration = generationCounter;
+	if (generationCounter >= 0) {
+	    if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL
+		    || settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
+
+		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedAgentSimStats
+			.getValue(Event.COLLECTED_RESOURCE) : 0;
+
+		/*
+		 * logger.info("Gen: " + generationCounter + " Cap: " + captures
+		 * + " PoolComp: " + getPoolCompositionString());
+		 */
+		logger.info(engineOwnerAgent.getAgentId() + ": Gen: " + generationCounter
+			+ " Cap: " + captures);
+
+		for (int i = 1; i < 10; i++) {
+		    Agent agent = activeBuffer.get(i);
+		    logger.info(agent.getAgentId() + ": fitness=" + agent.getFitness() + " agent:"
+			    + agent.getSignature());
+		}
+
+	    } else {
+		if (settings.lastLoggedGeneration != generationCounter) {
+		    // the above check is mainly being done so that
+		    // in the case of multiple species, this line is not printed
+		    // multiple times. The above checks if this generation
+		    // has already been logged.
+		    logger.info("Gen: " + generationCounter + " Cap: "
+			    + settings.lastReportedCaptures + " PoolComp: "
+			    + getPoolCompositionString());
+		    settings.lastLoggedGeneration = generationCounter;
+		}
 	    }
 	}
 
@@ -298,12 +342,14 @@ public final class EvolutionEngine implements Constants {
 
 	// adding bottoms
 
-	swapBufferElements(activeBuffer, offspringBuffer, genePoolSize - aBottom - 1, aBottom, offspringBufferIndex);
+	swapBufferElements(activeBuffer, offspringBuffer, genePoolSize - aBottom - 1, aBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottom;
 
 	// adding top x top
 
-	generateCrosses(randomNumberGenerator, topPerformers, topPerformers, aTopXTop, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, topPerformers, aTopXTop,
+		offspringBufferIndex);
 	offspringBufferIndex += aTopXTop;
 
 	// adding top mutants
@@ -313,17 +359,20 @@ public final class EvolutionEngine implements Constants {
 
 	// adding top x bottom
 
-	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers, aTopXBottom, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, topPerformers, bottomPerformers, aTopXBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aTopXBottom;
 
 	// adding bottom mutants
 
-	generateMutants(randomNumberGenerator, bottomPerformers, aBottomMutants, offspringBufferIndex);
+	generateMutants(randomNumberGenerator, bottomPerformers, aBottomMutants,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottomMutants;
 
 	// adding bottom x bottom
 
-	generateCrosses(randomNumberGenerator, bottomPerformers, bottomPerformers, aBottomXBottom, offspringBufferIndex);
+	generateCrosses(randomNumberGenerator, bottomPerformers, bottomPerformers, aBottomXBottom,
+		offspringBufferIndex);
 	offspringBufferIndex += aBottomXBottom;
 
 	// add new random programs
@@ -361,15 +410,15 @@ public final class EvolutionEngine implements Constants {
     }
 
     @SuppressWarnings("unused")
-    private final void swapBufferElement(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer, int srcIndex,
-	    int targetIndex) {
+    private final void swapBufferElement(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer,
+	    int srcIndex, int targetIndex) {
 	Agent savedBaseAgent = targetBuffer.get(targetIndex);
 	targetBuffer.set(targetIndex, srcBuffer.get(srcIndex));
 	srcBuffer.set(srcIndex, savedBaseAgent);
     }
 
-    private final void swapBufferElements(ArrayList<Agent> srcBuffer, ArrayList<Agent> targetBuffer, int srcIndex,
-	    int numElements, int targetIndex) {
+    private final void swapBufferElements(ArrayList<Agent> srcBuffer,
+	    ArrayList<Agent> targetBuffer, int srcIndex, int numElements, int targetIndex) {
 	for (int i = 0; i < numElements; i++) {
 	    Agent savedBaseAgent = targetBuffer.get(targetIndex + i);
 	    targetBuffer.set(targetIndex + i, srcBuffer.get(srcIndex + i));
@@ -379,6 +428,14 @@ public final class EvolutionEngine implements Constants {
 
     public int getGenePoolSize() {
 	return genePoolSize;
+    }
+
+    public EmbodiedAgent getEngineOwnerAgent() {
+	return engineOwnerAgent;
+    }
+
+    public void setEngineOwnerAgent(EmbodiedAgent engineOwnerAgent) {
+	this.engineOwnerAgent = engineOwnerAgent;
     }
 
 }
