@@ -765,6 +765,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	String result = "" + this.getAgentId();
 	if (this.program != null) {
 	    result += ":" + this.program.getSignature();
+
+	}
+	return result;
+
+    }
+
+    public String getFingerPrint() {
+	String result = "" + this.getAgentId();
+	if (this.program != null) {
+	    result += ":" + this.program.getFingerPrint();
+	    
 	}
 	return result;
 
