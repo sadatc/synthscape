@@ -244,7 +244,7 @@ public class EmbodiedAgent extends Agent {
 	embodiedAgentSimStats.clear();
 
 	logger.info("-------------------------------------------------------");
-	logger.info(embodiedAgentPoolStats.toString());
+	//logger.info(embodiedAgentPoolStats.toString());
 	// embodiedAgentSimStats.clear();
     }
 

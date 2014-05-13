@@ -245,17 +245,15 @@ public final class EvolutionEngine implements Constants {
 		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedAgentSimStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
+		logger.info("Gen: " + generationCounter + " Cap: " + captures + " PoolComp: "
+			+ getPoolCompositionString());
 		/*
-		 * logger.info("Gen: " + generationCounter + " Cap: " + captures
-		 * + " PoolComp: " + getPoolCompositionString());
-		 */
-		logger.info(engineOwnerAgent.getAgentId() + ": Gen: " + generationCounter + " Cap: " + captures);
-
 		for (int i = 1; i < 10; i++) {
 		    Agent agent = activeBuffer.get(i);
 		    logger.info(agent.getAgentId() + ": fitness=" + agent.getFitness() + " agent:"
 			    + agent.getFingerPrint());
 		}
+		*/
 
 	    } else {
 		if (settings.lastLoggedGeneration != generationCounter) {
