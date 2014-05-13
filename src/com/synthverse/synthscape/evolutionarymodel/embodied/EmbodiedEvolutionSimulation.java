@@ -22,6 +22,7 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.Stats;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
@@ -34,6 +35,11 @@ import ec.util.MersenneTwisterFast;
 public class EmbodiedEvolutionSimulation extends Simulation {
 
     private Team team = new Team();
+    
+    Stats generationStats = new Stats();
+    
+    
+    
 
     public static Settings settings = Settings.getInstance();
 
@@ -223,6 +229,12 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.evolve();
 	}
+	
+	
+	logger.info("summary:"+this.generationStats);
+	logger.info("summary:"+this.poolStats);
+	
+	generationStats.clear();
 
     }
 
@@ -248,6 +260,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedAgentSimStats);
+	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(generationStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
@@ -266,8 +279,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void startNextSimulation() {
 
 	// logger.info("startNextSimulation()");
-	simStats.aggregateStatsTo(poolStats);
-	simStats.clear();
+	generationStats.aggregateStatsTo(poolStats);
+	
 	resetEnvironment();
 	initEnvironment();
 	initNextAgents();
