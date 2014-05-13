@@ -47,7 +47,7 @@ public class EmbodiedAgent extends Agent {
 
     public Stats embodiedPoolHistoricalStats = new Stats();
 
-    public Stats embodiedAgentSimStats = new Stats();
+    public Stats embodiedPoolGenerationStats = new Stats();
 
     private int poolSize;
 
@@ -216,11 +216,11 @@ public class EmbodiedAgent extends Agent {
 	    /*
 	     * case LOADED_RESOURCE: // TODO: wouldn't this make the agents just
 	     * keep wanting to load // and unload resources to maximize fitness?
-	     * result += (0.0005 * embodiedAgentSimStats.getValue(event));
+	     * result += (0.0005 * embodiedPoolGenerationStats.getValue(event));
 	     * break; case UNLOADED_RESOURCE: // TODO: wouldn't this make the
 	     * agents just keep wanting to load // and unload resources to
 	     * maximize fitness? result += (0.0005 *
-	     * embodiedAgentSimStats.getValue(event)); break;
+	     * embodiedPoolGenerationStats.getValue(event)); break;
 	     */
 	    case COLLECTED_RESOURCE:
 		result += activeAgent.agentStats.getValue(event);
@@ -234,10 +234,10 @@ public class EmbodiedAgent extends Agent {
     }
 
     public void evolve() {
-	embodiedAgentSimStats.aggregateStatsTo(embodiedPoolHistoricalStats);
+	embodiedPoolGenerationStats.aggregateStatsTo(embodiedPoolHistoricalStats);
 	evolver.evolve();
 
-	embodiedAgentSimStats.clear();
+	embodiedPoolGenerationStats.clear();
 	logger.info("-------------------------------------------------------");
     }
 

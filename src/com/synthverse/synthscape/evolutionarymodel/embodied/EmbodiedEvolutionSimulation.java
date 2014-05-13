@@ -36,6 +36,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     private Team team = new Team();
     
+    
+    /**
+     * Stats for the entire generation from the combined Pools
+     */
     Stats generationStats = new Stats();
     
     
@@ -252,14 +256,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void doEndOfSimulationTasks() {
 	// each agent now needs to provide local feedback
 	// each agent has complete record of everything that happened 
-	// in embodiedAgentSimStats
+	// in embodiedPoolGenerationStats
 	// TODO: call embodiedAgent.providefeedback -- this will do a local
 	// evaluation based on agent's capabilities
 
 	
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedAgentSimStats);
+	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedPoolGenerationStats);
 	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(generationStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...

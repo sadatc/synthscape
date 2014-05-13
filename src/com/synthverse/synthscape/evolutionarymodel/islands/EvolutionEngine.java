@@ -242,7 +242,7 @@ public final class EvolutionEngine implements Constants {
 	    if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL
 		    || settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
 
-		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedAgentSimStats
+		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedPoolGenerationStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
 		logger.info("Gen: " + generationCounter + " Cap: " + captures + " PoolComp: "
