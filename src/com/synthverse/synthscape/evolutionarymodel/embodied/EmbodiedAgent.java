@@ -45,7 +45,7 @@ public class EmbodiedAgent extends Agent {
 
     Agent activeAgent = null;
 
-    public Stats embodiedAgentPoolStats = new Stats();
+    public Stats embodiedPoolHistoricalStats = new Stats();
 
     public Stats embodiedAgentSimStats = new Stats();
 
@@ -234,7 +234,7 @@ public class EmbodiedAgent extends Agent {
     }
 
     public void evolve() {
-	embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
+	embodiedAgentSimStats.aggregateStatsTo(embodiedPoolHistoricalStats);
 	evolver.evolve();
 
 	embodiedAgentSimStats.clear();
