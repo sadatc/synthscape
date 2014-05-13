@@ -236,16 +236,9 @@ public class EmbodiedAgent extends Agent {
     public void evolve() {
 	embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
 	evolver.evolve();
-	// embodiedAgentPoolStats.aggregateStatsTo(embodiedAgentSimStats);
-	// embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
-	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
-	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
 
 	embodiedAgentSimStats.clear();
-
 	logger.info("-------------------------------------------------------");
-	//logger.info(embodiedAgentPoolStats.toString());
-	// embodiedAgentSimStats.clear();
     }
 
     @Override
