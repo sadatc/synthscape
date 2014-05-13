@@ -140,7 +140,7 @@ public class Program {
     public final String getFingerPrint() {
 	String result = "";
 	if (size > 0) {
-	    for (int i = 0; i < size; i++) {
+	    for (int i = 0; i < size &&  i < 50; i++) {
 		result += genotypeArray[i].getFingerPrint();
 	    }
 	}

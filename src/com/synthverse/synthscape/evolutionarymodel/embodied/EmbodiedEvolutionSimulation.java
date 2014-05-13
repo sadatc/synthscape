@@ -217,7 +217,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     }
 
     protected void evolveEmbodiedAgents() {
-	logger.info("evolving embodied agents... number of simulations run:" + this.simulationCounter);
+	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
@@ -233,13 +233,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void doEndOfStepTasks() {
-	// accumulate all agent counts to a step count
-	for (Agent agent : agents) {
-	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.aggregateStepStats();
-	    embodiedAgent.activeAgent.agentStats.clear();
 
-	}
     }
 
     @Override
@@ -253,6 +247,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedAgentSimStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 

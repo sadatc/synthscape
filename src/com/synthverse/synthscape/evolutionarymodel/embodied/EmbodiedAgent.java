@@ -46,7 +46,7 @@ public class EmbodiedAgent extends Agent {
     Agent activeAgent = null;
 
     public Stats embodiedAgentPoolStats = new Stats();
-    public Stats embodiedAgentStepStats = new Stats();
+
     public Stats embodiedAgentSimStats = new Stats();
 
     private int poolSize;
@@ -108,10 +108,8 @@ public class EmbodiedAgent extends Agent {
     public void stepAction(SimState state) {
 
 	activeAgent.getVirtualMachine().step();
-
 	// synchronize location
 	synchronizeLocationFromActiveAgent();
-	activeAgent.agentStats.aggregateStatsTo(embodiedAgentStepStats);
 
     }
 
@@ -136,25 +134,23 @@ public class EmbodiedAgent extends Agent {
     }
 
     public final void reclaimActiveAgent() {
+	activeAgent.agentStats.clear();
 	evolver.reclaimEmbodiedAgent(activeAgent);
     }
 
     private double computeFitness(Trait trait) {
 	double result = 0.0;
 	/*
-
-	if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) {
-	    result += computeDetectionFitness();
-	}
-
-	if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
-	    result += computeExtractionFitness();
-	}
-
-	if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
-	    result += computeProcessingFitness();
-	}
-	*/
+	 * 
+	 * if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) { result
+	 * += computeDetectionFitness(); }
+	 * 
+	 * if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
+	 * result += computeExtractionFitness(); }
+	 * 
+	 * if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
+	 * result += computeProcessingFitness(); }
+	 */
 	if (trait == Trait.MULTICAPABLE || trait == Trait.TRANSPORTATION) {
 	    result += computeTransportationFitness();
 	}
@@ -165,12 +161,12 @@ public class EmbodiedAgent extends Agent {
     private double computeDetectionFitness() {
 	double result = 0.0;
 
-	for (Event event : embodiedAgentSimStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
 	    case DETECTED_RAW_RESOURCE:
 	    case DETECTED_PROCESSED_RESOURCE:
-		result += embodiedAgentSimStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -183,10 +179,10 @@ public class EmbodiedAgent extends Agent {
     private double computeExtractionFitness() {
 	double result = 0.0;
 
-	for (Event event : embodiedAgentSimStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case EXTRACTED_RESOURCE:
-		result += embodiedAgentSimStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -199,10 +195,10 @@ public class EmbodiedAgent extends Agent {
     private double computeProcessingFitness() {
 	double result = 0.0;
 
-	for (Event event : embodiedAgentSimStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    case PROCESSED_RESOURCE:
-		result += embodiedAgentSimStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -215,7 +211,7 @@ public class EmbodiedAgent extends Agent {
     private double computeTransportationFitness() {
 	double result = 0.0;
 
-	for (Event event : embodiedAgentSimStats.getEvents()) {
+	for (Event event : activeAgent.agentStats.getEvents()) {
 	    switch (event) {
 	    /*
 	     * case LOADED_RESOURCE: // TODO: wouldn't this make the agents just
@@ -227,7 +223,7 @@ public class EmbodiedAgent extends Agent {
 	     * embodiedAgentSimStats.getValue(event)); break;
 	     */
 	    case COLLECTED_RESOURCE:
-		result += embodiedAgentSimStats.getValue(event);
+		result += activeAgent.agentStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -238,14 +234,18 @@ public class EmbodiedAgent extends Agent {
     }
 
     public void evolve() {
-	evolver.evolve();
-
-	// embodiedAgentPoolStats.aggregateStatsTo(embodiedAgentSimStats);
 	embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
+	evolver.evolve();
+	// embodiedAgentPoolStats.aggregateStatsTo(embodiedAgentSimStats);
+	// embodiedAgentSimStats.aggregateStatsTo(embodiedAgentPoolStats);
 	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
 	// logger.info(this.getAgentId()+":stats from current generation: "+embodiedAgentSimStats);
-	logger.info("-------------------------------------------------------");
+
 	embodiedAgentSimStats.clear();
+
+	logger.info("-------------------------------------------------------");
+	logger.info(embodiedAgentPoolStats.toString());
+	// embodiedAgentSimStats.clear();
     }
 
     @Override
@@ -360,13 +360,6 @@ public class EmbodiedAgent extends Agent {
 	setY(newY);
 	activeAgent.setX(newX);
 	activeAgent.setY(newY);
-    }
-
-    public void aggregateStepStats() {
-
-	this.activeAgent.agentStats.aggregateStatsTo(embodiedAgentStepStats);
-	this.embodiedAgentStepStats.aggregateStatsTo(embodiedAgentSimStats);
-	this.embodiedAgentStepStats.clear();
     }
 
 }
