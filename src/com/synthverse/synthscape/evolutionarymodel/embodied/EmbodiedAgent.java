@@ -3,6 +3,8 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import sim.engine.SimState;
 import sim.util.Int2D;
 
@@ -52,6 +54,8 @@ public class EmbodiedAgent extends Agent {
     private int poolSize;
 
     protected static long _optimizationEmbodiedAgentCounter = 0;
+    
+    public DescriptiveStatistics fitnessStats = null;
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
 	super(simulation, species);

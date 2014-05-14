@@ -231,6 +231,10 @@ public final class EvolutionEngine implements Constants {
 	for (int i = 0; i < genePoolSize; i++) {
 	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
 	}
+
+	if (engineOwnerAgent != null) {
+	    engineOwnerAgent.fitnessStats = fitnessStats;
+	}
     }
 
     private void reportPerformance() {
@@ -246,8 +250,8 @@ public final class EvolutionEngine implements Constants {
 		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedPoolGenerationStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
-		logger.info("Gen: " + generationCounter + " Cap: " + captures + " AvgFit:" +fitnessStats.getMean()+" PoolComp: "
-			+ getPoolCompositionString());
+		logger.info("Gen: " + generationCounter + " Cap: " + captures + " AvgFit:" + fitnessStats.getMean()
+			+ " PoolComp: " + getPoolCompositionString());
 
 	    } else {
 		if (settings.lastLoggedGeneration != generationCounter) {
