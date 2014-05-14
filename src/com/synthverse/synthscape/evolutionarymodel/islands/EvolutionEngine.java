@@ -226,14 +226,15 @@ public final class EvolutionEngine implements Constants {
 
     }
 
-    private void reportPerformance() {
-	// fitnessStats will contain all the fitnesses of all the active agents
+    private void computeFitnessStats() {
 	fitnessStats.clear();
 	for (int i = 0; i < genePoolSize; i++) {
 	    fitnessStats.addValue(activeBuffer.get(i).getFitness());
 	}
-	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
+    }
 
+    private void reportPerformance() {
+	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
     }
 
     private void printActiveBufferStats() {
@@ -245,7 +246,7 @@ public final class EvolutionEngine implements Constants {
 		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedPoolGenerationStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
-		logger.info("Gen: " + generationCounter + " Cap: " + captures + " PoolComp: "
+		logger.info("Gen: " + generationCounter + " Cap: " + captures + " AvgFit:" +fitnessStats.getMean()+" PoolComp: "
 			+ getPoolCompositionString());
 
 	    } else {
@@ -287,6 +288,7 @@ public final class EvolutionEngine implements Constants {
     }
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
+	computeFitnessStats();
 	reportPerformance();
 
 	Collections.sort(activeBuffer, Collections.reverseOrder());
