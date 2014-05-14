@@ -15,6 +15,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -35,15 +36,11 @@ import ec.util.MersenneTwisterFast;
 public class EmbodiedEvolutionSimulation extends Simulation {
 
     private Team team = new Team();
-    
-    
+
     /**
      * Stats for the entire generation from the combined Pools
      */
     Stats generationStats = new Stats();
-    
-    
-    
 
     public static Settings settings = Settings.getInstance();
 
@@ -230,14 +227,21 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	for (Agent agent : agents) {
+
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+	    embodiedAgent.embodiedPoolGenerationStats.aggregateStatsTo(embodiedAgent.embodiedPoolHistoricalStats);
 	    embodiedAgent.evolve();
+	    
 	}
-	
-	
-	logger.info("summary:"+this.generationStats);
-	logger.info("summary:"+this.poolStats);
-	
+
+	logger.info("summary:" + this.generationStats.getValue(Event.COLLECTED_RESOURCE));
+
+	for (Agent agent : agents) {
+	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+	    //logger.info("summary:" + embodiedAgent.embodiedPoolGenerationStats);
+	    embodiedAgent.embodiedPoolGenerationStats.clear();
+	}
+
 	generationStats.clear();
 
     }
@@ -255,12 +259,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     protected void doEndOfSimulationTasks() {
 	// each agent now needs to provide local feedback
-	// each agent has complete record of everything that happened 
+	// each agent has complete record of everything that happened
 	// in embodiedPoolGenerationStats
 	// TODO: call embodiedAgent.providefeedback -- this will do a local
 	// evaluation based on agent's capabilities
 
-	
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedPoolGenerationStats);
@@ -284,7 +287,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	// logger.info("startNextSimulation()");
 	generationStats.aggregateStatsTo(poolStats);
-	
+
 	resetEnvironment();
 	initEnvironment();
 	initNextAgents();

@@ -234,11 +234,7 @@ public class EmbodiedAgent extends Agent {
     }
 
     public void evolve() {
-	embodiedPoolGenerationStats.aggregateStatsTo(embodiedPoolHistoricalStats);
 	evolver.evolve();
-
-	embodiedPoolGenerationStats.clear();
-	logger.info("-------------------------------------------------------");
     }
 
     @Override
