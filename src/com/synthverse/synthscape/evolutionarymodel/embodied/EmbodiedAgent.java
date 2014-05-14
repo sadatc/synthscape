@@ -140,17 +140,19 @@ public class EmbodiedAgent extends Agent {
 
     private double computeFitness(Trait trait) {
 	double result = 0.0;
-	/*
-	 * 
-	 * if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) { result
-	 * += computeDetectionFitness(); }
-	 * 
-	 * if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
-	 * result += computeExtractionFitness(); }
-	 * 
-	 * if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
-	 * result += computeProcessingFitness(); }
-	 */
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) {
+	    result += computeDetectionFitness();
+	}
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
+	    result += computeExtractionFitness();
+	}
+
+	if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
+	    result += computeProcessingFitness();
+	}
+
 	if (trait == Trait.MULTICAPABLE || trait == Trait.TRANSPORTATION) {
 	    result += computeTransportationFitness();
 	}
