@@ -45,6 +45,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     public static Settings settings = Settings.getInstance();
 
     private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
+    
+    private static DescriptiveStatistics poolFitnessStats = new DescriptiveStatistics();
+    
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -226,15 +229,18 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void evolveEmbodiedAgents() {
 	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
+	poolFitnessStats.clear();
+	
 	for (Agent agent : agents) {
 
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.embodiedPoolGenerationStats.aggregateStatsTo(embodiedAgent.embodiedPoolHistoricalStats);
 	    embodiedAgent.evolve();
+	    poolFitnessStats.addValue(embodiedAgent.fitnessStats.getMean());
 	    
 	}
 
-	logger.info("summary:" + this.generationStats.getValue(Event.COLLECTED_RESOURCE));
+	logger.info("summary: collections=" + this.generationStats.getValue(Event.COLLECTED_RESOURCE)+" average fitness="+poolFitnessStats.getMean());
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
