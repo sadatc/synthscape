@@ -248,7 +248,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, simStats, poolStats, fitnessStats);
+	// TODO: fix reporting
+	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationStats, fitnessStats);
     }
 
     @Override
@@ -261,8 +262,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	// each agent now needs to provide local feedback
 	// each agent has complete record of everything that happened
 	// in embodiedPoolGenerationStats
-	// TODO: call embodiedAgent.providefeedback -- this will do a local
-	// evaluation based on agent's capabilities
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;

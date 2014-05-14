@@ -421,17 +421,15 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, Stats simStats, Stats poolStats,
+    public void reportPerformanceEmbodiedModel(int generationCounter, Stats generationStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
-	    int captures = poolStats.getValue(Event.COLLECTED_RESOURCE);
+	    int captures = generationStats.getValue(Event.COLLECTED_RESOURCE);
 
-	    int trailSent = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-	    int trailReceived = poolStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-	    int trailSearched = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-
-	    poolStats.clear();
+	    int trailSent = generationStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailReceived = generationStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+	    int trailSearched = generationStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
 	    String poolComposition = getPoolCompositionString(fitnessStats);
 
