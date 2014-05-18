@@ -175,7 +175,7 @@ public final class EvolutionEngine implements Constants {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	logger.info("created gene pool with " + genePoolSize + " agents...");
+	logger.info("created gene pool ["+species.toString()+"] with " + genePoolSize + " agents...");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 
@@ -250,7 +250,7 @@ public final class EvolutionEngine implements Constants {
 		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedPoolGenerationStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
-		logger.info("Gen: " + generationCounter + " Cap: " + captures + " AvgFit:" + fitnessStats.getMean()
+		logger.info("Gen: " + generationCounter +" Sp: "+species.toString()+" Cap: " + captures + " AvgFit:" + fitnessStats.getMean()
 			+ " PoolComp: " + getPoolCompositionString());
 
 	    } else {
@@ -259,7 +259,7 @@ public final class EvolutionEngine implements Constants {
 		    // in the case of multiple species, this line is not printed
 		    // multiple times. The above checks if this generation
 		    // has already been logged.
-		    logger.info("Gen: " + generationCounter + " Cap: " + settings.lastReportedCaptures + " PoolComp: "
+		    logger.info("Gen: " + generationCounter +" Sp: "+species.toString()+ " Cap: " + settings.lastReportedCaptures + " PoolComp: "
 			    + getPoolCompositionString());
 		    settings.lastLoggedGeneration = generationCounter;
 		}
