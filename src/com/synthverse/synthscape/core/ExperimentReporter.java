@@ -371,22 +371,22 @@ public class ExperimentReporter implements Constants {
 	return msg;
     }
 
-    public void reportPerformanceIslandModel(int generationCounter, EventStats simStats, EventStats poolStats,
+    public void reportPerformanceIslandModel(int generationCounter, EventStats simEventStats, EventStats poolEventStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
-	    int captures = poolStats.getValue(Event.COLLECTED_RESOURCE);
+	    int captures = poolEventStats.getValue(Event.COLLECTED_RESOURCE);
 	    settings.lastReportedCaptures = captures;
 
 	    if (settings.lastReportedGeneration == generationCounter) {
 		return;
 	    }
 
-	    int trailSent = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-	    int trailReceived = poolStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-	    int trailSearched = poolStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailSent = poolEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailReceived = poolEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+	    int trailSearched = poolEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
-	    poolStats.clear();
+	    poolEventStats.clear();
 
 	    String poolComposition = getPoolCompositionString(fitnessStats);
 
@@ -441,15 +441,15 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationStats,
+    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
-	    int captures = generationStats.getValue(Event.COLLECTED_RESOURCE);
+	    int captures = generationEventStats.getValue(Event.COLLECTED_RESOURCE);
 
-	    int trailSent = generationStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-	    int trailReceived = generationStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-	    int trailSearched = generationStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailSent = generationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailReceived = generationEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+	    int trailSearched = generationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
 	    String poolComposition = getPoolCompositionString(fitnessStats);
 

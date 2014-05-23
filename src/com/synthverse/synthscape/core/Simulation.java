@@ -116,11 +116,11 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected String eventFileName;
 
-    public EventStats stepStats = new EventStats();
-    public List<EventStats> stepStatsList = new ArrayList<EventStats>();
+    public EventStats stepEventStats = new EventStats();
+    public List<EventStats> stepEventStatsList = new ArrayList<EventStats>();
 
-    public EventStats simStats = new EventStats();
-    public EventStats poolStats = new EventStats();
+    public EventStats simEventStats = new EventStats();
+    public EventStats poolEventStats = new EventStats();
 
     private int genePoolSize;
 
@@ -528,8 +528,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void startNextSimulation() {
 
-	simStats.aggregateStatsTo(poolStats);
-	simStats.clear();
+	simEventStats.aggregateStatsTo(poolEventStats);
+	simEventStats.clear();
 	resetEnvironment();
 	initEnvironment();
 	initAgents();
@@ -552,13 +552,13 @@ public abstract class Simulation extends SimState implements Constants {
     protected void doEndOfStepTasks() {
 	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
-	    agent.eventStats.aggregateStatsTo(stepStats);
+	    agent.eventStats.aggregateStatsTo(stepEventStats);
 	    agent.eventStats.clear();
 	}
 	// add step count to the sim count
-	stepStats.aggregateStatsTo(simStats);
+	stepEventStats.aggregateStatsTo(simEventStats);
 	// clear step count, it's been used...
-	stepStats.clear();
+	stepEventStats.clear();
 
     }
 
@@ -570,7 +570,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void doEndOfSimulationTasks() {
 	reclaimAgents();
-	this.evolver.provideFeedback(agents, simStats);
+	this.evolver.provideFeedback(agents, simEventStats);
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
@@ -598,7 +598,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
 
-	experimentReporter.reportPerformanceIslandModel(generationCounter, simStats, poolStats, fitnessStats);
+	experimentReporter.reportPerformanceIslandModel(generationCounter, simEventStats, poolEventStats, fitnessStats);
     }
 
     public void setStartDate() {

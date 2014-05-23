@@ -298,7 +298,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void startNextSimulation() {
 
 	// logger.info("startNextSimulation()");
-	generationStats.aggregateStatsTo(poolStats);
+	generationStats.aggregateStatsTo(poolEventStats);
 
 	resetEnvironment();
 	initEnvironment();

@@ -78,7 +78,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	// collectively
 
 	// logger.info("evaluating generation:"+this.generation+"-"+
-	// simStats.toString());
+	// simEventStats.toString());
 	double collectiveFitness = computeFitness(simStats, agents);
 
 	// here all agents are forced to have the same fitness
@@ -98,7 +98,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	double result = 0.0;
 
 	// collecting a resource gets the highest point
-	// simStats.printValues();
+	// simEventStats.printValues();
 
 	for (Event event : simStats.getEvents()) {
 
