@@ -41,7 +41,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     /**
      * EventStats for the entire generation from the combined Pools
      */
-    EventStats generationStats = new EventStats();
+    EventStats generationEventStats = new EventStats();
 
     public static Settings settings = Settings.getInstance();
 
@@ -235,7 +235,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	for (Agent agent : agents) {
 
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.embodiedPoolGenerationStats.aggregateStatsTo(embodiedAgent.embodiedPoolHistoricalStats);
+	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 	    embodiedAgent.evolve();
 	    generationFitnessStats.addValue(embodiedAgent.fitnessStats.getMean());
 
@@ -245,24 +245,24 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	// reportPerformance(generationCounter, fitnessStats);
 
-	logger.info("summary: collections=" + this.generationStats.getValue(Event.COLLECTED_RESOURCE)
+	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + generationFitnessStats.getMean());
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    // logger.info("summary:" +
 	    // embodiedAgent.embodiedPoolGenerationStats);
-	    embodiedAgent.embodiedPoolGenerationStats.clear();
+	    embodiedAgent.poolGenerationEventStats.clear();
 	}
 
-	generationStats.clear();
+	generationEventStats.clear();
 
     }
 
     @Override
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
 	// TODO: fix reporting
-	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationStats, fitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
     }
 
     @Override
@@ -274,12 +274,12 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void doEndOfSimulationTasks() {
 	// each agent now needs to provide local feedback
 	// each agent has complete record of everything that happened
-	// in embodiedPoolGenerationStats
+	// in poolGenerationEventStats
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.embodiedPoolGenerationStats);
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
@@ -298,7 +298,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     protected void startNextSimulation() {
 
 	// logger.info("startNextSimulation()");
-	generationStats.aggregateStatsTo(poolEventStats);
+	generationEventStats.aggregateStatsTo(poolEventStats);
 
 	resetEnvironment();
 	initEnvironment();
