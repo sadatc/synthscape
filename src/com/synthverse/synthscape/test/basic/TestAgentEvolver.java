@@ -8,7 +8,7 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.core.EventStats;
 
 public class TestAgentEvolver extends Evolver implements Constants {
     
@@ -37,7 +37,7 @@ public class TestAgentEvolver extends Evolver implements Constants {
     }
     
     @Override
-    public void provideFeedback(List<Agent> agents, Stats simStats) {
+    public void provideFeedback(List<Agent> agents, EventStats simStats) {
 
 	
     }

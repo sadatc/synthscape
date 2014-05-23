@@ -12,7 +12,7 @@ import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -68,7 +68,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public void provideFeedback(List<Agent> agents, Stats simStats) {
+    public void provideFeedback(List<Agent> agents, EventStats simStats) {
 	// FITNESS EVALUATION:
 	// In this model, for each generation, the number of simulations run
 	// corresponds
@@ -94,7 +94,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     }
 
-    private double computeFitness(Stats simStats, List<Agent> agents) {
+    private double computeFitness(EventStats simStats, List<Agent> agents) {
 	double result = 0.0;
 
 	// collecting a resource gets the highest point

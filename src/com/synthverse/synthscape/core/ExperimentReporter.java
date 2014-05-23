@@ -312,8 +312,28 @@ public class ExperimentReporter implements Constants {
     private void writePerformanceFieldDescription() {
 	try {
 	    if (simulation.isReportPerformance()) {
-		performanceWriter
-			.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
+		// performanceWriter
+		//	.write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
+		
+		String columnHeader = "GENERATION, CAPTURES, TOT_FITNESS_MEAN, TOT_FITNESS_VAR, NUM_SPECIES, ";
+		for(Species species: simulation.speciesComposition) {
+		    String name = species.toString();
+		    columnHeader += name+"_POOL_SIZE, ";
+		    columnHeader += name+"_NUM_POOLS, ";
+		    columnHeader += name+"_AGENTS_PER_SIM, ";
+		    columnHeader += name+"_FITNESS_MEAN, ";
+		    columnHeader += name+"_FITNESS_VAR, ";
+		    columnHeader += name+"_COMM_SENT_MEAN, ";
+		    columnHeader += name+"_COMM_RECEIVED_MEAN, ";
+		}
+		performanceWriter.write(columnHeader);
+		
+		
+		//simulation.speciesComposition.size()
+		
+		
+		
+		
 		performanceWriter.newLine();
 	    }
 
@@ -351,7 +371,7 @@ public class ExperimentReporter implements Constants {
 	return msg;
     }
 
-    public void reportPerformanceIslandModel(int generationCounter, Stats simStats, Stats poolStats,
+    public void reportPerformanceIslandModel(int generationCounter, EventStats simStats, EventStats poolStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 
@@ -421,7 +441,7 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, Stats generationStats,
+    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationStats,
 	    DescriptiveStatistics fitnessStats) {
 	try {
 

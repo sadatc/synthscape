@@ -116,11 +116,11 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected String eventFileName;
 
-    public Stats stepStats = new Stats();
-    public List<Stats> stepStatsList = new ArrayList<Stats>();
+    public EventStats stepStats = new EventStats();
+    public List<EventStats> stepStatsList = new ArrayList<EventStats>();
 
-    public Stats simStats = new Stats();
-    public Stats poolStats = new Stats();
+    public EventStats simStats = new EventStats();
+    public EventStats poolStats = new EventStats();
 
     private int genePoolSize;
 

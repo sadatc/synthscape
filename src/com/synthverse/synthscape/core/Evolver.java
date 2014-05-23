@@ -25,7 +25,7 @@ public abstract class Evolver {
 
     public abstract void init();
 
-    public abstract void provideFeedback(List<Agent> agents, Stats simStats);
+    public abstract void provideFeedback(List<Agent> agents, EventStats simStats);
 
     public abstract int getGeneration();
 

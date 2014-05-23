@@ -175,7 +175,7 @@ public final class EvolutionEngine implements Constants {
 	    offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 	}
 
-	logger.info("created gene pool ["+species.toString()+"] with " + genePoolSize + " agents...");
+	logger.info("created gene pool [" + species.toString() + "] with " + genePoolSize + " agents...");
 	topPerformers = new ArrayList<Agent>();
 	bottomPerformers = new ArrayList<Agent>();
 
@@ -233,7 +233,7 @@ public final class EvolutionEngine implements Constants {
 	}
 
 	if (engineOwnerAgent != null) {
-	    engineOwnerAgent.fitnessStats = fitnessStats;
+	    DescriptiveStatistics.copy(fitnessStats, engineOwnerAgent.fitnessStats);
 	}
     }
 
@@ -250,8 +250,8 @@ public final class EvolutionEngine implements Constants {
 		int captures = (engineOwnerAgent != null) ? engineOwnerAgent.embodiedPoolGenerationStats
 			.getValue(Event.COLLECTED_RESOURCE) : 0;
 
-		logger.info("Gen: " + generationCounter +" Sp: "+species.toString()+" Cap: " + captures + " AvgFit:" + fitnessStats.getMean()
-			+ " PoolComp: " + getPoolCompositionString());
+		logger.info("Gen: " + generationCounter + " Sp: " + species.toString() + " Cap: " + captures
+			+ " AvgFit:" + fitnessStats.getMean() + " PoolComp: " + getPoolCompositionString());
 
 	    } else {
 		if (settings.lastLoggedGeneration != generationCounter) {
@@ -259,8 +259,8 @@ public final class EvolutionEngine implements Constants {
 		    // in the case of multiple species, this line is not printed
 		    // multiple times. The above checks if this generation
 		    // has already been logged.
-		    logger.info("Gen: " + generationCounter +" Sp: "+species.toString()+ " Cap: " + settings.lastReportedCaptures + " PoolComp: "
-			    + getPoolCompositionString());
+		    logger.info("Gen: " + generationCounter + " Sp: " + species.toString() + " Cap: "
+			    + settings.lastReportedCaptures + " PoolComp: " + getPoolCompositionString());
 		    settings.lastLoggedGeneration = generationCounter;
 		}
 	    }
@@ -293,7 +293,11 @@ public final class EvolutionEngine implements Constants {
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 	computeFitnessStats();
-	reportPerformance();
+
+	if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.EMBODIED_MODEL) {
+	    // in the embodied model, we report at the generation level
+	    reportPerformance();
+	}
 
 	Collections.sort(activeBuffer, Collections.reverseOrder());
 	printActiveBufferStats();

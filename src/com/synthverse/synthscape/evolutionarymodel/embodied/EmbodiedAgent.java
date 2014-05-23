@@ -18,7 +18,7 @@ import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Trait;
 import com.synthverse.util.LogUtils;
 
@@ -47,15 +47,15 @@ public class EmbodiedAgent extends Agent {
 
     Agent activeAgent = null;
 
-    public Stats embodiedPoolHistoricalStats = new Stats();
+    public EventStats embodiedPoolHistoricalStats = new EventStats();
 
-    public Stats embodiedPoolGenerationStats = new Stats();
+    public EventStats embodiedPoolGenerationStats = new EventStats();
 
     private int poolSize;
 
     protected static long _optimizationEmbodiedAgentCounter = 0;
     
-    public DescriptiveStatistics fitnessStats = null;
+    public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
 	super(simulation, species);
@@ -241,6 +241,10 @@ public class EmbodiedAgent extends Agent {
 
     public void evolve() {
 	evolver.evolve();
+    }
+    
+    public int getGeneration() {
+	return evolver.getGeneration();
     }
 
     @Override

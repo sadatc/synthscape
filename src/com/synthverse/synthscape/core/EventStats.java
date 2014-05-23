@@ -8,9 +8,9 @@ import java.util.logging.Logger;
 import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
-public class Stats {
+public class EventStats {
 
-    private static Logger logger = Logger.getLogger(Stats.class.getName());
+    private static Logger logger = Logger.getLogger(EventStats.class.getName());
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -18,7 +18,7 @@ public class Stats {
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
     private Set<Event> events = new HashSet<Event>();
 
-    public Stats() {
+    public EventStats() {
 	eventCounterMap.clear();
     }
 
@@ -51,7 +51,7 @@ public class Stats {
      * 
      * @param accumulatingStats
      */
-    public void aggregateStatsTo(Stats accumulatingStats) {
+    public void aggregateStatsTo(EventStats accumulatingStats) {
 
 	for (Event event : getEvents()) {
 	    if (accumulatingStats.eventCounterMap.containsKey(event)) {

@@ -74,7 +74,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected Program program;
 
-    public Stats agentStats = new Stats();
+    public EventStats agentStats = new EventStats();
 
     protected boolean providedFeedback = false;
 

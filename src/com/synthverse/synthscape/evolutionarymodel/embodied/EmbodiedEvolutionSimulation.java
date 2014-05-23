@@ -23,8 +23,9 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.Stats;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Team;
+import com.synthverse.synthscape.evolutionarymodel.islands.EvolutionEngine;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.LogUtils;
@@ -38,16 +39,16 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     private Team team = new Team();
 
     /**
-     * Stats for the entire generation from the combined Pools
+     * EventStats for the entire generation from the combined Pools
      */
-    Stats generationStats = new Stats();
+    EventStats generationStats = new EventStats();
 
     public static Settings settings = Settings.getInstance();
 
     private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
-    
+
     private static DescriptiveStatistics generationFitnessStats = new DescriptiveStatistics();
-    
+
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -230,21 +231,27 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	generationFitnessStats.clear();
-	
+
 	for (Agent agent : agents) {
 
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.embodiedPoolGenerationStats.aggregateStatsTo(embodiedAgent.embodiedPoolHistoricalStats);
 	    embodiedAgent.evolve();
 	    generationFitnessStats.addValue(embodiedAgent.fitnessStats.getMean());
-	    
+
 	}
 
-	logger.info("summary: collections=" + this.generationStats.getValue(Event.COLLECTED_RESOURCE)+" average fitness="+generationFitnessStats.getMean());
+	// TODO: report generational fitness here...
+
+	// reportPerformance(generationCounter, fitnessStats);
+
+	logger.info("summary: collections=" + this.generationStats.getValue(Event.COLLECTED_RESOURCE)
+		+ " average fitness=" + generationFitnessStats.getMean());
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    //logger.info("summary:" + embodiedAgent.embodiedPoolGenerationStats);
+	    // logger.info("summary:" +
+	    // embodiedAgent.embodiedPoolGenerationStats);
 	    embodiedAgent.embodiedPoolGenerationStats.clear();
 	}
 
