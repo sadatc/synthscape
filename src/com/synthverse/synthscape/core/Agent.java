@@ -74,7 +74,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected Program program;
 
-    public EventStats agentStats = new EventStats();
+    public EventStats eventStats = new EventStats();
 
     protected boolean providedFeedback = false;
 
@@ -691,7 +691,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	agentStepCounter = 0;
 	isCarryingResource = false;
 	fitness = 0.0;
-	agentStats.clear();
+	eventStats.clear();
     }
 
     public void updateLocationStatus(int x, int y) {

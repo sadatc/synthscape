@@ -15,8 +15,8 @@ import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 
 /**
- * A population island maintains agentStats gene pool that produces agents of
- * agentStats specific species
+ * A population island maintains eventStats gene pool that produces agents of
+ * eventStats specific species
  * 
  * @author sadat
  * 

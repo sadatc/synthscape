@@ -552,8 +552,8 @@ public abstract class Simulation extends SimState implements Constants {
     protected void doEndOfStepTasks() {
 	// accumulate all agent counts to a step count
 	for (Agent agent : agents) {
-	    agent.agentStats.aggregateStatsTo(stepStats);
-	    agent.agentStats.clear();
+	    agent.eventStats.aggregateStatsTo(stepStats);
+	    agent.eventStats.clear();
 	}
 	// add step count to the sim count
 	stepStats.aggregateStatsTo(simStats);
@@ -589,7 +589,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public void reportEvent(Agent agent, Event event, String source, String destination) {
 
-	agent.agentStats.recordValue(event);
+	agent.eventStats.recordValue(event);
 
 	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
 		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);

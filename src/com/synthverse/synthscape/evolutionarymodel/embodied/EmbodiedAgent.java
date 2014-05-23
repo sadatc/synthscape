@@ -138,7 +138,7 @@ public class EmbodiedAgent extends Agent {
     }
 
     public final void reclaimActiveAgent() {
-	activeAgent.agentStats.clear();
+	activeAgent.eventStats.clear();
 	evolver.reclaimEmbodiedAgent(activeAgent);
     }
 
@@ -167,12 +167,12 @@ public class EmbodiedAgent extends Agent {
     private double computeDetectionFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
 	    case DETECTED_RAW_RESOURCE:
 	    case DETECTED_PROCESSED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += activeAgent.eventStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -185,10 +185,10 @@ public class EmbodiedAgent extends Agent {
     private double computeExtractionFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    case EXTRACTED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += activeAgent.eventStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -201,10 +201,10 @@ public class EmbodiedAgent extends Agent {
     private double computeProcessingFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    case PROCESSED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += activeAgent.eventStats.getValue(event);
 		break;
 	    default:
 		break;
@@ -217,7 +217,7 @@ public class EmbodiedAgent extends Agent {
     private double computeTransportationFitness() {
 	double result = 0.0;
 
-	for (Event event : activeAgent.agentStats.getEvents()) {
+	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    /*
 	     * case LOADED_RESOURCE: // TODO: wouldn't this make the agents just
@@ -229,7 +229,7 @@ public class EmbodiedAgent extends Agent {
 	     * embodiedPoolGenerationStats.getValue(event)); break;
 	     */
 	    case COLLECTED_RESOURCE:
-		result += activeAgent.agentStats.getValue(event);
+		result += activeAgent.eventStats.getValue(event);
 		break;
 	    default:
 		break;

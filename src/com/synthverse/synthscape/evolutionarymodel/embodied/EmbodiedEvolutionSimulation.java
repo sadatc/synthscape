@@ -278,8 +278,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(embodiedAgent.embodiedPoolGenerationStats);
-	    embodiedAgent.activeAgent.agentStats.aggregateStatsTo(generationStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.embodiedPoolGenerationStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
