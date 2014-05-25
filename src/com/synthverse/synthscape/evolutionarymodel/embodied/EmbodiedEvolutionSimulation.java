@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -16,6 +17,7 @@ import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Event;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -23,9 +25,7 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Team;
-import com.synthverse.synthscape.evolutionarymodel.islands.EvolutionEngine;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.LogUtils;
@@ -47,7 +47,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
 
-    private static DescriptiveStatistics generationFitnessStats = new DescriptiveStatistics();
+    private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -227,31 +227,45 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
     }
 
+    /**
+     * Evolve all the embodied agents and compute/aggregate statistics. Finally
+     * report the statistics
+     */
     protected void evolveEmbodiedAgents() {
 	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
-	generationFitnessStats.clear();
+	populationFitnessStats.clear();
 
+	// evolve each agent and keep account of their event and fitness
+	// statistics...
 	for (Agent agent : agents) {
-
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+
+	    // accumulate event counts for agents...
 	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
+	    
+	    // evolve the agents...
 	    embodiedAgent.evolve();
-	    generationFitnessStats.addValue(embodiedAgent.fitnessStats.getMean());
+	    
+	    // add all inidividual fitness stats to the population 
+	    for(double fitnessValue: embodiedAgent.fitnessStats.getValues()) {
+		populationFitnessStats.addValue(fitnessValue);
+	    }
 
 	}
 
 	// TODO: report generational fitness here...
-
-	// reportPerformance(generationCounter, fitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
+	
+	
+	//reportPerformance(generationCounter, fitnessStats);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
-		+ " average fitness=" + generationFitnessStats.getMean());
+		+ " average fitness=" + populationFitnessStats.getMean());
 
+	// clear pool generation event stats for next generation...
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    // logger.info("summary:" +
-	    // embodiedAgent.embodiedPoolGenerationStats);
 	    embodiedAgent.poolGenerationEventStats.clear();
 	}
 
