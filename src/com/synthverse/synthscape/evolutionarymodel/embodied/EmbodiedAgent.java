@@ -239,8 +239,8 @@ public class EmbodiedAgent extends Agent {
 	return result;
     }
 
-    public void evolve() {
-	evolver.evolve();
+    public int  evolve() {
+	return evolver.evolve();
     }
     
     public int getGeneration() {

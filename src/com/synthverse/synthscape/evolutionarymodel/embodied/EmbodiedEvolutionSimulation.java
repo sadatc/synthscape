@@ -48,6 +48,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
 
     private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
+    
+    int generation = 0;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -245,7 +247,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 	    
 	    // evolve the agents...
-	    embodiedAgent.evolve();
+	    generation = embodiedAgent.evolve();
 	    
 	    // add all inidividual fitness stats to the population 
 	    for(double fitnessValue: embodiedAgent.fitnessStats.getValues()) {
