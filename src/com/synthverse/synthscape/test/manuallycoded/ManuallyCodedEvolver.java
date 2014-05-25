@@ -77,9 +77,10 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public void evolve() {
+    public int evolve() {
 	
 	generation++;
+	return generation;
     }
 
     @Override

@@ -44,23 +44,22 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     protected int cloneCounter = 1;
     protected List<Agent> activeBuffer;
 
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory,
-	    Species species, int clonesPerSpecies) throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
+	    int clonesPerSpecies) throws Exception {
 	this(null, simulation, agentFactory, species, clonesPerSpecies);
     }
 
-    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation,
-	    AgentFactory agentFactory, Species species) throws Exception {
+    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
+	    Species species) throws Exception {
 	this(ownerAgent, simulation, agentFactory, species, 1);
     }
 
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species)
-	    throws Exception {
+    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
 	this(null, simulation, agentFactory, species, 1);
     }
 
-    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation,
-	    AgentFactory agentFactory, Species species, int clonesPerSpecies) throws Exception {
+    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
+	    Species species, int clonesPerSpecies) throws Exception {
 	super(simulation, agentFactory);
 	if (clonesPerSpecies < 1) {
 	    throw new Exception("clonesPerSpecies can't be <1");
@@ -122,11 +121,11 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public void evolve() {
-
+    public int evolve() {
 	evolutionEngine.generateNextGeneration(simulation.random);
 	activeBuffer = evolutionEngine.getActiveBuffer();
 	generation++;
+	return generation;
     }
 
     @Override

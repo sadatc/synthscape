@@ -142,12 +142,13 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
     }
 
     @Override
-    public void evolve() {
+    public int evolve() {
 	// logger.info("ArchipelagoEvolver: evolve()");
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
 	generation++;
+	return generation;
 
 	// D.pause();
 	// System.exit(1);

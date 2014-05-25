@@ -255,7 +255,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	// TODO: report generational fitness here...
-	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
+	//experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
 	
 	
 	//reportPerformance(generationCounter, fitnessStats);

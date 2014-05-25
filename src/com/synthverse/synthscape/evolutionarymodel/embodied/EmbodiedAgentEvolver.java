@@ -42,10 +42,11 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Con
     }
 
     @Override
-    public void evolve() {
+    public int evolve() {
 	evolutionEngine.generateNextGeneration(simulation.random);
 	activeBuffer = evolutionEngine.getActiveBuffer();
 	generation++;
+	return generation;
     }
 
 }

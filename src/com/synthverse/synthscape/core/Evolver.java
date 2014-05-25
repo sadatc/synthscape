@@ -19,7 +19,7 @@ public abstract class Evolver {
 	this.agentFactory = agentFactory;
     }
 
-    public abstract void evolve();
+    public abstract int evolve();
 
     public abstract Agent getAgent(Species species, int x, int y);
 
