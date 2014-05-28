@@ -293,6 +293,8 @@ public final class EvolutionEngine implements Constants {
 
     public final void generateNextGeneration(MersenneTwisterFast randomNumberGenerator) {
 	computeFitnessStats();
+	
+	// TODO: fix report performance for island model later as well...
 
 	if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.EMBODIED_MODEL) {
 	    // in the embodied model, we report at the generation level

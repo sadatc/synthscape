@@ -51,7 +51,7 @@ public class EmbodiedAgent extends Agent {
 
     public EventStats poolGenerationEventStats = new EventStats();
 
-    private int poolSize;
+    public int poolSize;
 
     protected static long _optimizationEmbodiedAgentCounter = 0;
     

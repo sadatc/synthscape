@@ -48,7 +48,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
 
     private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
-    
+
     int generation = 0;
 
     static {
@@ -245,22 +245,19 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	    // accumulate event counts for agents...
 	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
-	    
+
 	    // evolve the agents...
 	    generation = embodiedAgent.evolve();
-	    
-	    // add all inidividual fitness stats to the population 
-	    for(double fitnessValue: embodiedAgent.fitnessStats.getValues()) {
+
+	    // add all inidividual fitness stats to the population
+	    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
 
 	}
 
-	// TODO: report generational fitness here...
-	//experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
-	
-	
-	//reportPerformance(generationCounter, fitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents,
+		populationFitnessStats);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());
@@ -270,15 +267,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.poolGenerationEventStats.clear();
 	}
-
 	generationEventStats.clear();
 
     }
 
     @Override
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-	// TODO: fix reporting
-	experimentReporter.reportPerformanceEmbodiedModel(generationCounter, generationEventStats, fitnessStats);
+
     }
 
     @Override
