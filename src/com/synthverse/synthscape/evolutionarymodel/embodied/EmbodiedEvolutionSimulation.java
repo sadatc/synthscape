@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import sim.engine.Schedule;
@@ -271,11 +270,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     }
 
-    @Override
-    public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-
-    }
-
+    
     @Override
     protected void doEndOfStepTasks() {
 

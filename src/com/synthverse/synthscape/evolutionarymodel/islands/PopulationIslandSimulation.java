@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import sim.engine.Schedule;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
@@ -107,6 +110,83 @@ public class PopulationIslandSimulation extends Simulation {
 
     }
 
+    
+    @Override
+    protected void startSimulation() {
+
+	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+		+ " stepsPerSimulation=" + stepsPerSimulation);
+
+	initEnvironment();
+	initAgents();
+
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
+
+	setStartDate();
+	experimentReporter.initReporter();
+
+	// this is run at the end of each step
+	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
+	    public void step(SimState state) {
+
+		simStepCounter++;
+
+		fadeTrails();
+		ageBroadcasts();
+		doEndOfStepTasks();
+
+		// check if simulation should continue...
+
+		if (evaluateSimulationTerminateCondition()) {
+
+		    doEndOfSimulationTasks();
+
+		    // logger.info("---- end of simulation: collected=" +
+		    // numberOfCollectedResources);
+
+		    simStepCounter = 0;
+		    simulationCounter++;
+
+		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
+
+			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+			    // logger.info("completed running generation:" +
+			    // evolver.getGeneration());
+			    evolver.evolve();
+			    
+			    // TODO: do actual reporting of the next generation right here...
+
+			}
+			/*
+			 * 
+			 * logger.info("---- starting simulation (" +
+			 * simulationCounter + ") with: world=" + (gridHeight *
+			 * gridWidth) + " obstacles=" + numberOfObstacles +
+			 * " sites=" + numberOfCollectionSites + " resources=" +
+			 * numberOfResources + " agents=" + agents.size());
+			 */
+			startNextSimulation();
+
+		    } else {
+			// end of experiment...
+			if (collectedAllResources()) {
+			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
+			}
+			setEndDate();
+			experimentReporter.cleanupReporter();
+			finish();
+			logger.info("<=====  EXPERIMENT ENDS\n");
+		    }
+		}
+	    }
+
+	}, 1);
+
+    }
+    
+    
     @Override
     public int configGridWidth() {
 	return settings.WORLD_WIDTH;

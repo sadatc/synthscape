@@ -129,7 +129,10 @@ public abstract class Simulation extends SimState implements Constants {
     private HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
     private HashMap<SignalType, Broadcast> tmpBroadcasts = new HashMap<SignalType, Broadcast>();
     // need this for efficiency
-
+    
+    
+    
+  
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -592,17 +595,19 @@ public abstract class Simulation extends SimState implements Constants {
 	agent.eventStats.recordValue(event);
 
 	if (isReportEvents()) {
-
 	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
 		    agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 	}
 
     }
 
+    /*
+     * TODO: clean this up completely
     public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
 
 	experimentReporter.reportPerformanceIslandModel(generationCounter, simEventStats, poolEventStats, fitnessStats);
     }
+    */
 
     public void setStartDate() {
 	this.startDate = new java.util.Date();

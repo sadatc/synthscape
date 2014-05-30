@@ -237,9 +237,11 @@ public final class EvolutionEngine implements Constants {
 	}
     }
 
+    /*
     private void reportPerformance() {
 	agentFactory.getSimulation().reportPerformance(generationCounter, fitnessStats);
     }
+    */
 
     private void printActiveBufferStats() {
 
@@ -296,10 +298,12 @@ public final class EvolutionEngine implements Constants {
 	
 	// TODO: fix report performance for island model later as well...
 
+	/* clean this up later
 	if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.EMBODIED_MODEL) {
 	    // in the embodied model, we report at the generation level
 	    reportPerformance();
 	}
+	*/
 
 	Collections.sort(activeBuffer, Collections.reverseOrder());
 	printActiveBufferStats();

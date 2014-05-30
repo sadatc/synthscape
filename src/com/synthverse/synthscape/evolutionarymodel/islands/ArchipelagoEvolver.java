@@ -9,10 +9,10 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.Event;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.util.LogUtils;
 
 /**
@@ -147,6 +147,8 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
+	
+	
 	generation++;
 	return generation;
 
