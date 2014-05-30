@@ -2,6 +2,7 @@ package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import sim.engine.SimState;
 
+import com.synthverse.Main;
 import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.Program;
@@ -80,17 +81,17 @@ public class IslanderAgent extends Agent {
     protected void initGenotype() {
 	super.initGenotype();
 
-	
-
-	 this.program = Program.Factory.createRandom(sim.random);
-	//seedGenotypeWithActions(this.program);
-	//this.program = Program.Factory.createEmpty(sim.random);
+	if (Main.settings.SEED_GENOTYPE_PRESET_INSTRUCTIONS) {
+	    this.program = Program.Factory.createEmpty(sim.random);
+	    seedGenotypeWithActions(this.program);
+	} else {
+	    this.program = Program.Factory.createRandom(sim.random);
+	}
 
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
 	vm.overwriteGenotypeWithProgram(this.program);
 	vm.setCpuCycles(sim.getMaxStepsPerAgent());
 	this.setVirtualMachine(vm);
-
 
     }
 
