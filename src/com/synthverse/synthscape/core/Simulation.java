@@ -462,7 +462,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// this is run at the end of each step
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 	    public void step(SimState state) {
-		
+
 		simStepCounter++;
 
 		fadeTrails();
@@ -470,7 +470,7 @@ public abstract class Simulation extends SimState implements Constants {
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
-		
+
 		if (evaluateSimulationTerminateCondition()) {
 
 		    doEndOfSimulationTasks();
@@ -537,10 +537,10 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
-	
+
 	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
 		|| (this.simStepCounter > stepsPerSimulation);
-	
+
 	return result;
     }
 
@@ -591,8 +591,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	agent.eventStats.recordValue(event);
 
-	experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	if (isReportEvents()) {
+
+	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		    agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	}
 
     }
 
