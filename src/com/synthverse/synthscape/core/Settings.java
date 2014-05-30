@@ -54,6 +54,8 @@ public class Settings {
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
+    public boolean SEED_GENOTYPE_PRESET_INSTRUCTIONS = false;
+
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
     // TODO: separate this, if needed
 
@@ -145,6 +147,9 @@ public class Settings {
 
 	options.addOption(OptionBuilder.withArgName("data_dir").hasArg()
 		.withDescription("data dir [" + EVENT_DATA_DIR + "]").create("data_dir"));
+
+	options.addOption(OptionBuilder.withArgName("seed_preset").hasArg().withDescription("(true, false) [false]")
+		.create("seed_preset"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -247,6 +252,23 @@ public class Settings {
 
 	    }
 	    printAndStore("GENERATIONS = " + GENERATIONS);
+
+	    if (line.hasOption("seed_preset")) {
+		String seedPreset = line.getOptionValue("seed_preset");
+		if (seedPreset.equalsIgnoreCase("true")) {
+		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = true;
+
+		}
+
+		else if (seedPreset.equalsIgnoreCase("false")) {
+		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = false;
+		} else {
+		    throw new ParseException("seed_preset: " + seedPreset + " was not recognized");
+		}
+
+	    }
+
+	    printAndStore("SEED.PRESET = " + SEED_GENOTYPE_PRESET_INSTRUCTIONS);
 
 	    if (line.hasOption("clones")) {
 		CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
