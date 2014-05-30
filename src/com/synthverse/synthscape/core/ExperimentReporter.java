@@ -329,7 +329,7 @@ public class ExperimentReporter implements Constants {
 		String columnHeader = "GENERATION, CAPTURES, TOT_FITNESS_MEAN, TOT_FITNESS_VAR, NUM_SPECIES";
 		for (Species species : simulation.speciesComposition) {
 		    String name = species.toString();
-		    columnHeader += name + ", ";
+		    columnHeader += ", ";
 		    columnHeader += name + "_POOL_SIZE, ";
 		    columnHeader += name + "_NUM_POOLS, ";
 		    columnHeader += name + "_AGENTS_PER_SIM, ";
