@@ -29,7 +29,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     private int generation;
 
-    HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
+    public HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -143,18 +143,12 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     @Override
     public int evolve() {
-	// logger.info("ArchipelagoEvolver: evolve()");
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
 	
-	
 	generation++;
 	return generation;
-
-	// D.pause();
-	// System.exit(1);
-
     }
 
     @Override
