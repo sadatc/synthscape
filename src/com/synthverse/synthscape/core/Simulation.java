@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -128,6 +128,9 @@ public abstract class Simulation extends SimState implements Constants {
 
     private HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
     private HashMap<SignalType, Broadcast> tmpBroadcasts = new HashMap<SignalType, Broadcast>();
+    
+    
+    public SummaryStatistics captureStats = new SummaryStatistics();
     // need this for efficiency
     
     
@@ -574,6 +577,8 @@ public abstract class Simulation extends SimState implements Constants {
     protected void doEndOfSimulationTasks() {
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simEventStats);
+	
+	captureStats.addValue(this.numberOfCollectedResources);
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
