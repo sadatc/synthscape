@@ -43,7 +43,6 @@ public class ExperimentReporter implements Constants {
     private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
     private int numberOfSpecies;
-    private List<EventStats> embodiedModelEventStats = new ArrayList<EventStats>();
 
     private SummaryStatistics summaryFitnessStats = new SummaryStatistics();
 
@@ -317,40 +316,6 @@ public class ExperimentReporter implements Constants {
 	}
     }
 
-    private void writePerformanceFieldDescription() {
-	try {
-	    if (simulation.isReportPerformance()) {
-		// performanceWriter
-		// .write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
-		numberOfSpecies = simulation.speciesComposition.size();
-
-		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR ";
-		for (Species species : simulation.speciesComposition) {
-		    String name = species.toString();
-		    columnHeader += ", ";
-		    columnHeader += name + "_FITNESS_MEAN, ";
-		    columnHeader += name + "_FITNESS_VAR, ";
-		    columnHeader += name + "_TRAILS_SENT, ";
-		    columnHeader += name + "_TRAILS_RECEIVED, ";
-		    columnHeader += name + "_TRAILS_SEARCHED";
-		}
-
-		performanceWriter.write(columnHeader);
-
-		// simulation.speciesComposition.size()
-
-		performanceWriter.newLine();
-	    }
-
-	} catch (Exception e) {
-	    logger.severe("Exception while reporting performance:" + e.getMessage());
-	    e.printStackTrace();
-	    System.exit(0);
-
-	}
-
-    }
-
     public String getPoolCompositionString(DescriptiveStatistics fitnessStats) {
 	String msg = "";
 
@@ -446,17 +411,55 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    private void writePerformanceFieldDescription() {
+	try {
+	    if (simulation.isReportPerformance()) {
+		// performanceWriter
+		// .write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
+		numberOfSpecies = simulation.speciesComposition.size();
+
+		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR ";
+		for (Species species : simulation.speciesComposition) {
+		    String name = species.toString();
+		    columnHeader += ", ";
+		    columnHeader += name + "_FITNESS_MEAN, ";
+		    columnHeader += name + "_FITNESS_VAR, ";
+		    columnHeader += name + "_TRAILS_SENT, ";
+		    columnHeader += name + "_TRAILS_RECEIVED, ";
+		    columnHeader += name + "_TRAILS_SEARCHED";
+		}
+
+		performanceWriter.write(columnHeader);
+		performanceWriter.newLine();
+	    }
+
+	} catch (Exception e) {
+	    logger.severe("Exception while reporting performance:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+
+	}
+
+    }
+
     public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    ArrayList<Agent> agents, SummaryStatistics populationFitnessStats) {
+	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
 
 		sbPerformance.delete(0, sbPerformance.length());
+
 		sbPerformance.append(generationCounter);
 		sbPerformance.append(COMMA);
 
-		sbPerformance.append(generationEventStats.getValue(Event.COLLECTED_RESOURCE));
+		sbPerformance.append(captureStats.getSum());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captureStats.getMax());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captureStats.getMean());
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(populationFitnessStats.getMean());
@@ -465,13 +468,8 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(populationFitnessStats.getVariance());
 		sbPerformance.append(COMMA);
 
-		sbPerformance.append(numberOfSpecies);
-		sbPerformance.append(COMMA);
-
-		embodiedModelEventStats.clear();
 		for (Species species : simulation.speciesComposition) {
-		    int poolSize = 0;
-		    int numPools = 0;
+
 		    summaryFitnessStats.clear();
 
 		    int trailSent = 0;
@@ -481,10 +479,7 @@ public class ExperimentReporter implements Constants {
 		    for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 			if (agent.getSpecies() == species) {
-			    poolSize += embodiedAgent.poolSize;
-			    numPools++;
-			    // add all inidividual fitness stats to the
-			    // population
+
 			    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
 				summaryFitnessStats.addValue(fitnessValue);
 			    }
@@ -495,14 +490,6 @@ public class ExperimentReporter implements Constants {
 			trailSearched += embodiedAgent.poolGenerationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
 		    }
-		    sbPerformance.append(poolSize);
-		    sbPerformance.append(COMMA);
-
-		    sbPerformance.append(numPools);
-		    sbPerformance.append(COMMA);
-
-		    sbPerformance.append(numPools);
-		    sbPerformance.append(COMMA);
 
 		    sbPerformance.append(summaryFitnessStats.getMean());
 		    sbPerformance.append(COMMA);
