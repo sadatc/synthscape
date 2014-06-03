@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -12,6 +14,8 @@ import sim.util.Int2D;
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Event;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
@@ -30,7 +34,13 @@ public class PopulationIslandSimulation extends Simulation {
 
     private Team team = new Team();
 
+    int generation = 0;
+
     public static Settings settings = Settings.getInstance();
+
+    private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
+
+    EventStats generationEventStats = new EventStats();
 
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
     static {
@@ -46,9 +56,11 @@ public class PopulationIslandSimulation extends Simulation {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
-	logger.info("Diagnosis: total # of islander agents created: " + IslanderAgent.get_optimizationIslanderAgentCounter());
-	logger.info("Diagnosis: total # of embodied agents created: " + EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
-	
+	logger.info("Diagnosis: total # of islander agents created: "
+		+ IslanderAgent.get_optimizationIslanderAgentCounter());
+	logger.info("Diagnosis: total # of embodied agents created: "
+		+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
+
 	System.exit(0);
     }
 
@@ -110,7 +122,6 @@ public class PopulationIslandSimulation extends Simulation {
 
     }
 
-    
     @Override
     protected void startSimulation() {
 
@@ -143,30 +154,15 @@ public class PopulationIslandSimulation extends Simulation {
 
 		    doEndOfSimulationTasks();
 
-		    // logger.info("---- end of simulation: collected=" +
-		    // numberOfCollectedResources);
-
 		    simStepCounter = 0;
 		    simulationCounter++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
-			    // logger.info("completed running generation:" +
-			    // evolver.getGeneration());
-			    evolver.evolve();
-			    
-			    // TODO: do actual reporting of the next generation right here...
-
+			    evolvePopulationIslands();
 			}
-			/*
-			 * 
-			 * logger.info("---- starting simulation (" +
-			 * simulationCounter + ") with: world=" + (gridHeight *
-			 * gridWidth) + " obstacles=" + numberOfObstacles +
-			 * " sites=" + numberOfCollectionSites + " resources=" +
-			 * numberOfResources + " agents=" + agents.size());
-			 */
+
 			startNextSimulation();
 
 		    } else {
@@ -185,8 +181,47 @@ public class PopulationIslandSimulation extends Simulation {
 	}, 1);
 
     }
-    
-    
+
+    protected void evolvePopulationIslands() {
+	logger.info("********* evolving island agents... number of simulations run:" + this.simulationCounter);
+	populationFitnessStats.clear();
+
+	ArchipelagoEvolver archipelagoEvolver = (ArchipelagoEvolver) evolver;
+
+	generation++;
+
+	// items needed: fitnessStats, eventStats, captureStats
+
+	for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
+	    if (islandEvolver.evolve() != generation) {
+		logger.severe("invalid evolution algorithm implementation");
+		System.exit(1);
+
+	    }
+
+	    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
+		populationFitnessStats.addValue(fitnessValue);
+	    }
+
+	}
+
+	logger.info("$$$$ fitnessStats:" + populationFitnessStats);
+
+	experimentReporter.reportPerformanceIslandModelNew(generation, simEventStats, archipelagoEvolver,
+		captureStats, populationFitnessStats);
+
+	
+	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
+		+ " average fitness=" + populationFitnessStats.getMean());
+	
+
+
+	generationEventStats.clear();
+	captureStats.clear();
+	populationFitnessStats.clear();
+
+    }
+
     @Override
     public int configGridWidth() {
 	return settings.WORLD_WIDTH;
@@ -335,6 +370,12 @@ public class PopulationIslandSimulation extends Simulation {
     public AgentFactory configEmbodiedAgentFactory() {
 	// there is no internal agent factory
 	return null;
+    }
+
+    @Override
+    protected void doEndOfStepTasks() {
+	// TODO Auto-generated method stub
+	
     }
 
 }
