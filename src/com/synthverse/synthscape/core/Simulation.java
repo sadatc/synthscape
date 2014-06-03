@@ -116,11 +116,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected String eventFileName;
 
-    public EventStats stepEventStats = new EventStats();
-    public List<EventStats> stepEventStatsList = new ArrayList<EventStats>();
-
     public EventStats simEventStats = new EventStats();
-    public EventStats poolEventStats = new EventStats();
+    public EventStats experimentEventStats = new EventStats();
 
     private int genePoolSize;
 
@@ -128,14 +125,10 @@ public abstract class Simulation extends SimState implements Constants {
 
     private HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
     private HashMap<SignalType, Broadcast> tmpBroadcasts = new HashMap<SignalType, Broadcast>();
-    
-    
+
     public SummaryStatistics captureStats = new SummaryStatistics();
     // need this for efficiency
-    
-    
-    
-  
+
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -383,6 +376,11 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initAgents() {
 	logger.info("Simulation.initAgents()");
 	// populate with agents
+	
+	for (Agent agent : agents) {
+	    agent.eventStats.clear();
+	}
+	
 
 	MersenneTwisterFast randomPrime = this.random;
 	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
@@ -445,8 +443,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (!tmpBroadcasts.isEmpty()) {
 		registeredBroadcasts.putAll(tmpBroadcasts);
 	    }
-	    // logger.info("=> Num of Broadcasts:"
-	    // +registeredBroadcasts.size());
+
 	}
     }
 
@@ -481,28 +478,15 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    doEndOfSimulationTasks();
 
-		    // logger.info("---- end of simulation: collected=" +
-		    // numberOfCollectedResources);
-
 		    simStepCounter = 0;
 		    simulationCounter++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
-			    // logger.info("completed running generation:" +
-			    // evolver.getGeneration());
 			    evolver.evolve();
-
 			}
-			/*
-			 * 
-			 * logger.info("---- starting simulation (" +
-			 * simulationCounter + ") with: world=" + (gridHeight *
-			 * gridWidth) + " obstacles=" + numberOfObstacles +
-			 * " sites=" + numberOfCollectionSites + " resources=" +
-			 * numberOfResources + " agents=" + agents.size());
-			 */
+
 			startNextSimulation();
 
 		    } else {
@@ -533,13 +517,10 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-
-	simEventStats.aggregateStatsTo(poolEventStats);
 	simEventStats.clear();
 	resetEnvironment();
 	initEnvironment();
 	initAgents();
-
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
@@ -555,29 +536,26 @@ public abstract class Simulation extends SimState implements Constants {
 	return result;
     }
 
-    protected void doEndOfStepTasks() {
-	// accumulate all agent counts to a step count
-	for (Agent agent : agents) {
-	    agent.eventStats.aggregateStatsTo(stepEventStats);
-	    agent.eventStats.clear();
-	}
-	// add step count to the sim count
-	stepEventStats.aggregateStatsTo(simEventStats);
-	// clear step count, it's been used...
-	stepEventStats.clear();
-
-    }
+    abstract protected void doEndOfStepTasks();
 
     protected void reclaimAgents() {
 	for (Agent agent : agents) {
+	    agent.eventStats.clear();
 	    agentFactory.reclaimAgent(agent);
 	}
     }
 
     protected void doEndOfSimulationTasks() {
+	// manage all the event statistics...
+
+	for (Agent agent : agents) {
+	    agent.eventStats.aggregateStatsTo(simEventStats);
+	    agent.eventStats.aggregateStatsTo(experimentEventStats);
+	}
+
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simEventStats);
-	
+
 	captureStats.addValue(this.numberOfCollectedResources);
 
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
@@ -605,14 +583,6 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
     }
-
-    /*
-     * TODO: clean this up completely
-    public void reportPerformance(int generationCounter, DescriptiveStatistics fitnessStats) {
-
-	experimentReporter.reportPerformanceIslandModel(generationCounter, simEventStats, poolEventStats, fitnessStats);
-    }
-    */
 
     public void setStartDate() {
 	this.startDate = new java.util.Date();
