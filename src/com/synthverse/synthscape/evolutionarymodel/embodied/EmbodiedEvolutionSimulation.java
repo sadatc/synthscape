@@ -61,7 +61,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
-	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
+	logger.info("Diagnosis: total # of agents created: "
+		+ Agent.get_optimazationTotalAgentsCounters());
 	logger.info("Diagnosis: total # of islander agents created: "
 		+ IslanderAgent.get_optimizationIslanderAgentCounter());
 	logger.info("Diagnosis: total # of embodied agents created: "
@@ -168,7 +169,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory
+			.getNewFactoryAgent(species);
 		embodiedAgent.setLocation(randomX, randomY);
 		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 		embodiedAgent.synchronizeLocationToActiveAgent();
@@ -233,7 +235,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
      * report the statistics
      */
     protected void evolveEmbodiedAgents() {
-	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
+	logger.info("********* evolving embodied agents... number of simulations run:"
+		+ this.simulationCounter);
 
 	populationFitnessStats.clear();
 
@@ -244,7 +247,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
 	    // accumulate event counts for agents...
-	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
+	    embodiedAgent.poolGenerationEventStats
+		    .aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 
 	    // evolve the agents...
 	    if (embodiedAgent.evolve() != generation) {
@@ -259,10 +263,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents, captureStats,
-		populationFitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents,
+		captureStats, populationFitnessStats);
 
-	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
+	logger.info("summary: collections="
+		+ this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());
 
 	// clear pool generation event stats for next generation...
@@ -288,7 +293,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
+	    embodiedAgent.activeAgent.eventStats
+		    .aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
 	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
@@ -338,9 +344,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	initEnvironment();
 	initAgents();
 
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
-		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
-		+ numberOfResources + " agents=" + agents.size());
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world="
+		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
+		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
+		+ agents.size());
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -387,7 +394,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			if (collectedAllResources()) {
 			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
 			}
-			evolveEmbodiedAgents(); // this does one last line of recording...
+
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
