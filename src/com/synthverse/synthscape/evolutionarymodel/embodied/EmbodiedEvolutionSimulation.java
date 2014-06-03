@@ -387,6 +387,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			if (collectedAllResources()) {
 			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
 			}
+			evolveEmbodiedAgents(); // this does one last line of recording...
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();

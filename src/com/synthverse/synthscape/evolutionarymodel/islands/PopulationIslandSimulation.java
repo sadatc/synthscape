@@ -207,6 +207,7 @@ public class PopulationIslandSimulation extends Simulation {
 			if (collectedAllResources()) {
 			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
 			}
+			evolvePopulationIslands(); // this does one last line of recording...
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
