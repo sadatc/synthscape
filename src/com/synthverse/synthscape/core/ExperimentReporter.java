@@ -14,6 +14,8 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
+import com.synthverse.synthscape.evolutionarymodel.islands.ArchipelagoEvolver;
+import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
@@ -414,8 +416,6 @@ public class ExperimentReporter implements Constants {
     private void writePerformanceFieldDescription() {
 	try {
 	    if (simulation.isReportPerformance()) {
-		// performanceWriter
-		// .write("POPULATION,GENERATION,FITNESS_MEAN,FITNESS_VAR,FITNESS_MIN,FITNESS_MAX,CAPTURES,TRAIL_SENT,TRAIL_RECEIVED,TRAIL_SEARCHED,POOL_COMPOSITION");
 		numberOfSpecies = simulation.speciesComposition.size();
 
 		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR ";
@@ -526,4 +526,114 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    
+    
+    
+    
+    public void reportPerformanceIslandModelNew(int generationCounter, EventStats generationEventStats,
+	    ArchipelagoEvolver archipelagoEvolver, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
+	try {
+	    
+	    
+	    for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
+		    if (islandEvolver.evolve() != generation) {
+			logger.severe("invalid evolution algorithm implementation");
+			System.exit(1);
+
+		    }
+
+		    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
+			populationFitnessStats.addValue(fitnessValue);
+		    }
+
+		}
+	    
+	    
+	    
+	    /*
+
+	    if (simulation.isReportPerformance()) {
+
+		sbPerformance.delete(0, sbPerformance.length());
+
+		sbPerformance.append(generationCounter);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captureStats.getSum());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captureStats.getMax());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(captureStats.getMean());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(populationFitnessStats.getMean());
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(populationFitnessStats.getVariance());
+		sbPerformance.append(COMMA);
+
+		for (Species species : simulation.speciesComposition) {
+
+		    summaryFitnessStats.clear();
+
+		    int trailSent = 0;
+		    int trailReceived = 0;
+		    int trailSearched = 0;
+
+		    for (Agent agent : archipelagoEvolver) {
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+			if (agent.getSpecies() == species) {
+
+			    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
+				summaryFitnessStats.addValue(fitnessValue);
+			    }
+
+			}
+			trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_GENERIC_TRAIL);
+			trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+			trailSearched += embodiedAgent.poolGenerationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+
+		    }
+
+		    sbPerformance.append(summaryFitnessStats.getMean());
+		    sbPerformance.append(COMMA);
+
+		    sbPerformance.append(summaryFitnessStats.getVariance());
+		    sbPerformance.append(COMMA);
+
+		    sbPerformance.append(trailSent);
+		    sbPerformance.append(COMMA);
+
+		    sbPerformance.append(trailReceived);
+		    sbPerformance.append(COMMA);
+
+		    sbPerformance.append(trailSearched);
+		    sbPerformance.append(COMMA);
+
+		}
+
+		performanceWriter.write(sbPerformance.toString());
+
+		performanceWriter.newLine();
+		sbPerformance.delete(0, sbPerformance.length());
+
+		if (this.flushAlways) {
+		    performanceWriter.flush();
+		}
+
+	    }
+	    	*/
+	    
+	} catch (Exception e) {
+	    logger.severe("Exception while reporting performance:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+	
+
+
+    }
+    
 }
