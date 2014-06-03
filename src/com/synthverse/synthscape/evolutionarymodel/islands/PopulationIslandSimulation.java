@@ -220,8 +220,7 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     protected void evolvePopulationIslands() {
-	logger.info("********* evolving island agents... number of simulations run:"
-		+ this.simulationCounter);
+
 	populationFitnessStats.clear();
 
 	ArchipelagoEvolver archipelagoEvolver = (ArchipelagoEvolver) evolver;
@@ -253,6 +252,9 @@ public class PopulationIslandSimulation extends Simulation {
 
 	experimentReporter.reportPerformanceIslandModelNew(generation, simEventStats,
 		speciesEventStatsMap, captureStats, populationFitnessStats);
+
+	logger.info("gen: " + generation + "; fitness: "+populationFitnessStats.getMean()+"; best_capture: "+captureStats.getMax()+ "; sims: " + this.simulationCounter);
+	
 
 	clearSpeciesEventStats();
 	captureStats.clear();
