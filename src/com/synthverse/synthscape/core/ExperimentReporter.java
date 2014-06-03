@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -70,7 +71,8 @@ public class ExperimentReporter implements Constants {
 	}
 
 	if (simulation.isReportPerformance()) {
-	    String performanceFileName = simulation.getEventFileName().replace("event", "performance");
+	    String performanceFileName = simulation.getEventFileName().replace("event",
+		    "performance");
 	    openPerformanceFile(performanceFileName);
 	}
 
@@ -90,7 +92,8 @@ public class ExperimentReporter implements Constants {
 		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -103,10 +106,12 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -123,8 +128,8 @@ public class ExperimentReporter implements Constants {
 	    }
 	    file.createNewFile();
 
-	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
-		    REPORT_WRITER_BUFFER_SIZE);
+	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),
+		    false), REPORT_WRITER_BUFFER_SIZE);
 
 	    for (String line : settings.EXPERIMENT_DETAILS) {
 		detailWriter.write(line);
@@ -137,7 +142,8 @@ public class ExperimentReporter implements Constants {
 	    detailWriter.close();
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment details file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -150,8 +156,8 @@ public class ExperimentReporter implements Constants {
 	try {
 
 	    if (file.exists() && file.isFile()) {
-		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-			REPORT_WRITER_BUFFER_SIZE);
+		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(
+			file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 		detailWriter.write("EXPERIMENT_END = " + new Date());
 		detailWriter.newLine();
 
@@ -161,7 +167,8 @@ public class ExperimentReporter implements Constants {
 	    }
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment details file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -182,7 +189,8 @@ public class ExperimentReporter implements Constants {
 		eventWriter.append(COMMA);
 		eventWriter.append(simulation.getBatchId());
 		eventWriter.append(COMMA);
-		eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+		eventWriter
+			.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
 		eventWriter.append(COMMA);
 		eventWriter.append("" + simulation.getGridWidth());
 		eventWriter.append(COMMA);
@@ -238,8 +246,8 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x,
-	    int y, Event event, String source, String destination) {
+    public void reportEvent(long simulationNumber, int generation, Species species, int agentId,
+	    int step, int x, int y, Event event, String source, String destination) {
 	try {
 
 	    sbEvent.append(simulationNumber);
@@ -442,8 +450,9 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
+    public void reportPerformanceEmbodiedModel(int generationCounter,
+	    EventStats generationEventStats, ArrayList<Agent> agents,
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -484,10 +493,14 @@ public class ExperimentReporter implements Constants {
 				summaryFitnessStats.addValue(fitnessValue);
 			    }
 
+			    trailSent += embodiedAgent.poolGenerationEventStats
+				    .getValue(Event.SENT_GENERIC_TRAIL);
+			    trailReceived += embodiedAgent.poolGenerationEventStats
+				    .getValue(Event.RECEIVED_GENERIC_TRAIL);
+			    trailSearched += embodiedAgent.poolGenerationEventStats
+				    .getValue(Event.SEARCHED_GENERIC_TRAIL);
+
 			}
-			trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_GENERIC_TRAIL);
-			trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-			trailSearched += embodiedAgent.poolGenerationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
 		    }
 
@@ -526,32 +539,11 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    
-    
-    
-    
-    public void reportPerformanceIslandModelNew(int generationCounter, EventStats generationEventStats,
-	    ArchipelagoEvolver archipelagoEvolver, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
+    public void reportPerformanceIslandModelNew(int generationCounter,
+	    EventStats generationEventStats,
+	    LinkedHashMap<Species, EventStats> speciesEventStatsMap,
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
 	try {
-	    
-	    
-	    for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
-		    if (islandEvolver.evolve() != generation) {
-			logger.severe("invalid evolution algorithm implementation");
-			System.exit(1);
-
-		    }
-
-		    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
-			populationFitnessStats.addValue(fitnessValue);
-		    }
-
-		}
-	    
-	    
-	    
-	    /*
-
 	    if (simulation.isReportPerformance()) {
 
 		sbPerformance.delete(0, sbPerformance.length());
@@ -576,31 +568,16 @@ public class ExperimentReporter implements Constants {
 
 		for (Species species : simulation.speciesComposition) {
 
-		    summaryFitnessStats.clear();
+		    EventStats eventStats = speciesEventStatsMap.get(species);
 
-		    int trailSent = 0;
-		    int trailReceived = 0;
-		    int trailSearched = 0;
+		    int trailSent = eventStats.getValue(Event.SENT_GENERIC_TRAIL);
+		    int trailReceived = eventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
+		    int trailSearched = eventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
 
-		    for (Agent agent : archipelagoEvolver) {
-			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-			if (agent.getSpecies() == species) {
-
-			    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
-				summaryFitnessStats.addValue(fitnessValue);
-			    }
-
-			}
-			trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_GENERIC_TRAIL);
-			trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-			trailSearched += embodiedAgent.poolGenerationEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-
-		    }
-
-		    sbPerformance.append(summaryFitnessStats.getMean());
+		    sbPerformance.append(0);
 		    sbPerformance.append(COMMA);
 
-		    sbPerformance.append(summaryFitnessStats.getVariance());
+		    sbPerformance.append(0);
 		    sbPerformance.append(COMMA);
 
 		    sbPerformance.append(trailSent);
@@ -624,16 +601,13 @@ public class ExperimentReporter implements Constants {
 		}
 
 	    }
-	    	*/
-	    
+
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting performance:" + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
-	
-
 
     }
-    
+
 }

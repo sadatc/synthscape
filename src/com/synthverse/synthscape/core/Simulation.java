@@ -539,8 +539,7 @@ public abstract class Simulation extends SimState implements Constants {
     abstract protected void doEndOfStepTasks();
 
     protected void reclaimAgents() {
-	for (Agent agent : agents) {
-	    agent.eventStats.clear();
+	for (Agent agent : agents) {	    
 	    agentFactory.reclaimAgent(agent);
 	}
     }
