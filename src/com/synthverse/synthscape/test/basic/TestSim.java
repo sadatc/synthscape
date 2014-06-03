@@ -133,4 +133,10 @@ public class TestSim extends Simulation {
 	return null;
     }
 
+    @Override
+    protected void doEndOfStepTasks() {
+	// TODO Auto-generated method stub
+	
+    }
+
 }
