@@ -7,10 +7,11 @@ import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 
@@ -39,7 +40,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     protected int genePoolIndex;
     protected Species species;
 
-    protected EvolutionEngine evolutionEngine;
+    public EvolutionEngine evolutionEngine;
     protected int requestCounter = 1;
     protected int cloneCounter = 1;
     protected List<Agent> activeBuffer;
@@ -123,6 +124,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     @Override
     public int evolve() {
 	evolutionEngine.generateNextGeneration(simulation.random);
+	
 	activeBuffer = evolutionEngine.getActiveBuffer();
 	generation++;
 	return generation;
