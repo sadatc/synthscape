@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.islands;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,7 +29,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     private int generation;
 
-    public HashMap<Species, PopulationIslandEvolver> speciesIslandMap = new HashMap<Species, PopulationIslandEvolver>();
+    public LinkedHashMap<Species, PopulationIslandEvolver> speciesIslandMap = new LinkedHashMap<Species, PopulationIslandEvolver>();
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -77,8 +77,6 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	// from the pool is taken, cloned (into a team), and fitness evaluated
 	// collectively
 
-	// logger.info("evaluating generation:"+this.generation+"-"+
-	// simEventStats.toString());
 	double collectiveFitness = computeFitness(simStats, agents);
 
 	// here all agents are forced to have the same fitness
@@ -96,9 +94,6 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 
     private double computeFitness(EventStats simStats, List<Agent> agents) {
 	double result = 0.0;
-
-	// collecting a resource gets the highest point
-	// simEventStats.printValues();
 
 	for (Event event : simStats.getEvents()) {
 
@@ -146,7 +141,7 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	for (Evolver evolver : speciesIslandMap.values()) {
 	    evolver.evolve();
 	}
-	
+
 	generation++;
 	return generation;
     }
