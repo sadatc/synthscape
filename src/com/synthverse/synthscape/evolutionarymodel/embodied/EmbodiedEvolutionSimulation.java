@@ -239,6 +239,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	// evolve each agent and keep account of their event and fitness
 	// statistics...
+	generation++;
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
@@ -246,7 +247,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 
 	    // evolve the agents...
-	    generation = embodiedAgent.evolve();
+	    if (embodiedAgent.evolve() != generation) {
+		logger.severe("invalid evolution algorithm implementation");
+		System.exit(1);
+	    }
 
 	    // add all inidividual fitness stats to the population
 	    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
@@ -255,7 +259,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents,
+	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents, captureStats,
 		populationFitnessStats);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
@@ -267,10 +271,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.poolGenerationEventStats.clear();
 	}
 	generationEventStats.clear();
+	captureStats.clear();
 
     }
 
-    
     @Override
     protected void doEndOfStepTasks() {
 
@@ -292,8 +296,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.reclaimActiveAgent();
 
 	}
-	// System.exit(1);
 
+	captureStats.addValue(this.numberOfCollectedResources);
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
@@ -302,9 +306,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void startNextSimulation() {
-
-	// logger.info("startNextSimulation()");
-	generationEventStats.aggregateStatsTo(poolEventStats);
 
 	resetEnvironment();
 	initEnvironment();
