@@ -20,6 +20,8 @@ public class Settings {
 
     public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 
+    public boolean SHOW_GRAPHICS = false;
+
     public int GENERATIONS = 500000;
 
     public int CLONES_PER_SPECIES = 10;
@@ -91,6 +93,8 @@ public class Settings {
 
 	options.addOption(new Option("help", "print this message"));
 	options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
+	options.addOption(new Option("show_graphics", "show graphics [default: don't show graphics]"));
+
 	options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
 
 	options.addOption(OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]")
@@ -165,6 +169,11 @@ public class Settings {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 	    }
 	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
+
+	    if (line.hasOption("show_graphics")) {
+		SHOW_GRAPHICS = true;
+	    }
+	    printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
 
 	    if (line.hasOption("use_4_tasks")) {
 		PROBLEM_COMPLEXITY = ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
