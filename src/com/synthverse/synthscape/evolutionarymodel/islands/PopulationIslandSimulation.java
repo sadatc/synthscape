@@ -69,8 +69,7 @@ public class PopulationIslandSimulation extends Simulation {
     public static void main(String[] arg) {
 	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
 	doLoop(PopulationIslandSimulation.class, manualArgs);
-	logger.info("Diagnosis: total # of agents created: "
-		+ Agent.get_optimazationTotalAgentsCounters());
+	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 	logger.info("Diagnosis: total # of islander agents created: "
 		+ IslanderAgent.get_optimizationIslanderAgentCounter());
 	logger.info("Diagnosis: total # of embodied agents created: "
@@ -167,10 +166,9 @@ public class PopulationIslandSimulation extends Simulation {
 	initEnvironment();
 	initAgents();
 
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world="
-		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-		+ agents.size());
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -207,7 +205,8 @@ public class PopulationIslandSimulation extends Simulation {
 			if (collectedAllResources()) {
 			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
 			}
-			//evolvePopulationIslands(); // this does one last line of recording...
+			// evolvePopulationIslands(); // this does one last line
+			// of recording...
 			setEndDate();
 			experimentReporter.cleanupReporter();
 			finish();
@@ -251,11 +250,11 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceIslandModelNew(generation, simEventStats,
-		speciesEventStatsMap, captureStats, populationFitnessStats);
+	experimentReporter.reportPerformanceIslandModelNew(generation, simEventStats, speciesEventStatsMap,
+		captureStats, populationFitnessStats);
 
-	logger.info("gen: " + generation + "; fitness: "+populationFitnessStats.getMean()+"; best_capture: "+captureStats.getMax()+ "; sims: " + this.simulationCounter);
-	
+	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
+		+ captureStats.getMax() + "; sims: " + this.simulationCounter);
 
 	clearSpeciesEventStats();
 	captureStats.clear();

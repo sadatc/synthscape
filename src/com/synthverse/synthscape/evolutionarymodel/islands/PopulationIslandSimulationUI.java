@@ -19,10 +19,8 @@ import com.synthverse.util.LogUtils;
 public class PopulationIslandSimulationUI extends SimpleSimulationUI {
     private static Logger logger = Logger.getLogger(PopulationIslandSimulationUI.class.getName());
     static {
-    	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
-
-
 
     public PopulationIslandSimulationUI() throws Exception {
 	super(new PopulationIslandSimulation(Constants.SIMULATION_RNG_SEED));
