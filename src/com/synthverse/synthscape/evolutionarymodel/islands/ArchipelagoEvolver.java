@@ -25,7 +25,6 @@ import com.synthverse.util.LogUtils;
  */
 public class ArchipelagoEvolver extends Evolver implements Constants {
     private static Logger logger = Logger.getLogger(ArchipelagoEvolver.class.getName());
-    private static double maxFitness = Double.MIN_VALUE;
 
     private int generation;
 
@@ -96,41 +95,18 @@ public class ArchipelagoEvolver extends Evolver implements Constants {
 	double result = 0.0;
 
 	for (Event event : simStats.getEvents()) {
-
 	    result += getEventWeight(event) * simStats.getValue(event);
-
 	}
-	if (result > maxFitness) {
-	    logger.info("*** Record Fitness=" + result + " at Generation: " + generation + " ***");
-
-	    maxFitness = result;
-	}
-
-	/*
-	 * if(result>0.0) { logger.info("trap"); }
-	 */
 
 	return result;
     }
 
+    @SuppressWarnings("incomplete-switch")
     private double getEventWeight(Event event) {
 
 	switch (event) {
-	/*
-	 * case DETECTED_RAW_RESOURCE: return 0.10; case EXTRACTED_RESOURCE:
-	 * return 0.25;
-	 */
-	/*
-	 * case DETECTED_EXTRACTED_RESOURCE: return 8.0; case
-	 * DETECTED_PROCESSED_RESOURCE: return 6.0; case PROCESSED_RESOURCE:
-	 * return 12.0; case LOADED_RESOURCE: return 6.0; case
-	 * UNLOADED_RESOURCE: return 5.0; case MOVE_TO_CLOSEST_COLLECTION_SITE:
-	 * return 1.0; case MOVE_TO_PRIMARY_COLLECTION_SITE: return 1.0;
-	 */
 	case COLLECTED_RESOURCE:
-	    // logger.info("encountered collection!!!!!");
 	    return 1.0;
-
 	}
 	return 0;
 
