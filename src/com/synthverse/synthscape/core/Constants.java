@@ -4,8 +4,6 @@ public interface Constants {
 
     // MORE frequently changed constants appear here...
 
-    // public static final int MAX_STEPS_PER_AGENT = 256;
-
     public static final int NUMBER_OF_STEPS_FOR_BROADCASTED_SIGNAL = 2;
 
     // EVOLUTION ENGINE RELATED CONSTANTS
@@ -79,7 +77,7 @@ public interface Constants {
     public static final boolean DEFAULT_FLUSH_ALWAYS_FLAG = true;
 
     public static final boolean INCLUDE_EXPERIMENT_META_DATA = true;
-    
+
     public static final int UNASSIGNED_AGENT_ID = -99;
 
 }
