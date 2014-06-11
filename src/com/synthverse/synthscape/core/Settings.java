@@ -61,7 +61,7 @@ public class Settings {
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
     // TODO: separate this, if needed
 
-    public int MAX_STEPS_PER_AGENT = 256;
+    public int MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
 
     public int REPEAT = 1;
 
@@ -136,6 +136,9 @@ public class Settings {
 
 	options.addOption(OptionBuilder.withArgName("height").hasArg().withType(Integer.class)
 		.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
+
+	options.addOption(OptionBuilder.withArgName("max_steps").hasArg().withType(Integer.class)
+		.withDescription("max steps [" + WORLD_HEIGHT + "]").create("max_steps"));
 
 	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg().withType(Double.class)
 		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("obstacle_density"));
@@ -311,6 +314,14 @@ public class Settings {
 	    }
 	    printAndStore("WORLD_HEIGHT = " + WORLD_HEIGHT);
 
+	    MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
+	    
+	    if (line.hasOption("max_steps")) {
+		MAX_STEPS_PER_AGENT = new Integer(line.getOptionValue("max_steps")).intValue();
+
+	    }
+	    printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
+
 	    if (line.hasOption("repeat")) {
 		REPEAT = new Integer(line.getOptionValue("repeat")).intValue();
 
@@ -345,12 +356,10 @@ public class Settings {
 	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 	    PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
 	    SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
-	    MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT;
 
 	    printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
 	    printAndStore("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
 	    printAndStore("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
-	    printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
 	    double gridArea = WORLD_WIDTH * WORLD_HEIGHT;
 
