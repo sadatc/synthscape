@@ -30,7 +30,7 @@ public class Settings {
 
     public int NUMBER_OF_COLLECTION_SITES = 5;
 
-    public double RESOURCE_CAPTURE_GOAL = 0.55;
+    public double RESOURCE_CAPTURE_GOAL = 1.0;
 
     public int SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
