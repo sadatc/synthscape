@@ -161,7 +161,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	Int2D location = sim.agentGrid.getObjectLocation(this);
 
 	int newX = sim.agentGrid.stx(location.x + deltaX);
-	int newY = sim.agentGrid.stx(location.y + deltaY);
+	int newY = sim.agentGrid.sty(location.y + deltaY);
 
 	// apply moving logic, only if we are moving to a new location
 	if (newX != location.x || newY != location.y) {
@@ -321,7 +321,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		// except for the center...
 		if (deltaX != 0 && deltaY != 0) {
 		    int scanX = trail.stx(this.x + deltaX);
-		    int scanY = trail.stx(this.y + deltaY);
+		    int scanY = trail.sty(this.y + deltaY);
 
 		    double trailAmount = trail.field[scanX][scanY];
 		    if (trailAmount > maxTrail) {
@@ -354,7 +354,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		// except for the center...
 		if (deltaX != 0 && deltaY != 0) {
 		    int scanX = trailA.stx(this.x + deltaX);
-		    int scanY = trailA.stx(this.y + deltaY);
+		    int scanY = trailA.sty(this.y + deltaY);
 
 		    double trailAmountA = trailA.field[scanX][scanY];
 		    if (trailAmountA > maxTrail) {
@@ -713,12 +713,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    this.locationHasProcessedResource = true;
 	}
 
-	if (sim.trailGrid.field[x][y] > 0) {
+	if (sim.trailGrid.field[x][y] >= 1) {
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
-		// sim.statistics.stepData.trailHits++;
 		sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, "" + this.agentId);
-
 	    }
 	} else {
 	    this.locationHasTrail = false;
@@ -775,7 +773,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	String result = "" + this.getAgentId();
 	if (this.program != null) {
 	    result += ":" + this.program.getFingerPrint();
-	    
+
 	}
 	return result;
 
