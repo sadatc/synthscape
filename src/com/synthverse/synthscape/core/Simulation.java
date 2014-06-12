@@ -69,6 +69,9 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected DoubleGrid2D trailGrid;
 
+    protected DoubleGrid2D extractorRewardGrid;
+    protected DoubleGrid2D detectorRewardGrid;
+
     public SparseGrid2D agentGrid;
 
     protected ArrayList<Agent> agents;
@@ -216,6 +219,8 @@ public abstract class Simulation extends SimState implements Constants {
 	initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 	resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 	trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+	extractorRewardGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	detectorRewardGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 	agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 	agents = new ArrayList<Agent>();
     }
@@ -229,6 +234,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	resourceGrid.setTo(ResourceState.NULL);
 	trailGrid.setTo(ABSENT);
+	extractorRewardGrid.setTo(ABSENT);
+	detectorRewardGrid.setTo(ABSENT);
 
 	registeredBroadcasts.clear();
 
@@ -376,11 +383,10 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initAgents() {
 	logger.info("Simulation.initAgents()");
 	// populate with agents
-	
+
 	for (Agent agent : agents) {
 	    agent.eventStats.clear();
 	}
-	
 
 	MersenneTwisterFast randomPrime = this.random;
 	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
@@ -422,6 +428,10 @@ public abstract class Simulation extends SimState implements Constants {
     protected void fadeTrails() {
 	trailGrid.lowerBound(0.0);
 	trailGrid.multiply(trailEvaporationConstant);
+    }
+
+    protected void fadeRewardGrids() {
+	
     }
 
     protected void ageBroadcasts() {
@@ -539,7 +549,7 @@ public abstract class Simulation extends SimState implements Constants {
     abstract protected void doEndOfStepTasks();
 
     protected void reclaimAgents() {
-	for (Agent agent : agents) {	    
+	for (Agent agent : agents) {
 	    agentFactory.reclaimAgent(agent);
 	}
     }
