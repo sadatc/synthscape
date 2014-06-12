@@ -46,7 +46,7 @@ public interface Constants {
 
     public static final boolean TOROIDAL_FLAG = true;
 
-    public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.998;
+    public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.60;
 
     public static final int SEED_GENERATION_NUMBER = 0;
 
