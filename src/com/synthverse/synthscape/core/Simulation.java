@@ -219,8 +219,8 @@ public abstract class Simulation extends SimState implements Constants {
 	initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 	resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 	trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-	extractorRewardGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-	detectorRewardGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+	detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 	agents = new ArrayList<Agent>();
     }
