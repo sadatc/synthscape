@@ -64,6 +64,12 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected boolean locationHasProcessedResource;
 
+    protected boolean locationHasExtractorReward;
+
+    protected boolean locationHasDetectorReward;
+
+    protected boolean locationHasProcessorReward;
+
     protected boolean locationHasTrail;
 
     protected double fitness = 0.0;
@@ -237,13 +243,23 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	}
     }
 
-    public void _operationLeaveTrail(DoubleGrid2D grid) {
+    public void _operationLeaveTrail(DoubleGrid2D trailGridParam) {
 	Int2D location = sim.agentGrid.getObjectLocation(this);
 	int x = location.x;
 	int y = location.y;
 
-	grid.field[x][y] = 100;
+	trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
 	sim.reportEvent(this, Event.SENT_GENERIC_TRAIL, "" + this.agentId, NA);
+    }
+
+    public void _operationLeaveRewards(DoubleGrid2D rewardGrid, Event rewardEvent) {
+	Int2D location = sim.agentGrid.getObjectLocation(this);
+	int x = location.x;
+	int y = location.y;
+
+	// rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
+	rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
+	sim.reportEvent(this, rewardEvent, "" + this.agentId, NA);
     }
 
     public final boolean _operationPerformResourceAction(Task action, ObjectGrid2D resourceGrid) {
@@ -529,9 +545,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public void operationLeaveTrail() {
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 	    _operationLeaveTrail(sim.trailGrid);
-
-	    // sim.statistics.stepData.trailDrops++;
-
 	    updateLocationStatus(this.x, this.y);
 
 	}
@@ -596,6 +609,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
 		sim.reportEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
+		_operationLeaveRewards(sim.detectorRewardGrid, Event.DROPPED_DETECTOR_REWARDS);
 
 	    }
 
@@ -608,6 +622,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
 		sim.reportEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
+		_operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
 	    }
 
 	    updateLocationStatus(this.x, this.y);
@@ -654,6 +669,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+			    _operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
 			    // logger.info("CAPTURE!! 3 complex");
 			}
 
@@ -663,6 +679,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+			    _operationLeaveRewards(sim.processorRewardGrid, Event.DROPPED_PROCESSOR_REWARDS);
 			    // logger.info("CAPTURE!! 4 complex");
 			}
 
@@ -704,6 +721,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.locationHasExtractedResource = false;
 	this.locationHasProcessedResource = false;
 	this.locationHasRawResource = false;
+	this.locationHasExtractorReward = false;
+	this.locationHasDetectorReward = false;
+	this.locationHasProcessorReward = false;
 
 	if (sim.resourceGrid.field[x][y] == ResourceState.RAW) {
 	    this.locationHasRawResource = true;
@@ -711,6 +731,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    this.locationHasExtractedResource = true;
 	} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED) {
 	    this.locationHasProcessedResource = true;
+	}
+
+	if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
+	    this.locationHasExtractorReward = true;
+	}
+
+	if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
+	    this.locationHasDetectorReward = true;
+	}
+
+	if (sim.processorRewardGrid.field[x][y] >= 1.0) {
+	    this.locationHasProcessorReward = true;
 	}
 
 	if (sim.trailGrid.field[x][y] >= 1) {
