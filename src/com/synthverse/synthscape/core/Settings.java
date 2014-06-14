@@ -21,6 +21,8 @@ public class Settings {
     public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 
     public boolean SHOW_GRAPHICS = false;
+    
+    public boolean PEER_REWARDS = false;
 
     public int GENERATIONS = 500000;
 
@@ -70,6 +72,8 @@ public class Settings {
     public String EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
 
     public String EXPERIMENT_DETAILS_FILE = EVENT_DATA_DIR + "/experiment_details.txt";
+    
+    
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
@@ -94,6 +98,7 @@ public class Settings {
 	options.addOption(new Option("help", "print this message"));
 	options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 	options.addOption(new Option("show_graphics", "show graphics [default: don't show graphics]"));
+	options.addOption(new Option("peer_rewards", "peer rewards [default: no peer rewards]"));
 
 	options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
 
@@ -177,6 +182,13 @@ public class Settings {
 		SHOW_GRAPHICS = true;
 	    }
 	    printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
+	    
+	    
+	    if (line.hasOption("peer_rewards")) {
+		PEER_REWARDS = true;
+	    }
+	    printAndStore("PEER_REWARDS = " + PEER_REWARDS);
+	    
 
 	    if (line.hasOption("use_4_tasks")) {
 		PROBLEM_COMPLEXITY = ProblemComplexity.FOUR_SEQUENTIAL_TASKS;

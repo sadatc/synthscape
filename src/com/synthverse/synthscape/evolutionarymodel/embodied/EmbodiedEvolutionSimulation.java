@@ -141,7 +141,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
-	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
+	
     }
 
     @Override
@@ -328,12 +328,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	return result;
     }
 
-    @Override
-    protected void fadeTrails() {
-	trailGrid.lowerBound(0.0);
-	trailGrid.multiply(trailEvaporationConstant);
-
-    }
+  
 
     @Override
     protected void startSimulation() {
@@ -359,6 +354,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		simStepCounter++;
 
 		fadeTrails();
+		fadeRewardGrids();
 		ageBroadcasts();
 		doEndOfStepTasks();
 

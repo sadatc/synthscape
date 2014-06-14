@@ -71,6 +71,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected DoubleGrid2D extractorRewardGrid;
     protected DoubleGrid2D detectorRewardGrid;
+    protected DoubleGrid2D processorRewardGrid;
 
     public SparseGrid2D agentGrid;
 
@@ -89,8 +90,6 @@ public abstract class Simulation extends SimState implements Constants {
     protected int maxResourcesEverCollected = 0;
 
     protected int numberOfCollectionSites;
-
-    protected double trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
 
     protected int gridWidth;
 
@@ -202,7 +201,6 @@ public abstract class Simulation extends SimState implements Constants {
 	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
-	trailEvaporationConstant = DEFAULT_TRAIL_EVAPORATION_CONSTANT;
 
     }
 
@@ -221,6 +219,7 @@ public abstract class Simulation extends SimState implements Constants {
 	trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+	processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 	agents = new ArrayList<Agent>();
     }
@@ -236,6 +235,7 @@ public abstract class Simulation extends SimState implements Constants {
 	trailGrid.setTo(ABSENT);
 	extractorRewardGrid.setTo(ABSENT);
 	detectorRewardGrid.setTo(ABSENT);
+	processorRewardGrid.setTo(ABSENT);
 
 	registeredBroadcasts.clear();
 
@@ -427,11 +427,22 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void fadeTrails() {
 	trailGrid.lowerBound(0.0);
-	trailGrid.multiply(trailEvaporationConstant);
+	trailGrid.multiply(DEFAULT_TRAIL_EVAPORATION_CONSTANT);
     }
 
     protected void fadeRewardGrids() {
-	
+	if (Main.settings.PEER_REWARDS) {
+	    extractorRewardGrid.lowerBound(0.0);
+	    extractorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+
+	    detectorRewardGrid.lowerBound(0.0);
+	    detectorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+
+	    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		processorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+	    }
+	}
+
     }
 
     protected void ageBroadcasts() {
@@ -479,6 +490,7 @@ public abstract class Simulation extends SimState implements Constants {
 		simStepCounter++;
 
 		fadeTrails();
+		fadeRewardGrids();
 		ageBroadcasts();
 		doEndOfStepTasks();
 

@@ -180,6 +180,7 @@ public class PopulationIslandSimulation extends Simulation {
 		simStepCounter++;
 
 		fadeTrails();
+		fadeRewardGrids();
 		ageBroadcasts();
 		doEndOfStepTasks();
 

@@ -39,6 +39,8 @@ public interface Constants {
     public static final String NA = "-1";
 
     public static final int TRAIL_LEVEL_MAX = 100;
+    
+    public static final int REWARD_LEVEL_MAX = 3;
 
     public static final int SIGNAL_LEVEL_MAX = 100;
 
@@ -47,6 +49,8 @@ public interface Constants {
     public static final boolean TOROIDAL_FLAG = true;
 
     public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.60;
+    
+    public static final double DEFAULT_REWARD_EVAPORATION_CONSTANT = 0.50;
 
     public static final int SEED_GENERATION_NUMBER = 0;
 
