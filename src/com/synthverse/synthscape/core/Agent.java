@@ -253,13 +253,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void _operationLeaveRewards(DoubleGrid2D rewardGrid, Event rewardEvent) {
-	Int2D location = sim.agentGrid.getObjectLocation(this);
-	int x = location.x;
-	int y = location.y;
+	if (Main.settings.PEER_REWARDS) {
 
-	// rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
-	rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
-	sim.reportEvent(this, rewardEvent, "" + this.agentId, NA);
+	    Int2D location = sim.agentGrid.getObjectLocation(this);
+	    int x = location.x;
+	    int y = location.y;
+
+	    // rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
+	    rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
+	    sim.reportEvent(this, rewardEvent, "" + this.agentId, NA);
+
+	}
+
     }
 
     public final boolean _operationPerformResourceAction(Task action, ObjectGrid2D resourceGrid) {
