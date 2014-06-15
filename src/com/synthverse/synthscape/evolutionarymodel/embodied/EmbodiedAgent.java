@@ -170,8 +170,9 @@ public class EmbodiedAgent extends Agent {
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
-	    case DETECTED_RAW_RESOURCE:
+	    case DETECTED_RAW_RESOURCE:	    
 	    case DETECTED_PROCESSED_RESOURCE:
+	    case RECEIVED_DETECTOR_REWARDS:
 		result += activeAgent.eventStats.getValue(event);
 		break;
 	    default:
@@ -187,6 +188,7 @@ public class EmbodiedAgent extends Agent {
 
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
+	    case RECEIVED_EXTRACTOR_REWARDS:
 	    case EXTRACTED_RESOURCE:
 		result += activeAgent.eventStats.getValue(event);
 		break;
@@ -203,6 +205,7 @@ public class EmbodiedAgent extends Agent {
 
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
+	    case RECEIVED_PROCESSOR_REWARDS:
 	    case PROCESSED_RESOURCE:
 		result += activeAgent.eventStats.getValue(event);
 		break;

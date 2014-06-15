@@ -740,14 +740,23 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasExtractorReward = true;
+	    if(Main.settings.PEER_REWARDS) {
+		sim.reportEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA, "" + this.agentId);
+	    }
 	}
 
 	if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasDetectorReward = true;
+	    if(Main.settings.PEER_REWARDS) {
+		sim.reportEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA, "" + this.agentId);
+	    }
 	}
 
 	if (sim.processorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasProcessorReward = true;
+	    if(Main.settings.PEER_REWARDS) {
+		sim.reportEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA, "" + this.agentId);
+	    }	    
 	}
 
 	if (sim.trailGrid.field[x][y] >= 1) {
