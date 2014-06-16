@@ -21,7 +21,7 @@ public class Settings {
     public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
 
     public boolean SHOW_GRAPHICS = false;
-    
+
     public boolean PEER_REWARDS = false;
 
     public int GENERATIONS = 500000;
@@ -72,8 +72,6 @@ public class Settings {
     public String EVENT_DATA_FILE = EVENT_DATA_DIR + "/event_data.csv";
 
     public String EXPERIMENT_DETAILS_FILE = EVENT_DATA_DIR + "/experiment_details.txt";
-    
-    
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
@@ -173,6 +171,19 @@ public class Settings {
 	    CommandLine line = parser.parse(options, args);
 
 	    D.p("=============== INPUT PARAMETERS ===============");
+
+	    if (line.hasOption("model")) {
+		String modelName = line.getOptionValue("model").toLowerCase();
+		if (modelName.equalsIgnoreCase("island")) {
+		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
+		} else if (modelName.equalsIgnoreCase("embodied")) {
+		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
+		} else {
+		    throw new ParseException("model name: " + modelName + " was not recognized");
+		}
+	    }
+	    printAndStore("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
+
 	    if (line.hasOption("no_randomization")) {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 	    }
@@ -182,13 +193,17 @@ public class Settings {
 		SHOW_GRAPHICS = true;
 	    }
 	    printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
-	    
-	    
+
 	    if (line.hasOption("peer_rewards")) {
-		PEER_REWARDS = true;
+		if (EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
+		    PEER_REWARDS = false;
+		    throw new ParseException(
+			    "peer rewards are not allowed in the island model (centralized fitness evaluation)");
+		} else {
+		    PEER_REWARDS = true;
+		}
 	    }
 	    printAndStore("PEER_REWARDS = " + PEER_REWARDS);
-	    
 
 	    if (line.hasOption("use_4_tasks")) {
 		PROBLEM_COMPLEXITY = ProblemComplexity.FOUR_SEQUENTIAL_TASKS;
@@ -234,18 +249,6 @@ public class Settings {
 	    }
 
 	    printAndStore("LOG.LEVEL = " + REQUESTED_LOG_LEVEL.toString());
-
-	    if (line.hasOption("model")) {
-		String modelName = line.getOptionValue("model").toLowerCase();
-		if (modelName.equalsIgnoreCase("island")) {
-		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
-		} else if (modelName.equalsIgnoreCase("embodied")) {
-		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
-		} else {
-		    throw new ParseException("model name: " + modelName + " was not recognized");
-		}
-	    }
-	    printAndStore("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
 
 	    if (line.hasOption("species")) {
 
@@ -327,7 +330,7 @@ public class Settings {
 	    printAndStore("WORLD_HEIGHT = " + WORLD_HEIGHT);
 
 	    MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
-	    
+
 	    if (line.hasOption("max_steps")) {
 		MAX_STEPS_PER_AGENT = new Integer(line.getOptionValue("max_steps")).intValue();
 
