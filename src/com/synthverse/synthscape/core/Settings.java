@@ -52,6 +52,10 @@ public class Settings {
 
     public double RESOURCE_DENSITY = 0.06;
 
+    public double MATING_FREQUENCY = 0.50;
+
+    public double MATING_PROXIMITY_RADIUS = 2;
+
     public int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
     public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
@@ -161,6 +165,13 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("seed_preset").hasArg().withDescription("(true, false) [false]")
 		.create("seed_preset"));
 
+	options.addOption(OptionBuilder.withArgName("mating_frequency").hasArg().withType(Double.class)
+		.withDescription("mating frequency [" + MATING_FREQUENCY + "]").create("mating_frequency"));
+
+	options.addOption(OptionBuilder.withArgName("mating_proximity_radius").hasArg().withType(Integer.class)
+		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]")
+		.create("mating_proximity_radius"));
+
 	HelpFormatter formatter = new HelpFormatter();
 
 	// create the parser
@@ -230,8 +241,18 @@ public class Settings {
 	    if (line.hasOption("resource_density")) {
 		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density")).doubleValue();
 	    }
-
 	    printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
+
+	    if (line.hasOption("mating_frequency")) {
+		MATING_FREQUENCY = new Double(line.getOptionValue("mating_frequency")).doubleValue();
+	    }
+	    printAndStore("MATING_FREQUENCY = " + MATING_FREQUENCY);
+
+	    if (line.hasOption("mating_proximity_radius")) {
+		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_proximity_radius")).intValue();
+
+	    }
+	    printAndStore("MATING_PROXIMITY_RADIUS = " + MATING_PROXIMITY_RADIUS);
 
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
