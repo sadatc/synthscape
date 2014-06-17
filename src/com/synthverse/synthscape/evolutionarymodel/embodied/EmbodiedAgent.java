@@ -53,8 +53,10 @@ public class EmbodiedAgent extends Agent {
 
     public int poolSize;
 
+    public EmbodiedAgent mate = null;
+
     protected static long _optimizationEmbodiedAgentCounter = 0;
-    
+
     public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
@@ -170,7 +172,7 @@ public class EmbodiedAgent extends Agent {
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
 	    case DETECTED_EXTRACTED_RESOURCE:
-	    case DETECTED_RAW_RESOURCE:	    
+	    case DETECTED_RAW_RESOURCE:
 	    case DETECTED_PROCESSED_RESOURCE:
 	    case RECEIVED_DETECTOR_REWARDS:
 		result += activeAgent.eventStats.getValue(event);
@@ -222,7 +224,7 @@ public class EmbodiedAgent extends Agent {
 
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
-	
+
 	    case COLLECTED_RESOURCE:
 		result += activeAgent.eventStats.getValue(event);
 		break;
@@ -234,10 +236,10 @@ public class EmbodiedAgent extends Agent {
 	return result;
     }
 
-    public int  evolve() {
+    public int evolve() {
 	return evolver.evolve();
     }
-    
+
     public int getGeneration() {
 	return evolver.getGeneration();
     }
