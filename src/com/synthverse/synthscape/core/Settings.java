@@ -56,6 +56,8 @@ public class Settings {
 
     public double MATING_PROXIMITY_RADIUS = 2;
 
+    public int MATING_GENERATION_FREQUENCY = 10;
+
     public int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
 
     public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
@@ -165,12 +167,15 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("seed_preset").hasArg().withDescription("(true, false) [false]")
 		.create("seed_preset"));
 
-	options.addOption(OptionBuilder.withArgName("mating_frequency").hasArg().withType(Double.class)
-		.withDescription("mating frequency [" + MATING_SUCCESS_RATE + "]").create("mating_frequency"));
+	options.addOption(OptionBuilder.withArgName("mating_success").hasArg().withType(Double.class)
+		.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]").create("mating_success"));
 
-	options.addOption(OptionBuilder.withArgName("mating_proximity_radius").hasArg().withType(Integer.class)
-		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]")
-		.create("mating_proximity_radius"));
+	options.addOption(OptionBuilder.withArgName("mating_prox_rad").hasArg().withType(Integer.class)
+		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]").create("mating_prox_rad"));
+
+	options.addOption(OptionBuilder.withArgName("mating_gen_freq").hasArg().withType(Integer.class)
+		.withDescription("mating generation frequency [" + MATING_GENERATION_FREQUENCY + "]")
+		.create("mating_gen_freq"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -243,16 +248,22 @@ public class Settings {
 	    }
 	    printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
-	    if (line.hasOption("mating_frequency")) {
-		MATING_SUCCESS_RATE = new Double(line.getOptionValue("mating_frequency")).doubleValue();
+	    if (line.hasOption("mating_success")) {
+		MATING_SUCCESS_RATE = new Double(line.getOptionValue("mating_success")).doubleValue();
 	    }
 	    printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
-	    if (line.hasOption("mating_proximity_radius")) {
-		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_proximity_radius")).intValue();
+	    if (line.hasOption("mating_prox_rad")) {
+		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_prox_rad")).intValue();
 
 	    }
 	    printAndStore("MATING_PROXIMITY_RADIUS = " + MATING_PROXIMITY_RADIUS);
+
+	    if (line.hasOption("mating_gen_freq")) {
+		MATING_GENERATION_FREQUENCY = new Integer(line.getOptionValue("mating_gen_freq")).intValue();
+
+	    }
+	    printAndStore("MATING_GENERATION_FREQUENCY = " + MATING_GENERATION_FREQUENCY);
 
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
