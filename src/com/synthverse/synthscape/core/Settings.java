@@ -178,6 +178,8 @@ public class Settings {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 		} else if (modelName.equalsIgnoreCase("embodied")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
+		} else if (modelName.equalsIgnoreCase("alife")) {
+		    EVOLUTIONARY_MODEL = EvolutionaryModel.ALIFE_MODEL;
 		} else {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}

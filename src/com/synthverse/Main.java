@@ -32,6 +32,10 @@ public class Main {
 	    } else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
 		// embodied model
 		EmbodiedEvolutionSimulation.main(args);
+
+	    } else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
+		// TODO: implement ALIFE model
+		
 	    } else {
 		// alife model
 		D.p(settings.EVOLUTIONARY_MODEL + " is not ready yet");
