@@ -52,7 +52,7 @@ public class Settings {
 
     public double RESOURCE_DENSITY = 0.06;
 
-    public double MATING_FREQUENCY = 0.50;
+    public double MATING_SUCCESS_RATE = 0.50;
 
     public double MATING_PROXIMITY_RADIUS = 2;
 
@@ -166,7 +166,7 @@ public class Settings {
 		.create("seed_preset"));
 
 	options.addOption(OptionBuilder.withArgName("mating_frequency").hasArg().withType(Double.class)
-		.withDescription("mating frequency [" + MATING_FREQUENCY + "]").create("mating_frequency"));
+		.withDescription("mating frequency [" + MATING_SUCCESS_RATE + "]").create("mating_frequency"));
 
 	options.addOption(OptionBuilder.withArgName("mating_proximity_radius").hasArg().withType(Integer.class)
 		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]")
@@ -244,9 +244,9 @@ public class Settings {
 	    printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
 	    if (line.hasOption("mating_frequency")) {
-		MATING_FREQUENCY = new Double(line.getOptionValue("mating_frequency")).doubleValue();
+		MATING_SUCCESS_RATE = new Double(line.getOptionValue("mating_frequency")).doubleValue();
 	    }
-	    printAndStore("MATING_FREQUENCY = " + MATING_FREQUENCY);
+	    printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
 	    if (line.hasOption("mating_proximity_radius")) {
 		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_proximity_radius")).intValue();
