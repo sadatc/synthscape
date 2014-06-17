@@ -75,6 +75,8 @@ public abstract class Simulation extends SimState implements Constants {
 
     public SparseGrid2D agentGrid;
 
+    public boolean matingEnabled = false;
+
     protected ArrayList<Agent> agents;
 
     protected boolean isToroidalWorld;
@@ -296,7 +298,8 @@ public abstract class Simulation extends SimState implements Constants {
 	// set the primary collection site
 	collectionSiteGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	initCollisionGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X,
+		settings.PRIMARY_COLLECTION_SITE_Y));
     }
 
     protected void initNonPrimaryCollectionSites() {
@@ -476,9 +479,10 @@ public abstract class Simulation extends SimState implements Constants {
 	initEnvironment();
 	initAgents();
 
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
-		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
-		+ numberOfResources + " agents=" + agents.size());
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world="
+		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
+		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
+		+ agents.size());
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -599,8 +603,9 @@ public abstract class Simulation extends SimState implements Constants {
 	agent.eventStats.recordValue(event);
 
 	if (isReportEvents()) {
-	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
-		    agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
+	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
+		    agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(),
+		    agent.getY(), event, source, destination);
 	}
 
     }
@@ -643,7 +648,8 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (eventFileName.indexOf(".") != -1) {
 		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
 		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job() + postPart;
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job()
+			+ postPart;
 
 	    } else {
 		eventFileName += "_" + batchId + "_" + this.job();
