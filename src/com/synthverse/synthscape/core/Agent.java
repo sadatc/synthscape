@@ -287,7 +287,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    }
 	    break;
 	default:
-	    // TODO: add something later...
+	    // TODO: fix this...
 	}
 
 	return actionPerformed;

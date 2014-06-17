@@ -222,15 +222,7 @@ public class EmbodiedAgent extends Agent {
 
 	for (Event event : activeAgent.eventStats.getEvents()) {
 	    switch (event) {
-	    /*
-	     * case LOADED_RESOURCE: // TODO: wouldn't this make the agents just
-	     * keep wanting to load // and unload resources to maximize fitness?
-	     * result += (0.0005 * poolGenerationEventStats.getValue(event));
-	     * break; case UNLOADED_RESOURCE: // TODO: wouldn't this make the
-	     * agents just keep wanting to load // and unload resources to
-	     * maximize fitness? result += (0.0005 *
-	     * poolGenerationEventStats.getValue(event)); break;
-	     */
+	
 	    case COLLECTED_RESOURCE:
 		result += activeAgent.eventStats.getValue(event);
 		break;

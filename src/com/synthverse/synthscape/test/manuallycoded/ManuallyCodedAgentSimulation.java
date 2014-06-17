@@ -142,8 +142,7 @@ public class ManuallyCodedAgentSimulation extends Simulation {
 
     @Override
     protected void doEndOfStepTasks() {
-	// TODO Auto-generated method stub
-	
+
     }
 
 }
