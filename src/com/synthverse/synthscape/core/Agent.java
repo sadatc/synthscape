@@ -27,6 +27,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     private boolean scheduled = false;
     private Agent archetypeReference = null;
+    public int generationsSinceLastMating = Integer.MAX_VALUE;
 
     private HashMap<String, Integer> intPropertyMap = new HashMap<String, Integer>();
 

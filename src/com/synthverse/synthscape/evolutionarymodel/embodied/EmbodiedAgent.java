@@ -58,8 +58,6 @@ public class EmbodiedAgent extends Agent {
 
     public EmbodiedAgent mate = null;
 
-    public int generationsSinceLastMating = Integer.MAX_VALUE;
-
     protected static long _optimizationEmbodiedAgentCounter = 0;
 
     public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
@@ -67,11 +65,14 @@ public class EmbodiedAgent extends Agent {
     public List<Program> partnerABuffer = new ArrayList<Program>();
     public List<Program> partnerBBuffer = new ArrayList<Program>();
 
+    protected long embodiedAgentId;
+
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species,
 	    int poolSize) {
 	super(simulation, species);
 
 	_optimizationEmbodiedAgentCounter++;
+	embodiedAgentId = _optimizationEmbodiedAgentCounter;
 	setPoolSize(poolSize);
 
 	try {
@@ -90,6 +91,7 @@ public class EmbodiedAgent extends Agent {
 	super(sim, species, generationNumber, maxSteps, startX, startY);
 
 	_optimizationEmbodiedAgentCounter++;
+	embodiedAgentId = _optimizationEmbodiedAgentCounter;
 	setPoolSize(poolSize);
 	try {
 	    evolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
@@ -149,21 +151,27 @@ public class EmbodiedAgent extends Agent {
 		if (agent != this && agent instanceof EmbodiedAgent
 			&& agent.getSpecies() == this.getSpecies()) {
 		    double distance = distance(agent.x, agent.y, this.x, this.y);
-		    // D.p("distance = " + distance);
+
+		    // the partner agent must be close enough
+		    // the partner must have not mated recently AND
+		    // meet the success rate...
+
 		    if (distance <= Main.settings.MATING_PROXIMITY_RADIUS
+			    && agent.generationsSinceLastMating > Main.settings.MATING_GENERATION_FREQUENCY
 			    && sim.random.nextDouble() < Main.settings.MATING_SUCCESS_RATE) {
 			potentialMate = (EmbodiedAgent) agent;
 		    }
 		}
 	    }
 	    if (potentialMate != null) {
-		logger.info("gene exchange...for species:" + potentialMate.getSpecies());
 
 		// perform mating...
 		replaceBottomWithPartnerTop(this, potentialMate);
 		this.generationsSinceLastMating = 0;
 		potentialMate.generationsSinceLastMating = 0;
-
+		String speciesName = potentialMate.getSpecies().toString();
+		logger.info(speciesName + this.embodiedAgentId + " mated with " + speciesName
+			+ potentialMate.embodiedAgentId + " @generation=" + evolver.getGeneration());
 	    }
 
 	}
