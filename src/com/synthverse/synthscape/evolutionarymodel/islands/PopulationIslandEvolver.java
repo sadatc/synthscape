@@ -43,7 +43,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     public EvolutionEngine evolutionEngine;
     protected int requestCounter = 1;
     protected int cloneCounter = 1;
-    protected List<Agent> activeBuffer;
+    public List<Agent> activeBuffer;
 
     public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
 	    int clonesPerSpecies) throws Exception {
