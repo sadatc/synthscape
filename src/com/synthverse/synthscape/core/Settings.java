@@ -24,6 +24,8 @@ public class Settings {
 
     public boolean PEER_REWARDS = false;
 
+    public long SEED = 1;
+
     public int GENERATIONS = 500000;
 
     public int CLONES_PER_SPECIES = 10;
@@ -64,7 +66,7 @@ public class Settings {
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
-    public boolean SEED_GENOTYPE_PRESET_INSTRUCTIONS = false;
+    public boolean SEED_GENOTYPE_PRESET_INSTRUCTIONS = true;
 
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
     // TODO: separate this, if needed
@@ -100,14 +102,16 @@ public class Settings {
 	Options options = new Options();
 
 	options.addOption(new Option("help", "print this message"));
-	options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
-	options.addOption(new Option("show_graphics", "show graphics [default: don't show graphics]"));
+	options.addOption(new Option("no_randomization",
+		"do not randomize each sim [default: randomize]"));
+	options.addOption(new Option("show_graphics",
+		"show graphics [default: don't show graphics]"));
 	options.addOption(new Option("peer_rewards", "peer rewards [default: no peer rewards]"));
 
 	options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
 
-	options.addOption(OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]")
-		.create("log"));
+	options.addOption(OptionBuilder.withArgName("log").hasArg()
+		.withDescription("(off,all,info) [all]").create("log"));
 
 	options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
 		.withDescription("island, embodied, alife").create("model"));
@@ -116,7 +120,8 @@ public class Settings {
 		.withArgName("species")
 		.isRequired()
 		.hasArg()
-		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter")
+		.withDescription(
+			"species names [detector, extractor, transporter OR hetero] e.g. detector,transporter")
 		.create("species"));
 
 	options.addOption(OptionBuilder
@@ -131,12 +136,14 @@ public class Settings {
 		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
 
 	options.addOption(OptionBuilder.withArgName("clones").hasArg().withType(Integer.class)
-		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]").create("clones"));
+		.withDescription("clones per species [" + CLONES_PER_SPECIES + "]")
+		.create("clones"));
 
 	options.addOption(OptionBuilder.withArgName("pool_size").hasArg().withType(Integer.class)
 		.withDescription("gene pool size [" + GENE_POOL_SIZE + "]").create("pool_size"));
 
-	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg().withType(Integer.class)
+	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg()
+		.withType(Integer.class)
 		.withDescription("number of collection sites [" + NUMBER_OF_COLLECTION_SITES + "]")
 		.create("collection_sites"));
 
@@ -149,14 +156,19 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("max_steps").hasArg().withType(Integer.class)
 		.withDescription("max steps [" + WORLD_HEIGHT + "]").create("max_steps"));
 
-	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg().withType(Double.class)
-		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("obstacle_density"));
+	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg()
+		.withType(Double.class)
+		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]")
+		.create("obstacle_density"));
 
-	options.addOption(OptionBuilder.withArgName("resource_density").hasArg().withType(Double.class)
-		.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("resource_density"));
+	options.addOption(OptionBuilder.withArgName("resource_density").hasArg()
+		.withType(Double.class)
+		.withDescription("resource density [" + RESOURCE_DENSITY + "]")
+		.create("resource_density"));
 
 	options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
-		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("goal"));
+		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]")
+		.create("goal"));
 
 	options.addOption(OptionBuilder.withArgName("repeat").hasArg().withType(Integer.class)
 		.withDescription("repeat experiment [" + REPEAT + "]").create("repeat"));
@@ -164,18 +176,29 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("data_dir").hasArg()
 		.withDescription("data dir [" + EVENT_DATA_DIR + "]").create("data_dir"));
 
-	options.addOption(OptionBuilder.withArgName("seed_preset").hasArg().withDescription("(true, false) [false]")
-		.create("seed_preset"));
+	options.addOption(OptionBuilder.withArgName("preset_geno").hasArg()
+		.withDescription("(true, false) [true]").create("preset_geno"));
 
-	options.addOption(OptionBuilder.withArgName("mating_success").hasArg().withType(Double.class)
-		.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]").create("mating_success"));
+	options.addOption(OptionBuilder.withArgName("mating_success").hasArg()
+		.withType(Double.class)
+		.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]")
+		.create("mating_success"));
 
-	options.addOption(OptionBuilder.withArgName("mating_prox_rad").hasArg().withType(Integer.class)
-		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]").create("mating_prox_rad"));
+	options.addOption(OptionBuilder.withArgName("mating_prox_rad").hasArg()
+		.withType(Integer.class)
+		.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]")
+		.create("mating_prox_rad"));
 
-	options.addOption(OptionBuilder.withArgName("mating_gen_freq").hasArg().withType(Integer.class)
-		.withDescription("mating generation frequency [" + MATING_GENERATION_FREQUENCY + "]")
+	options.addOption(OptionBuilder
+		.withArgName("mating_gen_freq")
+		.hasArg()
+		.withType(Integer.class)
+		.withDescription(
+			"mating generation frequency [" + MATING_GENERATION_FREQUENCY + "]")
 		.create("mating_gen_freq"));
+
+	options.addOption(OptionBuilder.withArgName("seed").hasArg().withType(Long.class)
+		.withDescription("seed for randomizer [" + SEED + "]").create("seed"));
 
 	HelpFormatter formatter = new HelpFormatter();
 
@@ -205,7 +228,8 @@ public class Settings {
 	    if (line.hasOption("no_randomization")) {
 		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
 	    }
-	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
+	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = "
+		    + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
 
 	    if (line.hasOption("show_graphics")) {
 		SHOW_GRAPHICS = true;
@@ -238,32 +262,43 @@ public class Settings {
 	    printAndStore("RESOURCE_CAPTURE_GOAL = " + RESOURCE_CAPTURE_GOAL);
 
 	    if (line.hasOption("obstacle_density")) {
-		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density")).doubleValue();
+		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density"))
+			.doubleValue();
 	    }
 
 	    printAndStore("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
 
 	    if (line.hasOption("resource_density")) {
-		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density")).doubleValue();
+		RESOURCE_DENSITY = new Double(line.getOptionValue("resource_density"))
+			.doubleValue();
 	    }
 	    printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
 	    if (line.hasOption("mating_success")) {
-		MATING_SUCCESS_RATE = new Double(line.getOptionValue("mating_success")).doubleValue();
+		MATING_SUCCESS_RATE = new Double(line.getOptionValue("mating_success"))
+			.doubleValue();
 	    }
 	    printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
 	    if (line.hasOption("mating_prox_rad")) {
-		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_prox_rad")).intValue();
+		MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mating_prox_rad"))
+			.intValue();
 
 	    }
 	    printAndStore("MATING_PROXIMITY_RADIUS = " + MATING_PROXIMITY_RADIUS);
 
 	    if (line.hasOption("mating_gen_freq")) {
-		MATING_GENERATION_FREQUENCY = new Integer(line.getOptionValue("mating_gen_freq")).intValue();
+		MATING_GENERATION_FREQUENCY = new Integer(line.getOptionValue("mating_gen_freq"))
+			.intValue();
 
 	    }
 	    printAndStore("MATING_GENERATION_FREQUENCY = " + MATING_GENERATION_FREQUENCY);
+
+	    if (line.hasOption("seed")) {
+		SEED = new Integer(line.getOptionValue("seed")).longValue();
+
+	    }
+	    printAndStore("SEED = " + SEED);
 
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
@@ -288,7 +323,8 @@ public class Settings {
 
 		String speciesNames = line.getOptionValue("species").toLowerCase();
 		if (!(speciesNames.contains("hetero") || speciesNames.contains("extractor")
-			|| speciesNames.contains("detector") || speciesNames.contains("transporter"))) {
+			|| speciesNames.contains("detector") || speciesNames
+			    .contains("transporter"))) {
 		    throw new ParseException("species: " + speciesNames + " was not recognized");
 		}
 		MODEL_SPECIES = speciesNames;
@@ -301,7 +337,8 @@ public class Settings {
 		if (!(interactions.contains("none") || interactions.contains("trail")
 			|| interactions.contains("broadcast") || interactions.contains("unicast_n") || interactions
 			    .contains("unicast_g"))) {
-		    throw new ParseException("interactions: " + interactions + " was not recognized");
+		    throw new ParseException("interactions: " + interactions
+			    + " was not recognized");
 		}
 		MODEL_INTERACTIONS = interactions;
 
@@ -314,8 +351,8 @@ public class Settings {
 	    }
 	    printAndStore("GENERATIONS = " + GENERATIONS);
 
-	    if (line.hasOption("seed_preset")) {
-		String seedPreset = line.getOptionValue("seed_preset");
+	    if (line.hasOption("preset_geno")) {
+		String seedPreset = line.getOptionValue("preset_geno");
 		if (seedPreset.equalsIgnoreCase("true")) {
 		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = true;
 
@@ -324,12 +361,12 @@ public class Settings {
 		else if (seedPreset.equalsIgnoreCase("false")) {
 		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = false;
 		} else {
-		    throw new ParseException("seed_preset: " + seedPreset + " was not recognized");
+		    throw new ParseException("preset_geno: " + seedPreset + " was not recognized");
 		}
 
 	    }
 
-	    printAndStore("SEED.PRESET = " + SEED_GENOTYPE_PRESET_INSTRUCTIONS);
+	    printAndStore("PRESET.GENOTYPE = " + SEED_GENOTYPE_PRESET_INSTRUCTIONS);
 
 	    if (line.hasOption("clones")) {
 		CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
@@ -346,7 +383,8 @@ public class Settings {
 	    printAndStore("EMBODIED_AGENT_POOL_SIZE = " + EMBODIED_AGENT_POOL_SIZE);
 
 	    if (line.hasOption("collection_sites")) {
-		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();
+		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites"))
+			.intValue();
 
 	    }
 	    printAndStore("NUMBER_OF_COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
@@ -389,7 +427,8 @@ public class Settings {
 			    + " exists and needs to be removed first");
 		} else {
 		    if (!dir.mkdir()) {
-			throw new ParseException("Unable to create: " + EVENT_DATA_DIR + "directory; check permissions");
+			throw new ParseException("Unable to create: " + EVENT_DATA_DIR
+				+ "directory; check permissions");
 		    } else {
 			// D.p(EVENT_DATA_DIR + " created.");
 		    }
