@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
+import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulationFancyUI;
@@ -34,12 +35,14 @@ public class Main {
 		EmbodiedEvolutionSimulation.main(args);
 
 	    } else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
-		// TODO: implement ALIFE model
-		
-	    } else {
 		// alife model
-		D.p(settings.EVOLUTIONARY_MODEL + " is not ready yet");
+
+		ALifeEvolutionSimulation.main(args);
+
+	    } else {
+		logger.severe("UNKNOWN MODEL REQUESTED!");
 	    }
+
 	} catch (Exception e) {
 	    logger.severe(e.getMessage());
 	}
