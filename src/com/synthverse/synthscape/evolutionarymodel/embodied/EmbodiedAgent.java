@@ -1,11 +1,14 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import sim.engine.SimState;
+import sim.util.Bag;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
@@ -16,9 +19,9 @@ import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Event;
+import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Trait;
 import com.synthverse.util.LogUtils;
 
@@ -41,7 +44,7 @@ public class EmbodiedAgent extends Agent {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private EmbodiedAgentEvolver evolver;
+    public EmbodiedAgentEvolver evolver;
 
     // private PopulationIslandEvolver islandEvolver = null;
 
@@ -55,11 +58,17 @@ public class EmbodiedAgent extends Agent {
 
     public EmbodiedAgent mate = null;
 
+    public int generationsSinceLastMating = Integer.MAX_VALUE;
+
     protected static long _optimizationEmbodiedAgentCounter = 0;
 
     public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
 
-    public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
+    public List<Program> partnerABuffer = new ArrayList<Program>();
+    public List<Program> partnerBBuffer = new ArrayList<Program>();
+
+    public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species,
+	    int poolSize) {
 	super(simulation, species);
 
 	_optimizationEmbodiedAgentCounter++;
@@ -116,6 +125,84 @@ public class EmbodiedAgent extends Agent {
 	activeAgent.getVirtualMachine().step();
 	// synchronize location
 	synchronizeLocationFromActiveAgent();
+
+    }
+
+    private final void mateWithPotentiallyClosebyPartner() {
+	// attempt to mate, if any other agents of the same species nearby
+	// nearby...
+
+	if (generationsSinceLastMating > Main.settings.MATING_GENERATION_FREQUENCY) {
+
+	    // first let's find out the closest agent
+
+	    EmbodiedAgent potentialMate = null;
+	    Bag agentBag = sim.agentGrid.getAllObjects();
+
+	    // find the closest agent that is of the same species and within
+	    // MATING_PROXIMITY_RADIUS distance
+
+	    for (int i = 0; i < agentBag.numObjs; i++) {
+		Agent agent = (Agent) agentBag.get(i);
+
+		// must be of same species...
+		if (agent != this && agent instanceof EmbodiedAgent
+			&& agent.getSpecies() == this.getSpecies()) {
+		    double distance = distance(agent.x, agent.y, this.x, this.y);
+		    // D.p("distance = " + distance);
+		    if (distance <= Main.settings.MATING_PROXIMITY_RADIUS
+			    && sim.random.nextDouble() < Main.settings.MATING_SUCCESS_RATE) {
+			potentialMate = (EmbodiedAgent) agent;
+		    }
+		}
+	    }
+	    if (potentialMate != null) {
+		logger.info("gene exchange...for species:" + potentialMate.getSpecies());
+
+		// perform mating...
+		replaceBottomWithPartnerTop(this, potentialMate);
+		this.generationsSinceLastMating = 0;
+		potentialMate.generationsSinceLastMating = 0;
+
+	    }
+
+	}
+
+    }
+
+    private final void replaceBottomWithPartnerTop(EmbodiedAgent partnerA, EmbodiedAgent partnerB) {
+
+	partnerABuffer.clear();
+	partnerBBuffer.clear();
+
+	int partnerASize = partnerA.evolver.activeBuffer.size();
+	int partnerBSize = partnerB.evolver.activeBuffer.size();
+
+	int partnerAHalfIndex = partnerASize / 2;
+	int partnerBHalfIndex = partnerBSize / 2;
+
+	if (partnerAHalfIndex != partnerBHalfIndex) {
+	    logger.info("buffer sizes should never be different -- investigate");
+	    System.exit(1);
+	}
+
+	// make a deep copy of A's top half
+	for (int i = 0; i < partnerAHalfIndex; i++) {
+	    partnerABuffer.add(new Program(partnerA.evolver.activeBuffer.get(i).getProgram()));
+	}
+	// now write this into B's bottom half
+	for (int i = partnerBHalfIndex, k = 0; i < partnerBSize; i++, k++) {
+	    partnerB.evolver.activeBuffer.get(i).setProgram(partnerABuffer.get(k));
+	}
+
+	// make a deep copy of B's top half
+	for (int i = 0; i < partnerBHalfIndex; i++) {
+	    partnerBBuffer.add(new Program(partnerB.evolver.activeBuffer.get(i).getProgram()));
+	}
+	// now write this into A's bottom half
+	for (int i = partnerAHalfIndex, k = 0; i < partnerASize; i++, k++) {
+	    partnerA.evolver.activeBuffer.get(i).setProgram(partnerBBuffer.get(k));
+	}
 
     }
 
@@ -237,7 +324,18 @@ public class EmbodiedAgent extends Agent {
     }
 
     public int evolve() {
-	return evolver.evolve();
+	if (generationsSinceLastMating < Integer.MAX_VALUE) {
+	    generationsSinceLastMating++;
+	}
+
+	int returnValue = evolver.evolve();
+
+	if (sim.matingEnabled) {
+	    mateWithPotentiallyClosebyPartner();
+	}
+
+	return returnValue;
+
     }
 
     public int getGeneration() {
@@ -277,13 +375,16 @@ public class EmbodiedAgent extends Agent {
 	do {
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_HOME));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_DETECT_HOME));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_TRAIL));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_DETECT_TRAIL));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_EXTRACTED_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
@@ -292,17 +393,26 @@ public class EmbodiedAgent extends Agent {
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_RAW_RESOURCE));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_RESOURCE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_E));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_W));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_NW));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SE));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_SW));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_E));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_W));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_NE));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_NW));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_SE));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_MOVE_SW));
 	    this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_MOVE_TO_CLOSEST_HOME));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
-	    this.program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
+	    this.program.addInstructionSafely(GenotypeInstruction
+		    .fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
 	    spaceLeft = this.program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
 	} while (spaceLeft);
