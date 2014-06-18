@@ -52,9 +52,9 @@ public class Settings {
 
     public double RESOURCE_DENSITY = 0.06;
 
-    public double MATING_SUCCESS_RATE = 0.50;
+    public double MATING_SUCCESS_RATE = 0.3;
 
-    public double MATING_PROXIMITY_RADIUS = 2;
+    public double MATING_PROXIMITY_RADIUS = 1;
 
     public int MATING_GENERATION_FREQUENCY = 10;
 
