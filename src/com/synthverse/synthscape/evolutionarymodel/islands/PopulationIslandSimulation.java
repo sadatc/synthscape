@@ -67,7 +67,7 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed "+settings.SEED);
 	doLoop(PopulationIslandSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 	logger.info("Diagnosis: total # of islander agents created: "
