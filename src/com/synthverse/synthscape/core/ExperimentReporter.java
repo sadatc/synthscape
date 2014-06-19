@@ -364,7 +364,6 @@ public class ExperimentReporter implements Constants {
 
 	    int trailSent = poolEventStats.getValue(Event.SENT_TRAIL);
 	    int trailReceived = poolEventStats.getValue(Event.RECEIVED_TRAIL);
-	    int trailSearched = poolEventStats.getValue(Event.DETECT_TRAIL);
 
 	    poolEventStats.clear();
 
@@ -396,9 +395,6 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(trailReceived);
-		sbPerformance.append(COMMA);
-
-		sbPerformance.append(trailSearched);
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(poolComposition);
@@ -434,7 +430,7 @@ public class ExperimentReporter implements Constants {
 		    columnHeader += name + "_FITNESS_VAR, ";
 		    columnHeader += name + "_TRAILS_SENT, ";
 		    columnHeader += name + "_TRAILS_RECEIVED, ";
-		    columnHeader += name + "_TRAILS_SEARCHED";
+
 		}
 
 		performanceWriter.write(columnHeader);
@@ -493,10 +489,7 @@ public class ExperimentReporter implements Constants {
 			    }
 
 			    trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
-			    trailReceived += embodiedAgent.poolGenerationEventStats
-				    .getValue(Event.RECEIVED_TRAIL);
-			    trailSearched += embodiedAgent.poolGenerationEventStats
-				    .getValue(Event.DETECT_TRAIL);
+			    trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_TRAIL);
 
 			}
 
@@ -569,7 +562,6 @@ public class ExperimentReporter implements Constants {
 
 		    int trailSent = eventStats.getValue(Event.SENT_TRAIL);
 		    int trailReceived = eventStats.getValue(Event.RECEIVED_TRAIL);
-		    int trailSearched = eventStats.getValue(Event.DETECT_TRAIL);
 
 		    sbPerformance.append(0);
 		    sbPerformance.append(COMMA);
@@ -581,9 +573,6 @@ public class ExperimentReporter implements Constants {
 		    sbPerformance.append(COMMA);
 
 		    sbPerformance.append(trailReceived);
-		    sbPerformance.append(COMMA);
-
-		    sbPerformance.append(trailSearched);
 		    sbPerformance.append(COMMA);
 
 		}
