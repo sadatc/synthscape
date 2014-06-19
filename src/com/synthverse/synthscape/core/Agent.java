@@ -253,7 +253,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	int y = location.y;
 
 	trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
-	sim.reportEvent(this, Event.SENT_GENERIC_TRAIL, "" + this.agentId, NA);
+	sim.reportEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
     }
 
     public void _operationLeaveRewards(DoubleGrid2D rewardGrid, Event rewardEvent) {
@@ -360,7 +360,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	// now move to the highest concentration
 	// or move randomly
 	if (maxTrail > 0) {
-	    sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, "" + this.agentId);
+	    sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    _operationMoveAbsolute(maxX, maxY);
 	} else {
 	    _operationRandomMove();
@@ -553,7 +553,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationFollowTrail() {
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-	    sim.reportEvent(this, Event.SEARCHED_GENERIC_TRAIL, "" + this.agentId, NA);
+	    sim.reportEvent(this, Event.DETECT_TRAIL, "" + this.agentId, NA);
 	    _operationFollowTrail(sim.trailGrid);
 
 	    // sim.statistics.stepData.trailFollows++;
@@ -613,9 +613,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final boolean operationDetectTrail() {
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-	    sim.reportEvent(this, Event.SEARCHED_GENERIC_TRAIL, "" + this.agentId, NA);
+	    sim.reportEvent(this, Event.DETECT_TRAIL, "" + this.agentId, NA);
 	    if (this.locationHasTrail) {
-		sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, "" + this.agentId);
+		sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    }
 	    return this.locationHasTrail;
 	} else {
@@ -781,7 +781,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (sim.trailGrid.field[x][y] >= 1) {
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
-		sim.reportEvent(this, Event.RECEIVED_GENERIC_TRAIL, NA, "" + this.agentId);
+		sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    }
 	} else {
 	    this.locationHasTrail = false;

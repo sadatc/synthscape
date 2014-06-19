@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -15,8 +14,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
-import com.synthverse.synthscape.evolutionarymodel.islands.ArchipelagoEvolver;
-import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
@@ -365,9 +362,9 @@ public class ExperimentReporter implements Constants {
 		return;
 	    }
 
-	    int trailSent = poolEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
-	    int trailReceived = poolEventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-	    int trailSearched = poolEventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+	    int trailSent = poolEventStats.getValue(Event.SENT_TRAIL);
+	    int trailReceived = poolEventStats.getValue(Event.RECEIVED_TRAIL);
+	    int trailSearched = poolEventStats.getValue(Event.DETECT_TRAIL);
 
 	    poolEventStats.clear();
 
@@ -495,11 +492,11 @@ public class ExperimentReporter implements Constants {
 				summaryFitnessStats.addValue(fitnessValue);
 			    }
 
-			    trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_GENERIC_TRAIL);
+			    trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
 			    trailReceived += embodiedAgent.poolGenerationEventStats
-				    .getValue(Event.RECEIVED_GENERIC_TRAIL);
+				    .getValue(Event.RECEIVED_TRAIL);
 			    trailSearched += embodiedAgent.poolGenerationEventStats
-				    .getValue(Event.SEARCHED_GENERIC_TRAIL);
+				    .getValue(Event.DETECT_TRAIL);
 
 			}
 
@@ -570,9 +567,9 @@ public class ExperimentReporter implements Constants {
 
 		    EventStats eventStats = speciesEventStatsMap.get(species);
 
-		    int trailSent = eventStats.getValue(Event.SENT_GENERIC_TRAIL);
-		    int trailReceived = eventStats.getValue(Event.RECEIVED_GENERIC_TRAIL);
-		    int trailSearched = eventStats.getValue(Event.SEARCHED_GENERIC_TRAIL);
+		    int trailSent = eventStats.getValue(Event.SENT_TRAIL);
+		    int trailReceived = eventStats.getValue(Event.RECEIVED_TRAIL);
+		    int trailSearched = eventStats.getValue(Event.DETECT_TRAIL);
 
 		    sbPerformance.append(0);
 		    sbPerformance.append(COMMA);
