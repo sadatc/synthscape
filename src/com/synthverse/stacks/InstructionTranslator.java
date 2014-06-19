@@ -93,7 +93,7 @@ public class InstructionTranslator {
 			continue;
 		    }
 		}
-		
+
 		instructionTable.put(instruction.toString(), instruction);
 		instructionArray.add(instruction);
 	    }
@@ -211,8 +211,7 @@ public class InstructionTranslator {
 	    result = new GenotypeInstruction(randomNumberGenerator.nextInt(100));
 
 	} else {
-	    // result = new
-	    // GenotypeInstruction(instructions[getRandomCode(randomNumberGenerator)]);
+
 	    result = GenotypeInstruction.fromInstruction(instructions[getRandomCode(randomNumberGenerator)]);
 	}
 
@@ -225,40 +224,14 @@ public class InstructionTranslator {
 	sb.append(numInstructions);
 	sb.append(" instructions to the vocabulary...");
 	logger.info(sb.toString());
-	
-	for(Instruction instruction: instructions) {
-	    logger.info("ADDED INSTRUCTION: "+instruction);
-	}
-	
-	
-	
-	
+
+	/*
+	 * for(Instruction instruction: instructions) {
+	 * logger.info("ADDED INSTRUCTION: "+instruction); }
+	 */
+
 	logger.info("<<< done adding.\n");
 	System.exit(1);
     }
-
-    /*
-     * public static final GenotypeInstruction guessFromInt(int anyInt) {
-     * GenotypeInstruction instruction = GenotypeInstruction.NOOP;
-     * 
-     * anyInt = (anyInt < 0) ? 0 : anyInt; anyInt = (anyInt < numInstructions) ?
-     * anyInt : anyInt % numInstructions;
-     * 
-     * instruction = toInstruction(anyInt);
-     * 
-     * return instruction; }
-     * 
-     * public static final Instruction guessFromFloat(double anyFloat) {
-     * Instruction instruction = Instruction.NOOP;
-     * 
-     * anyFloat = (anyFloat < 0) ? -anyFloat : anyFloat; instruction =
-     * toInstruction((anyFloat < numInstructions) ? (int) anyFloat : (int)
-     * anyFloat % numInstructions);
-     * 
-     * return instruction; }
-     * 
-     * public static final Instruction guessFromBoolean(boolean anyBool) {
-     * return (anyBool) ? Instruction.CONST_TRUE : Instruction.CONST_FALSE; }
-     */
 
 }
