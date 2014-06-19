@@ -27,7 +27,7 @@ public class ALifeEvolutionSimulation extends EmbodiedEvolutionSimulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed 2");
+	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed "+settings.SEED);
 	doLoop(ALifeEvolutionSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: "
 		+ Agent.get_optimazationTotalAgentsCounters());

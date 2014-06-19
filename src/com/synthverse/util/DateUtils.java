@@ -5,7 +5,8 @@ import java.text.SimpleDateFormat;
 
 public final class DateUtils {
 
-    private static final String FILE_STAMP_FORMAT = "MM_dd_yyyy_HH_mm";
+    //private static final String FILE_STAMP_FORMAT = "MM_dd_yyyy_HH_mm";
+    private static final String FILE_STAMP_FORMAT = "MMddyyyyHHmm";
     private static final String REPORT_FORMAT = "MM/dd/yyyy HH:mm";
     private static DateFormat fileStampFormatter = null;
     private static DateFormat reportFormatter = null;
