@@ -296,19 +296,19 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public void operationFollowBroadcast(SignalType signalType) {
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 		if (broadcast != null) {
 		    // logger.info("moving to a broadcast:" + signalType);
 
-		    if (signalType == SignalType.RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_RAW_RESOURCE_BROADCAST, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.EXTRACTED_RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_EXTRACTED_RESOURCE_BROADCAST, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.PROCESSED_RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_PROCESSED_RESOURCE_BROADCAST, NA, "" + this.agentId);
+		    if (signalType == SignalType.SIGNAL_A) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_B) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_C) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
 		    }
 
 		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
@@ -320,17 +320,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public void operationBroadcast(SignalType signalType) {
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 		Broadcast broadcast = new Broadcast(this, signalType, this.x, this.y, 0);
 		sim.registerBroadcast(broadcast);
 
-		if (signalType == SignalType.RESOURCE) {
-		    sim.reportEvent(this, Event.SENT_RAW_RESOURCE_BROADCAST, "" + this.agentId, NA);
-		} else if (signalType == SignalType.EXTRACTED_RESOURCE) {
-		    sim.reportEvent(this, Event.SENT_EXTRACTED_RESOURCE_BROADCAST, "" + this.agentId, NA);
-		} else if (signalType == SignalType.PROCESSED_RESOURCE) {
-		    sim.reportEvent(this, Event.SENT_PROCESSED_RESOURCE_BROADCAST, "" + this.agentId, NA);
+		if (signalType == SignalType.SIGNAL_A) {
+		    sim.reportEvent(this, Event.SENT_BROADCAST_A, "" + this.agentId, NA);
+		} else if (signalType == SignalType.SIGNAL_B) {
+		    sim.reportEvent(this, Event.SENT_BROADCAST_B, "" + this.agentId, NA);
+		} else if (signalType == SignalType.SIGNAL_C) {
+		    sim.reportEvent(this, Event.SENT_BROADCAST_C, "" + this.agentId, NA);
 		}
 	    }
 	}
@@ -339,18 +339,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public boolean operationDetectBroadcast(SignalType signalType) {
 	boolean result = false;
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.PROCESSED_RESOURCE)
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 
 		if (broadcast != null) {
 
-		    if (signalType == SignalType.RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_RAW_RESOURCE_BROADCAST, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.EXTRACTED_RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_EXTRACTED_RESOURCE_BROADCAST, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.PROCESSED_RESOURCE) {
-			sim.reportEvent(this, Event.RECEIVED_PROCESSED_RESOURCE_BROADCAST, NA, "" + this.agentId);
+		    if (signalType == SignalType.SIGNAL_A) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_B) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_C) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
 		    }
 
 		    result = true;

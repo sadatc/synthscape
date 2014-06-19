@@ -1260,78 +1260,78 @@ public enum Instruction {
 
     },
 
-    ACTION_BROADCAST_RESOURCE("ACTION.BROADCAST_RESOURCE") {
+    ACTION_BROADCAST_A("ACTION.BROADCAST_A") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationBroadcast(SignalType.RESOURCE);
+	    virtualMachine.getAgent().operationBroadcast(SignalType.SIGNAL_A);
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_FOLLOW_BROADCAST_RESOURCE("ACTION.FOLLOW_BROADCAST_RESOURCE") {
+    ACTION_FOLLOW_BROADCAST_A("ACTION.FOLLOW_BROADCAST_A") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.RESOURCE);
+	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.SIGNAL_A);
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_DETECT_BROADCAST_RESOURCE("ACTION.DETECT_BROADCAST_RESOURCE") {
+    ACTION_DETECT_BROADCAST_A("ACTION.DETECT_BROADCAST_A") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(
-		    virtualMachine.getAgent().operationDetectBroadcast(SignalType.RESOURCE));
+		    virtualMachine.getAgent().operationDetectBroadcast(SignalType.SIGNAL_A));
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_BROADCAST_EXTRACT("ACTION.BROADCAST_EXTRACT") {
+    ACTION_BROADCAST_B("ACTION.BROADCAST_B") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationBroadcast(SignalType.EXTRACTED_RESOURCE);
+	    virtualMachine.getAgent().operationBroadcast(SignalType.SIGNAL_B);
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_FOLLOW_BROADCAST_EXTRACT("ACTION.FOLLOW_BROADCAST_EXTRACT") {
+    ACTION_FOLLOW_BROADCAST_B("ACTION.FOLLOW_BROADCAST_B") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.EXTRACTED_RESOURCE);
+	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.SIGNAL_B);
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_DETECT_BROADCAST_EXTRACT("ACTION.DETECT_BROADCAST_EXTRACT") {
+    ACTION_DETECT_BROADCAST_B("ACTION.DETECT_BROADCAST_B") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(
 		    virtualMachine.getAgent().operationDetectBroadcast(
-			    SignalType.EXTRACTED_RESOURCE));
+			    SignalType.SIGNAL_B));
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_BROADCAST_PROCESSED("ACTION.BROADCAST_PROCESSED") {
+    ACTION_BROADCAST_C("ACTION.BROADCAST_C") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationBroadcast(SignalType.PROCESSED_RESOURCE);
+	    virtualMachine.getAgent().operationBroadcast(SignalType.SIGNAL_C);
 	    virtualMachine.incrementIP();
 	}
 
     },
 
-    ACTION_FOLLOW_BROADCAST_PROCESSED("ACTION.FOLLOW_BROADCAST_PROCESSED") {
+    ACTION_FOLLOW_BROADCAST_C("ACTION.FOLLOW_BROADCAST_C") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.PROCESSED_RESOURCE);
+	    virtualMachine.getAgent().operationFollowBroadcast(SignalType.SIGNAL_C);
 	    virtualMachine.incrementIP();
 	}
 
     },
     
-    ACTION_DETECT_BROADCAST_PROCESSED("ACTION.DETECT_BROADCAST_PROCESSED") {
+    ACTION_DETECT_BROADCAST_C("ACTION.DETECT_BROADCAST_C") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(
 		    virtualMachine.getAgent().operationDetectBroadcast(
-			    SignalType.PROCESSED_RESOURCE));
+			    SignalType.SIGNAL_C));
 	    virtualMachine.incrementIP();
 	}
 
