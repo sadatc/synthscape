@@ -26,7 +26,7 @@ public class Settings {
 
     public long SEED = 1;
 
-    public int GENERATIONS = 500000;
+    public int GENERATIONS = 10000;
 
     public int CLONES_PER_SPECIES = 10;
 
