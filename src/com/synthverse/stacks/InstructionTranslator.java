@@ -17,6 +17,8 @@
 
 package com.synthverse.stacks;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -42,20 +44,60 @@ public class InstructionTranslator {
 
     private static Instruction[] instructions = null;
 
+    private static ArrayList<Instruction> instructionArray = new ArrayList<Instruction>();
+
     private static HashMap<String, Instruction> instructionTable = new HashMap<String, Instruction>();
+
+    private static EnumMap<Instruction, Integer> instruction2CodeMap = new EnumMap<Instruction, Integer>(
+	    Instruction.class);
 
     private static int numInstructions;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-	instructions = Instruction.values();
-	numInstructions = instructions.length;
 	setupInstructionTable();
+	numInstructions = instructionArray.size();
+	instructions = new Instruction[numInstructions];
+	for (int i = 0; i < numInstructions; i++) {
+	    Instruction theInstruction = instructionArray.get(i);
+	    instructions[i] = theInstruction;
+	    instruction2CodeMap.put(theInstruction, i);
+	}
     }
 
     private static void setupInstructionTable() {
-	for (Instruction instruction : instructions) {
-	    instructionTable.put(instruction.toString(), instruction);
+
+	Instruction[] allInstructions = Instruction.values();
+
+	for (Instruction instruction : allInstructions) {
+	    if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("none")) {
+		if (!instruction.name().contains("TRAIL") && !instruction.name().contains("BROADCAST")
+			&& !instruction.name().contains("UNICAST")) {
+
+		    instructionTable.put(instruction.toString(), instruction);
+		    instructionArray.add(instruction);
+		}
+	    } else {
+		if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("trail")) {
+		    if (instruction.name().contains("TRAIL")) {
+			continue;
+		    }
+		}
+		if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("broadcast")) {
+		    if (instruction.name().contains("BROADCAST")) {
+			continue;
+		    }
+		}
+		if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("unicast")) {
+		    if (instruction.name().contains("UNICAST")) {
+			continue;
+		    }
+		}
+		
+		instructionTable.put(instruction.toString(), instruction);
+		instructionArray.add(instruction);
+	    }
+
 	}
     }
 
@@ -83,7 +125,7 @@ public class InstructionTranslator {
      * @return
      */
     public static final int toCode(Instruction instruction) {
-	return instruction.ordinal();
+	return instruction2CodeMap.get(instruction);
     }
 
     /**
@@ -183,17 +225,16 @@ public class InstructionTranslator {
 	sb.append(numInstructions);
 	sb.append(" instructions to the vocabulary...");
 	logger.info(sb.toString());
-	/*
-	for (int i = 0; i < instructions.length; i++) {
-	    sb.setLength(0);
-	    sb.append("instruction #");
-	    sb.append(i);
-	    sb.append(":");
-	    sb.append(instructions[i]);
-	    logger.info(sb.toString());
+	
+	for(Instruction instruction: instructions) {
+	    logger.info("ADDED INSTRUCTION: "+instruction);
 	}
-	*/
+	
+	
+	
+	
 	logger.info("<<< done adding.\n");
+	System.exit(1);
     }
 
     /*

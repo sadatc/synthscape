@@ -1337,6 +1337,39 @@ public enum Instruction {
 
     },
 
+    
+    /*
+    
+    ACTION_UNICAST_CLOSEST_A("ACTION.UNI_CLOSE_A") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationUnicastClosest(SignalType.SIGNAL_A);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_FOLLOW_UNICAST_CLOSEST_A("ACTION.FOLLOW_UNI_CLOSE_A") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationFollowUnicastClosest(SignalType.SIGNAL_A);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_DETECT_UNICAST_CLOSEST_A("ACTION.DETECT_UNI_CLOSE_A") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().operationDetectUnicastClosest(SignalType.SIGNAL_A));
+	    virtualMachine.incrementIP();
+	}
+
+    },
+    
+    */
+    
+    
+    
+    
 
     ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
 	public void execute(VirtualMachine virtualMachine) {
