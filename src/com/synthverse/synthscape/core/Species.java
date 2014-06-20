@@ -10,8 +10,7 @@ public enum Species {
 	public LinkedHashSet<Trait> define() {
 	    LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
 	    traits.add(Trait.DETECTION);
-	    traits.add(Trait.FLOCKING);
-	    traits.add(Trait.HOMING);
+
 	    return traits;
 	}
 
@@ -22,8 +21,7 @@ public enum Species {
 	public LinkedHashSet<Trait> define() {
 	    LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
 	    traits.add(Trait.EXTRACTION);
-	    traits.add(Trait.HOMING);
-	    traits.add(Trait.FLOCKING);
+
 	    return traits;
 	}
 
@@ -32,8 +30,7 @@ public enum Species {
 	public LinkedHashSet<Trait> define() {
 	    LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
 	    traits.add(Trait.PROCESSING);
-	    traits.add(Trait.FLOCKING);
-	    traits.add(Trait.HOMING);
+
 	    return traits;
 	}
 
@@ -43,8 +40,6 @@ public enum Species {
 	    LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
 
 	    traits.add(Trait.TRANSPORTATION);
-	    traits.add(Trait.FLOCKING);
-	    traits.add(Trait.HOMING);
 
 	    return traits;
 	}
@@ -57,9 +52,9 @@ public enum Species {
 
 	    traits.add(Trait.DETECTION);
 	    traits.add(Trait.EXTRACTION);
-	    traits.add(Trait.FLOCKING);
+
 	    traits.add(Trait.TRANSPORTATION);
-	    traits.add(Trait.HOMING);
+
 	    traits.add(Trait.PROCESSING);
 
 	    return traits;
