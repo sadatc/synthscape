@@ -3,8 +3,8 @@ package com.synthverse.synthscape.evolutionarymodel.islands;
 import sim.engine.SimState;
 
 import com.synthverse.Main;
-import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.GenotypeInstruction;
+import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
