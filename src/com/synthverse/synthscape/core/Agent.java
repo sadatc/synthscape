@@ -406,12 +406,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    targetUnicast.setSignalType(signalType);
 		    targetUnicast.setStepClock(-1);
 		}
-		/*
-		 * D.p("Unicast:" + targetUnicast + "(" + closestAgent.x + "," +
-		 * closestAgent.y + "," + senderAgent.x + "," + senderAgent.y +
-		 * ")" + " distance:" + distance(closestAgent.x, closestAgent.y,
-		 * senderAgent.x, senderAgent.y));
-		 */
+
+		D.p("Unicast:" + targetUnicast + "(" + closestAgent.x + "," + closestAgent.y + "," + senderAgent.x
+			+ "," + senderAgent.y + ")" + " distance:"
+			+ distance(closestAgent.x, closestAgent.y, senderAgent.x, senderAgent.y));
+
 	    }
 	}
     }
@@ -641,18 +640,23 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	for (int i = 0; i < agentBag.numObjs; i++) {
 
 	    Agent agent = (Agent) agentBag.get(i);
-	    if (agent != this) {
-		if (this.isHosted() && agent != this.getHostAgent()) {
-		    if (agent.isHosted() && agent.getHostAgent() != this) {
-
-			double distance = distance(agent.x, agent.y, this.x, this.y);
-			if (distance >= minimumDistance && distance < closestDistance) {
-			    closestAgent = agent;
-			    closestDistance = distance;
-			}
-		    }
-		}
+	    if (agent == this) {
+		continue;
 	    }
+	    if (this.isHosted() && agent == this.getHostAgent()) {
+		continue;
+	    }
+
+	    if (agent.isHosted() && agent.getHostAgent() == this) {
+		continue;
+	    }
+
+	    double distance = distance(agent.x, agent.y, this.x, this.y);
+	    if (distance >= minimumDistance && distance < closestDistance) {
+		closestAgent = agent;
+		closestDistance = distance;
+	    }
+
 	}
 	return closestAgent;
     }
