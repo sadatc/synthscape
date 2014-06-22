@@ -50,8 +50,8 @@ public class Unicast {
     public void setSenderAgent(Agent senderAgent) {
 	this.senderAgent = senderAgent;
 	if(senderAgent!=null) {
-	    senderX = senderAgent.x;
-	    senderY = senderAgent.y;
+	    this.senderX = senderAgent.x;
+	    this.senderY = senderAgent.y;
 	}
     }
 
@@ -75,6 +75,22 @@ public class Unicast {
     public String toString() {
 	return "Unicast [senderAgent=" + senderAgent.getAgentId() + ", receiverAgent=" + receiverAgent.getAgentId() + ", signalType="
 		+ signalType + ", stepClock=" + stepClock + "]";
+    }
+
+    public int getSenderX() {
+        return senderX;
+    }
+
+    public void setSenderX(int senderX) {
+        this.senderX = senderX;
+    }
+
+    public int getSenderY() {
+        return senderY;
+    }
+
+    public void setSenderY(int senderY) {
+        this.senderY = senderY;
     }
 
     
