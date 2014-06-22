@@ -1359,7 +1359,7 @@ public enum Instruction {
 
     },
     
-    /*
+    
 
     ACTION_FOLLOW_UNICAST_CLOSEST_A("ACTION.FOLLOW_UNI_CLOSE_A") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1368,6 +1368,28 @@ public enum Instruction {
 	}
 
     },
+    
+    
+    ACTION_FOLLOW_UNICAST_CLOSEST_B("ACTION.FOLLOW_UNI_CLOSE_B") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationFollowUnicastClosest(SignalType.SIGNAL_B);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    
+    ACTION_FOLLOW_UNICAST_CLOSEST_C("ACTION.FOLLOW_UNI_CLOSE_C") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getAgent().operationFollowUnicastClosest(SignalType.SIGNAL_C);
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    
+    
+/*    
 
     ACTION_DETECT_UNICAST_CLOSEST_A("ACTION.DETECT_UNI_CLOSE_A") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1377,8 +1399,8 @@ public enum Instruction {
 	}
 
     },
-
-	*/
+*/
+	
     ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(

@@ -597,9 +597,10 @@ public abstract class Simulation extends SimState implements Constants {
 	resetAll();
 	startSimulation();
     }
+    
 
     public void reportEvent(Agent agent, Event event, String source, String destination) {
-
+	// TODO: fix reportEvent so it can take ints too for source and destination
 	agent.eventStats.recordValue(event);
 
 	if (isReportEvents()) {

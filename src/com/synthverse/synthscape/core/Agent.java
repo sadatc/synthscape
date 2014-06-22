@@ -382,27 +382,28 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		}
 
 		Unicast targetUnicast = null;
-
-		if (signalType == SignalType.SIGNAL_A) {
-		    targetUnicast = closestAgent.receivedUnicastA;
-		    sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + this.agentId, "" + closestAgent.agentId);
-		} else if (signalType == SignalType.SIGNAL_B) {
-		    targetUnicast = closestAgent.receivedUnicastB;
-		    sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + this.agentId, "" + closestAgent.agentId);
-		} else if (signalType == SignalType.SIGNAL_C) {
-		    targetUnicast = closestAgent.receivedUnicastC;
-		    sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + this.agentId, "" + closestAgent.agentId);
-		}
-
 		Agent senderAgent = this;
 		if (this.isHosted()) {
 		    senderAgent = this.getHostAgent();
 		}
+
+		if (signalType == SignalType.SIGNAL_A) {
+		    targetUnicast = closestAgent.receivedUnicastA;
+		    sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + senderAgent.agentId, ""
+			    + closestAgent.agentId);
+		} else if (signalType == SignalType.SIGNAL_B) {
+		    targetUnicast = closestAgent.receivedUnicastB;
+		    sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + senderAgent.agentId, ""
+			    + closestAgent.agentId);
+		} else if (signalType == SignalType.SIGNAL_C) {
+		    targetUnicast = closestAgent.receivedUnicastC;
+		    sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + senderAgent.agentId, ""
+			    + closestAgent.agentId);
+		}
+
 		if (targetUnicast != null) {
 		    targetUnicast.setReceiverAgent(closestAgent);
-
 		    targetUnicast.setSenderAgent(senderAgent);
-
 		    targetUnicast.setSignalType(signalType);
 		    targetUnicast.setStepClock(-1);
 		}
@@ -415,26 +416,51 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	}
     }
 
-    public void operationFollowUnicast(SignalType signalType) {
+    public void operationFollowUnicastClosest(SignalType signalType) {
 	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
-		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
-		if (broadcast != null) {
-		    // logger.info("moving to a broadcast:" + signalType);
+		Unicast targetUnicast = null;
 
-		    if (signalType == SignalType.SIGNAL_A) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.SIGNAL_B) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
-		    } else if (signalType == SignalType.SIGNAL_C) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
+		if (signalType == SignalType.SIGNAL_A) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastA;
+		    } else {
+			targetUnicast = this.receivedUnicastA;
 		    }
 
-		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+		    }
+		} else if (signalType == SignalType.SIGNAL_B) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastB;
+		    } else {
+			targetUnicast = this.receivedUnicastB;
+		    }
 
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+		    }
+		} else if (signalType == SignalType.SIGNAL_C) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastC;
+		    } else {
+			targetUnicast = this.receivedUnicastC;
+		    }
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+		    }
 		}
+
+		if (targetUnicast.getSenderAgent() != null) {
+		    _operationMoveAbsolute(targetUnicast.getSenderX(), targetUnicast.getSenderY());
+		}
+
 	    }
 	}
     }
