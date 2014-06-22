@@ -45,7 +45,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
+    protected Set<InteractionMechanism> interactionMechanisms = EnumSet
+	    .noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -85,6 +86,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected boolean providedFeedback = false;
 
+    public Unicast receivedUnicastA = new Unicast();
+    public Unicast receivedUnicastB = new Unicast();
+    public Unicast receivedUnicastC = new Unicast();
+    
+    private boolean hosted = false;
+    private Agent hostAgent = null;
+
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -120,7 +128,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	initGenotype();
     }
 
-    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX, int startY) {
+    protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps,
+	    int startX, int startY) {
 	initId();
 	initGenotype();
 	setSim(simulation);
@@ -199,8 +208,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    int xMod = sim.agentGrid.stx(x + xDelta);
 	    int yMod = sim.agentGrid.sty(y + yDelta);
 
-	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
-		    && yMod < sim.getGridHeight() && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+	    if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth()
+		    && yMod >= 0 && yMod < sim.getGridHeight()
+		    && sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
 		newX = xMod;
 		newY = yMod;
 		foundNewUblockedLocation = true;
@@ -360,6 +370,72 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	return result;
     }
 
+    public void operationUnicastClosest(SignalType signalType) {
+	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+		// find the closest agent...
+		//Agent closestAgent = findClosestModelAgent(this.x, this.y);
+		Agent closestAgent = findClosestAgent(this.x, this.y);
+
+		Unicast targetUnicast = null;
+
+		if (signalType == SignalType.SIGNAL_A) {
+		    targetUnicast = closestAgent.receivedUnicastA;
+		    sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + this.agentId, ""
+			    + closestAgent.agentId);
+		} else if (signalType == SignalType.SIGNAL_B) {
+		    targetUnicast = closestAgent.receivedUnicastB;
+		    sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + this.agentId, ""
+			    + closestAgent.agentId);
+		} else if (signalType == SignalType.SIGNAL_C) {
+		    targetUnicast = closestAgent.receivedUnicastC;
+		    sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + this.agentId, ""
+			    + closestAgent.agentId);
+		}
+
+		if (targetUnicast != null) {
+		    targetUnicast.setReceiverAgent(closestAgent);
+		    targetUnicast.setSenderAgent(this);
+		    targetUnicast.setSignalType(signalType);
+		    targetUnicast.setStepClock(-1);
+		}
+
+	    }
+	}
+    }
+    
+    
+    
+    public void operationFollowUnicast(SignalType signalType) {
+	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
+		if (broadcast != null) {
+		    // logger.info("moving to a broadcast:" + signalType);
+
+		    if (signalType == SignalType.SIGNAL_A) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_B) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
+		    } else if (signalType == SignalType.SIGNAL_C) {
+			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
+		    }
+
+		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
+
+		}
+	    }
+	}
+    }
+    
+    
+    
+    
+
     public final void _operationFollowTrail(DoubleGrid2D trail) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
@@ -393,7 +469,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     }
 
-    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB, DoubleGrid2D trailC) {
+    public final void _operationFollowTrail(DoubleGrid2D trailA, DoubleGrid2D trailB,
+	    DoubleGrid2D trailC) {
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -512,29 +589,29 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToPrimaryCollectionSite() {
-	_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X, sim.settings.PRIMARY_COLLECTION_SITE_Y);
+	_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X,
+		sim.settings.PRIMARY_COLLECTION_SITE_Y);
 	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
 
     public final void operationMoveToClosestCollectionSite() {
 
-	if (species.getTraits().contains(Trait.HOMING)) {
-	    // first let's find out the closest collection site
-	    Int2D closestCollectionSite = null;
-	    double closestDistance = Double.MAX_VALUE;
+	// first let's find out the closest collection site
+	Int2D closestCollectionSite = null;
+	double closestDistance = Double.MAX_VALUE;
 
-	    for (Int2D collectionSite : this.sim.collectionSiteList) {
-		double distance = collectionSite.distance(this.x, this.y);
-		if (collectionSite.distance(this.x, this.y) < closestDistance) {
-		    closestCollectionSite = collectionSite;
-		    closestDistance = distance;
-		}
+	for (Int2D collectionSite : this.sim.collectionSiteList) {
+	    double distance = collectionSite.distance(this.x, this.y);
+	    if (collectionSite.distance(this.x, this.y) < closestDistance) {
+		closestCollectionSite = collectionSite;
+		closestDistance = distance;
 	    }
-
-	    _operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
-	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 	}
+
+	_operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
+	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
+
     }
 
     /** This function is being "borrowed" from Int2D.java */
@@ -544,43 +621,51 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	return Math.sqrt(dx * dx + dy * dy);
     }
 
+    /**
+     * Find the closest agent to x and y
+     * 
+     * @param x
+     * @param y
+     * @return
+     */
+    public final Agent findClosestAgent(int x, int y) {
+	Agent closestAgent = null;
+	Bag agentBag = sim.agentGrid.getAllObjects();
+	double closestDistance = Double.MAX_VALUE;
+
+	for (int i = 0; i < agentBag.numObjs; i++) {
+
+	    Agent agent = (Agent) agentBag.get(i);
+	    if (agent != this) {
+		double distance = distance(agent.x, agent.y, this.x, this.y);
+		if (distance < closestDistance) {
+		    closestAgent = agent;
+		    closestDistance = distance;
+		}
+	    }
+	}
+	return closestAgent;
+    }
+
+    
+
     public final void operationMoveToClosestAgent() {
 	// TODO: investigate if this leads to NP times
 
-	if (species.getTraits().contains(Trait.FLOCKING)) {
+	Agent closestAgent = findClosestAgent(this.x, this.y);
 
-	    // first let's find out the closest agent
-	    Int2D closestAgentLocation = null;
-	    double closestDistance = Double.MAX_VALUE;
-
-	    Bag agentBag = sim.agentGrid.getAllObjects();
-
-	    for (int i = 0; i < agentBag.numObjs; i++) {
-
-		Agent agent = (Agent) agentBag.get(i);
-		if (agent != this) {
-		    double distance = distance(agent.x, agent.y, this.x, this.y);
-		    if (distance < closestDistance) {
-			closestAgentLocation = new Int2D(agent.x, agent.y);
-			closestDistance = distance;
-		    }
-		}
-	    }
-	    if (closestAgentLocation != null) {
-		_operationMoveToLocationAt(closestAgentLocation.x, closestAgentLocation.y);
-		sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
-	    }
+	if (closestAgent != null) {
+	    _operationMoveToLocationAt(closestAgent.x, closestAgent.y);
+	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
 
 	}
+
     }
 
     public final void operationFollowTrail() {
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-
 	    _operationFollowTrail(sim.trailGrid);
-
 	    // sim.statistics.stepData.trailFollows++;
-
 	}
     }
 
@@ -593,11 +678,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final boolean operationDetectCollectionSite() {
-	if (species.getTraits().contains(Trait.HOMING)) {
-	    return this.locationIsCollectionSite;
-	} else {
-	    return false;
-	}
+
+	return this.locationIsCollectionSite;
+
     }
 
     public final boolean operationDetectRawResource() {
@@ -676,7 +759,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
-	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
+	    if (locationHasExtractedResource || locationHasProcessedResource
+		    || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
@@ -692,7 +776,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationUnLoadResource() {
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
-	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
+	    if (!locationHasExtractedResource && !locationHasProcessedResource
+		    && !locationHasRawResource) {
 
 		isCarryingResource = false;
 
@@ -711,17 +796,20 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    _operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
+			    _operationLeaveRewards(sim.extractorRewardGrid,
+				    Event.DROPPED_EXTRACTOR_REWARDS);
 			    // logger.info("CAPTURE!! 3 complex");
 			}
 
-		    } else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+		    } else if (this.sim.problemComplexity
+			    .equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
 			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
-			    _operationLeaveRewards(sim.processorRewardGrid, Event.DROPPED_PROCESSOR_REWARDS);
+			    _operationLeaveRewards(sim.processorRewardGrid,
+				    Event.DROPPED_PROCESSOR_REWARDS);
 			    // logger.info("CAPTURE!! 4 complex");
 			}
 
@@ -1022,16 +1110,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     @Override
     public String toString() {
 	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
-		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
-		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
-		+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
+		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x
+		+ ", y=" + y + ", interactionMechanisms=" + interactionMechanisms + ", species="
+		+ species + ", isCarryingResource=" + isCarryingResource + ", generation="
+		+ generation + ", program=" + program + "]";
     }
 
     public String toString2() {
 	return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
-		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
-		+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
-		+ isCarryingResource + ", generation=" + generation + ", program=" + program.getSignature() + "]";
+		+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x
+		+ ", y=" + y + ", interactionMechanisms=" + interactionMechanisms + ", species="
+		+ species + ", isCarryingResource=" + isCarryingResource + ", generation="
+		+ generation + ", program=" + program.getSignature() + "]";
     }
 
     public Team getTeam() {
@@ -1054,5 +1144,25 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	setX(newX);
 	setY(newY);
     }
+
+    public boolean isHosted() {
+        return hosted;
+    }
+
+    public void setHosted(boolean hosted) {
+        this.hosted = hosted;
+    }
+
+    public Agent getHostAgent() {
+        return hostAgent;
+    }
+
+    public void setHostAgent(Agent hostAgent) {
+        this.hostAgent = hostAgent;
+    }
+
+   
+    
+    
 
 }
