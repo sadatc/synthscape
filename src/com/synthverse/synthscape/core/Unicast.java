@@ -73,7 +73,7 @@ public class Unicast {
 
     @Override
     public String toString() {
-	return "Unicast [senderAgent=" + senderAgent + ", receiverAgent=" + receiverAgent + ", signalType="
+	return "Unicast [senderAgent=" + senderAgent.getAgentId() + ", receiverAgent=" + receiverAgent.getAgentId() + ", signalType="
 		+ signalType + ", stepClock=" + stepClock + "]";
     }
 
