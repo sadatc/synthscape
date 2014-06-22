@@ -11,6 +11,9 @@ public class Unicast {
 
     private Agent senderAgent;
     private Agent receiverAgent;
+    
+    private int senderX;
+    private int senderY;
 
     private SignalType signalType;
 
@@ -25,6 +28,10 @@ public class Unicast {
 	this.receiverAgent = receiverAgent;
 	this.signalType = signalType;
 	this.stepClock = stepClock;
+	if(senderAgent!=null) {
+	    senderX = senderAgent.x;
+	    senderY = senderAgent.y;
+	}
 
     }
 
@@ -42,6 +49,10 @@ public class Unicast {
 
     public void setSenderAgent(Agent senderAgent) {
 	this.senderAgent = senderAgent;
+	if(senderAgent!=null) {
+	    senderX = senderAgent.x;
+	    senderY = senderAgent.y;
+	}
     }
 
     public int getStepClock() {

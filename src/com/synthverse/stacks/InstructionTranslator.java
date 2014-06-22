@@ -225,13 +225,12 @@ public class InstructionTranslator {
 	sb.append(" instructions to the vocabulary...");
 	logger.info(sb.toString());
 
-	/*
-	 * for(Instruction instruction: instructions) {
-	 * logger.info("ADDED INSTRUCTION: "+instruction); }
-	 */
+	for (Instruction instruction : instructions) {
+	    logger.info("ADDED INSTRUCTION: " + instruction);
+	}
 
 	logger.info("<<< done adding.\n");
-	System.exit(1);
+
     }
 
 }
