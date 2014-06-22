@@ -408,9 +408,12 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    targetUnicast.setStepClock(-1);
 		}
 
-		D.p("Unicast:" + targetUnicast + "(" + closestAgent.x + "," + closestAgent.y + "," + senderAgent.x
-			+ "," + senderAgent.y + ")" + " distance:"
-			+ distance(closestAgent.x, closestAgent.y, senderAgent.x, senderAgent.y));
+		/*
+		 * D.p("Unicast:" + targetUnicast + "(" + closestAgent.x + "," +
+		 * closestAgent.y + "," + senderAgent.x + "," + senderAgent.y +
+		 * ")" + " distance:" + distance(closestAgent.x, closestAgent.y,
+		 * senderAgent.x, senderAgent.y));
+		 */
 
 	    }
 	}
@@ -463,6 +466,57 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	    }
 	}
+    }
+
+    public boolean operationDetectUnicastClosest(SignalType signalType) {
+	boolean result = false;
+	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+		Unicast targetUnicast = null;
+
+		if (signalType == SignalType.SIGNAL_A) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastA;
+		    } else {
+			targetUnicast = this.receivedUnicastA;
+		    }
+
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+			result = true;
+		    }
+		} else if (signalType == SignalType.SIGNAL_B) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastB;
+		    } else {
+			targetUnicast = this.receivedUnicastB;
+		    }
+
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+			result = true;
+		    }
+		} else if (signalType == SignalType.SIGNAL_C) {
+		    if (this.isHosted()) {
+			targetUnicast = this.getHostAgent().receivedUnicastC;
+		    } else {
+			targetUnicast = this.receivedUnicastC;
+		    }
+		    if (targetUnicast.getSenderAgent() != null) {
+			sim.reportEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
+				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
+			result = true;
+		    }
+		}
+
+	    }
+	}
+
+	return result;
     }
 
     public final void _operationFollowTrail(DoubleGrid2D trail) {

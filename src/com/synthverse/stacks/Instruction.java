@@ -1358,8 +1358,6 @@ public enum Instruction {
 	}
 
     },
-    
-    
 
     ACTION_FOLLOW_UNICAST_CLOSEST_A("ACTION.FOLLOW_UNI_CLOSE_A") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1368,8 +1366,7 @@ public enum Instruction {
 	}
 
     },
-    
-    
+
     ACTION_FOLLOW_UNICAST_CLOSEST_B("ACTION.FOLLOW_UNI_CLOSE_B") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationFollowUnicastClosest(SignalType.SIGNAL_B);
@@ -1378,7 +1375,6 @@ public enum Instruction {
 
     },
 
-    
     ACTION_FOLLOW_UNICAST_CLOSEST_C("ACTION.FOLLOW_UNI_CLOSE_C") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getAgent().operationFollowUnicastClosest(SignalType.SIGNAL_C);
@@ -1386,10 +1382,6 @@ public enum Instruction {
 	}
 
     },
-
-    
-    
-/*    
 
     ACTION_DETECT_UNICAST_CLOSEST_A("ACTION.DETECT_UNI_CLOSE_A") {
 	public void execute(VirtualMachine virtualMachine) {
@@ -1399,12 +1391,28 @@ public enum Instruction {
 	}
 
     },
-*/
-	
-    ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
+
+    ACTION_DETECT_UNICAST_CLOSEST_B("ACTION.DETECT_UNI_CLOSE_B") {
 	public void execute(VirtualMachine virtualMachine) {
 	    virtualMachine.getBooleanStack().push(
-		    virtualMachine.getAgent().operationDetectCollectionSite());
+		    virtualMachine.getAgent().operationDetectUnicastClosest(SignalType.SIGNAL_B));
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_DETECT_UNICAST_CLOSEST_C("ACTION.DETECT_UNI_CLOSE_C") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().operationDetectUnicastClosest(SignalType.SIGNAL_C));
+	    virtualMachine.incrementIP();
+	}
+
+    },
+
+    ACTION_DETECT_HOME("ACTION.DETECT_HOME") {
+	public void execute(VirtualMachine virtualMachine) {
+	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().operationDetectCollectionSite());
 	    virtualMachine.incrementIP();
 	}
 
@@ -1412,8 +1420,7 @@ public enum Instruction {
 
     ACTION_DETECT_RAW_RESOURCE("ACTION.DETECT_RAW_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getBooleanStack().push(
-		    virtualMachine.getAgent().operationDetectExtractedResource());
+	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().operationDetectExtractedResource());
 	    virtualMachine.incrementIP();
 	}
 
@@ -1421,8 +1428,7 @@ public enum Instruction {
 
     ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE("ACTION.DETECT_EXTRACTED_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getBooleanStack().push(
-		    virtualMachine.getAgent().operationDetectExtractedResource());
+	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().operationDetectExtractedResource());
 	    virtualMachine.incrementIP();
 	}
 
@@ -1430,8 +1436,7 @@ public enum Instruction {
 
     ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE("ACTION.DETECT_PROCESSED_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine.getBooleanStack().push(
-		    virtualMachine.getAgent().operationDetectProcessedResource());
+	    virtualMachine.getBooleanStack().push(virtualMachine.getAgent().operationDetectProcessedResource());
 	    virtualMachine.incrementIP();
 	}
 
@@ -1487,9 +1492,8 @@ public enum Instruction {
 
     ACTION_IS_CARRYING_EXTRACTED_RESOURCE("ACTION.IS_CARRYING_EXTRACTED_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine
-		    .getBooleanStack()
-		    .push(virtualMachine.getAgent().isCarryingResource()
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
 			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.EXTRACTED);
 	    virtualMachine.incrementIP();
 	}
@@ -1498,9 +1502,8 @@ public enum Instruction {
 
     ACTION_IS_CARRYING_PROCESSED_RESOURCE("ACTION.IS_CARRYING_PROCESSED_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine
-		    .getBooleanStack()
-		    .push(virtualMachine.getAgent().isCarryingResource()
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
 			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.PROCESSED);
 	    virtualMachine.incrementIP();
 	}
@@ -1509,9 +1512,8 @@ public enum Instruction {
 
     ACTION_IS_CARRYING_RAW_RESOURCE("ACTION.IS_CARRYING_RAW_RESOURCE") {
 	public void execute(VirtualMachine virtualMachine) {
-	    virtualMachine
-		    .getBooleanStack()
-		    .push(virtualMachine.getAgent().isCarryingResource()
+	    virtualMachine.getBooleanStack().push(
+		    virtualMachine.getAgent().isCarryingResource()
 			    && virtualMachine.getAgent().getStateOfCarriedResource() == ResourceState.RAW);
 	    virtualMachine.incrementIP();
 	}
@@ -1619,8 +1621,7 @@ public enum Instruction {
 
     INSTRUCTION_JUMP_REL("INSTRUCTION.JUMP_REL") {
 	public void execute(VirtualMachine virtualMachine) {
-	    if (!virtualMachine.setValidatedIP(virtualMachine.getIP()
-		    + virtualMachine.getIntegerStack().pop())) {
+	    if (!virtualMachine.setValidatedIP(virtualMachine.getIP() + virtualMachine.getIntegerStack().pop())) {
 		virtualMachine.incrementIP();
 	    }
 	}
@@ -1663,8 +1664,7 @@ public enum Instruction {
 
     INSTRUCTION_SEEK_NOOP("INSTRUCTION.SEEK_NOOP") {
 	public void execute(VirtualMachine virtualMachine) {
-	    int noopIndex = virtualMachine.getInstructionArray().findNOOPIndex(
-		    virtualMachine.getIP());
+	    int noopIndex = virtualMachine.getInstructionArray().findNOOPIndex(virtualMachine.getIP());
 	    if (noopIndex > 0) {
 		virtualMachine.setIP(noopIndex);
 	    } else {
