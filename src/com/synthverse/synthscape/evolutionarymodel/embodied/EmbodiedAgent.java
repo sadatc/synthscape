@@ -84,6 +84,8 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	activeAgent = evolver.getAgent(species, 0, 0);
+	activeAgent.setHostAgent(this);
+	activeAgent.setHosted(true);
     }
 
     public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize,
@@ -119,6 +121,8 @@ public class EmbodiedAgent extends Agent {
 
     public void setNextActiveAgent(int newX, int newY) {
 	activeAgent = evolver.getAgent(species, newX, newY);
+	activeAgent.setHostAgent(this);
+	activeAgent.setHosted(true);
 
     }
 
