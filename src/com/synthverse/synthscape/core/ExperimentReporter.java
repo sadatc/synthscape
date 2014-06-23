@@ -388,16 +388,73 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(captures);
 		sbPerformance.append(COMMA);
 
+		int sent = 0;
+		int received = 0;
+
 		if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-		    int trailSent = poolEventStats.getValue(Event.SENT_TRAIL);
-		    int trailReceived = poolEventStats.getValue(Event.RECEIVED_TRAIL);
-		    sbPerformance.append(trailSent);
+		    sent = poolEventStats.getValue(Event.SENT_TRAIL);
+		    received = poolEventStats.getValue(Event.RECEIVED_TRAIL);
+		    sbPerformance.append(sent);
 		    sbPerformance.append(COMMA);
-		    sbPerformance.append(trailReceived);
+		    sbPerformance.append(received);
 		    sbPerformance.append(COMMA);
 		}
-		
-		
+
+		if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+
+		    sent = poolEventStats.getValue(Event.SENT_BROADCAST_A);
+		    received = poolEventStats.getValue(Event.RECEIVED_BROADCAST_A);
+		    sbPerformance.append(sent);
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append(received);
+		    sbPerformance.append(COMMA);
+
+		    sent = poolEventStats.getValue(Event.SENT_BROADCAST_B);
+		    received = poolEventStats.getValue(Event.RECEIVED_BROADCAST_B);
+		    sbPerformance.append(sent);
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append(received);
+		    sbPerformance.append(COMMA);
+
+		    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+			sent = poolEventStats.getValue(Event.SENT_BROADCAST_C);
+			received = poolEventStats.getValue(Event.RECEIVED_BROADCAST_C);
+			sbPerformance.append(sent);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(received);
+			sbPerformance.append(COMMA);
+		    }
+
+		}
+
+		if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+		    sent = poolEventStats.getValue(Event.SENT_UNICAST_A_CLOSEST);
+		    received = poolEventStats.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
+		    sbPerformance.append(sent);
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append(received);
+		    sbPerformance.append(COMMA);
+
+		    sent = poolEventStats.getValue(Event.SENT_UNICAST_B_CLOSEST);
+		    received = poolEventStats.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
+		    sbPerformance.append(sent);
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append(received);
+		    sbPerformance.append(COMMA);
+
+		    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+			sent = poolEventStats.getValue(Event.SENT_UNICAST_C_CLOSEST);
+			received = poolEventStats.getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
+			sbPerformance.append(sent);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(received);
+			sbPerformance.append(COMMA);
+		    }
+
+		}
+
 		sbPerformance.append(poolComposition);
 
 		performanceWriter.write(sbPerformance.toString());
