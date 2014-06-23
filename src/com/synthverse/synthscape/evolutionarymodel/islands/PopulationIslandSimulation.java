@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.islands;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -311,8 +312,8 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     @Override
-    public Set<InteractionMechanism> configInteractionMechanisms() {
-	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
+    public EnumSet<InteractionMechanism> configInteractionMechanisms() {
+	EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 	if (settings.MODEL_INTERACTIONS.contains("none")) {
 	    logger.info("Agents will not use any interaction instructions");

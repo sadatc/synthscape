@@ -103,7 +103,7 @@ public abstract class PlaybackSimulation /*extends SimState implements Constants
     protected int stepsPerSimulation;
 
     protected Set<Species> speciesComposition = new LinkedHashSet<Species>();
-    protected Set<InteractionMechanism> interactionMechanisms = new LinkedHashSet<InteractionMechanism>();
+    protected EnumSet<InteractionMechanism> interactionMechanisms = new LinkedHashEnumSet<InteractionMechanism>();
 
     private SimulationUI uiObject;
 
@@ -560,7 +560,7 @@ public abstract class PlaybackSimulation /*extends SimState implements Constants
 
     public abstract Set<Species> configSpeciesComposition();
 
-    public abstract Set<InteractionMechanism> configInteractionMechanisms();
+    public abstract EnumSet<InteractionMechanism> configInteractionMechanisms();
 
     public abstract ProblemComplexity configProblemComplexity();
 
@@ -674,11 +674,11 @@ public abstract class PlaybackSimulation /*extends SimState implements Constants
 	this.speciesComposition = speciesComposition;
     }
 
-    public Set<InteractionMechanism> getInteractionMechanisms() {
+    public EnumSet<InteractionMechanism> getInteractionMechanisms() {
 	return interactionMechanisms;
     }
 
-    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(EnumSet<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 

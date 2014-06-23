@@ -45,7 +45,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public int y;
 
-    protected Set<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
+    protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
     protected Species species;
 
@@ -1130,11 +1130,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	this.species = species;
     }
 
-    public void setInteractionMechanisms(Set<InteractionMechanism> interactionMechanisms) {
+    public void setInteractionMechanisms(EnumSet<InteractionMechanism> interactionMechanisms) {
 	this.interactionMechanisms = interactionMechanisms;
     }
 
-    public Set<InteractionMechanism> getInteractionMechanisms() {
+    public EnumSet<InteractionMechanism> getInteractionMechanisms() {
 	return this.interactionMechanisms;
     }
 

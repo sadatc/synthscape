@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.test.basic;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,8 +64,8 @@ public class TestSim extends Simulation {
     }
 
     @Override
-    public Set<InteractionMechanism> configInteractionMechanisms() {
-	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
+    public EnumSet<InteractionMechanism> configInteractionMechanisms() {
+	EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
 	mechanisms.add(InteractionMechanism.TRAIL);
 	mechanisms.add(InteractionMechanism.BROADCAST);
 	mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);

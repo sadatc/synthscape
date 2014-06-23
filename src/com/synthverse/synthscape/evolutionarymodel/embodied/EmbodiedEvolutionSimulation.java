@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -451,8 +452,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     }
 
     @Override
-    public Set<InteractionMechanism> configInteractionMechanisms() {
-	Set<InteractionMechanism> mechanisms = new HashSet<InteractionMechanism>();
+    public EnumSet<InteractionMechanism> configInteractionMechanisms() {
+	EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 	if (settings.MODEL_INTERACTIONS.contains("none")) {
 	    logger.info("Agents will not use any interaction instructions");
