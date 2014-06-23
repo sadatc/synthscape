@@ -37,8 +37,6 @@ public abstract class AgentFactory implements Constants {
 	Agent result = availableAgents.pollLast();
 	if (result == null) {
 	    result = createNewFactoryAgent(species);
-	    // TODO: why was this null before? I've set it to species, will this
-	    // break anything?
 	}
 	result.setSpecies(species);
 	return result;

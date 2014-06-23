@@ -295,7 +295,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    }
 	    break;
 	default:
-	    // TODO: fix this...
+	    logger.severe("_operationPerformResourceAction: action is invalid -- should have never come here");
+	    System.exit(-1);
 	}
 
 	return actionPerformed;
@@ -742,16 +743,12 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationMoveToClosestAgent() {
-	// TODO: investigate if this leads to NP times
-
 	Agent closestAgent = findClosestAgent(this.x, this.y, 1);
-
 	if (closestAgent != null) {
 	    _operationMoveToLocationAt(closestAgent.x, closestAgent.y);
 	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
 
 	}
-
     }
 
     public final void operationFollowTrail() {
