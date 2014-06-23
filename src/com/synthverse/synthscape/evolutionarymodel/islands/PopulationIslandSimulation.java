@@ -252,7 +252,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceIslandModelNew(generation, simEventStats, speciesEventStatsMap,
+	experimentReporter.reportPerformanceIslandModel(generation, simEventStats, speciesEventStatsMap,
 		captureStats, populationFitnessStats);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
