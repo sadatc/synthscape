@@ -63,14 +63,14 @@ public class ExperimentReporter implements Constants {
     private void openFiles() {
 
 	if (simulation.isReportEvents()) {
-	    String eventFileName = constructFileName(settings.DATA_DIR, settings.EVENT_DATA_FILE, settings.JOB_NAME, ""
-		    + settings.SEED);
+	    String eventFileName = constructFileName(settings.DATA_DIR, settings.EVENT_DATA_FILE,
+		    settings.JOB_NAME, "" + settings.SEED);
 	    openEventFile(eventFileName);
 	}
 
 	if (simulation.isReportPerformance()) {
-	    String performanceFileName = constructFileName(settings.DATA_DIR, settings.PERFORMANCE_DATA_FILE,
-		    settings.JOB_NAME, "" + settings.SEED);
+	    String performanceFileName = constructFileName(settings.DATA_DIR,
+		    settings.PERFORMANCE_DATA_FILE, settings.JOB_NAME, "" + settings.SEED);
 	    openPerformanceFile(performanceFileName);
 	}
 
@@ -90,7 +90,8 @@ public class ExperimentReporter implements Constants {
 		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -103,10 +104,12 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
+		    REPORT_WRITER_BUFFER_SIZE);
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment output file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -115,8 +118,8 @@ public class ExperimentReporter implements Constants {
 
     private void writeExperimentDetails() {
 
-	settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR, settings.EXPERIMENT_DETAILS_FILE,
-		settings.JOB_NAME, "" + settings.SEED);
+	settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR,
+		settings.EXPERIMENT_DETAILS_FILE, settings.JOB_NAME, "" + settings.SEED);
 
 	File file = new File(settings.EXPERIMENT_DETAILS_FILE);
 	try {
@@ -126,8 +129,8 @@ public class ExperimentReporter implements Constants {
 	    }
 	    file.createNewFile();
 
-	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
-		    REPORT_WRITER_BUFFER_SIZE);
+	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),
+		    false), REPORT_WRITER_BUFFER_SIZE);
 
 	    for (String line : settings.EXPERIMENT_DETAILS) {
 		detailWriter.write(line);
@@ -140,7 +143,8 @@ public class ExperimentReporter implements Constants {
 	    detailWriter.close();
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment details file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -148,7 +152,8 @@ public class ExperimentReporter implements Constants {
     }
 
     private final String constructFileName(String dir, String fileName, String job, String id) {
-	return dir + File.separator + job + id + "_" + DateUtils.getFileNameDateStamp() + "_" + fileName;
+	return dir + File.separator + job + id + "_" + DateUtils.getFileNameDateStamp() + "_"
+		+ fileName;
 
     }
 
@@ -158,8 +163,8 @@ public class ExperimentReporter implements Constants {
 	try {
 
 	    if (file.exists() && file.isFile()) {
-		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-			REPORT_WRITER_BUFFER_SIZE);
+		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(
+			file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
 		detailWriter.write("EXPERIMENT_END = " + new Date());
 		detailWriter.newLine();
 
@@ -169,7 +174,8 @@ public class ExperimentReporter implements Constants {
 	    }
 
 	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
+	    logger.severe("Exception while trying to open experiment details file: "
+		    + e.getMessage());
 	    e.printStackTrace();
 	    System.exit(0);
 	}
@@ -190,7 +196,8 @@ public class ExperimentReporter implements Constants {
 		eventWriter.append(COMMA);
 		eventWriter.append(simulation.getBatchId());
 		eventWriter.append(COMMA);
-		eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
+		eventWriter
+			.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
 		eventWriter.append(COMMA);
 		eventWriter.append("" + simulation.getGridWidth());
 		eventWriter.append(COMMA);
@@ -246,8 +253,8 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x,
-	    int y, Event event, String source, String destination) {
+    public void reportEvent(long simulationNumber, int generation, Species species, int agentId,
+	    int step, int x, int y, Event event, String source, String destination) {
 	try {
 
 	    sbEvent.append(simulationNumber);
@@ -428,8 +435,34 @@ public class ExperimentReporter implements Constants {
 		    columnHeader += ", ";
 		    columnHeader += name + "_FITNESS_MEAN, ";
 		    columnHeader += name + "_FITNESS_VAR, ";
-		    columnHeader += name + "_TRAILS_SENT, ";
-		    columnHeader += name + "_TRAILS_RECEIVED, ";
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+			columnHeader += name + "_TRAILS_SENT, ";
+			columnHeader += name + "_TRAILS_RECEIVED, ";
+		    }
+
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+			columnHeader += name + "_SENT_BROADCAST_A, ";
+			columnHeader += name + "_RECEIVED_BROADCAST_A, ";
+			columnHeader += name + "_SENT_BROADCAST_B, ";
+			columnHeader += name + "_RECEIVED_BROADCAST_B, ";
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+			    columnHeader += name + "_SENT_BROADCAST_C, ";
+			    columnHeader += name + "_RECEIVED_BROADCAST_C, ";
+			}
+		    }
+		    
+		    
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+			columnHeader += name + "_SENT_UNICAST_A_CLOSEST, ";
+			columnHeader += name + "_RECEIVED_UNICAST_A_CLOSEST, ";
+			columnHeader += name + "_SENT_UNICAST_B_CLOSEST, ";
+			columnHeader += name + "_RECEIVED_UNICAST_B_CLOSEST, ";
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+			    columnHeader += name + "_SENT_UNICAST_C_CLOSEST, ";
+			    columnHeader += name + "_RECEIVED_UNICAST_C_CLOSEST, ";
+			}
+		    }
+		    
 
 		}
 
@@ -446,8 +479,9 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
+    public void reportPerformanceEmbodiedModel(int generationCounter,
+	    EventStats generationEventStats, ArrayList<Agent> agents,
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -488,8 +522,10 @@ public class ExperimentReporter implements Constants {
 				summaryFitnessStats.addValue(fitnessValue);
 			    }
 
-			    trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
-			    trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_TRAIL);
+			    trailSent += embodiedAgent.poolGenerationEventStats
+				    .getValue(Event.SENT_TRAIL);
+			    trailReceived += embodiedAgent.poolGenerationEventStats
+				    .getValue(Event.RECEIVED_TRAIL);
 
 			}
 
@@ -530,9 +566,10 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceIslandModelNew(int generationCounter, EventStats generationEventStats,
-	    LinkedHashMap<Species, EventStats> speciesEventStatsMap, SummaryStatistics captureStats,
-	    SummaryStatistics populationFitnessStats) {
+    public void reportPerformanceIslandModelNew(int generationCounter,
+	    EventStats generationEventStats,
+	    LinkedHashMap<Species, EventStats> speciesEventStatsMap,
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
 	try {
 	    if (simulation.isReportPerformance()) {
 
