@@ -428,16 +428,39 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(populationFitnessStats.getVariance());
-		sbPerformance.append(COMMA);
+
+		// TODO: this loop first iterates over species and then for each
+		// species it iterates over all the agents
+		// Perhaps a better way to do this is to iterate over all the
+		// agents and then hold the sums
+		// in a species map...
 
 		for (Species species : simulation.speciesComposition) {
 
 		    summaryFitnessStats.clear();
 
-		    int trailSent = 0;
-		    int trailReceived = 0;
-		    int trailSearched = 0;
+		    int sentTrail = 0;
+		    int receivedTrail = 0;
 
+		    int sentBroadcastA = 0;
+		    int receivedBroadcastA = 0;
+
+		    int sentBroadcastB = 0;
+		    int receivedBroadcastB = 0;
+
+		    int sentBroadcastC = 0;
+		    int receivedBroadcastC = 0;
+
+		    int sentUnicastClosestA = 0;
+		    int receivedUnicastClosestA = 0;
+
+		    int sentUnicastClosestB = 0;
+		    int receivedUnicastClosestB = 0;
+
+		    int sentUnicastClosestC = 0;
+		    int receivedUnicastClosestC = 0;
+
+		    // TODO: this should be the top loop
 		    for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 			if (agent.getSpecies() == species) {
@@ -446,27 +469,120 @@ public class ExperimentReporter implements Constants {
 				summaryFitnessStats.addValue(fitnessValue);
 			    }
 
-			    trailSent += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
-			    trailReceived += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_TRAIL);
+			    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+
+				sentTrail += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
+				receivedTrail += embodiedAgent.poolGenerationEventStats.getValue(Event.RECEIVED_TRAIL);
+
+			    }
+
+			    if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+
+				sentBroadcastA = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.SENT_BROADCAST_A);
+				receivedBroadcastA = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.RECEIVED_BROADCAST_A);
+
+				sentBroadcastB = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.SENT_BROADCAST_B);
+				receivedBroadcastB = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.RECEIVED_BROADCAST_B);
+
+				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+				    sentBroadcastC = embodiedAgent.poolGenerationEventStats
+					    .getValue(Event.SENT_BROADCAST_C);
+				    receivedBroadcastC = embodiedAgent.poolGenerationEventStats
+					    .getValue(Event.RECEIVED_BROADCAST_C);
+
+				}
+
+			    }
+
+			    if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+				sentUnicastClosestA = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.SENT_UNICAST_A_CLOSEST);
+				receivedUnicastClosestA = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
+
+				sentUnicastClosestB = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.SENT_UNICAST_B_CLOSEST);
+				receivedUnicastClosestB = embodiedAgent.poolGenerationEventStats
+					.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
+
+				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				    sentUnicastClosestC = embodiedAgent.poolGenerationEventStats
+					    .getValue(Event.SENT_UNICAST_C_CLOSEST);
+				    receivedUnicastClosestC = embodiedAgent.poolGenerationEventStats
+					    .getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
+				}
+
+			    }
 
 			}
 
 		    }
 
+		    sbPerformance.append(COMMA);
+
 		    sbPerformance.append(summaryFitnessStats.getMean());
 		    sbPerformance.append(COMMA);
 
 		    sbPerformance.append(summaryFitnessStats.getVariance());
-		    sbPerformance.append(COMMA);
 
-		    sbPerformance.append(trailSent);
-		    sbPerformance.append(COMMA);
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 
-		    sbPerformance.append(trailReceived);
-		    sbPerformance.append(COMMA);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(sentTrail);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(receivedTrail);
 
-		    sbPerformance.append(trailSearched);
-		    sbPerformance.append(COMMA);
+		    }
+
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+
+			sbPerformance.append(COMMA);
+			sbPerformance.append(sentBroadcastA);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(receivedBroadcastA);
+
+			sbPerformance.append(COMMA);
+			sbPerformance.append(sentBroadcastB);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(receivedBroadcastB);
+
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(sentBroadcastC);
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(receivedBroadcastC);
+
+			}
+
+		    }
+
+		    if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+			sbPerformance.append(COMMA);
+			sbPerformance.append(sentUnicastClosestA);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(receivedUnicastClosestA);
+
+			sbPerformance.append(COMMA);
+			sbPerformance.append(sentUnicastClosestB);
+			sbPerformance.append(COMMA);
+			sbPerformance.append(receivedUnicastClosestB);
+
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(sentUnicastClosestC);
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(receivedUnicastClosestC);
+			}
+
+		    }
 
 		}
 
