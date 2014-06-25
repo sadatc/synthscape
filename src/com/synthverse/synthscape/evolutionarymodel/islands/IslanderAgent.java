@@ -42,6 +42,15 @@ public class IslanderAgent extends Agent {
     }
 
     private void seedGenotypeWithActions(Program program) {
+	boolean spaceLeft = true;
+
+	do {
+	    spaceLeft = program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.NOOP));
+
+	} while (spaceLeft);
+    }
+
+    private void seedGenotypeWithActionsOld(Program program) {
 
 	boolean spaceLeft = true;
 
