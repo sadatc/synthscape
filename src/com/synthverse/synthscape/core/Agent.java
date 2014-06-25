@@ -257,7 +257,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	int y = location.y;
 
 	trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
-	sim.reportEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
+	sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
     }
 
     public void _operationLeaveRewards(DoubleGrid2D rewardGrid, Event rewardEvent) {
@@ -269,7 +269,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	    // rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
 	    rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
-	    sim.reportEvent(this, rewardEvent, "" + this.agentId, NA);
+	    sim.recordEvent(this, rewardEvent, "" + this.agentId, NA);
 
 	}
 
@@ -312,11 +312,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    // logger.info("moving to a broadcast:" + signalType);
 
 		    if (signalType == SignalType.SIGNAL_A) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
 		    } else if (signalType == SignalType.SIGNAL_B) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
 		    } else if (signalType == SignalType.SIGNAL_C) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
 		    }
 
 		    _operationMoveAbsolute(broadcast.getX(), broadcast.getY());
@@ -334,11 +334,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		sim.registerBroadcast(broadcast);
 
 		if (signalType == SignalType.SIGNAL_A) {
-		    sim.reportEvent(this, Event.SENT_BROADCAST_A, "" + this.agentId, NA);
+		    sim.recordEvent(this, Event.SENT_BROADCAST_A, "" + this.agentId, NA);
 		} else if (signalType == SignalType.SIGNAL_B) {
-		    sim.reportEvent(this, Event.SENT_BROADCAST_B, "" + this.agentId, NA);
+		    sim.recordEvent(this, Event.SENT_BROADCAST_B, "" + this.agentId, NA);
 		} else if (signalType == SignalType.SIGNAL_C) {
-		    sim.reportEvent(this, Event.SENT_BROADCAST_C, "" + this.agentId, NA);
+		    sim.recordEvent(this, Event.SENT_BROADCAST_C, "" + this.agentId, NA);
 		}
 	    }
 	}
@@ -354,11 +354,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		if (broadcast != null) {
 
 		    if (signalType == SignalType.SIGNAL_A) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
 		    } else if (signalType == SignalType.SIGNAL_B) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA, "" + this.agentId);
 		    } else if (signalType == SignalType.SIGNAL_C) {
-			sim.reportEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA, "" + this.agentId);
 		    }
 
 		    result = true;
@@ -392,15 +392,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		    if (signalType == SignalType.SIGNAL_A) {
 			targetUnicast = closestAgent.receivedUnicastA;
-			sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + senderAgent.agentId, ""
+			sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + senderAgent.agentId, ""
 				+ closestAgent.agentId);
 		    } else if (signalType == SignalType.SIGNAL_B) {
 			targetUnicast = closestAgent.receivedUnicastB;
-			sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + senderAgent.agentId, ""
+			sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + senderAgent.agentId, ""
 				+ closestAgent.agentId);
 		    } else if (signalType == SignalType.SIGNAL_C) {
 			targetUnicast = closestAgent.receivedUnicastC;
-			sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + senderAgent.agentId, ""
+			sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + senderAgent.agentId, ""
 				+ closestAgent.agentId);
 		    }
 
@@ -439,7 +439,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 		    }
 		} else if (signalType == SignalType.SIGNAL_B) {
@@ -450,7 +450,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 		    }
 		} else if (signalType == SignalType.SIGNAL_C) {
@@ -460,7 +460,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			targetUnicast = this.receivedUnicastC;
 		    }
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 		    }
 		}
@@ -489,7 +489,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 			result = true;
 		    }
@@ -501,7 +501,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 			result = true;
 		    }
@@ -512,7 +512,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			targetUnicast = this.receivedUnicastC;
 		    }
 		    if (targetUnicast.getSenderAgent() != null) {
-			sim.reportEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
+			sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
 			result = true;
 		    }
@@ -549,7 +549,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	// now move to the highest concentration
 	// or move randomly
 	if (maxTrail > 0) {
-	    sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
+	    sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    _operationMoveAbsolute(maxX, maxY);
 	} else {
 	    _operationRandomMove();
@@ -677,7 +677,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public final void operationMoveToPrimaryCollectionSite() {
 	_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X, sim.settings.PRIMARY_COLLECTION_SITE_Y);
-	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
+	sim.recordEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
 
@@ -696,7 +696,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	}
 
 	_operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
-	sim.reportEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
+	sim.recordEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
     }
 
@@ -752,7 +752,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	Agent closestAgent = findClosestAgent(this.x, this.y, 1);
 	if (closestAgent != null) {
 	    _operationMoveToLocationAt(closestAgent.x, closestAgent.y);
-	    sim.reportEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
+	    sim.recordEvent(this, Event.MOVE_TO_CLOSEST_AGENT, NA, NA);
 
 	}
     }
@@ -781,7 +781,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final boolean operationDetectRawResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasRawResource) {
-		sim.reportEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
+		sim.recordEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
 	    }
 	    return (this.locationHasRawResource);
 	} else {
@@ -793,7 +793,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final boolean operationDetectExtractedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasExtractedResource) {
-		sim.reportEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
+		sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
 	    }
 	    return this.locationHasExtractedResource;
 	} else {
@@ -804,7 +804,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public boolean operationDetectProcessedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasProcessedResource) {
-		sim.reportEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
+		sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
 	    }
 	    return this.locationHasProcessedResource;
 	} else {
@@ -816,7 +816,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 
 	    if (this.locationHasTrail) {
-		sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
+		sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    }
 	    return this.locationHasTrail;
 	} else {
@@ -828,7 +828,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
 	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
-		sim.reportEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
+		sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
 		_operationLeaveRewards(sim.detectorRewardGrid, Event.DROPPED_DETECTOR_REWARDS);
 
 	    }
@@ -841,7 +841,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (species.getTraits().contains(Trait.PROCESSING)) {
 	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
-		sim.reportEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
+		sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
 		_operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
 	    }
 
@@ -861,7 +861,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		    this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
 		    updateLocationStatus(this.x, this.y);
-		    sim.reportEvent(this, Event.LOADED_RESOURCE, NA, NA);
+		    sim.recordEvent(this, Event.LOADED_RESOURCE, NA, NA);
 		}
 	    }
 
@@ -887,8 +887,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			    _operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
 			    // logger.info("CAPTURE!! 3 complex");
 			}
@@ -897,8 +897,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			if (stateOfCarriedResource == ResourceState.PROCESSED) {
 			    dropResource = false;
 			    this.sim.numberOfCollectedResources++;
-			    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
-			    sim.reportEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+			    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+			    sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			    _operationLeaveRewards(sim.processorRewardGrid, Event.DROPPED_PROCESSOR_REWARDS);
 			    // logger.info("CAPTURE!! 4 complex");
 			}
@@ -912,7 +912,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		if (dropResource) {
 		    this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
-		    sim.reportEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+		    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 
 		}
 
@@ -956,28 +956,28 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasExtractorReward = true;
 	    if (Main.settings.PEER_REWARDS) {
-		sim.reportEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA, "" + this.agentId);
+		sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA, "" + this.agentId);
 	    }
 	}
 
 	if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasDetectorReward = true;
 	    if (Main.settings.PEER_REWARDS) {
-		sim.reportEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA, "" + this.agentId);
+		sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA, "" + this.agentId);
 	    }
 	}
 
 	if (sim.processorRewardGrid.field[x][y] >= 1.0) {
 	    this.locationHasProcessorReward = true;
 	    if (Main.settings.PEER_REWARDS) {
-		sim.reportEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA, "" + this.agentId);
+		sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA, "" + this.agentId);
 	    }
 	}
 
 	if (sim.trailGrid.field[x][y] >= 1) {
 	    this.locationHasTrail = true;
 	    if (locationIsChanging) {
-		sim.reportEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
+		sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    }
 	} else {
 	    this.locationHasTrail = false;
