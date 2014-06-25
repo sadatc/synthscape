@@ -88,8 +88,8 @@ public class InstructionTranslator {
 			continue;
 		    }
 		}
-		if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("unicast")) {
-		    if (instruction.name().contains("UNICAST")) {
+		if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("unicast_n")) {
+		    if (instruction.name().contains("UNICAST_CLOSEST")) {
 			continue;
 		    }
 		}
