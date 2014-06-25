@@ -299,8 +299,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// set the primary collection site
 	collectionSiteGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
 	initCollisionGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X,
-		settings.PRIMARY_COLLECTION_SITE_Y));
+	collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
     }
 
     protected void initNonPrimaryCollectionSites() {
@@ -435,16 +434,15 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void fadeRewardGrids() {
-	if (Main.settings.PEER_REWARDS) {
-	    extractorRewardGrid.lowerBound(0.0);
-	    extractorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 
-	    detectorRewardGrid.lowerBound(0.0);
-	    detectorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+	extractorRewardGrid.lowerBound(0.0);
+	extractorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 
-	    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-		processorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
-	    }
+	detectorRewardGrid.lowerBound(0.0);
+	detectorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+
+	if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+	    processorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 	}
 
     }
@@ -480,10 +478,9 @@ public abstract class Simulation extends SimState implements Constants {
 	initEnvironment();
 	initAgents();
 
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world="
-		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-		+ agents.size());
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -494,9 +491,18 @@ public abstract class Simulation extends SimState implements Constants {
 
 		simStepCounter++;
 
-		fadeTrails();
-		fadeRewardGrids();
-		ageBroadcasts();
+		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+		    fadeTrails();
+		}
+
+		if (Main.settings.PEER_REWARDS) {
+		    fadeRewardGrids();
+		}
+
+		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+		    ageBroadcasts();
+		}
+		
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
@@ -598,16 +604,15 @@ public abstract class Simulation extends SimState implements Constants {
 	resetAll();
 	startSimulation();
     }
-    
 
     public void reportEvent(Agent agent, Event event, String source, String destination) {
-	// TODO: fix reportEvent so it can take ints too for source and destination
+	// TODO: fix reportEvent so it can take ints too for source and
+	// destination
 	agent.eventStats.recordValue(event);
 
 	if (isReportEvents()) {
-	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(),
-		    agent.getSpecies(), agent.getAgentId(), simStepCounter, agent.getX(),
-		    agent.getY(), event, source, destination);
+	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+		    agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 	}
 
     }
@@ -650,8 +655,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    if (eventFileName.indexOf(".") != -1) {
 		String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
 		String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
-		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job()
-			+ postPart;
+		eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job() + postPart;
 
 	    } else {
 		eventFileName += "_" + batchId + "_" + this.job();

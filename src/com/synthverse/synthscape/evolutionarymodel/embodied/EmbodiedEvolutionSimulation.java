@@ -354,9 +354,20 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		simStepCounter++;
 
-		fadeTrails();
-		fadeRewardGrids();
-		ageBroadcasts();
+		
+		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+		    fadeTrails();
+		}
+
+		if (Main.settings.PEER_REWARDS) {
+		    fadeRewardGrids();
+		}
+
+		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+		    ageBroadcasts();
+		}
+		
+		
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
