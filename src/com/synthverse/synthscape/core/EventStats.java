@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.core;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ public class EventStats {
     }
 
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
-    private Set<Event> events = new HashSet<Event>();
+    private Set<Event> events = EnumSet.noneOf(Event.class);
 
     public EventStats() {
 	eventCounterMap.clear();
