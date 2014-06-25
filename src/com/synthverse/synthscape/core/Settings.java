@@ -130,7 +130,7 @@ public class Settings {
 		.isRequired()
 		.hasArg()
 		.withDescription(
-			"interactions names [none OR trail, broadcast, unicast_n,unicast_g] e.g. trail,broadcast")
+			"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
@@ -206,8 +206,16 @@ public class Settings {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 		} else if (modelName.equalsIgnoreCase("embodied")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.EMBODIED_MODEL;
+		    if (!line.hasOption("peer_rewards")) {
+			PEER_REWARDS = true;
+			D.p("** NOTE: in this decentralized models PEER_REWARDS is being set to true!! Use peer_rewards option to override");
+		    }
 		} else if (modelName.equalsIgnoreCase("alife")) {
 		    EVOLUTIONARY_MODEL = EvolutionaryModel.ALIFE_MODEL;
+		    if (!line.hasOption("peer_rewards")) {
+			PEER_REWARDS = true;
+			D.p("** NOTE: in this decentralized models PEER_REWARDS is being set to true!! Use peer_rewards option to override");
+		    }
 		} else {
 		    throw new ParseException("model name: " + modelName + " was not recognized");
 		}
@@ -317,8 +325,7 @@ public class Settings {
 	    if (line.hasOption("interactions")) {
 		String interactions = line.getOptionValue("interactions").toLowerCase();
 		if (!(interactions.contains("none") || interactions.contains("trail")
-			|| interactions.contains("broadcast") || interactions.contains("unicast_n") || interactions
-			    .contains("unicast_g"))) {
+			|| interactions.contains("broadcast") || interactions.contains("unicast_n") )) {
 		    throw new ParseException("interactions: " + interactions + " was not recognized");
 		}
 		MODEL_INTERACTIONS = interactions;
