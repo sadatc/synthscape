@@ -377,44 +377,48 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		// Agent closestAgent = findClosestModelAgent(this.x, this.y);
 		Agent closestAgent = findClosestAgent(this.x, this.y, 1);
 
-		// if this is a hosted agent, we'll UNICAST to the host
-		if (closestAgent.isHosted()) {
-		    closestAgent = closestAgent.getHostAgent();
-		}
+		if (closestAgent != null) {
 
-		Unicast targetUnicast = null;
-		Agent senderAgent = this;
-		if (this.isHosted()) {
-		    senderAgent = this.getHostAgent();
-		}
+		    // if this is a hosted agent, we'll UNICAST to the host
+		    if (closestAgent.isHosted()) {
+			closestAgent = closestAgent.getHostAgent();
+		    }
 
-		if (signalType == SignalType.SIGNAL_A) {
-		    targetUnicast = closestAgent.receivedUnicastA;
-		    sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + senderAgent.agentId, ""
-			    + closestAgent.agentId);
-		} else if (signalType == SignalType.SIGNAL_B) {
-		    targetUnicast = closestAgent.receivedUnicastB;
-		    sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + senderAgent.agentId, ""
-			    + closestAgent.agentId);
-		} else if (signalType == SignalType.SIGNAL_C) {
-		    targetUnicast = closestAgent.receivedUnicastC;
-		    sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + senderAgent.agentId, ""
-			    + closestAgent.agentId);
-		}
+		    Unicast targetUnicast = null;
+		    Agent senderAgent = this;
+		    if (this.isHosted()) {
+			senderAgent = this.getHostAgent();
+		    }
 
-		if (targetUnicast != null) {
-		    targetUnicast.setReceiverAgent(closestAgent);
-		    targetUnicast.setSenderAgent(senderAgent);
-		    targetUnicast.setSignalType(signalType);
-		    targetUnicast.setStepClock(-1);
-		}
+		    if (signalType == SignalType.SIGNAL_A) {
+			targetUnicast = closestAgent.receivedUnicastA;
+			sim.reportEvent(this, Event.SENT_UNICAST_A_CLOSEST, "" + senderAgent.agentId, ""
+				+ closestAgent.agentId);
+		    } else if (signalType == SignalType.SIGNAL_B) {
+			targetUnicast = closestAgent.receivedUnicastB;
+			sim.reportEvent(this, Event.SENT_UNICAST_B_CLOSEST, "" + senderAgent.agentId, ""
+				+ closestAgent.agentId);
+		    } else if (signalType == SignalType.SIGNAL_C) {
+			targetUnicast = closestAgent.receivedUnicastC;
+			sim.reportEvent(this, Event.SENT_UNICAST_C_CLOSEST, "" + senderAgent.agentId, ""
+				+ closestAgent.agentId);
+		    }
 
-		/*
-		 * D.p("Unicast:" + targetUnicast + "(" + closestAgent.x + "," +
-		 * closestAgent.y + "," + senderAgent.x + "," + senderAgent.y +
-		 * ")" + " distance:" + distance(closestAgent.x, closestAgent.y,
-		 * senderAgent.x, senderAgent.y));
-		 */
+		    if (targetUnicast != null) {
+			targetUnicast.setReceiverAgent(closestAgent);
+			targetUnicast.setSenderAgent(senderAgent);
+			targetUnicast.setSignalType(signalType);
+			targetUnicast.setStepClock(-1);
+		    }
+
+		    /*
+		     * D.p("Unicast:" + targetUnicast + "(" + closestAgent.x +
+		     * "," + closestAgent.y + "," + senderAgent.x + "," +
+		     * senderAgent.y + ")" + " distance:" +
+		     * distance(closestAgent.x, closestAgent.y, senderAgent.x,
+		     * senderAgent.y));
+		     */
+		}
 
 	    }
 	}
@@ -739,6 +743,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    }
 
 	}
+
+	
 	return closestAgent;
     }
 
