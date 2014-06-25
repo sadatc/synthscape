@@ -359,9 +359,14 @@ public class ExperimentReporter implements Constants {
 		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR ";
 		for (Species species : simulation.speciesComposition) {
 		    String name = species.toString();
-		    columnHeader += ", ";
-		    columnHeader += name + "_FITNESS_MEAN, ";
-		    columnHeader += name + "_FITNESS_VAR ";
+
+		    if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.ISLAND_MODEL) {
+			// in the island model, all species share the same total fitness...
+			columnHeader += ", ";
+			columnHeader += name + "_FITNESS_MEAN, ";
+			columnHeader += name + "_FITNESS_VAR ";
+		    }
+
 		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 			columnHeader += ", " + name + "_TRAILS_SENT, ";
 			columnHeader += name + "_TRAILS_RECEIVED ";
@@ -628,7 +633,7 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(populationFitnessStats.getVariance());
-		sbPerformance.append(COMMA);
+		
 
 		for (Species species : simulation.speciesComposition) {
 
@@ -714,6 +719,7 @@ public class ExperimentReporter implements Constants {
 		}
 
 	    }
+	    
 
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting performance:" + e.getMessage());
