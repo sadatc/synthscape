@@ -45,6 +45,7 @@ public class Main {
 
 	} catch (Exception e) {
 	    logger.severe(e.getMessage());
+	    e.printStackTrace();
 	}
 
     }
