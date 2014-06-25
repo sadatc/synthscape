@@ -68,7 +68,7 @@ public class PopulationIslandSimulation extends Simulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed "+settings.SEED);
+	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 	doLoop(PopulationIslandSimulation.class, manualArgs);
 	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 	logger.info("Diagnosis: total # of islander agents created: "
@@ -252,8 +252,8 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceIslandModel(generation, simEventStats, speciesEventStatsMap,
-		captureStats, populationFitnessStats);
+	experimentReporter.reportPerformanceIslandModel(generation, simEventStats, speciesEventStatsMap, captureStats,
+		populationFitnessStats);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
 		+ captureStats.getMax() + "; sims: " + this.simulationCounter);
