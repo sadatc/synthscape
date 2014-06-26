@@ -288,6 +288,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void doEndOfSimulationTasks() {
+	
+	intervalStats.printEventTypeStats();
 	// each agent now needs to provide local feedback
 	// each agent has complete record of everything that happened
 	// in poolGenerationEventStats
@@ -314,6 +316,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     @Override
     protected void startNextSimulation() {
 
+	intervalStats.clear();
 	resetEnvironment();
 	initEnvironment();
 	initNextAgents();
