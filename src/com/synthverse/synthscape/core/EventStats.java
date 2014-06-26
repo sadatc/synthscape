@@ -2,7 +2,6 @@ package com.synthverse.synthscape.core;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
