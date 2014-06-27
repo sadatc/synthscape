@@ -17,14 +17,12 @@ public class IntervalStats {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private EnumMap<Event, SummaryStatistics> eventIntervalStatsMap = new EnumMap<Event, SummaryStatistics>(
-	    Event.class);
+    private EnumMap<Event, SummaryStatistics> eventIntervalStatsMap = new EnumMap<Event, SummaryStatistics>(Event.class);
     private EnumMap<EventType, SummaryStatistics> eventTypeIntervalStatsMap = new EnumMap<EventType, SummaryStatistics>(
 	    EventType.class);
 
     private EnumMap<Event, Integer> eventLastStepMap = new EnumMap<Event, Integer>(Event.class);
-    private EnumMap<EventType, Integer> eventTypeLastStepMap = new EnumMap<EventType, Integer>(
-	    EventType.class);
+    private EnumMap<EventType, Integer> eventTypeLastStepMap = new EnumMap<EventType, Integer>(EventType.class);
 
     private EnumSet<Event> events = EnumSet.noneOf(Event.class);
     private EnumSet<EventType> eventTypes = EnumSet.noneOf(EventType.class);
@@ -45,9 +43,18 @@ public class IntervalStats {
 		stats.addValue(interval);
 	    }
 	} else {
-	    SummaryStatistics stats = new SummaryStatistics();
-	    stats.addValue(step);
-	    eventIntervalStatsMap.put(event, stats);
+
+	    SummaryStatistics stats;
+
+	    if (eventIntervalStatsMap.containsKey(event)) {
+		stats = eventIntervalStatsMap.get(event);
+		stats.addValue(step);
+	    } else {
+		stats = new SummaryStatistics();
+		stats.addValue(step);
+		eventIntervalStatsMap.put(event, stats);
+	    }
+
 	    events.add(event);
 	}
 	eventLastStepMap.put(event, step);
@@ -66,16 +73,34 @@ public class IntervalStats {
 		stats.addValue(interval);
 	    }
 	} else {
-	    SummaryStatistics stats = new SummaryStatistics();
-	    stats.addValue(step);
-	    eventTypeIntervalStatsMap.put(eventType, stats);
+	    SummaryStatistics stats;
+	    
+	    if (eventTypeIntervalStatsMap.containsKey(eventType)) {
+		stats = eventTypeIntervalStatsMap.get(eventType);
+		stats.addValue(step);
+	    } else {
+		stats = new SummaryStatistics();
+		stats.addValue(step);
+		eventTypeIntervalStatsMap.put(eventType, stats);
+	    }
+
 	    eventTypes.add(eventType);
 	}
 	eventTypeLastStepMap.put(eventType, step);
 
     }
 
+    public void resetLastSteps() {
+	// this simply clears the last steps...
+	// should be called at the end of each simulation
+
+	eventLastStepMap.clear();
+	eventTypeLastStepMap.clear();
+
+    }
+
     public void clear() {
+	// this should be called at the end of each generation
 	// here lets just clear the stats...so that they are not expensively
 	// re-created
 	for (Event event : events) {
