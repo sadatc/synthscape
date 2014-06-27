@@ -139,7 +139,6 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     protected void doEndOfSimulationTasks() {
-	intervalStats.printEventTypeStats();
 	for (Agent agent : agents) {
 	    agent.eventStats.aggregateStatsTo(simEventStats);
 	    agent.eventStats.aggregateStatsTo(experimentEventStats);
@@ -271,7 +270,8 @@ public class PopulationIslandSimulation extends Simulation {
 	clearSpeciesEventStats();
 	captureStats.clear();
 	populationFitnessStats.clear();
-
+	
+	intervalStats.clear();
     }
 
     @Override

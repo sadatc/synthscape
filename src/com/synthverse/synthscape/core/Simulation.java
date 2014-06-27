@@ -554,7 +554,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-	intervalStats.clear();
+	intervalStats.resetLastSteps();
 	simEventStats.clear();
 	resetEnvironment();
 	initEnvironment();
@@ -583,8 +583,6 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void doEndOfSimulationTasks() {
-	
-	intervalStats.printEventTypeStats();
 	
 	// manage all the event statistics...	
 	for (Agent agent : agents) {
@@ -630,7 +628,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// time between trails, interactions, broadcasts, unicasts
 	
 	
-	D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
+	//D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
 	intervalStats.recordValue(event, simStepCounter);
 	
 	
