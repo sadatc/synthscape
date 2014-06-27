@@ -3,6 +3,8 @@ package com.synthverse.synthscape.core;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.synthverse.Main;
+
 public enum Species {
 
     DETECTOR(0, "detector", new TraitsDefiner() {
@@ -55,7 +57,9 @@ public enum Species {
 
 	    traits.add(Trait.TRANSPORTATION);
 
-	    traits.add(Trait.PROCESSING);
+	    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+		traits.add(Trait.PROCESSING);
+	    }
 
 	    return traits;
 	}
