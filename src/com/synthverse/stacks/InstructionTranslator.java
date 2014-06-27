@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -70,6 +71,14 @@ public class InstructionTranslator {
 	Instruction[] allInstructions = Instruction.values();
 
 	for (Instruction instruction : allInstructions) {
+
+	    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+		// filter out process instructions for 3 task problems.
+		if (instruction.name().contains("PROCESS")) {
+		    continue;
+		}
+	    }
+
 	    if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("none")) {
 		if (!instruction.name().contains("TRAIL") && !instruction.name().contains("BROADCAST")
 			&& !instruction.name().contains("UNICAST")) {
@@ -226,11 +235,9 @@ public class InstructionTranslator {
 	logger.info(sb.toString());
 
 	/*
-	for (Instruction instruction : instructions) {
-	    logger.info("ADDED INSTRUCTION: " + instruction);
-	}
-
-	*/
+	 * for (Instruction instruction : instructions) {
+	 * logger.info("ADDED INSTRUCTION: " + instruction); }
+	 */
 	logger.info("<<< done adding.\n");
 
     }
