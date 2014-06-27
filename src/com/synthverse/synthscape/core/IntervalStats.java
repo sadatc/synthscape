@@ -152,7 +152,16 @@ public class IntervalStats {
 	if (events.size() > 0) {
 	    logger.info("/////////////////////////////////");
 	    for (EventType type : eventTypes) {
-		logger.info(type + " = " + eventTypeIntervalStatsMap.get(type));
+		
+		SummaryStatistics stats = eventTypeIntervalStatsMap.get(type);
+		String msg = "";
+		
+		msg += " n="+stats.getN();
+		msg += "\tmin="+stats.getMin();
+		msg += "\tmax="+stats.getMax();
+		msg += "\tavg="+stats.getMean();
+		
+		logger.info(type + ":" + msg);
 	    }
 	    logger.info("/////////////////////////////////");
 	    D.pause();
