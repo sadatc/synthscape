@@ -78,7 +78,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     public boolean matingEnabled = false;
 
-    protected ArrayList<Agent> agents;
+    public ArrayList<Agent> agents;
 
     protected boolean isToroidalWorld;
 
@@ -582,6 +582,9 @@ public abstract class Simulation extends SimState implements Constants {
 	}
     }
 
+    abstract protected void doEndOfSimulationTasks();
+    
+    /*
     protected void doEndOfSimulationTasks() {
 	
 	// manage all the event statistics...	
@@ -600,6 +603,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
     }
+	*/
 
     public void start() {
 	super.start();

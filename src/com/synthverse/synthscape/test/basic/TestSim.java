@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -24,6 +25,25 @@ public class TestSim extends Simulation {
 
     public TestSim(long seed) throws Exception {
 	super(seed);
+    }
+
+    protected void doEndOfSimulationTasks() {
+
+	// manage all the event statistics...
+	for (Agent agent : agents) {
+	    agent.eventStats.aggregateStatsTo(simEventStats);
+	    agent.eventStats.aggregateStatsTo(experimentEventStats);
+	}
+
+	reclaimAgents();
+	this.evolver.provideFeedback(agents, simEventStats);
+
+	captureStats.addValue(this.numberOfCollectedResources);
+
+	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
+	}
+
     }
 
     @Override
