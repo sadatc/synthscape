@@ -15,6 +15,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class Settings {
+    
+    
+    public enum SeedType {
+	NOOPS, ACTIONS, RANDOM; 
+    }
 
     private static Settings instance = null;
 
@@ -66,7 +71,7 @@ public class Settings {
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
-    public boolean SEED_GENOTYPE_PRESET_INSTRUCTIONS = true;
+    public SeedType SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
 
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
     // TODO: separate this, if needed
@@ -125,12 +130,8 @@ public class Settings {
 		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter")
 		.create("species"));
 
-	options.addOption(OptionBuilder
-		.withArgName("interactions")
-		.isRequired()
-		.hasArg()
-		.withDescription(
-			"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
+	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
+		.withDescription("interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 		.create("interactions"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
@@ -173,8 +174,8 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("job_name").hasArg().withDescription("job name [" + JOB_NAME + "]")
 		.create("job_name"));
 
-	options.addOption(OptionBuilder.withArgName("preset_geno").hasArg().withDescription("(true, false) [true]")
-		.create("preset_geno"));
+	options.addOption(OptionBuilder.withArgName("preset_geno").hasArg()
+		.withDescription("(noops, actions, random) [noops]").create("preset_geno"));
 
 	options.addOption(OptionBuilder.withArgName("mating_success").hasArg().withType(Double.class)
 		.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]").create("mating_success"));
@@ -325,7 +326,7 @@ public class Settings {
 	    if (line.hasOption("interactions")) {
 		String interactions = line.getOptionValue("interactions").toLowerCase();
 		if (!(interactions.contains("none") || interactions.contains("trail")
-			|| interactions.contains("broadcast") || interactions.contains("unicast_n") )) {
+			|| interactions.contains("broadcast") || interactions.contains("unicast_n"))) {
 		    throw new ParseException("interactions: " + interactions + " was not recognized");
 		}
 		MODEL_INTERACTIONS = interactions;
@@ -341,13 +342,12 @@ public class Settings {
 
 	    if (line.hasOption("preset_geno")) {
 		String seedPreset = line.getOptionValue("preset_geno");
-		if (seedPreset.equalsIgnoreCase("true")) {
-		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = true;
-
+		if (seedPreset.equalsIgnoreCase("random")) {
+		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.RANDOM;
 		}
 
-		else if (seedPreset.equalsIgnoreCase("false")) {
-		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = false;
+		else if (seedPreset.equalsIgnoreCase("actions")) {
+		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.ACTIONS;
 		} else {
 		    throw new ParseException("preset_geno: " + seedPreset + " was not recognized");
 		}

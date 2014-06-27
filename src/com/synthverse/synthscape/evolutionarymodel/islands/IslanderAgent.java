@@ -8,6 +8,7 @@ import com.synthverse.stacks.Instruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
+import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 
@@ -41,7 +42,7 @@ public class IslanderAgent extends Agent {
 
     }
 
-    private void seedGenotypeWithActions(Program program) {
+    private void seedGenotypeWithNOOPs(Program program) {
 	boolean spaceLeft = true;
 
 	do {
@@ -50,7 +51,7 @@ public class IslanderAgent extends Agent {
 	} while (spaceLeft);
     }
 
-    private void seedGenotypeWithActionsOld(Program program) {
+    private void seedGenotypeWithActions(Program program) {
 
 	boolean spaceLeft = true;
 
@@ -58,15 +59,13 @@ public class IslanderAgent extends Agent {
 	    program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_DETECT_EXTRACTED_RESOURCE_RESOURCE));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_HOME));
-	    program.addInstructionSafely(GenotypeInstruction
-		    .fromInstruction(Instruction.ACTION_DETECT_PROCESSED_RESOURCE_RESOURCE));
+
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_RAW_RESOURCE));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_DETECT_TRAIL));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_FOLLOW_TRAIL));
 	    program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_EXTRACTED_RESOURCE));
-	    program.addInstructionSafely(GenotypeInstruction
-		    .fromInstruction(Instruction.ACTION_IS_CARRYING_PROCESSED_RESOURCE));
+
 	    program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_IS_CARRYING_RAW_RESOURCE));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_IS_CARRYING_RESOURCE));
@@ -79,7 +78,7 @@ public class IslanderAgent extends Agent {
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_MOVE_TO_CLOSEST_HOME));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_EXTRACT));
 	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_LOAD));
-	    program.addInstructionSafely(GenotypeInstruction.fromInstruction(Instruction.ACTION_RESOURCE_PROCESS));
+
 	    spaceLeft = program.addInstructionSafely(GenotypeInstruction
 		    .fromInstruction(Instruction.ACTION_RESOURCE_UNLOAD));
 	} while (spaceLeft);
@@ -90,11 +89,14 @@ public class IslanderAgent extends Agent {
     protected void initGenotype() {
 	super.initGenotype();
 
-	if (Main.settings.SEED_GENOTYPE_PRESET_INSTRUCTIONS) {
+	if (Main.settings.SEED_GENOTYPE_PRESET_INSTRUCTIONS == Settings.SeedType.NOOPS) {
+	    this.program = Program.Factory.createEmpty(sim.random);
+	    seedGenotypeWithNOOPs(this.program);
+	} else if (Main.settings.SEED_GENOTYPE_PRESET_INSTRUCTIONS == Settings.SeedType.RANDOM) {
+	    this.program = Program.Factory.createRandom(sim.random);
+	} else if (Main.settings.SEED_GENOTYPE_PRESET_INSTRUCTIONS == Settings.SeedType.ACTIONS) {
 	    this.program = Program.Factory.createEmpty(sim.random);
 	    seedGenotypeWithActions(this.program);
-	} else {
-	    this.program = Program.Factory.createRandom(sim.random);
 	}
 
 	VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
