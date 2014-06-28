@@ -16,10 +16,14 @@ public class EventStats {
     }
 
     private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
+    private EnumMap<EventType, Integer> eventTypeCounterMap = new EnumMap<EventType, Integer>(EventType.class);
+
     private Set<Event> events = EnumSet.noneOf(Event.class);
+    private Set<EventType> eventTypes = EnumSet.noneOf(EventType.class);
 
     public EventStats() {
 	eventCounterMap.clear();
+	eventTypeCounterMap.clear();
     }
 
     public void recordValue(Event event) {
@@ -29,11 +33,22 @@ public class EventStats {
 	    eventCounterMap.put(event, 1);
 	    events.add(event);
 	}
+
+	EventType type = event.getType();
+	if (eventTypeCounterMap.containsKey(type)) {
+	    eventTypeCounterMap.put(type, eventTypeCounterMap.get(event) + 1);
+	} else {
+	    eventTypeCounterMap.put(type, 1);
+	    eventTypes.add(type);
+	}
     }
 
     public Set<Event> getEvents() {
-
 	return events;
+    }
+
+    public Set<EventType> getEventTypes() {
+	return eventTypes;
     }
 
     public int getValue(Event event) {
@@ -41,9 +56,16 @@ public class EventStats {
 	return result;
     }
 
+    public int getTypeValue(EventType type) {
+	int result = eventTypeCounterMap.containsKey(type) ? eventTypeCounterMap.get(type) : 0;
+	return result;
+    }
+
     public void clear() {
 	eventCounterMap.clear();
 	events.clear();
+	eventTypeCounterMap.clear();
+	eventTypes.clear();
     }
 
     /**
@@ -53,7 +75,7 @@ public class EventStats {
      */
     public void aggregateStatsTo(EventStats accumulatingStats) {
 
-	for (Event event : getEvents()) {
+	for (Event event : events) {
 	    if (accumulatingStats.eventCounterMap.containsKey(event)) {
 		accumulatingStats.eventCounterMap.put(event, accumulatingStats.eventCounterMap.get(event)
 			+ eventCounterMap.get(event));
@@ -63,30 +85,16 @@ public class EventStats {
 	    }
 	}
 
-    }
-
-    public void printValues() {
-	if (eventCounterMap.size() > 0) {
-	    logger.info("/////////////////////////////////");
-	    for (Event event : getEvents()) {
-		logger.info(event + " = " + eventCounterMap.get(event));
+	for (EventType type : eventTypes) {
+	    if (accumulatingStats.eventTypeCounterMap.containsKey(type)) {
+		accumulatingStats.eventTypeCounterMap.put(type, accumulatingStats.eventTypeCounterMap.get(type)
+			+ eventTypeCounterMap.get(type));
+	    } else {
+		accumulatingStats.eventTypeCounterMap.put(type, eventTypeCounterMap.get(type));
+		accumulatingStats.eventTypes.add(type);
 	    }
-	    logger.info("/////////////////////////////////");
-	}
-    }
-
-    @Override
-    public String toString() {
-	String str = "";
-	if (eventCounterMap.size() > 0) {
-
-	    for (Event event : getEvents()) {
-		str += (event + ":" + eventCounterMap.get(event)+" ");
-	    }
-
 	}
 
-	return str;
     }
 
 }
