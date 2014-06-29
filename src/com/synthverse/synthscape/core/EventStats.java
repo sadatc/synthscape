@@ -96,5 +96,17 @@ public class EventStats {
 	}
 
     }
+    
+    public void printEventStats() {
+	for (Event event : events) {
+	    D.p(event.name()+" = "+eventCounterMap.get(event));
+	}
+    }
+    
+    public void printEventTypeStats() {
+	for (EventType type : eventTypes) {
+	    D.p(type.name()+" = "+eventTypeCounterMap.get(type));
+	}
+    }
 
 }

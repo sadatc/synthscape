@@ -240,6 +240,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	// items needed: fitnessStats, eventStats, captureStats
 
+	/*
 	for (Agent agent : agents) {
 	    for (Species species : speciesComposition) {
 		if (agent.getSpecies() == species) {
@@ -247,6 +248,7 @@ public class PopulationIslandSimulation extends Simulation {
 		}
 	    }
 	}
+	*/
 
 	for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
 	    if (islandEvolver.evolve() != generation) {
