@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.islands;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -41,7 +42,7 @@ public class PopulationIslandSimulation extends Simulation {
 
     private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
-    LinkedHashMap<Species, EventStats> speciesEventStatsMap = new LinkedHashMap<Species, EventStats>();
+    EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
 
     private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
     static {
