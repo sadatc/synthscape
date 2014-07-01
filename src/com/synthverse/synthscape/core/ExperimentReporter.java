@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.EnumMap;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -427,8 +427,8 @@ public class ExperimentReporter implements Constants {
     }
 
     public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats,
-	    long simsRun) {
+	    EnumMap<Species, EventStats> speciesEventStatsMap, ArrayList<Agent> agents, SummaryStatistics captureStats,
+	    SummaryStatistics populationFitnessStats, long simsRun) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -436,35 +436,30 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.delete(0, sbPerformance.length());
 
 		sbPerformance.append(generationCounter);
-		sbPerformance.append(COMMA);
 
+		sbPerformance.append(COMMA);
 		sbPerformance.append(captureStats.getSum());
-		sbPerformance.append(COMMA);
 
+		sbPerformance.append(COMMA);
 		sbPerformance.append(captureStats.getMax());
-		sbPerformance.append(COMMA);
 
+		sbPerformance.append(COMMA);
 		sbPerformance.append(captureStats.getMean());
+
 		sbPerformance.append(COMMA);
-
 		sbPerformance.append(populationFitnessStats.getMean());
-		
 
+		sbPerformance.append(COMMA);
 		sbPerformance.append(populationFitnessStats.getVariance());
-		
-		
-		
+
 		for (EventType type : EventType.values()) {
 		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 			continue;
 		    } else {
 			sbPerformance.append(COMMA);
-			sbPerformance.append(generationEventStats.getTypeValue(type)/simsRun);
+			sbPerformance.append(generationEventStats.getTypeValue(type) / simsRun);
 		    }
 		}
-		
-		
-		
 
 		// TODO: this loop first iterates over species and then for each
 		// species it iterates over all the agents
@@ -562,11 +557,19 @@ public class ExperimentReporter implements Constants {
 		    }
 
 		    sbPerformance.append(COMMA);
-
 		    sbPerformance.append(summaryFitnessStats.getMean());
-		    sbPerformance.append(COMMA);
 
+		    sbPerformance.append(COMMA);
 		    sbPerformance.append(summaryFitnessStats.getVariance());
+
+		    for (EventType type : EventType.values()) {
+			if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			    continue;
+			} else {
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			}
+		    }
 
 		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 
@@ -642,7 +645,7 @@ public class ExperimentReporter implements Constants {
     }
 
     public void reportPerformanceIslandModel(int generationCounter, EventStats generationEventStats,
-	    LinkedHashMap<Species, EventStats> speciesEventStatsMap, SummaryStatistics captureStats,
+	    EnumMap<Species, EventStats> speciesEventStatsMap, SummaryStatistics captureStats,
 	    SummaryStatistics populationFitnessStats, long simsRun) {
 	try {
 	    if (simulation.isReportPerformance()) {
@@ -666,7 +669,25 @@ public class ExperimentReporter implements Constants {
 
 		sbPerformance.append(populationFitnessStats.getVariance());
 
+		for (EventType type : EventType.values()) {
+		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			continue;
+		    } else {
+			sbPerformance.append(COMMA);
+			sbPerformance.append(generationEventStats.getTypeValue(type) / simsRun);
+		    }
+		}
+
 		for (Species species : simulation.speciesComposition) {
+
+		    for (EventType type : EventType.values()) {
+			if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			    continue;
+			} else {
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append(speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			}
+		    }
 
 		    EventStats eventStats = speciesEventStatsMap.get(species);
 		    int sent = 0;

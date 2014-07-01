@@ -314,7 +314,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
 
 	    EventStats speciesEventStats = speciesEventStatsMap.get(embodiedAgent.getSpecies());
-	    embodiedAgent.eventStats.aggregateStatsTo(speciesEventStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(speciesEventStats);
 
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
