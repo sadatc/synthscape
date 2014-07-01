@@ -356,7 +356,15 @@ public class ExperimentReporter implements Constants {
 	    if (simulation.isReportPerformance()) {
 		numberOfSpecies = simulation.speciesComposition.size();
 
-		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR ";
+		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+		for (EventType type : EventType.values()) {
+		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			continue;
+		    } else {
+			columnHeader += ", " + type + "_RATE";
+		    }
+		}
+
 		for (Species species : simulation.speciesComposition) {
 		    String name = species.toString();
 
@@ -366,6 +374,14 @@ public class ExperimentReporter implements Constants {
 			columnHeader += ", ";
 			columnHeader += name + "_FITNESS_MEAN, ";
 			columnHeader += name + "_FITNESS_VAR ";
+		    }
+
+		    for (EventType type : EventType.values()) {
+			if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			    continue;
+			} else {
+			    columnHeader += ", " + name + "_" + type + "_RATE";
+			}
 		    }
 
 		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
@@ -432,9 +448,23 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(populationFitnessStats.getMean());
-		sbPerformance.append(COMMA);
+		
 
 		sbPerformance.append(populationFitnessStats.getVariance());
+		
+		
+		
+		for (EventType type : EventType.values()) {
+		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+			continue;
+		    } else {
+			sbPerformance.append(COMMA);
+			sbPerformance.append(generationEventStats.getTypeValue(type)/simsRun);
+		    }
+		}
+		
+		
+		
 
 		// TODO: this loop first iterates over species and then for each
 		// species it iterates over all the agents
