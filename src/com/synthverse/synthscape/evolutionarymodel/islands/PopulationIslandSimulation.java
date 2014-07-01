@@ -146,6 +146,8 @@ public class PopulationIslandSimulation extends Simulation {
 	    EventStats speciesEventStats = speciesEventStatsMap.get(agent.getSpecies());
 	    agent.eventStats.aggregateStatsTo(speciesEventStats);
 	}
+	//simEventStats.printEventTypeStats();
+	
 
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simEventStats);
@@ -202,11 +204,13 @@ public class PopulationIslandSimulation extends Simulation {
 
 		    simStepCounter = 0;
 		    simulationCounter++;
+		    simsRunForThisGeneration++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolvePopulationIslands();
+			    simsRunForThisGeneration=0;
 			}
 
 			startNextSimulation();
@@ -264,7 +268,7 @@ public class PopulationIslandSimulation extends Simulation {
 	}
 
 	experimentReporter.reportPerformanceIslandModel(generation, simEventStats, speciesEventStatsMap, captureStats,
-		populationFitnessStats);
+		populationFitnessStats, simsRunForThisGeneration);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
 		+ captureStats.getMax() + "; sims: " + this.simulationCounter);

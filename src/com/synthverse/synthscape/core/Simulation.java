@@ -53,6 +53,8 @@ public abstract class Simulation extends SimState implements Constants {
     protected ExperimentReporter experimentReporter;
 
     protected long simulationCounter;
+    
+    protected long simsRunForThisGeneration;
 
     protected int simStepCounter;
 
@@ -199,6 +201,7 @@ public abstract class Simulation extends SimState implements Constants {
 	createDataStructures();
 
 	simulationCounter = 0;
+	simsRunForThisGeneration = 0;
 
 	numberOfCollectedResources = 0;
 
@@ -514,11 +517,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 		    simStepCounter = 0;
 		    simulationCounter++;
+		    simsRunForThisGeneration++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolver.evolve();
+			    simsRunForThisGeneration=0;
 			}
 
 			startNextSimulation();
@@ -551,6 +556,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
+	
 	intervalStats.resetLastSteps();
 	simEventStats.clear();
 	resetEnvironment();

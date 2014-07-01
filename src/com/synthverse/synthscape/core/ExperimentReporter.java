@@ -361,7 +361,8 @@ public class ExperimentReporter implements Constants {
 		    String name = species.toString();
 
 		    if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.ISLAND_MODEL) {
-			// in the island model, all species share the same total fitness...
+			// in the island model, all species share the same total
+			// fitness...
 			columnHeader += ", ";
 			columnHeader += name + "_FITNESS_MEAN, ";
 			columnHeader += name + "_FITNESS_VAR ";
@@ -410,7 +411,8 @@ public class ExperimentReporter implements Constants {
     }
 
     public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats) {
+	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats,
+	    long simsRun) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -611,7 +613,7 @@ public class ExperimentReporter implements Constants {
 
     public void reportPerformanceIslandModel(int generationCounter, EventStats generationEventStats,
 	    LinkedHashMap<Species, EventStats> speciesEventStatsMap, SummaryStatistics captureStats,
-	    SummaryStatistics populationFitnessStats) {
+	    SummaryStatistics populationFitnessStats, long simsRun) {
 	try {
 	    if (simulation.isReportPerformance()) {
 
@@ -633,7 +635,6 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(populationFitnessStats.getVariance());
-		
 
 		for (Species species : simulation.speciesComposition) {
 
@@ -719,7 +720,6 @@ public class ExperimentReporter implements Constants {
 		}
 
 	    }
-	    
 
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting performance:" + e.getMessage());

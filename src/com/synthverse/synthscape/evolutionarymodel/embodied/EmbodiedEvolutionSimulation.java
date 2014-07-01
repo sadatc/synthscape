@@ -135,6 +135,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	createDataStructures();
 
 	simulationCounter = 0;
+	simsRunForThisGeneration = 0;
 
 	numberOfCollectedResources = 0;
 
@@ -261,7 +262,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents, captureStats,
-		populationFitnessStats);
+		populationFitnessStats, simsRunForThisGeneration);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());
@@ -372,11 +373,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		    simStepCounter = 0;
 		    simulationCounter++;
+		    simsRunForThisGeneration++;
 
 		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolveEmbodiedAgents();
+			    simsRunForThisGeneration=0;
 			}
 
 			/*
