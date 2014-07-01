@@ -1,5 +1,6 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +50,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
+    EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
+
     int generation = 0;
 
     static {
@@ -57,6 +60,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     public EmbodiedEvolutionSimulation(long seed) throws Exception {
 	super(seed);
+	initSpeciesEventStats();
     }
 
     public static void main(String[] arg) {
@@ -68,6 +72,19 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	logger.info("Diagnosis: total # of embodied agents created: "
 		+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
 	System.exit(0);
+    }
+
+    public final void clearSpeciesEventStats() {
+	for (EventStats es : speciesEventStatsMap.values()) {
+	    es.clear();
+	}
+    }
+
+    public final void initSpeciesEventStats() {
+	for (Species species : speciesComposition) {
+	    EventStats es = new EventStats();
+	    speciesEventStatsMap.put(species, es);
+	}
     }
 
     private void initTeam() {
@@ -261,8 +278,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents, captureStats,
-		populationFitnessStats, simsRunForThisGeneration);
+	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, speciesEventStatsMap,
+		agents, captureStats, populationFitnessStats, simsRunForThisGeneration);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());
@@ -275,6 +292,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	generationEventStats.clear();
 	captureStats.clear();
 	intervalStats.clear();
+	clearSpeciesEventStats();
 
     }
 
@@ -294,6 +312,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
 	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
+
+	    EventStats speciesEventStats = speciesEventStatsMap.get(embodiedAgent.getSpecies());
+	    embodiedAgent.eventStats.aggregateStatsTo(speciesEventStats);
+
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
 
@@ -379,7 +401,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolveEmbodiedAgents();
-			    simsRunForThisGeneration=0;
+			    simsRunForThisGeneration = 0;
 			}
 
 			/*
