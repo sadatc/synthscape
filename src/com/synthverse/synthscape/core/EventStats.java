@@ -36,7 +36,7 @@ public class EventStats {
 
 	EventType type = event.getType();
 	if (eventTypeCounterMap.containsKey(type)) {
-	    eventTypeCounterMap.put(type, eventTypeCounterMap.get(event) + 1);
+	    eventTypeCounterMap.put(type, eventTypeCounterMap.get(type) + 1);
 	} else {
 	    eventTypeCounterMap.put(type, 1);
 	    eventTypes.add(type);
@@ -96,16 +96,16 @@ public class EventStats {
 	}
 
     }
-    
+
     public void printEventStats() {
 	for (Event event : events) {
-	    D.p(event.name()+" = "+eventCounterMap.get(event));
+	    D.p(event.name() + " = " + eventCounterMap.get(event));
 	}
     }
-    
+
     public void printEventTypeStats() {
 	for (EventType type : eventTypes) {
-	    D.p(type.name()+" = "+eventTypeCounterMap.get(type));
+	    D.p(type.name() + " = " + eventTypeCounterMap.get(type));
 	}
     }
 
