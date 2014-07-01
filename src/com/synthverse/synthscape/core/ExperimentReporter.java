@@ -457,7 +457,7 @@ public class ExperimentReporter implements Constants {
 			continue;
 		    } else {
 			sbPerformance.append(COMMA);
-			sbPerformance.append(generationEventStats.getTypeValue(type) / simsRun);
+			sbPerformance.append((double)generationEventStats.getTypeValue(type) / simsRun);
 		    }
 		}
 
@@ -567,7 +567,7 @@ public class ExperimentReporter implements Constants {
 			    continue;
 			} else {
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append(speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			    sbPerformance.append((double)speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
 			}
 		    }
 
@@ -674,7 +674,7 @@ public class ExperimentReporter implements Constants {
 			continue;
 		    } else {
 			sbPerformance.append(COMMA);
-			sbPerformance.append(generationEventStats.getTypeValue(type) / simsRun);
+			sbPerformance.append((double)generationEventStats.getTypeValue(type) / simsRun);
 		    }
 		}
 
@@ -685,7 +685,7 @@ public class ExperimentReporter implements Constants {
 			    continue;
 			} else {
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append(speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			    sbPerformance.append((double)speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
 			}
 		    }
 
