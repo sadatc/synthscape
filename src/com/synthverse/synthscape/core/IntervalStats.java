@@ -17,6 +17,43 @@ public class IntervalStats {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
+    class SpeciesStats {
+	EnumMap<Species, SummaryStatistics> statMap = new EnumMap<Species, SummaryStatistics>(Species.class);
+
+	void addValue(Species species, int value) {
+	    SummaryStatistics stats;
+	    if (statMap.containsKey(species)) {
+		stats = statMap.get(species);
+	    } else {
+		stats = new SummaryStatistics();
+		statMap.put(species, stats);
+	    }
+
+	    stats.addValue(value);
+	}
+
+	SummaryStatistics getValue(Species species) {
+	    SummaryStatistics result = null;
+	    if (statMap.containsKey(species)) {
+		result = statMap.get(species);
+	    }
+
+	    return result;
+	}
+
+	void clearAllStats() {
+	    for (SummaryStatistics stats : statMap.values()) {
+		stats.clear();
+	    }
+	}
+
+    }
+
+    // private EnumMap<Event, SpeciesStats> speciesEventIntervalStatsMap = new
+    // EnumMap<Event, SpeciesStats>(Event.class);
+    private EnumMap<EventType, SpeciesStats> speciesEventTypeIntervalStatsMap = new EnumMap<EventType, SpeciesStats>(
+	    EventType.class);
+
     private EnumMap<Event, SummaryStatistics> eventIntervalStatsMap = new EnumMap<Event, SummaryStatistics>(Event.class);
     private EnumMap<EventType, SummaryStatistics> eventTypeIntervalStatsMap = new EnumMap<EventType, SummaryStatistics>(
 	    EventType.class);
@@ -30,7 +67,7 @@ public class IntervalStats {
     public IntervalStats() {
     }
 
-    public void recordValue(Event event, int step) {
+    public void recordValue(Event event, Species species, int step) {
 	if (eventLastStepMap.containsKey(event)) {
 	    int lastStep = eventLastStepMap.get(event);
 	    SummaryStatistics stats = eventIntervalStatsMap.get(event);
@@ -41,6 +78,7 @@ public class IntervalStats {
 		// event on the same step
 
 		stats.addValue(interval);
+
 	    }
 	} else {
 
@@ -49,10 +87,12 @@ public class IntervalStats {
 	    if (eventIntervalStatsMap.containsKey(event)) {
 		stats = eventIntervalStatsMap.get(event);
 		stats.addValue(step);
+
 	    } else {
 		stats = new SummaryStatistics();
 		stats.addValue(step);
 		eventIntervalStatsMap.put(event, stats);
+
 	    }
 
 	    events.add(event);
@@ -71,22 +111,38 @@ public class IntervalStats {
 		// not allowing 0 intervals will stop reporting the same
 		// event on the same step
 		stats.addValue(interval);
+		addSpeciesEventTypeIntrval(species, eventType, interval);
 	    }
 	} else {
 	    SummaryStatistics stats;
-	    
+
 	    if (eventTypeIntervalStatsMap.containsKey(eventType)) {
 		stats = eventTypeIntervalStatsMap.get(eventType);
 		stats.addValue(step);
+		addSpeciesEventTypeIntrval(species, eventType, step);
 	    } else {
 		stats = new SummaryStatistics();
 		stats.addValue(step);
 		eventTypeIntervalStatsMap.put(eventType, stats);
+		addSpeciesEventTypeIntrval(species, eventType, step);
 	    }
 
 	    eventTypes.add(eventType);
 	}
 	eventTypeLastStepMap.put(eventType, step);
+
+    }
+
+    private void addSpeciesEventTypeIntrval(Species species, EventType eventType, int interval) {
+
+	SpeciesStats stats;
+	if (speciesEventTypeIntervalStatsMap.containsKey(eventType)) {
+	    stats = speciesEventTypeIntervalStatsMap.get(eventType);
+	} else {
+	    stats = new SpeciesStats();
+	    speciesEventTypeIntervalStatsMap.put(eventType, stats);
+	}
+	stats.addValue(species, interval);
 
     }
 
@@ -115,6 +171,9 @@ public class IntervalStats {
 	// re-created
 	for (EventType eventType : eventTypes) {
 	    eventTypeIntervalStatsMap.get(eventType).clear();
+
+	    speciesEventTypeIntervalStatsMap.get(eventType).clearAllStats();
+
 	}
 
 	eventTypeLastStepMap.clear(); // cheap to destroy...and re-create
@@ -152,15 +211,15 @@ public class IntervalStats {
 	if (events.size() > 0) {
 	    logger.info("/////////////////////////////////");
 	    for (EventType type : eventTypes) {
-		
+
 		SummaryStatistics stats = eventTypeIntervalStatsMap.get(type);
 		String msg = "";
-		
-		msg += " n="+stats.getN();
-		msg += "\tmin="+stats.getMin();
-		msg += "\tmax="+stats.getMax();
-		msg += "\tavg="+stats.getMean();
-		
+
+		msg += " n=" + stats.getN();
+		msg += "\tmin=" + stats.getMin();
+		msg += "\tmax=" + stats.getMax();
+		msg += "\tavg=" + stats.getMean();
+
 		logger.info(type + ":" + msg);
 	    }
 	    logger.info("/////////////////////////////////");

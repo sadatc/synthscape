@@ -613,7 +613,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// time between trails, interactions, broadcasts, unicasts
 
 	// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
-	intervalStats.recordValue(event, simStepCounter);
+	intervalStats.recordValue(event, agent.getSpecies(), simStepCounter);
 
 	if (isReportEvents()) {
 	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
