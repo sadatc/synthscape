@@ -60,10 +60,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
     }
 
     public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed "+settings.SEED);
+	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 	doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
-	logger.info("Diagnosis: total # of agents created: "
-		+ Agent.get_optimazationTotalAgentsCounters());
+	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 	logger.info("Diagnosis: total # of islander agents created: "
 		+ IslanderAgent.get_optimizationIslanderAgentCounter());
 	logger.info("Diagnosis: total # of embodied agents created: "
@@ -142,7 +141,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 	isToroidalWorld = TOROIDAL_FLAG;
-	
+
     }
 
     @Override
@@ -170,8 +169,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
 
-		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory
-			.getNewFactoryAgent(species);
+		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
 		embodiedAgent.setLocation(randomX, randomY);
 		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 		embodiedAgent.synchronizeLocationToActiveAgent();
@@ -236,8 +234,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
      * report the statistics
      */
     protected void evolveEmbodiedAgents() {
-	logger.info("********* evolving embodied agents... number of simulations run:"
-		+ this.simulationCounter);
+	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	populationFitnessStats.clear();
 
@@ -248,8 +245,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
 	    // accumulate event counts for agents...
-	    embodiedAgent.poolGenerationEventStats
-		    .aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
+	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 
 	    // evolve the agents...
 	    if (embodiedAgent.evolve() != generation) {
@@ -264,11 +260,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents,
-		captureStats, populationFitnessStats);
+	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, agents, captureStats,
+		populationFitnessStats);
 
-	logger.info("summary: collections="
-		+ this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
+	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());
 
 	// clear pool generation event stats for next generation...
@@ -279,7 +274,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	generationEventStats.clear();
 	captureStats.clear();
 	intervalStats.clear();
-	
 
     }
 
@@ -290,16 +284,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     protected void doEndOfSimulationTasks() {
-	
-	
+
 	// each agent now needs to provide local feedback
 	// each agent has complete record of everything that happened
 	// in poolGenerationEventStats
 
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.eventStats
-		    .aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
+	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
 	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
 	    embodiedAgent.evaluateLocalFitness();
 	    // now reclaim the internal agents...
@@ -334,8 +326,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	return result;
     }
 
-  
-
     @Override
     protected void startSimulation() {
 
@@ -345,10 +335,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	initEnvironment();
 	initAgents();
 
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world="
-		+ (gridHeight * gridWidth) + " obstacles=" + numberOfObstacles + " sites="
-		+ numberOfCollectionSites + " resources=" + numberOfResources + " agents="
-		+ agents.size());
+	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+		+ numberOfResources + " agents=" + agents.size());
 
 	setStartDate();
 	experimentReporter.initReporter();
@@ -359,7 +348,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		simStepCounter++;
 
-		
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 		    fadeTrails();
 		}
@@ -371,8 +359,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 		    ageBroadcasts();
 		}
-		
-		
+
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
