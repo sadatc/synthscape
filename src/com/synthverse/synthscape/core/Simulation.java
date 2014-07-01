@@ -124,9 +124,6 @@ public abstract class Simulation extends SimState implements Constants {
     public EventStats simEventStats = new EventStats();
     public EventStats experimentEventStats = new EventStats();
     public IntervalStats intervalStats = new IntervalStats();
-    
-    
-    
 
     private int genePoolSize;
 
@@ -506,7 +503,7 @@ public abstract class Simulation extends SimState implements Constants {
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 		    ageBroadcasts();
 		}
-		
+
 		doEndOfStepTasks();
 
 		// check if simulation should continue...
@@ -583,27 +580,6 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     abstract protected void doEndOfSimulationTasks();
-    
-    /*
-    protected void doEndOfSimulationTasks() {
-	
-	// manage all the event statistics...	
-	for (Agent agent : agents) {
-	    agent.eventStats.aggregateStatsTo(simEventStats);
-	    agent.eventStats.aggregateStatsTo(experimentEventStats);
-	}
-
-	reclaimAgents();
-	this.evolver.provideFeedback(agents, simEventStats);
-
-	captureStats.addValue(this.numberOfCollectedResources);
-
-	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
-	}
-
-    }
-	*/
 
     public void start() {
 	super.start();
@@ -618,7 +594,7 @@ public abstract class Simulation extends SimState implements Constants {
 	// TODO: fix reportEvent so it can take ints too for source and
 	// destination
 	agent.eventStats.recordValue(event);
-	
+
 	// additional stats we are interested in:
 	// time between detections
 	// time between extractions
@@ -627,15 +603,11 @@ public abstract class Simulation extends SimState implements Constants {
 	// time between unloads
 	// time between captures
 	// time between tasks! (any of the above)
-	
-	
+
 	// time between trails, interactions, broadcasts, unicasts
-	
-	
-	//D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
+
+	// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
 	intervalStats.recordValue(event, simStepCounter);
-	
-	
 
 	if (isReportEvents()) {
 	    experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
