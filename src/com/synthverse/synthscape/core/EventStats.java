@@ -15,8 +15,8 @@ public class EventStats {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
 
-    private EnumMap<Event, Integer> eventCounterMap = new EnumMap<Event, Integer>(Event.class);
-    private EnumMap<EventType, Integer> eventTypeCounterMap = new EnumMap<EventType, Integer>(EventType.class);
+    private EnumMap<Event, Long> eventCounterMap = new EnumMap<Event, Long>(Event.class);
+    private EnumMap<EventType, Long> eventTypeCounterMap = new EnumMap<EventType, Long>(EventType.class);
 
     private Set<Event> events = EnumSet.noneOf(Event.class);
     private Set<EventType> eventTypes = EnumSet.noneOf(EventType.class);
@@ -30,7 +30,7 @@ public class EventStats {
 	if (eventCounterMap.containsKey(event)) {
 	    eventCounterMap.put(event, eventCounterMap.get(event) + 1);
 	} else {
-	    eventCounterMap.put(event, 1);
+	    eventCounterMap.put(event, (long)1);
 	    events.add(event);
 	}
 
@@ -38,7 +38,7 @@ public class EventStats {
 	if (eventTypeCounterMap.containsKey(type)) {
 	    eventTypeCounterMap.put(type, eventTypeCounterMap.get(type) + 1);
 	} else {
-	    eventTypeCounterMap.put(type, 1);
+	    eventTypeCounterMap.put(type, (long)1);
 	    eventTypes.add(type);
 	}
     }
@@ -51,13 +51,13 @@ public class EventStats {
 	return eventTypes;
     }
 
-    public int getValue(Event event) {
-	int result = eventCounterMap.containsKey(event) ? eventCounterMap.get(event) : 0;
+    public long getValue(Event event) {
+	long result = eventCounterMap.containsKey(event) ? eventCounterMap.get(event) : 0;
 	return result;
     }
 
-    public int getTypeValue(EventType type) {
-	int result = eventTypeCounterMap.containsKey(type) ? eventTypeCounterMap.get(type) : 0;
+    public long getTypeValue(EventType type) {
+	long result = eventTypeCounterMap.containsKey(type) ? eventTypeCounterMap.get(type) : 0;
 	return result;
     }
 

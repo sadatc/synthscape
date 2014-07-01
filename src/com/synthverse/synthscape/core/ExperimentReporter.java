@@ -471,26 +471,26 @@ public class ExperimentReporter implements Constants {
 
 		    summaryFitnessStats.clear();
 
-		    int sentTrail = 0;
-		    int receivedTrail = 0;
+		    long sentTrail = 0;
+		    long receivedTrail = 0;
 
-		    int sentBroadcastA = 0;
-		    int receivedBroadcastA = 0;
+		    long sentBroadcastA = 0;
+		    long receivedBroadcastA = 0;
 
-		    int sentBroadcastB = 0;
-		    int receivedBroadcastB = 0;
+		    long sentBroadcastB = 0;
+		    long receivedBroadcastB = 0;
 
-		    int sentBroadcastC = 0;
-		    int receivedBroadcastC = 0;
+		    long sentBroadcastC = 0;
+		    long receivedBroadcastC = 0;
 
-		    int sentUnicastClosestA = 0;
-		    int receivedUnicastClosestA = 0;
+		    long sentUnicastClosestA = 0;
+		    long receivedUnicastClosestA = 0;
 
-		    int sentUnicastClosestB = 0;
-		    int receivedUnicastClosestB = 0;
+		    long sentUnicastClosestB = 0;
+		    long receivedUnicastClosestB = 0;
 
-		    int sentUnicastClosestC = 0;
-		    int receivedUnicastClosestC = 0;
+		    long sentUnicastClosestC = 0;
+		    long receivedUnicastClosestC = 0;
 
 		    // TODO: this should be the top loop
 		    for (Agent agent : agents) {
@@ -690,8 +690,8 @@ public class ExperimentReporter implements Constants {
 		    }
 
 		    EventStats eventStats = speciesEventStatsMap.get(species);
-		    int sent = 0;
-		    int received = 0;
+		    long sent = 0;
+		    long received = 0;
 
 		    if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 			sent = eventStats.getValue(Event.SENT_TRAIL);
