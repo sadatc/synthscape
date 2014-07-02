@@ -20,7 +20,7 @@ public class IntervalStats {
     class SpeciesStats {
 	EnumMap<Species, SummaryStatistics> statMap = new EnumMap<Species, SummaryStatistics>(Species.class);
 
-	void addValue(Species species, int value) {
+	final void addValue(Species species, int value) {
 	    SummaryStatistics stats;
 	    if (statMap.containsKey(species)) {
 		stats = statMap.get(species);
@@ -32,7 +32,7 @@ public class IntervalStats {
 	    stats.addValue(value);
 	}
 
-	SummaryStatistics getValue(Species species) {
+	final SummaryStatistics getValue(Species species) {
 	    SummaryStatistics result = null;
 	    if (statMap.containsKey(species)) {
 		result = statMap.get(species);
@@ -41,7 +41,7 @@ public class IntervalStats {
 	    return result;
 	}
 
-	void clearAllStats() {
+	final void clearAllStats() {
 	    for (SummaryStatistics stats : statMap.values()) {
 		stats.clear();
 	    }
@@ -133,6 +133,20 @@ public class IntervalStats {
 
     }
 
+    public SummaryStatistics getSpeciesEventTypeIntervalStats(Species species, EventType eventType) {
+	SummaryStatistics result = null;
+
+	if (speciesEventTypeIntervalStatsMap.containsKey(eventType)) {
+	    SpeciesStats speciesStats = speciesEventTypeIntervalStatsMap.get(eventType);
+	    if (speciesStats != null) {
+		result = speciesStats.getValue(species);
+	    }
+
+	}
+
+	return result;
+    }
+
     private void addSpeciesEventTypeIntrval(Species species, EventType eventType, int interval) {
 
 	SpeciesStats stats;
@@ -146,19 +160,30 @@ public class IntervalStats {
 
     }
 
+    private void printSpeciesEventTypeInterval() {
+	for (EventType type : eventTypes) {
+	    SpeciesStats speciesStats = speciesEventTypeIntervalStatsMap.get(type);
+	    for (Species species : speciesStats.statMap.keySet()) {
+		D.p(species + " " + type + " " + speciesStats.statMap.get(species));
+	    }
+	}
+
+    }
+
     public void resetLastSteps() {
 	// this simply clears the last steps...
 	// should be called at the end of each simulation
-
 	eventLastStepMap.clear();
 	eventTypeLastStepMap.clear();
-
     }
 
     public void clear() {
 	// this should be called at the end of each generation
 	// here lets just clear the stats...so that they are not expensively
 	// re-created
+
+	printSpeciesEventTypeInterval();
+
 	for (Event event : events) {
 	    eventIntervalStatsMap.get(event).clear();
 	}
@@ -227,35 +252,5 @@ public class IntervalStats {
 	}
 
     }
-
-    /*
-     * 
-     * public void aggregateStatsTo(IntervalStats accumulatingStats) {
-     * 
-     * for (Event event : getEvents()) { if
-     * (accumulatingStats.eventCounterMap.containsKey(event)) {
-     * accumulatingStats.eventCounterMap.put(event,
-     * accumulatingStats.eventCounterMap.get(event) +
-     * eventCounterMap.get(event)); } else {
-     * accumulatingStats.eventCounterMap.put(event, eventCounterMap.get(event));
-     * accumulatingStats.events.add(event); } }
-     * 
-     * }
-     * 
-     * public void printValues() { if (eventCounterMap.size() > 0) {
-     * logger.info("/////////////////////////////////"); for (Event event :
-     * getEvents()) { logger.info(event + " = " + eventCounterMap.get(event)); }
-     * logger.info("/////////////////////////////////"); } }
-     * 
-     * @Override public String toString() { String str = ""; if
-     * (eventCounterMap.size() > 0) {
-     * 
-     * for (Event event : getEvents()) { str += (event + ":" +
-     * eventCounterMap.get(event)+" "); }
-     * 
-     * }
-     * 
-     * return str; }
-     */
 
 }

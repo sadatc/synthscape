@@ -278,8 +278,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceEmbodiedModel(generation, generationEventStats, speciesEventStatsMap,
-		agents, captureStats, populationFitnessStats, simsRunForThisGeneration);
+	experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
+		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());

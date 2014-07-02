@@ -147,8 +147,7 @@ public class PopulationIslandSimulation extends Simulation {
 	    EventStats speciesEventStats = speciesEventStatsMap.get(agent.getSpecies());
 	    agent.eventStats.aggregateStatsTo(speciesEventStats);
 	}
-	//simEventStats.printEventTypeStats();
-	
+	// simEventStats.printEventTypeStats();
 
 	reclaimAgents();
 	this.evolver.provideFeedback(agents, simEventStats);
@@ -211,7 +210,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolvePopulationIslands();
-			    simsRunForThisGeneration=0;
+			    simsRunForThisGeneration = 0;
 			}
 
 			startNextSimulation();
@@ -243,8 +242,6 @@ public class PopulationIslandSimulation extends Simulation {
 
 	generation++;
 
-
-
 	for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
 	    if (islandEvolver.evolve() != generation) {
 		logger.severe("invalid evolution algorithm implementation");
@@ -258,8 +255,8 @@ public class PopulationIslandSimulation extends Simulation {
 
 	}
 
-	experimentReporter.reportPerformanceIslandModel(generation, simEventStats, speciesEventStatsMap, captureStats,
-		populationFitnessStats, simsRunForThisGeneration);
+	experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
+		captureStats, populationFitnessStats, simsRunForThisGeneration);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
 		+ captureStats.getMax() + "; sims: " + this.simulationCounter);
@@ -267,7 +264,7 @@ public class PopulationIslandSimulation extends Simulation {
 	clearSpeciesEventStats();
 	captureStats.clear();
 	populationFitnessStats.clear();
-	
+
 	intervalStats.clear();
     }
 
