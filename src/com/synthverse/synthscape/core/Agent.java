@@ -303,10 +303,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void operationFollowBroadcast(SignalType signalType) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 		if (broadcast != null) {
 		    // logger.info("moving to a broadcast:" + signalType);
@@ -327,6 +327,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void operationBroadcast(SignalType signalType) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
@@ -345,14 +346,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public boolean operationDetectBroadcast(SignalType signalType) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	boolean result = false;
+
 	if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 		Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 
 		if (broadcast != null) {
-
 		    if (signalType == SignalType.SIGNAL_A) {
 			sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA, "" + this.agentId);
 		    } else if (signalType == SignalType.SIGNAL_B) {
@@ -369,6 +371,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void operationUnicastClosest(SignalType signalType) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
@@ -425,7 +428,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void operationFollowUnicastClosest(SignalType signalType) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
 	    if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 		    || this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
@@ -459,6 +464,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    } else {
 			targetUnicast = this.receivedUnicastC;
 		    }
+
 		    if (targetUnicast.getSenderAgent() != null) {
 			sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST, ""
 				+ targetUnicast.getSenderAgent().getId(), "" + targetUnicast.getReceiverAgent().getId());
@@ -525,6 +531,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void _operationFollowTrail(DoubleGrid2D trail) {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	// we need to check all neighboring cells to detect which one
 	// has the highest concentration of trail A and then
 	// move there. If none is found, move at random
@@ -548,6 +555,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	}
 	// now move to the highest concentration
 	// or move randomly
+
 	if (maxTrail > 0) {
 	    sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    _operationMoveAbsolute(maxX, maxY);
@@ -744,7 +752,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	}
 
-	
 	return closestAgent;
     }
 
@@ -779,6 +786,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final boolean operationDetectRawResource() {
+	sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasRawResource) {
 		sim.recordEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
@@ -791,7 +799,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final boolean operationDetectExtractedResource() {
+	sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	if (species.getTraits().contains(Trait.DETECTION)) {
+
 	    if (this.locationHasExtractedResource) {
 		sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
 	    }
@@ -803,6 +813,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public boolean operationDetectProcessedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
+	    sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	    if (this.locationHasProcessedResource) {
 		sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
 	    }
@@ -813,6 +824,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final boolean operationDetectTrail() {
+	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 
 	    if (this.locationHasTrail) {
@@ -825,7 +837,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationExtractResource() {
+	sim.recordEvent(this, Event.ATTEMPT_EXTRACT, NA, NA);
 	if (species.getTraits().contains(Trait.EXTRACTION)) {
+
 	    if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceExtracts++;
 		sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
@@ -838,7 +852,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public void operationProcessResource() {
+	sim.recordEvent(this, Event.ATTEMPT_PROCESS, NA, NA);
 	if (species.getTraits().contains(Trait.PROCESSING)) {
+
 	    if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 		// sim.statistics.stepData.resourceProcesses++;
 		sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
@@ -851,7 +867,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationLoadResource() {
-
+	sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 
 	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
@@ -869,6 +885,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     }
 
     public final void operationUnLoadResource() {
+	sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
 	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 

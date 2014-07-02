@@ -361,8 +361,8 @@ public class ExperimentReporter implements Constants {
 		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 			continue;
 		    } else {
-			columnHeader += ", RATE_" +type;
-			columnHeader += ", INTERVAL_" +type;
+			columnHeader += ", RATE_" + type;
+			columnHeader += ", INTERVAL_" + type;
 		    }
 		}
 
@@ -461,10 +461,12 @@ public class ExperimentReporter implements Constants {
 		    } else {
 			sbPerformance.append(COMMA);
 			sbPerformance.append((double) generationEventStats.getTypeValue(type) / simsRun);
-			
+
 			sbPerformance.append(COMMA);
-			sbPerformance.append((double) intervalStats.getTypeIntervalStats(type).getMean());
-			
+
+			SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+			sbPerformance.append((stats != null) ? stats.getMean() : "");
+
 		    }
 		}
 
@@ -576,13 +578,12 @@ public class ExperimentReporter implements Constants {
 			    sbPerformance.append(COMMA);
 			    sbPerformance.append((double) speciesEventStatsMap.get(species).getTypeValue(type)
 				    / simsRun);
-			    
+
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append((double) intervalStats.getSpeciesEventTypeIntervalStats(species, type).getMean());
-			    
-			    
-			    
-			    
+
+			    SummaryStatistics stats = intervalStats.getSpeciesEventTypeIntervalStats(species, type);
+			    sbPerformance.append((stats != null) ? stats.getMean() : "");
+
 			}
 		    }
 
@@ -690,12 +691,12 @@ public class ExperimentReporter implements Constants {
 		    } else {
 			sbPerformance.append(COMMA);
 			sbPerformance.append((double) generationEventStats.getTypeValue(type) / simsRun);
-			
+
 			sbPerformance.append(COMMA);
-			sbPerformance.append((double) intervalStats.getTypeIntervalStats(type).getMean());
-			
-			
-			
+
+			SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+			sbPerformance.append((stats != null) ? stats.getMean() : "");
+
 		    }
 		}
 
@@ -708,9 +709,10 @@ public class ExperimentReporter implements Constants {
 			    sbPerformance.append(COMMA);
 			    sbPerformance.append((double) speciesEventStatsMap.get(species).getTypeValue(type)
 				    / simsRun);
-			    
+
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append((double) intervalStats.getSpeciesEventTypeIntervalStats(species, type).getMean());
+			    SummaryStatistics stats = intervalStats.getSpeciesEventTypeIntervalStats(species, type);
+			    sbPerformance.append((stats != null) ? stats.getMean() : "");
 			}
 		    }
 

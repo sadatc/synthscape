@@ -160,6 +160,7 @@ public class IntervalStats {
 
     }
 
+    /*
     private void printSpeciesEventTypeInterval() {
 	for (EventType type : eventTypes) {
 	    SpeciesStats speciesStats = speciesEventTypeIntervalStatsMap.get(type);
@@ -169,6 +170,7 @@ public class IntervalStats {
 	}
 
     }
+*/
 
     public void resetLastSteps() {
 	// this simply clears the last steps...
@@ -182,7 +184,7 @@ public class IntervalStats {
 	// here lets just clear the stats...so that they are not expensively
 	// re-created
 
-	printSpeciesEventTypeInterval();
+	//printSpeciesEventTypeInterval();
 
 	for (Event event : events) {
 	    eventIntervalStatsMap.get(event).clear();
