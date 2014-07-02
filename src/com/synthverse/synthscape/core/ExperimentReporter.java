@@ -361,7 +361,8 @@ public class ExperimentReporter implements Constants {
 		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 			continue;
 		    } else {
-			columnHeader += ", " + type + "_RATE";
+			columnHeader += ", RATE_" +type;
+			columnHeader += ", INTERVAL_" +type;
 		    }
 		}
 
@@ -380,7 +381,8 @@ public class ExperimentReporter implements Constants {
 			if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 			    continue;
 			} else {
-			    columnHeader += ", " + name + "_" + type + "_RATE";
+			    columnHeader += ", " + name + "_RATE_" + type;
+			    columnHeader += ", " + name + "_INTERVAL_" + type;
 			}
 		    }
 
@@ -426,9 +428,10 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceEmbodiedModel(int generationCounter, EventStats generationEventStats,
-	    EnumMap<Species, EventStats> speciesEventStatsMap, ArrayList<Agent> agents, SummaryStatistics captureStats,
-	    SummaryStatistics populationFitnessStats, long simsRun) {
+    public void reportPerformanceEmbodiedModel(int generationCounter, IntervalStats intervalStats,
+	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
+	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats,
+	    long simsRun) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -457,7 +460,11 @@ public class ExperimentReporter implements Constants {
 			continue;
 		    } else {
 			sbPerformance.append(COMMA);
-			sbPerformance.append((double)generationEventStats.getTypeValue(type) / simsRun);
+			sbPerformance.append((double) generationEventStats.getTypeValue(type) / simsRun);
+			
+			sbPerformance.append(COMMA);
+			sbPerformance.append((double) intervalStats.getTypeIntervalStats(type).getMean());
+			
 		    }
 		}
 
@@ -567,7 +574,15 @@ public class ExperimentReporter implements Constants {
 			    continue;
 			} else {
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append((double)speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			    sbPerformance.append((double) speciesEventStatsMap.get(species).getTypeValue(type)
+				    / simsRun);
+			    
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append((double) intervalStats.getSpeciesEventTypeIntervalStats(species, type).getMean());
+			    
+			    
+			    
+			    
 			}
 		    }
 
@@ -644,9 +659,9 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportPerformanceIslandModel(int generationCounter, EventStats generationEventStats,
-	    EnumMap<Species, EventStats> speciesEventStatsMap, SummaryStatistics captureStats,
-	    SummaryStatistics populationFitnessStats, long simsRun) {
+    public void reportPerformanceIslandModel(int generationCounter, IntervalStats intervalStats,
+	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun) {
 	try {
 	    if (simulation.isReportPerformance()) {
 
@@ -674,7 +689,13 @@ public class ExperimentReporter implements Constants {
 			continue;
 		    } else {
 			sbPerformance.append(COMMA);
-			sbPerformance.append((double)generationEventStats.getTypeValue(type) / simsRun);
+			sbPerformance.append((double) generationEventStats.getTypeValue(type) / simsRun);
+			
+			sbPerformance.append(COMMA);
+			sbPerformance.append((double) intervalStats.getTypeIntervalStats(type).getMean());
+			
+			
+			
 		    }
 		}
 
@@ -685,7 +706,11 @@ public class ExperimentReporter implements Constants {
 			    continue;
 			} else {
 			    sbPerformance.append(COMMA);
-			    sbPerformance.append((double)speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+			    sbPerformance.append((double) speciesEventStatsMap.get(species).getTypeValue(type)
+				    / simsRun);
+			    
+			    sbPerformance.append(COMMA);
+			    sbPerformance.append((double) intervalStats.getSpeciesEventTypeIntervalStats(species, type).getMean());
 			}
 		    }
 
