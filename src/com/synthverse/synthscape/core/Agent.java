@@ -288,7 +288,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    if (resourceState == ResourceState.RAW) {
 		resourceGrid.field[x][y] = ResourceState.EXTRACTED;
 		sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
-		sim.resourceStatusArray[x][y].extractionStep = agentStepCounter;
+		sim.resourceStatusArray[x][y].extractionStep = sim.simStepCounter;
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 		actionPerformed = true;
 	    }
@@ -297,7 +297,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    if (resourceState == ResourceState.EXTRACTED) {
 		resourceGrid.field[x][y] = ResourceState.PROCESSED;
 		sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
-		sim.resourceStatusArray[x][y].processingStep = agentStepCounter;
+		sim.resourceStatusArray[x][y].processingStep = sim.simStepCounter;
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 		actionPerformed = true;
 	    }
@@ -796,9 +796,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final boolean operationDetectRawResource() {
 	sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	if (species.getTraits().contains(Trait.DETECTION)) {
+	    updateLocationStatus(x, y);
 	    if (this.locationHasRawResource) {
 		sim.recordEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
-		sim.resourceStatusArray[x][y].detectionStep++;
+		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
+		}
+		sim.resourceStatusArray[x][y].numTimesDetected++;	
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return (this.locationHasRawResource);
@@ -811,10 +815,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final boolean operationDetectExtractedResource() {
 	sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	if (species.getTraits().contains(Trait.DETECTION)) {
-
+	    updateLocationStatus(x, y);
 	    if (this.locationHasExtractedResource) {
 		sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
-		sim.resourceStatusArray[x][y].detectionStep++;
+		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
+		}
+		sim.resourceStatusArray[x][y].numTimesDetected++;	
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasExtractedResource;
@@ -826,9 +833,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public boolean operationDetectProcessedResource() {
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
+	    updateLocationStatus(x, y);
 	    if (this.locationHasProcessedResource) {
 		sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
-		sim.resourceStatusArray[x][y].detectionStep++;
+		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
+		}
+		sim.resourceStatusArray[x][y].numTimesDetected++;	
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasProcessedResource;
@@ -840,7 +851,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final boolean operationDetectTrail() {
 	sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 	if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-
+	    updateLocationStatus(x, y);
 	    if (this.locationHasTrail) {
 		sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 	    }
@@ -883,7 +894,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final void operationLoadResource() {
 	sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 	if (species.getTraits().contains(Trait.TRANSPORTATION)) {
-
+	    updateLocationStatus(this.x, this.y);
 	    if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 		if (!isCarryingResource) {
 		    isCarryingResource = true;
@@ -915,6 +926,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
     public final void operationUnLoadResource() {
 	sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 	if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
+	    updateLocationStatus(x, y);
 	    if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 		isCarryingResource = false;
@@ -939,7 +951,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    // save over this status
 			    ResourceStatus collectedResourceStatus = new ResourceStatus();
 			    statusOfCarriedResource.cloneTo(collectedResourceStatus);
-			    collectedResourceStatus.captureStep = agentStepCounter;
+			    collectedResourceStatus.captureStep = sim.simStepCounter;
 			    sim.touchedResources.remove(statusOfCarriedResource);
 			    statusOfCarriedResource.clear();
 			    sim.touchedResources.add(collectedResourceStatus);
@@ -958,7 +970,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    // save over this status
 			    ResourceStatus collectedResourceStatus = new ResourceStatus();
 			    statusOfCarriedResource.cloneTo(collectedResourceStatus);
-			    collectedResourceStatus.captureStep = agentStepCounter;
+			    collectedResourceStatus.captureStep = sim.simStepCounter;
 			    sim.touchedResources.remove(statusOfCarriedResource);
 			    statusOfCarriedResource.clear();
 			    sim.touchedResources.add(collectedResourceStatus);
