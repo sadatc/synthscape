@@ -154,6 +154,9 @@ public class PopulationIslandSimulation extends Simulation {
 
 	captureStats.addValue(this.numberOfCollectedResources);
 
+	
+	printTouchedResources();
+	
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}

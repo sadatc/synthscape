@@ -45,4 +45,15 @@ final public class ResourceStatus implements Constants {
 
     }
 
+    @Override
+    public String toString() {
+	return "ResourceStatus [x=" + x + ", y=" + y + ", detectionStep=" + detectionStep + ", extractionStep="
+		+ extractionStep + ", processingStep=" + processingStep + ", captureStep=" + captureStep
+		+ ", numTimesDetected=" + numTimesDetected + ", numTimesLoaded=" + numTimesLoaded
+		+ ", numTimesUnloaded=" + numTimesUnloaded + ", state=" + state + "]";
+    }
+    
+    
+    
+
 }

@@ -262,6 +262,17 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
+    public final void printTouchedResources() {
+	if (touchedResources.size() > 0) {
+	    for (ResourceStatus status : touchedResources) {
+		if (status.captureStep != INVALID) {
+		    D.p("" + status);
+		}
+	    }
+	    // D.pause();
+	}
+    }
+
     final void clearResourceStatusArray() {
 	touchedResources.clear();
 	for (int x = 0; x < gridWidth; x++) {
@@ -398,6 +409,8 @@ public abstract class Simulation extends SimState implements Constants {
 	    resourceGrid.field[randomX][randomY] = ResourceState.RAW;
 
 	    resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
+	    resourceStatusArray[randomX][randomY].x = randomX;
+	    resourceStatusArray[randomX][randomY].y = randomY;
 
 	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 

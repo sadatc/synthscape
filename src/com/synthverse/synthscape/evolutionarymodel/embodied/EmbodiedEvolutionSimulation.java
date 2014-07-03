@@ -322,6 +322,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.reclaimActiveAgent();
 
 	}
+	
+	printTouchedResources();
+	
 
 	captureStats.addValue(this.numberOfCollectedResources);
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
