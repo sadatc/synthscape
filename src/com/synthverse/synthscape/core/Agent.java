@@ -53,6 +53,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     protected ResourceState stateOfCarriedResource;
 
+    protected ResourceStatus statusOfCarriedResource = new ResourceStatus();
+
     protected int previousX;
 
     protected int previousY;
@@ -285,12 +287,18 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	case EXTRACTION:
 	    if (resourceState == ResourceState.RAW) {
 		resourceGrid.field[x][y] = ResourceState.EXTRACTED;
+		sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
+		sim.resourceStatusArray[x][y].extractionStep = agentStepCounter;
+		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 		actionPerformed = true;
 	    }
 	    break;
 	case PROCESSING:
 	    if (resourceState == ResourceState.EXTRACTED) {
 		resourceGrid.field[x][y] = ResourceState.PROCESSED;
+		sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
+		sim.resourceStatusArray[x][y].processingStep = agentStepCounter;
+		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 		actionPerformed = true;
 	    }
 	    break;
@@ -790,6 +798,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	if (species.getTraits().contains(Trait.DETECTION)) {
 	    if (this.locationHasRawResource) {
 		sim.recordEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
+		sim.resourceStatusArray[x][y].detectionStep++;
+		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return (this.locationHasRawResource);
 	} else {
@@ -804,6 +814,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	    if (this.locationHasExtractedResource) {
 		sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
+		sim.resourceStatusArray[x][y].detectionStep++;
+		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasExtractedResource;
 	} else {
@@ -816,6 +828,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    sim.recordEvent(this, Event.ATTEMPT_DETECT, NA, NA);
 	    if (this.locationHasProcessedResource) {
 		sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
+		sim.resourceStatusArray[x][y].detectionStep++;
+		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasProcessedResource;
 	} else {
@@ -876,6 +890,20 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
 		    this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+
+		    // copy over the state of the resource
+		    sim.resourceStatusArray[x][y].cloneTo(statusOfCarriedResource);
+
+		    statusOfCarriedResource.numTimesLoaded++;
+
+		    // now clear the resource
+		    sim.resourceStatusArray[x][y].clear();
+		    sim.resourceStatusArray[x][y].state = ResourceState.NULL;
+
+		    // need to keep track of this resource...
+		    sim.touchedResources.remove(sim.resourceStatusArray[x][y]);
+		    sim.touchedResources.add(statusOfCarriedResource);
+
 		    updateLocationStatus(this.x, this.y);
 		    sim.recordEvent(this, Event.LOADED_RESOURCE, NA, NA);
 		}
@@ -907,6 +935,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			    _operationLeaveRewards(sim.extractorRewardGrid, Event.DROPPED_EXTRACTOR_REWARDS);
+
+			    // save over this status
+			    ResourceStatus collectedResourceStatus = new ResourceStatus();
+			    statusOfCarriedResource.cloneTo(collectedResourceStatus);
+			    collectedResourceStatus.captureStep = agentStepCounter;
+			    sim.touchedResources.remove(statusOfCarriedResource);
+			    statusOfCarriedResource.clear();
+			    sim.touchedResources.add(collectedResourceStatus);
+
 			    // logger.info("CAPTURE!! 3 complex");
 			}
 
@@ -917,7 +954,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 			    sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
 			    _operationLeaveRewards(sim.processorRewardGrid, Event.DROPPED_PROCESSOR_REWARDS);
+
+			    // save over this status
+			    ResourceStatus collectedResourceStatus = new ResourceStatus();
+			    statusOfCarriedResource.cloneTo(collectedResourceStatus);
+			    collectedResourceStatus.captureStep = agentStepCounter;
+			    sim.touchedResources.remove(statusOfCarriedResource);
+			    statusOfCarriedResource.clear();
+			    sim.touchedResources.add(collectedResourceStatus);
+
 			    // logger.info("CAPTURE!! 4 complex");
+
 			}
 
 		    } else {
@@ -929,6 +976,20 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		if (dropResource) {
 		    this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+
+		    // this is a resource drop...place the resource back in the
+		    // grid
+		    statusOfCarriedResource.cloneTo(this.sim.resourceStatusArray[x][y]);
+		    this.sim.resourceStatusArray[x][y].x = x;
+		    this.sim.resourceStatusArray[x][y].y = y;
+		    this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
+
+		    // need to keep track of this resource...
+		    sim.touchedResources.remove(statusOfCarriedResource);
+		    sim.touchedResources.add(this.sim.resourceStatusArray[x][y]);
+
+		    statusOfCarriedResource.clear();
+
 		    sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 
 		}

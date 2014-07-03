@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +54,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected ExperimentReporter experimentReporter;
 
     protected long simulationCounter;
-    
+
     protected long simsRunForThisGeneration;
 
     protected int simStepCounter;
@@ -69,6 +70,9 @@ public abstract class Simulation extends SimState implements Constants {
     protected IntGrid2D initCollisionGrid;
 
     protected ObjectGrid2D resourceGrid;
+
+    public ResourceStatus[][] resourceStatusArray;
+    public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
     protected DoubleGrid2D trailGrid;
 
@@ -229,6 +233,14 @@ public abstract class Simulation extends SimState implements Constants {
 	processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 	agents = new ArrayList<Agent>();
+
+	resourceStatusArray = new ResourceStatus[gridWidth][gridHeight];
+	for (int x = 0; x < gridWidth; x++) {
+	    for (int y = 0; y < gridWidth; y++) {
+		resourceStatusArray[x][y] = new ResourceStatus();
+	    }
+	}
+
     }
 
     protected void resetEnvironment() {
@@ -239,6 +251,8 @@ public abstract class Simulation extends SimState implements Constants {
 	initCollisionGrid.setTo(ABSENT);
 
 	resourceGrid.setTo(ResourceState.NULL);
+	clearResourceStatusArray();
+
 	trailGrid.setTo(ABSENT);
 	extractorRewardGrid.setTo(ABSENT);
 	detectorRewardGrid.setTo(ABSENT);
@@ -246,6 +260,15 @@ public abstract class Simulation extends SimState implements Constants {
 
 	registeredBroadcasts.clear();
 
+    }
+
+    final void clearResourceStatusArray() {
+	touchedResources.clear();
+	for (int x = 0; x < gridWidth; x++) {
+	    for (int y = 0; y < gridWidth; y++) {
+		resourceStatusArray[x][y].clear();
+	    }
+	}
     }
 
     protected void resetAll() {
@@ -373,6 +396,9 @@ public abstract class Simulation extends SimState implements Constants {
 		randomY = randomPrime.nextInt(gridHeight);
 	    } while (initCollisionGrid.field[randomX][randomY] == PRESENT);
 	    resourceGrid.field[randomX][randomY] = ResourceState.RAW;
+
+	    resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
+
 	    initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 	}
@@ -523,7 +549,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 			    evolver.evolve();
-			    simsRunForThisGeneration=0;
+			    simsRunForThisGeneration = 0;
 			}
 
 			startNextSimulation();
@@ -556,7 +582,7 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void startNextSimulation() {
-	
+
 	intervalStats.resetLastSteps();
 	simEventStats.clear();
 	resetEnvironment();
