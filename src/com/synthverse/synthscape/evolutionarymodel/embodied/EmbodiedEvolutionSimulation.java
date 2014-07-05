@@ -278,6 +278,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
+	resourceCaptureStats.printStats();
 	experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
 		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration);
 
@@ -293,6 +294,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	captureStats.clear();
 	intervalStats.clear();
 	clearSpeciesEventStats();
+	resourceCaptureStats.clearAll();
 
     }
 
@@ -322,11 +324,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    embodiedAgent.reclaimActiveAgent();
 
 	}
-	
-	printTouchedResources();
-	
+
+	collectResouceCaptureStats();
 
 	captureStats.addValue(this.numberOfCollectedResources);
+
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}

@@ -155,7 +155,7 @@ public class PopulationIslandSimulation extends Simulation {
 	captureStats.addValue(this.numberOfCollectedResources);
 
 	
-	printTouchedResources();
+	collectResouceCaptureStats();
 	
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
@@ -257,7 +257,9 @@ public class PopulationIslandSimulation extends Simulation {
 	    }
 
 	}
-
+	
+	
+	resourceCaptureStats.printStats();
 	experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
 		captureStats, populationFitnessStats, simsRunForThisGeneration);
 
@@ -269,6 +271,7 @@ public class PopulationIslandSimulation extends Simulation {
 	populationFitnessStats.clear();
 
 	intervalStats.clear();
+	resourceCaptureStats.clearAll();
     }
 
     @Override

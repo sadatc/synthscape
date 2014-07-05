@@ -141,6 +141,8 @@ public abstract class Simulation extends SimState implements Constants {
     public SummaryStatistics captureStats = new SummaryStatistics();
     // need this for efficiency
 
+    public ResourceCaptureStats resourceCaptureStats = new ResourceCaptureStats();
+
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
     }
@@ -262,15 +264,13 @@ public abstract class Simulation extends SimState implements Constants {
 
     }
 
-    public final void printTouchedResources() {
+    public final void collectResouceCaptureStats() {
 	if (touchedResources.size() > 0) {
 	    for (ResourceStatus status : touchedResources) {
-		if (status.captureStep != INVALID) {
-		    D.p("" + status);
-		}
+		resourceCaptureStats.addData(status);
 	    }
-	    // D.pause();
 	}
+	resourceCaptureStats.touchedResources.addValue(touchedResources.size());
     }
 
     final void clearResourceStatusArray() {
