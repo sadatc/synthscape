@@ -415,6 +415,8 @@ public class ExperimentReporter implements Constants {
 
 		}
 
+		columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM";
+
 		performanceWriter.write(columnHeader);
 		performanceWriter.newLine();
 	    }
@@ -431,7 +433,7 @@ public class ExperimentReporter implements Constants {
     public void reportPerformanceEmbodiedModel(int generationCounter, IntervalStats intervalStats,
 	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
 	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats,
-	    long simsRun) {
+	    long simsRun, ResourceCaptureStats resourceCaptureStats) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -642,6 +644,24 @@ public class ExperimentReporter implements Constants {
 
 		}
 
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.detections.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.loads.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.unloads.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.touchedResources.getMean());
+
 		performanceWriter.write(sbPerformance.toString());
 
 		performanceWriter.newLine();
@@ -662,7 +682,8 @@ public class ExperimentReporter implements Constants {
 
     public void reportPerformanceIslandModel(int generationCounter, IntervalStats intervalStats,
 	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
-	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun) {
+	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun,
+	    ResourceCaptureStats resourceCaptureStats) {
 	try {
 	    if (simulation.isReportPerformance()) {
 
@@ -787,6 +808,24 @@ public class ExperimentReporter implements Constants {
 
 		    }
 		}
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.detections.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.loads.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.unloads.getMean());
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(resourceCaptureStats.touchedResources.getMean());
 
 		performanceWriter.write(sbPerformance.toString());
 

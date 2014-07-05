@@ -278,9 +278,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	resourceCaptureStats.printStats();
+	// resourceCaptureStats.printStats();
 	experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
-		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration);
+		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
+		resourceCaptureStats);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());

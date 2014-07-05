@@ -20,7 +20,7 @@ public class ResourceCaptureStats implements Constants {
     public SummaryStatistics loads = new SummaryStatistics();
     public SummaryStatistics unloads = new SummaryStatistics();
     public SummaryStatistics touchedResources = new SummaryStatistics();
-    
+
     public final void clearAll() {
 	detectionToCaptureInterval.clear();
 	extractionToCaptureInterval.clear();
@@ -52,9 +52,7 @@ public class ResourceCaptureStats implements Constants {
 	if (status.numTimesUnloaded != INVALID) {
 	    unloads.addValue(status.numTimesUnloaded);
 	}
-	
-	
-	
+
     }
 
     final public void printStats() {

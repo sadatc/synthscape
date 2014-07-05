@@ -154,9 +154,8 @@ public class PopulationIslandSimulation extends Simulation {
 
 	captureStats.addValue(this.numberOfCollectedResources);
 
-	
 	collectResouceCaptureStats();
-	
+
 	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
 	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
 	}
@@ -257,11 +256,11 @@ public class PopulationIslandSimulation extends Simulation {
 	    }
 
 	}
-	
-	
-	resourceCaptureStats.printStats();
+
+	// resourceCaptureStats.printStats();
+
 	experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
-		captureStats, populationFitnessStats, simsRunForThisGeneration);
+		captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
 		+ captureStats.getMax() + "; sims: " + this.simulationCounter);
