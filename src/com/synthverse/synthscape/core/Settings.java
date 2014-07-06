@@ -89,6 +89,8 @@ public class Settings {
     public String EVENT_DATA_FILE = "evnt_dat.csv";
 
     public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
+    
+    public String EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 

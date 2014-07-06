@@ -64,13 +64,13 @@ public class ExperimentReporter implements Constants {
 
 	if (simulation.isReportEvents()) {
 	    String eventFileName = constructFileName(settings.DATA_DIR, settings.EVENT_DATA_FILE, settings.JOB_NAME, ""
-		    + settings.SEED);
+		    + simulation.seed());
 	    openEventFile(eventFileName);
 	}
 
 	if (simulation.isReportPerformance()) {
 	    String performanceFileName = constructFileName(settings.DATA_DIR, settings.PERFORMANCE_DATA_FILE,
-		    settings.JOB_NAME, "" + settings.SEED);
+		    settings.JOB_NAME, "" + simulation.seed());
 	    openPerformanceFile(performanceFileName);
 	}
 
@@ -115,8 +115,8 @@ public class ExperimentReporter implements Constants {
 
     private void writeExperimentDetails() {
 
-	settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR, settings.EXPERIMENT_DETAILS_FILE,
-		settings.JOB_NAME, "" + settings.SEED);
+	settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR, settings.EXPERIMENT_DETAILS_FILE_MAIN,
+		settings.JOB_NAME, "" + simulation.seed());
 
 	File file = new File(settings.EXPERIMENT_DETAILS_FILE);
 	try {
