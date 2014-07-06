@@ -24,7 +24,7 @@ public class EmbodiedEvolutionSimulationFancyUI extends FancySimulationUI {
     }
 
     public EmbodiedEvolutionSimulationFancyUI() throws Exception {
-	super(new EmbodiedEvolutionSimulation(Constants.SIMULATION_RNG_SEED));
+	super(new EmbodiedEvolutionSimulation(Constants.UI_SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {

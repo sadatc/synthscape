@@ -23,7 +23,7 @@ public class TestSimUI extends SimpleSimulationUI {
     }
 
     public TestSimUI() throws Exception {
-	super(new TestSim(Constants.SIMULATION_RNG_SEED));
+	super(new TestSim(Constants.UI_SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {

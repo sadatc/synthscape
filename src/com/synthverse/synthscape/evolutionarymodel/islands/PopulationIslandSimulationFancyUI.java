@@ -24,7 +24,7 @@ public class PopulationIslandSimulationFancyUI extends FancySimulationUI {
     }
 
     public PopulationIslandSimulationFancyUI() throws Exception {
-	super(new PopulationIslandSimulation(Constants.SIMULATION_RNG_SEED));
+	super(new PopulationIslandSimulation(Constants.UI_SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {

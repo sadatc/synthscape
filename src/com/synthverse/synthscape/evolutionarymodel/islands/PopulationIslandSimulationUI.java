@@ -23,7 +23,7 @@ public class PopulationIslandSimulationUI extends SimpleSimulationUI {
     }
 
     public PopulationIslandSimulationUI() throws Exception {
-	super(new PopulationIslandSimulation(Constants.SIMULATION_RNG_SEED));
+	super(new PopulationIslandSimulation(Constants.UI_SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {

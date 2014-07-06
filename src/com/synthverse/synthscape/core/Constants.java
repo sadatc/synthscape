@@ -54,7 +54,7 @@ public interface Constants {
 
     public static final int SEED_GENERATION_NUMBER = 0;
 
-    public static final long SIMULATION_RNG_SEED = 2;
+    public static final long UI_SIMULATION_RNG_SEED = 2;
 
     public static final int INVALID = -1;
 

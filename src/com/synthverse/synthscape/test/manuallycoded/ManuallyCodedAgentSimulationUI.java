@@ -26,7 +26,7 @@ public class ManuallyCodedAgentSimulationUI extends SimpleSimulationUI {
 
 
     public ManuallyCodedAgentSimulationUI() throws Exception {
-	super(new ManuallyCodedAgentSimulation(Constants.SIMULATION_RNG_SEED));
+	super(new ManuallyCodedAgentSimulation(Constants.UI_SIMULATION_RNG_SEED));
     }
 
     public static void main(String[] args) {
