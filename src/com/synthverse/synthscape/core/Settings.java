@@ -15,10 +15,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class Settings {
-    
-    
+
     public enum SeedType {
-	NOOPS, ACTIONS, RANDOM; 
+	NOOPS, ACTIONS, RANDOM;
     }
 
     private static Settings instance = null;
@@ -84,12 +83,14 @@ public class Settings {
 
     public String JOB_NAME = "test";
 
+    public long JOB_SET = 0;
+
     public String PERFORMANCE_DATA_FILE = "perf_dat.csv";
 
     public String EVENT_DATA_FILE = "evnt_dat.csv";
 
     public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
-    
+
     public String EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
@@ -175,6 +176,9 @@ public class Settings {
 
 	options.addOption(OptionBuilder.withArgName("job_name").hasArg().withDescription("job name [" + JOB_NAME + "]")
 		.create("job_name"));
+
+	options.addOption(OptionBuilder.withArgName("job_set").hasArg().withDescription("job set [" + JOB_SET + "]")
+		.create("job_set"));
 
 	options.addOption(OptionBuilder.withArgName("preset_geno").hasArg()
 		.withDescription("(noops, actions, random) [noops]").create("preset_geno"));
@@ -292,7 +296,8 @@ public class Settings {
 		SEED = new Integer(line.getOptionValue("seed")).longValue();
 
 	    }
-	    printAndStore("SEED = " + SEED);
+
+	   
 
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
@@ -403,6 +408,16 @@ public class Settings {
 
 	    }
 	    printAndStore("NUM_EXPERIMENTS = " + REPEAT);
+	    
+	    if (line.hasOption("job_set")) {
+		JOB_SET = new Integer(line.getOptionValue("job_set")).longValue();
+		SEED = (JOB_SET * REPEAT) + SEED;
+
+	    }
+	    printAndStore("JOB_SET = " + JOB_SET);
+	    D.p("SEED = " + SEED);
+	    
+	    
 
 	    if (line.hasOption("data_dir")) {
 		DATA_DIR = line.getOptionValue("data_dir");
@@ -429,7 +444,6 @@ public class Settings {
 		String jobName = line.getOptionValue("job_name");
 		if (!jobName.trim().equals("")) {
 		    JOB_NAME = jobName;
-
 		}
 
 		else {

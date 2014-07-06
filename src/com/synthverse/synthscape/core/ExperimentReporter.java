@@ -129,6 +129,9 @@ public class ExperimentReporter implements Constants {
 	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
 		    REPORT_WRITER_BUFFER_SIZE);
 
+	    detailWriter.write("SEED="+simulation.seed());
+	    detailWriter.newLine();
+	    
 	    for (String line : settings.EXPERIMENT_DETAILS) {
 		detailWriter.write(line);
 		detailWriter.newLine();
