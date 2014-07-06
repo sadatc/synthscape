@@ -35,7 +35,7 @@ public class ManuallyCodedEvolver extends Evolver implements Constants {
     public void init() {
 	for (Species species : simulation.getSpeciesComposition()) {
 	    speciesAgentRequestCounter.put(species, 0);
-	    speciesAgentGeneration.put(species, SEED_GENERATION_NUMBER);
+	    speciesAgentGeneration.put(species, 0);
 	}
 
     }
