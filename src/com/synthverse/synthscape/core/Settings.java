@@ -95,6 +95,8 @@ public class Settings {
 
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
+    public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
+
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
     public int lastLoggedGeneration = 0;
@@ -136,6 +138,9 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
 		.withDescription("interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 		.create("interactions"));
+
+	options.addOption(OptionBuilder.withArgName("interaction_quality").hasArg()
+		.withDescription("interaction quality (high, medium, low/poor) [high]").create("interaction_quality"));
 
 	options.addOption(OptionBuilder.withArgName("generations").hasArg().withType(Integer.class)
 		.withDescription("maximum generations [" + GENERATIONS + "]").create("generations"));
@@ -297,8 +302,6 @@ public class Settings {
 
 	    }
 
-	   
-
 	    if (line.hasOption("log")) {
 		String logLevel = line.getOptionValue("log");
 		if (logLevel.equalsIgnoreCase("all")) {
@@ -340,6 +343,21 @@ public class Settings {
 
 	    }
 	    printAndStore("MODEL_INTERACTIONS = " + MODEL_INTERACTIONS);
+
+	    if (line.hasOption("interaction_quality")) {
+		String quality = line.getOptionValue("interaction_quality").toLowerCase();
+		if (quality.contains("poor") || quality.contains("low")) {
+		    INTERACTION_QUALITY = InteractionQuality.POOR;
+		} else if (quality.contains("medium")) {
+		    INTERACTION_QUALITY = InteractionQuality.MEDIUM;
+		} else if (quality.contains("high")) {
+		    INTERACTION_QUALITY = InteractionQuality.HIGH;
+		} else {
+		    throw new ParseException("interactions_quality: " + quality + " was not recognized");
+		}
+
+	    }
+	    printAndStore("INTERACTION_QUALITY = " + INTERACTION_QUALITY);
 
 	    if (line.hasOption("generations")) {
 		GENERATIONS = new Integer(line.getOptionValue("generations")).intValue();
@@ -408,7 +426,7 @@ public class Settings {
 
 	    }
 	    printAndStore("NUM_EXPERIMENTS = " + REPEAT);
-	    
+
 	    if (line.hasOption("job_set")) {
 		JOB_SET = new Integer(line.getOptionValue("job_set")).longValue();
 		SEED = (JOB_SET * REPEAT) + SEED;
@@ -416,8 +434,6 @@ public class Settings {
 	    }
 	    printAndStore("JOB_SET = " + JOB_SET);
 	    D.p("SEED = " + SEED);
-	    
-	    
 
 	    if (line.hasOption("data_dir")) {
 		DATA_DIR = line.getOptionValue("data_dir");

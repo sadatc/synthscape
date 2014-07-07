@@ -258,7 +258,17 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	int x = location.x;
 	int y = location.y;
 
-	trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
+	if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGH) {
+	    trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
+	} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
+	    if (sim.random.nextDouble() <= 0.9) {
+		trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX * 0.9;
+	    }
+	} else {
+	    if (sim.random.nextDouble() <= 0.5) {
+		trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX * 0.5;
+	    }
+	}
 	sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
     }
 
@@ -416,10 +426,25 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		    }
 
 		    if (targetUnicast != null) {
-			targetUnicast.setReceiverAgent(closestAgent);
-			targetUnicast.setSenderAgent(senderAgent);
-			targetUnicast.setSignalType(signalType);
-			targetUnicast.setStepClock(-1);
+
+			boolean doUnicast = true;
+
+			if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
+			    if (sim.random.nextDouble() <= 0.9) {
+				doUnicast = true;
+			    }
+			} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.POOR) {
+			    if (sim.random.nextDouble() <= 0.5) {
+				doUnicast = true;
+			    }
+			}
+
+			if (doUnicast) {
+			    targetUnicast.setReceiverAgent(closestAgent);
+			    targetUnicast.setSenderAgent(senderAgent);
+			    targetUnicast.setSignalType(signalType);
+			    targetUnicast.setStepClock(-1);
+			}
 		    }
 
 		    /*
@@ -799,10 +824,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    updateLocationStatus(x, y);
 	    if (this.locationHasRawResource) {
 		sim.recordEvent(this, Event.DETECTED_RAW_RESOURCE, NA, NA);
-		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		if (sim.resourceStatusArray[x][y].detectionStep == INVALID) {
 		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
 		}
-		sim.resourceStatusArray[x][y].numTimesDetected++;	
+		sim.resourceStatusArray[x][y].numTimesDetected++;
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return (this.locationHasRawResource);
@@ -818,10 +843,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    updateLocationStatus(x, y);
 	    if (this.locationHasExtractedResource) {
 		sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
-		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		if (sim.resourceStatusArray[x][y].detectionStep == INVALID) {
 		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
 		}
-		sim.resourceStatusArray[x][y].numTimesDetected++;	
+		sim.resourceStatusArray[x][y].numTimesDetected++;
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasExtractedResource;
@@ -836,10 +861,10 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	    updateLocationStatus(x, y);
 	    if (this.locationHasProcessedResource) {
 		sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
-		if(sim.resourceStatusArray[x][y].detectionStep==INVALID) {
+		if (sim.resourceStatusArray[x][y].detectionStep == INVALID) {
 		    sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
 		}
-		sim.resourceStatusArray[x][y].numTimesDetected++;	
+		sim.resourceStatusArray[x][y].numTimesDetected++;
 		sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 	    }
 	    return this.locationHasProcessedResource;
