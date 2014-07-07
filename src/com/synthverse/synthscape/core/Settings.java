@@ -32,7 +32,7 @@ public class Settings {
 
     public int GENERATIONS = 10000;
 
-    public int CLONES_PER_SPECIES = 10;
+    public int CLONES_PER_SPECIES = 4;
 
     public int GENE_POOL_SIZE = 2000;
 
@@ -54,9 +54,9 @@ public class Settings {
 
     public int WORLD_HEIGHT = 16;
 
-    public double OBSTACLE_DENSITY = 0.05;
+    public double OBSTACLE_DENSITY = 0.0625;
 
-    public double RESOURCE_DENSITY = 0.06;
+    public double RESOURCE_DENSITY = 0.0625;
 
     public double MATING_SUCCESS_RATE = 0.3;
 
