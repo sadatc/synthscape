@@ -1,8 +1,10 @@
 package com.synthverse.synthscape.analysis;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -14,9 +16,10 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.D;
 
-public class Analyzer {
+public class Analyzer implements Constants {
 
     public static ArrayList<String> expectedFields = new ArrayList<String>();
 
@@ -26,6 +29,10 @@ public class Analyzer {
     // this tells, for a given field, and row, how many elements were
     // encountered
     public static LinkedHashMap<String, LinkedHashMap<Integer, Integer>> fieldRowDataCount = new LinkedHashMap<String, LinkedHashMap<Integer, Integer>>();
+
+    public static int maxRowNumber = 0;
+
+    public static int numProcessedDataSets = 0;
 
     /**
      * Need this for filtering for CSV files only...
@@ -50,30 +57,99 @@ public class Analyzer {
 	options.addOption(OptionBuilder.withArgName("dir").isRequired().hasArg()
 		.withDescription("directory with all the csv files").create("dir"));
 
+	options.addOption(OptionBuilder.withArgName("outfile").isRequired().hasArg()
+		.withDescription("full pathname to output file").create("outfile"));
+
 	CommandLineParser parser = new BasicParser();
 	CommandLine line = parser.parse(options, args);
 	String directoryName = "";
+	String outFileName = null;
 
-	// if the directory exists, and it has CSV files only then process them;
-	// otherwise
-	// return various errors back to the user...
-	if (line.hasOption("dir")) {
-	    directoryName = line.getOptionValue("dir");
-	    File csvDirectory = new File(directoryName);
-	    if (csvDirectory.exists()) {
-		File[] csvFiles = csvDirectory.listFiles(new Analyzer.OnlyCSV());
-		if (csvFiles.length > 0) {
-		    processCSVs(csvFiles);
+	if (line.hasOption("outfile")) {
+	    outFileName = line.getOptionValue("outfile");
+	    File outFile = new File(outFileName);
+	    if (outFile.exists() && !outFile.isFile()) {
+		D.p("ERROR: " + outFileName + " exists and is not a file; use a different filename!");
+	    } else if (outFile.exists() && outFile.isFile()) {
+		D.p("WARNING: " + outFileName + " already exists and will be overwritten!");
+		outFile.delete();
+	    }
+
+	    // if the directory exists, and it has CSV files only then process
+	    // them;
+	    // otherwise
+	    // return various errors back to the user...
+	    if (line.hasOption("dir")) {
+		directoryName = line.getOptionValue("dir");
+		File csvDirectory = new File(directoryName);
+		if (csvDirectory.exists()) {
+		    File[] csvFiles = csvDirectory.listFiles(new Analyzer.OnlyCSV());
+		    if (csvFiles.length > 0) {
+			processCSVs(csvFiles);
+			writeSummaryFile(outFile);
+		    } else {
+			D.p("ERROR: CSV directory named:" + directoryName + "  contains no CSV files");
+		    }
 		} else {
-		    D.p("CSV directory named:" + directoryName + "  contains no CSV files");
+		    D.p("ERROR: CSV directory named:" + directoryName + "  not found");
 		}
+
 	    } else {
-		D.p("CSV directory named:" + directoryName + "  not found");
+		D.p("ERROR: No CSV directory mentioned with the -dir command line option");
 	    }
 
 	} else {
-	    D.p("No CSV directory mentioned with the -dir command line option");
+	    D.p("ERROR: No outfile mentioned, exiting...");
 	}
+
+    }
+
+    /**
+     * This writes out the summary file...
+     * 
+     * @param outFile
+     * @throws Exception
+     */
+    private static void writeSummaryFile(File outFile) throws Exception {
+	outFile.createNewFile();
+
+	BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.getAbsoluteFile(), false),
+		FILE_IO_BUFFER_SIZE);
+
+	// first write the header
+	writer.write(expectedFields.get(0));
+	for (int i = 1; i < expectedFields.size(); i++) {
+	    writer.write(", " + expectedFields.get(i));
+
+	}
+
+	// now write the data...
+	for (int rowNumber = 1; rowNumber <= maxRowNumber; rowNumber++) {
+	    // go throw each row
+	    for (int i = 0; i < expectedFields.size(); i++) {
+		// go through each column...
+		String data = " ";
+
+		if (fieldRowStats.containsKey(expectedFields.get(i))) {
+		    LinkedHashMap<Integer, SummaryStatistics> rowFieldStats = fieldRowStats.get(expectedFields.get(i));
+		    if (rowFieldStats.containsKey(rowNumber)) {
+			SummaryStatistics stats = rowFieldStats.get(rowNumber);
+			double dataValue = stats.getSum() / numProcessedDataSets;
+			data += dataValue;
+		    }
+
+		}
+
+		writer.write(data);
+		if (i != (expectedFields.size() - 1)) {
+		    writer.write(", ");
+		}
+	    }
+	    writer.newLine();
+	}
+
+	writer.flush();
+	writer.close();
 
     }
 
@@ -147,7 +223,7 @@ public class Analyzer {
 
 	    int rowNumber = 0;
 
-	    BufferedReader reader = new BufferedReader(new FileReader(csvFile));
+	    BufferedReader reader = new BufferedReader(new FileReader(csvFile), FILE_IO_BUFFER_SIZE);
 	    String row;
 	    while ((row = reader.readLine()) != null) {
 		if (rowNumber == 0) {
@@ -169,7 +245,7 @@ public class Analyzer {
 	    }
 	    reader.close();
 	    csvCounter++;
-	    D.p("processed values from:" + csvFile.getName());	   
+	    D.p("processed values from:" + csvFile.getName());
 	}
 
 	D.p("processed " + csvCounter + " files");
@@ -178,6 +254,7 @@ public class Analyzer {
 
     private static void processValues(String row, int rowNumber) {
 	String[] values = row.split(",");
+	boolean valuesProcessed = false;
 
 	for (int i = 0; i < values.length; i++) {
 	    String fieldName = expectedFields.get(i);
@@ -189,10 +266,16 @@ public class Analyzer {
 		// do nothing...
 	    } else {
 		doubleValue = new Double(value).doubleValue();
+		updateMaxRowNumber(rowNumber);
 		updateFieldRowCount(fieldName, rowNumber);
 		updateFieldRowStats(fieldName, rowNumber, doubleValue);
+		valuesProcessed = true;
 	    }
 
+	}
+
+	if (valuesProcessed) {
+	    numProcessedDataSets++;
 	}
 
     }
@@ -243,6 +326,12 @@ public class Analyzer {
 	    D.p("ERROR: IMPOSSIBLE SITUATION, should never be here!!");
 	}
 
+    }
+
+    private static void updateMaxRowNumber(int rowNumber) {
+	if (rowNumber > maxRowNumber) {
+	    maxRowNumber = rowNumber;
+	}
     }
 
 }

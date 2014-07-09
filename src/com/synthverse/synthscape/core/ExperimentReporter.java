@@ -87,7 +87,7 @@ public class ExperimentReporter implements Constants {
 
 	    }
 	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-		    REPORT_WRITER_BUFFER_SIZE);
+		    FILE_IO_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -103,7 +103,7 @@ public class ExperimentReporter implements Constants {
 	    if (!file.exists()) {
 		file.createNewFile();
 	    }
-	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), REPORT_WRITER_BUFFER_SIZE);
+	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -127,7 +127,7 @@ public class ExperimentReporter implements Constants {
 	    file.createNewFile();
 
 	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
-		    REPORT_WRITER_BUFFER_SIZE);
+		    FILE_IO_BUFFER_SIZE);
 
 	    detailWriter.write("SEED="+simulation.seed());
 	    detailWriter.newLine();
@@ -162,7 +162,7 @@ public class ExperimentReporter implements Constants {
 
 	    if (file.exists() && file.isFile()) {
 		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-			REPORT_WRITER_BUFFER_SIZE);
+			FILE_IO_BUFFER_SIZE);
 		detailWriter.write("EXPERIMENT_END = " + new Date());
 		detailWriter.newLine();
 

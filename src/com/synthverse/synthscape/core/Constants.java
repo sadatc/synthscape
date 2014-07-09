@@ -70,7 +70,7 @@ public interface Constants {
 
     public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
 
-    public static final int REPORT_WRITER_BUFFER_SIZE = 8192;
+    public static final int FILE_IO_BUFFER_SIZE = 8192;
 
     public static final boolean REPORT_EVENTS = false;
 
