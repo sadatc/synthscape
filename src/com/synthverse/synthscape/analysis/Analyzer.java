@@ -144,7 +144,7 @@ public class Analyzer {
 	int csvCounter = 0;
 
 	for (File csvFile : csvFiles) {
-	    D.p("going to process:" + csvFile.getName());
+
 	    int rowNumber = 0;
 
 	    BufferedReader reader = new BufferedReader(new FileReader(csvFile));
@@ -164,11 +164,12 @@ public class Analyzer {
 		    // process values..
 		    processValues(row, rowNumber);
 		    rowNumber++;
-		    // D.p("processing values...");
+
 		}
 	    }
 	    reader.close();
 	    csvCounter++;
+	    D.p("processed values from:" + csvFile.getName());	   
 	}
 
 	D.p("processed " + csvCounter + " files");
