@@ -126,7 +126,9 @@ public class Analyzer implements Constants {
 	// now write the data...
 	for (int rowNumber = 1; rowNumber <= maxRowNumber; rowNumber++) {
 	    // go throw each row
-	    for (int i = 0; i < expectedFields.size(); i++) {
+	    writer.write(rowNumber + ", ");
+
+	    for (int i = 1; i < expectedFields.size(); i++) {
 		// go through each column...
 		String data = " ";
 
@@ -296,6 +298,7 @@ public class Analyzer implements Constants {
 		stats = rowStats.get(rowNumber);
 	    } else {
 		stats = new SummaryStatistics();
+		rowStats.put(rowNumber, stats);
 	    }
 	    stats.addValue(doubleValue);
 	} else {
