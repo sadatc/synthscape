@@ -120,8 +120,8 @@ public class Analyzer implements Constants {
 	writer.write(expectedFields.get(0));
 	for (int i = 1; i < expectedFields.size(); i++) {
 	    writer.write(", " + expectedFields.get(i));
-
 	}
+	writer.newLine();
 
 	// now write the data...
 	for (int rowNumber = 1; rowNumber <= maxRowNumber; rowNumber++) {
@@ -136,7 +136,8 @@ public class Analyzer implements Constants {
 		    LinkedHashMap<Integer, SummaryStatistics> rowFieldStats = fieldRowStats.get(expectedFields.get(i));
 		    if (rowFieldStats.containsKey(rowNumber)) {
 			SummaryStatistics stats = rowFieldStats.get(rowNumber);
-			double dataValue = stats.getSum() / numProcessedDataSets;
+			//double dataValue = stats.getSum() / numProcessedDataSets;
+			double dataValue = stats.getMean();
 			data += dataValue;
 		    }
 
@@ -220,6 +221,7 @@ public class Analyzer implements Constants {
      */
     private static void processCSVs(File[] csvFiles) throws Exception {
 	int csvCounter = 0;
+	SummaryStatistics generationStats = new SummaryStatistics();
 
 	for (File csvFile : csvFiles) {
 
@@ -247,10 +249,12 @@ public class Analyzer implements Constants {
 	    }
 	    reader.close();
 	    csvCounter++;
+	    generationStats.addValue(rowNumber);
 	    D.p("processed values from:" + csvFile.getName());
 	}
 
 	D.p("processed " + csvCounter + " files");
+	D.p("generation stats = "+generationStats);
 
     }
 
