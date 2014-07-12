@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -29,6 +30,8 @@ public class Analyzer implements Constants {
     // this tells, for a given field, and row, how many elements were
     // encountered
     public static LinkedHashMap<String, LinkedHashMap<Integer, Integer>> fieldRowDataCount = new LinkedHashMap<String, LinkedHashMap<Integer, Integer>>();
+
+    public static ArrayList<Integer> simGenerationCount = new ArrayList<Integer>();
 
     public static int maxRowNumber = 0;
 
@@ -65,7 +68,7 @@ public class Analyzer implements Constants {
 	String directoryName = "";
 	String outFileName = null;
 
-	if (line.hasOption("outfile")) {
+	if (line.hasOption("outfile") && line.getOptionValue("outfile").endsWith(".csv")) {
 	    outFileName = line.getOptionValue("outfile");
 	    File outFile = new File(outFileName);
 	    if (outFile.exists() && !outFile.isFile()) {
@@ -73,6 +76,15 @@ public class Analyzer implements Constants {
 	    } else if (outFile.exists() && outFile.isFile()) {
 		D.p("WARNING: " + outFileName + " already exists and will be overwritten!");
 		outFile.delete();
+	    }
+
+	    String convergenceFileName = outFileName.replace(".csv", "_convergence_stats.csv");
+	    File convergenceFile = new File(convergenceFileName);
+	    if (convergenceFile.exists() && !convergenceFile.isFile()) {
+		D.p("ERROR: " + convergenceFile + " exists and is not a file; use a different filename!");
+	    } else if (outFile.exists() && outFile.isFile()) {
+		D.p("WARNING: " + convergenceFile + " already exists and will be overwritten!");
+		convergenceFile.delete();
 	    }
 
 	    // if the directory exists, and it has CSV files only then process
@@ -87,6 +99,7 @@ public class Analyzer implements Constants {
 		    if (csvFiles.length > 0) {
 			processCSVs(csvFiles);
 			writeSummaryFile(outFile);
+			writeConvergenceFile(convergenceFile);
 		    } else {
 			D.p("ERROR: CSV directory named:" + directoryName + "  contains no CSV files");
 		    }
@@ -99,8 +112,26 @@ public class Analyzer implements Constants {
 	    }
 
 	} else {
-	    D.p("ERROR: No outfile mentioned, exiting...");
+	    D.p("ERROR: No outfile mentioned, exiting...or file doesn't end with .csv extension");
 	}
+
+    }
+
+    private static void writeConvergenceFile(File outFile) throws Exception {
+	outFile.createNewFile();
+
+	BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.getAbsoluteFile(), false),
+		FILE_IO_BUFFER_SIZE);
+
+	writer.write("SIM, CONVERGE_GENERATION");
+	writer.newLine();
+	for (int i = 0; i < simGenerationCount.size(); i++) {
+	    writer.write((i + 1) + ", " + simGenerationCount.get(i));
+	    writer.newLine();
+	}
+
+	writer.flush();
+	writer.close();
 
     }
 
@@ -136,7 +167,8 @@ public class Analyzer implements Constants {
 		    LinkedHashMap<Integer, SummaryStatistics> rowFieldStats = fieldRowStats.get(expectedFields.get(i));
 		    if (rowFieldStats.containsKey(rowNumber)) {
 			SummaryStatistics stats = rowFieldStats.get(rowNumber);
-			//double dataValue = stats.getSum() / numProcessedDataSets;
+			// double dataValue = stats.getSum() /
+			// numProcessedDataSets;
 			double dataValue = stats.getMean();
 			data += dataValue;
 		    }
@@ -250,11 +282,12 @@ public class Analyzer implements Constants {
 	    reader.close();
 	    csvCounter++;
 	    generationStats.addValue(rowNumber);
+	    simGenerationCount.add(rowNumber);
 	    D.p("processed values from:" + csvFile.getName());
 	}
 
 	D.p("processed " + csvCounter + " files");
-	D.p("generation stats = "+generationStats);
+	D.p("generation stats = " + generationStats);
 
     }
 
