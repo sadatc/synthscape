@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -126,7 +125,9 @@ public class Analyzer implements Constants {
 	writer.write("SIM, CONVERGE_GENERATION");
 	writer.newLine();
 	for (int i = 0; i < simGenerationCount.size(); i++) {
-	    writer.write((i + 1) + ", " + simGenerationCount.get(i));
+	    if (simGenerationCount.get(i) <= 500) {
+		writer.write((i + 1) + ", " + simGenerationCount.get(i));
+	    }
 	    writer.newLine();
 	}
 
