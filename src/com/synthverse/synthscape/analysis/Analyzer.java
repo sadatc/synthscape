@@ -125,9 +125,7 @@ public class Analyzer implements Constants {
 	writer.write("SIM, CONVERGE_GENERATION");
 	writer.newLine();
 	for (int i = 0; i < simGenerationCount.size(); i++) {
-	    if (simGenerationCount.get(i) <= 500) {
-		writer.write((i + 1) + ", " + simGenerationCount.get(i));
-	    }
+	    writer.write((i + 1) + ", " + simGenerationCount.get(i));
 	    writer.newLine();
 	}
 
