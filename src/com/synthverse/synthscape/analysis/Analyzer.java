@@ -31,7 +31,6 @@ public class Analyzer implements Constants {
     public static LinkedHashMap<String, LinkedHashMap<Integer, Integer>> fieldRowDataCount = new LinkedHashMap<String, LinkedHashMap<Integer, Integer>>();
 
     public static ArrayList<Integer> simGenerationCount = new ArrayList<Integer>();
-    public static ArrayList<String> processedCsvFiles = new ArrayList<String>();
 
     public static int maxRowNumber = 0;
 
@@ -123,10 +122,10 @@ public class Analyzer implements Constants {
 	BufferedWriter writer = new BufferedWriter(new FileWriter(outFile.getAbsoluteFile(), false),
 		FILE_IO_BUFFER_SIZE);
 
-	writer.write("experiment, csvfile, generations");
+	writer.write("SIM, CONVERGE_GENERATION");
 	writer.newLine();
 	for (int i = 0; i < simGenerationCount.size(); i++) {
-	    writer.write((i + 1) + ", " + processedCsvFiles.get(i) + ", " + simGenerationCount.get(i));
+	    writer.write((i + 1) + ", " + simGenerationCount.get(i));
 	    writer.newLine();
 	}
 
@@ -283,8 +282,6 @@ public class Analyzer implements Constants {
 	    csvCounter++;
 	    generationStats.addValue(rowNumber);
 	    simGenerationCount.add(rowNumber);
-	    processedCsvFiles.add(csvFile.getName());
-
 	    D.p("processed values from:" + csvFile.getName());
 	}
 
