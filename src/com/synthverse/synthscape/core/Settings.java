@@ -373,7 +373,11 @@ public class Settings {
 
 		else if (seedPreset.equalsIgnoreCase("actions")) {
 		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.ACTIONS;
-		} else {
+		} else if (seedPreset.equalsIgnoreCase("noops")) {
+		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
+
+		}
+		else {
 		    throw new ParseException("preset_geno: " + seedPreset + " was not recognized");
 		}
 
