@@ -644,6 +644,9 @@ public class ExperimentReporter implements Constants {
 			}
 
 		    }
+		    
+		    
+		    D.p("species="+species+" fitness="+summaryFitnessStats.getMean());
 
 		}
 

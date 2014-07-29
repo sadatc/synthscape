@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -24,6 +25,7 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
@@ -295,7 +297,8 @@ public class PopulationIslandSimulation extends Simulation {
 
     @Override
     public Set<Species> configSpeciesComposition() {
-	Set<Species> speciesSet = new HashSet<Species>();
+
+	Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
 
 	if (settings.MODEL_SPECIES.contains("detector")) {
 	    speciesSet.add(Species.DETECTOR);

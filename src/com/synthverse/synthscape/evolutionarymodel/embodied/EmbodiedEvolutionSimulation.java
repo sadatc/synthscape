@@ -2,8 +2,8 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -26,6 +26,7 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
+import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
@@ -460,7 +461,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     @Override
     public Set<Species> configSpeciesComposition() {
-	Set<Species> speciesSet = new HashSet<Species>();
+
+	Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
 
 	if (settings.MODEL_SPECIES.contains("detector")) {
 	    speciesSet.add(Species.DETECTOR);

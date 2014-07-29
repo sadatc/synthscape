@@ -8,9 +8,9 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -122,7 +122,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected int simulationsPerExperiment;
     protected int stepsPerSimulation;
 
-    protected Set<Species> speciesComposition = new LinkedHashSet<Species>();
+    protected Set<Species> speciesComposition = new TreeSet<Species>(new SpeciesComparator());
     protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
     protected String eventFileName;
