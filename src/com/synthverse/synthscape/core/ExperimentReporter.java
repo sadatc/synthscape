@@ -135,11 +135,8 @@ public class ExperimentReporter implements Constants {
 		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
 			FILE_IO_BUFFER_SIZE);
 
-		if (settings.REPEAT > 1) {
-		    detailWriter.write("SEED=" + simulation.seed() + "-" + (simulation.seed() + settings.REPEAT));
-		} else {
-		    detailWriter.write("SEED=" + simulation.seed());
-		}
+		detailWriter.write("SEED=" + simulation.seed() + "-" + (simulation.seed() + settings.REPEAT - 1));
+
 		detailWriter.newLine();
 
 		for (String line : settings.EXPERIMENT_DETAILS) {
