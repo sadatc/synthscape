@@ -86,8 +86,7 @@ public class ExperimentReporter implements Constants {
 	    } else {
 
 	    }
-	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
-		    FILE_IO_BUFFER_SIZE);
+	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -116,36 +115,48 @@ public class ExperimentReporter implements Constants {
     private void writeExperimentDetails() {
 
 	settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR, settings.EXPERIMENT_DETAILS_FILE_MAIN,
-		settings.JOB_NAME, "" + simulation.seed());
+		settings.JOB_NAME, "");
 
-	File file = new File(settings.EXPERIMENT_DETAILS_FILE);
-	try {
+	// if this is a whole set of experiments sharing the same job
+	// description
+	// then this method will be entered multiple times with different
+	// experimentNumber
+	// this check protects against it and makes sure it is only run once..
+	if (settings.experimentNumber <= 1) {
 
-	    if (file.exists() && file.isFile()) {
-		file.delete();
-	    }
-	    file.createNewFile();
+	    File file = new File(settings.EXPERIMENT_DETAILS_FILE);
+	    try {
 
-	    BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
-		    FILE_IO_BUFFER_SIZE);
+		if (file.exists() && file.isFile()) {
+		    file.delete();
+		}
+		file.createNewFile();
 
-	    detailWriter.write("SEED="+simulation.seed());
-	    detailWriter.newLine();
-	    
-	    for (String line : settings.EXPERIMENT_DETAILS) {
-		detailWriter.write(line);
+		BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
+			FILE_IO_BUFFER_SIZE);
+
+		if (settings.REPEAT > 1) {
+		    detailWriter.write("SEED=" + simulation.seed() + "-" + (simulation.seed() + settings.REPEAT));
+		} else {
+		    detailWriter.write("SEED=" + simulation.seed());
+		}
 		detailWriter.newLine();
+
+		for (String line : settings.EXPERIMENT_DETAILS) {
+		    detailWriter.write(line);
+		    detailWriter.newLine();
+		}
+		detailWriter.write("EXPERIMENT_START = " + new Date());
+		detailWriter.newLine();
+
+		detailWriter.flush();
+		detailWriter.close();
+
+	    } catch (Exception e) {
+		logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
+		e.printStackTrace();
+		System.exit(0);
 	    }
-	    detailWriter.write("EXPERIMENT_START = " + new Date());
-	    detailWriter.newLine();
-
-	    detailWriter.flush();
-	    detailWriter.close();
-
-	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
-	    e.printStackTrace();
-	    System.exit(0);
 	}
 
     }
@@ -644,9 +655,8 @@ public class ExperimentReporter implements Constants {
 			}
 
 		    }
-		    
-		    
-		    D.p("species="+species+" fitness="+summaryFitnessStats.getMean());
+
+		    D.p("species=" + species + " fitness=" + summaryFitnessStats.getMean());
 
 		}
 

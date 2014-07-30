@@ -100,6 +100,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
     protected void init() throws Exception {
 	// we can compute the server name and batch ID right away
+	settings.experimentNumber++;
 	try {
 	    serverName = java.net.InetAddress.getLocalHost().getHostName();
 	} catch (Exception e) {

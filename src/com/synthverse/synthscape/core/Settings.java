@@ -34,10 +34,10 @@ public class Settings {
 
     public int CLONES_PER_SPECIES = 4;
 
-    public int GENE_POOL_SIZE = 2000;
+    public int GENE_POOL_SIZE = 512;
 
     public double COLLECTION_SITE_DENSITY = 0.015625;
-    
+
     public int NUMBER_OF_COLLECTION_SITES = 4;
 
     public double PERC_RESOURCE_CAPTURE_GOAL = 1.0;
@@ -102,6 +102,8 @@ public class Settings {
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
     public int lastLoggedGeneration = 0;
+
+    public int experimentNumber = 0;
 
     private Settings() {
 
@@ -489,7 +491,6 @@ public class Settings {
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
 	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
 	    NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
-	     
 
 	    printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 	    printAndStore("ACTUAL_RESOURCES = " + numberOfResources);

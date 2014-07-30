@@ -148,6 +148,10 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected void init() throws Exception {
+	// TODO: init is not common across all evaluators, they need to be fixed
+	// at some point
+	settings.experimentNumber++;
+
 	// we can compute the server name and batch ID right away
 	try {
 	    serverName = java.net.InetAddress.getLocalHost().getHostName();
