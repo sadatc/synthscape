@@ -36,9 +36,11 @@ public class Settings {
 
     public int GENE_POOL_SIZE = 2000;
 
-    public int NUMBER_OF_COLLECTION_SITES = 5;
+    public double COLLECTION_SITE_DENSITY = 0.015625;
+    
+    public int NUMBER_OF_COLLECTION_SITES = 4;
 
-    public double RESOURCE_CAPTURE_GOAL = 1.0;
+    public double PERC_RESOURCE_CAPTURE_GOAL = 1.0;
 
     public int SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
@@ -54,7 +56,7 @@ public class Settings {
 
     public int WORLD_HEIGHT = 16;
 
-    public double OBSTACLE_DENSITY = 0.0625;
+    public double OBSTACLE_DENSITY = 0.125;
 
     public double RESOURCE_DENSITY = 0.0625;
 
@@ -64,9 +66,9 @@ public class Settings {
 
     public int MATING_GENERATION_FREQUENCY = 10;
 
-    public int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
+    public int PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
 
-    public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
+    public int PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
@@ -151,9 +153,9 @@ public class Settings {
 	options.addOption(OptionBuilder.withArgName("pool_size").hasArg().withType(Integer.class)
 		.withDescription("gene pool size [" + GENE_POOL_SIZE + "]").create("pool_size"));
 
-	options.addOption(OptionBuilder.withArgName("collection_sites").hasArg().withType(Integer.class)
-		.withDescription("number of collection sites [" + NUMBER_OF_COLLECTION_SITES + "]")
-		.create("collection_sites"));
+	options.addOption(OptionBuilder.withArgName("collection_site_density").hasArg().withType(Integer.class)
+		.withDescription("collection site density [" + COLLECTION_SITE_DENSITY + "]")
+		.create("collection_site_density"));
 
 	options.addOption(OptionBuilder.withArgName("width").hasArg().withType(Integer.class)
 		.withDescription("world width [" + WORLD_WIDTH + "]").create("width"));
@@ -162,7 +164,7 @@ public class Settings {
 		.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
 
 	options.addOption(OptionBuilder.withArgName("max_steps").hasArg().withType(Integer.class)
-		.withDescription("max steps [" + WORLD_HEIGHT + "]").create("max_steps"));
+		.withDescription("max steps [" + MAX_STEPS_PER_AGENT + "]").create("max_steps"));
 
 	options.addOption(OptionBuilder.withArgName("obstacle_density").hasArg().withType(Double.class)
 		.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("obstacle_density"));
@@ -171,7 +173,7 @@ public class Settings {
 		.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("resource_density"));
 
 	options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
-		.withDescription("resource capture goal [" + RESOURCE_CAPTURE_GOAL + "]").create("goal"));
+		.withDescription("%resource capture goal [" + PERC_RESOURCE_CAPTURE_GOAL + "]").create("goal"));
 
 	options.addOption(OptionBuilder.withArgName("repeat").hasArg().withType(Integer.class)
 		.withDescription("repeat experiment [" + REPEAT + "]").create("repeat"));
@@ -264,10 +266,10 @@ public class Settings {
 	    printAndStore("PROBLEM_COMPLEXITY = " + PROBLEM_COMPLEXITY);
 
 	    if (line.hasOption("goal")) {
-		RESOURCE_CAPTURE_GOAL = new Double(line.getOptionValue("goal")).doubleValue();
+		PERC_RESOURCE_CAPTURE_GOAL = new Double(line.getOptionValue("goal")).doubleValue();
 	    }
 
-	    printAndStore("RESOURCE_CAPTURE_GOAL = " + RESOURCE_CAPTURE_GOAL);
+	    printAndStore("PERC_RESOURCE_CAPTURE_GOAL = " + PERC_RESOURCE_CAPTURE_GOAL);
 
 	    if (line.hasOption("obstacle_density")) {
 		OBSTACLE_DENSITY = new Double(line.getOptionValue("obstacle_density")).doubleValue();
@@ -376,8 +378,7 @@ public class Settings {
 		} else if (seedPreset.equalsIgnoreCase("noops")) {
 		    SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
 
-		}
-		else {
+		} else {
 		    throw new ParseException("preset_geno: " + seedPreset + " was not recognized");
 		}
 
@@ -399,11 +400,11 @@ public class Settings {
 	    printAndStore("GENE_POOL_SIZE = " + GENE_POOL_SIZE);
 	    printAndStore("EMBODIED_AGENT_POOL_SIZE = " + EMBODIED_AGENT_POOL_SIZE);
 
-	    if (line.hasOption("collection_sites")) {
-		NUMBER_OF_COLLECTION_SITES = new Integer(line.getOptionValue("collection_sites")).intValue();
+	    if (line.hasOption("collection_site_density")) {
+		COLLECTION_SITE_DENSITY = new Double(line.getOptionValue("collection_site_density")).intValue();
 
 	    }
-	    printAndStore("NUMBER_OF_COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
+	    printAndStore("COLLECTION_SITE_DENSITY = " + COLLECTION_SITE_DENSITY);
 
 	    if (line.hasOption("width")) {
 		WORLD_WIDTH = new Integer(line.getOptionValue("width")).intValue();
@@ -474,8 +475,8 @@ public class Settings {
 	    printAndStore("JOB_NAME = " + JOB_NAME);
 
 	    // some calculated values
-	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.90);
-	    PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.90);
+	    PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
+	    PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
 	    SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
 	    printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
@@ -486,11 +487,14 @@ public class Settings {
 
 	    int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
-	    int resourceCaptureGoal = (int) ((double) numberOfResources * RESOURCE_CAPTURE_GOAL);
+	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
+	    NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
+	     
 
 	    printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 	    printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
-	    printAndStore("RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
+	    printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
+	    printAndStore("ACTUAL COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
 
 	    D.p("=================================================");
 

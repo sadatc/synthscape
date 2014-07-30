@@ -148,7 +148,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	double gridArea = gridWidth * gridHeight;
 	numberOfObstacles = (int) (gridArea * obstacleDensity);
 	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (int) ((double) numberOfResources * settings.RESOURCE_CAPTURE_GOAL);
+	resourceCaptureGoal = (int) ((double) numberOfResources * settings.PERC_RESOURCE_CAPTURE_GOAL);
 
 	createDataStructures();
 
