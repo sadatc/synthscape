@@ -2,8 +2,6 @@ package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -18,6 +16,7 @@ import sim.util.Int2D;
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -256,6 +255,8 @@ public class PopulationIslandSimulation extends Simulation {
 	    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
+	    experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(),islandEvolver.species,
+		    islandEvolver.evolutionEngine.alphaProgram);
 
 	}
 

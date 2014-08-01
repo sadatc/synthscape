@@ -71,6 +71,27 @@ public class GenotypeInstruction {
 
 	return result;
     }
+    
+    
+    
+    public static String arrayToString(GenotypeInstruction[] array) {
+        if (array == null)
+            return "null";
+
+        int iMax = array.length - 1;
+        if (iMax == -1)
+            return "[]";
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0; ; i++) {
+            b.append(String.valueOf(array[i]));
+            if (i == iMax)
+                return b.append(']').toString();
+            b.append("|");
+        }
+    }
+    
 
     private InstructionType instructionType;
     private Instruction instruction;

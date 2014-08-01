@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.GeneticOperator;
@@ -27,6 +29,7 @@ public final class EvolutionEngine implements Constants {
 
     private static Logger logger = Logger.getLogger(EvolutionEngine.class.getName());
     public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
+    public Program alphaProgram;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -299,6 +302,9 @@ public final class EvolutionEngine implements Constants {
 	for (int i = 0; i < aTop; i++) {
 	    topPerformers.add(activeBuffer.get(i));
 	}
+
+	alphaProgram = null;
+	alphaProgram = new Program(activeBuffer.get(0).getProgram());
 
 	for (int i = 0; i < aBottom; i++) {
 	    bottomPerformers.add(activeBuffer.get(genePoolSize - i - 1));

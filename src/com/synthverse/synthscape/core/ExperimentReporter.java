@@ -13,6 +13,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
@@ -38,6 +39,7 @@ public class ExperimentReporter implements Constants {
     private final Simulation simulation;
     private BufferedWriter eventWriter = null;
     private BufferedWriter performanceWriter = null;
+    private BufferedWriter dnaWriter = null;
     private final static char COMMA = ',';
     private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
     private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
@@ -65,18 +67,26 @@ public class ExperimentReporter implements Constants {
 	if (simulation.isReportEvents()) {
 	    String eventFileName = constructFileName(settings.DATA_DIR, settings.EVENT_DATA_FILE, settings.JOB_NAME, ""
 		    + simulation.seed());
-	    openEventFile(eventFileName);
+	    eventWriter = openFile(eventFileName);
 	}
 
 	if (simulation.isReportPerformance()) {
 	    String performanceFileName = constructFileName(settings.DATA_DIR, settings.PERFORMANCE_DATA_FILE,
 		    settings.JOB_NAME, "" + simulation.seed());
-	    openPerformanceFile(performanceFileName);
+	    performanceWriter = openFile(performanceFileName);
+	}
+
+	if (settings.REPORT_DNA_PROGRESSION) {
+	    String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
+		    settings.JOB_NAME, "" + simulation.seed());
+	    dnaWriter = openFile(dnaProgressionFileName);
 	}
 
     }
 
-    private void openPerformanceFile(String fileName) {
+    private BufferedWriter openFile(String fileName) {
+
+	BufferedWriter writer = null;
 
 	File file = new File(fileName);
 	try {
@@ -86,7 +96,7 @@ public class ExperimentReporter implements Constants {
 	    } else {
 
 	    }
-	    performanceWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
+	    writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -94,22 +104,7 @@ public class ExperimentReporter implements Constants {
 	    System.exit(0);
 	}
 
-    }
-
-    private void openEventFile(String fileName) {
-	File file = new File(fileName);
-	try {
-	    if (!file.exists()) {
-		file.createNewFile();
-	    }
-	    eventWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
-
-	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
-	    e.printStackTrace();
-	    System.exit(0);
-	}
-
+	return writer;
     }
 
     private void writeExperimentDetails() {
@@ -257,6 +252,22 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    private void writeDnaFieldDescription() {
+	try {
+	    if (settings.REPORT_DNA_PROGRESSION) {
+		dnaWriter.write("SIMULATION,GENERATION,SPECIES,POOL_ID,GENOTYPE");
+		dnaWriter.newLine();
+	    }
+
+	} catch (Exception e) {
+	    logger.severe("Exception while reporting dna:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+
+	}
+
+    }
+
     public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x,
 	    int y, Event event, String source, String destination) {
 	try {
@@ -298,6 +309,27 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    public void reportAlphaProgram(int generation, int poolId, Species species, Program program) {
+
+	try {
+
+	    dnaWriter
+		    .write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + "," + program);
+	    dnaWriter.newLine();
+
+	    if (this.flushAlways) {
+		dnaWriter.flush();
+	    }
+
+	} catch (Exception e) {
+	    logger.severe("Exception while reporting event:" + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+
+	}
+
+    }
+
     private void closeFiles() {
 	try {
 	    if (eventWriter != null) {
@@ -305,6 +337,9 @@ public class ExperimentReporter implements Constants {
 	    }
 	    if (performanceWriter != null) {
 		performanceWriter.close();
+	    }
+	    if (dnaWriter != null) {
+		dnaWriter.close();
 	    }
 
 	} catch (Exception e) {
@@ -334,6 +369,7 @@ public class ExperimentReporter implements Constants {
 	    }
 	    writeEventFieldDescription();
 	    writePerformanceFieldDescription();
+	    writeDnaFieldDescription();
 	}
     }
 

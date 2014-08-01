@@ -146,11 +146,15 @@ public class Program {
 	}
 	return result;
     }
+    
+    
+    
+    
 
     @Override
     public final String toString() {
 	if (size > 0) {
-	    return Arrays.toString(genotypeArray);
+	    return GenotypeInstruction.arrayToString(genotypeArray);
 	} else {
 	    return Config.EMPTY_CONTAINER_STRING;
 	}

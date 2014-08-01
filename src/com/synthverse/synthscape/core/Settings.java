@@ -91,6 +91,8 @@ public class Settings {
 
     public String EVENT_DATA_FILE = "evnt_dat.csv";
 
+    public String DNA_PROGRESSION_FILE = "dna_dat.csv";
+
     public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
 
     public String EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
@@ -98,6 +100,8 @@ public class Settings {
     public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
     public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
+
+    public boolean REPORT_DNA_PROGRESSION = true;
 
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;

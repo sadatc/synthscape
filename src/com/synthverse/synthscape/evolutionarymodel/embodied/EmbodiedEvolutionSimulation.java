@@ -17,6 +17,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
@@ -277,6 +278,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
+	    experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
+		    embodiedAgent.evolver.evolutionEngine.alphaProgram);
 
 	}
 
