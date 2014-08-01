@@ -91,7 +91,7 @@ public class Settings {
 
     public String EVENT_DATA_FILE = "evnt_dat.csv";
 
-    public String DNA_PROGRESSION_FILE = "dna_dat.csv";
+    public String DNA_PROGRESSION_FILE = "dna_dat.gz";
 
     public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
 
