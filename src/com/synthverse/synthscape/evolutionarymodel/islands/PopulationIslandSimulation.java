@@ -255,8 +255,8 @@ public class PopulationIslandSimulation extends Simulation {
 	    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
-	    experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(),islandEvolver.species,
-		    islandEvolver.evolutionEngine.alphaProgram);
+	    experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(), islandEvolver.species,
+		    islandEvolver.evolutionEngine.alphaProgram, islandEvolver.evolutionEngine.previousAlphaProgram);
 
 	}
 

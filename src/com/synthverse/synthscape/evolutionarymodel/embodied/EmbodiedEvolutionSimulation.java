@@ -279,7 +279,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
 	    experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
-		    embodiedAgent.evolver.evolutionEngine.alphaProgram);
+		    embodiedAgent.evolver.evolutionEngine.alphaProgram,
+		    embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
 
 	}
 

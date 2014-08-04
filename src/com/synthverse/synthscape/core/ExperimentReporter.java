@@ -16,6 +16,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.DateUtils;
@@ -344,12 +345,41 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportAlphaProgram(int generation, int poolId, Species species, Program program) {
+    public void comparePrograms(Program current, Program previous) {
+	GenotypeInstruction[] curr = current.getGenotypeArray();
+	GenotypeInstruction[] prev = previous.getGenotypeArray();
+
+	int largerLen = curr.length;
+	int shorterLen = prev.length;
+	if (prev.length > largerLen) {
+	    largerLen = prev.length;
+	    shorterLen = curr.length;
+	}
+	
+	int mismatch = 0;
+	for(int i=0;i<shorterLen;i++) {
+	    if(curr[i]!=prev[i]) {
+		mismatch++;
+	    }
+	}
+	
+	double percMismatch = (double) mismatch/largerLen;
+	
+	D.p("percMismatch="+percMismatch);
+
+    }
+
+    public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram,
+	    Program previousAlphaProgram) {
 
 	try {
 
-	    dnaWriter
-		    .write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + "," + program);
+	    if (previousAlphaProgram != null && currentAlphaProgram != null) {
+		comparePrograms(currentAlphaProgram, previousAlphaProgram);
+	    }
+
+	    dnaWriter.write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
+		    + currentAlphaProgram);
 	    dnaWriter.newLine();
 
 	    if (this.flushAlways) {
