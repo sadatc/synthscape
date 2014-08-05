@@ -497,7 +497,7 @@ public class Settings {
 
 	    int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
-	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL)+1;
+	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
 	    NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
 	    printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
