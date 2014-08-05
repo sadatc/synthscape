@@ -2,21 +2,17 @@ package com.synthverse.synthscape.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.logging.Logger;
-import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
-import com.synthverse.stacks.GenotypeInstruction;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.DateUtils;
@@ -52,10 +48,6 @@ public class ExperimentReporter implements Constants {
 
     private SummaryStatistics summaryFitnessStats = new SummaryStatistics();
 
-    GZIPOutputStream gzOutputStream = null;
-    OutputStreamWriter osWriter = null;
-    FileOutputStream fileOutputStream = null;
-
     private final boolean flushAlways;
 
     @SuppressWarnings("unused")
@@ -87,7 +79,7 @@ public class ExperimentReporter implements Constants {
 	if (settings.REPORT_DNA_PROGRESSION) {
 	    String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
 		    settings.JOB_NAME, "" + simulation.seed());
-	    dnaWriter = openCompressedFile(dnaProgressionFileName);
+	    dnaWriter = openFile(dnaProgressionFileName);
 	}
 
     }
@@ -105,34 +97,6 @@ public class ExperimentReporter implements Constants {
 
 	    }
 	    writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
-
-	} catch (Exception e) {
-	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
-	    e.printStackTrace();
-	    System.exit(0);
-	}
-
-	return writer;
-    }
-
-    private BufferedWriter openCompressedFile(String fileName) {
-
-	BufferedWriter writer = null;
-
-	File file = new File(fileName);
-	try {
-	    if (!file.exists()) {
-		file.createNewFile();
-
-	    } else {
-
-	    }
-
-	    fileOutputStream = new FileOutputStream(fileName, true);
-	    gzOutputStream = new GZIPOutputStream(fileOutputStream, FILE_IO_BUFFER_SIZE, true);
-	    osWriter = new OutputStreamWriter(gzOutputStream);
-
-	    writer = new BufferedWriter(osWriter);
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -345,41 +309,12 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void comparePrograms(Program current, Program previous) {
-	GenotypeInstruction[] curr = current.getGenotypeArray();
-	GenotypeInstruction[] prev = previous.getGenotypeArray();
-
-	int largerLen = curr.length;
-	int shorterLen = prev.length;
-	if (prev.length > largerLen) {
-	    largerLen = prev.length;
-	    shorterLen = curr.length;
-	}
-	
-	int mismatch = 0;
-	for(int i=0;i<shorterLen;i++) {
-	    if(curr[i]!=prev[i]) {
-		mismatch++;
-	    }
-	}
-	
-	double percMismatch = (double) mismatch/largerLen;
-	
-	D.p("percMismatch="+percMismatch);
-
-    }
-
-    public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram,
-	    Program previousAlphaProgram) {
+    public void reportAlphaProgram(int generation, int poolId, Species species, Program program) {
 
 	try {
 
-	    if (previousAlphaProgram != null && currentAlphaProgram != null) {
-		comparePrograms(currentAlphaProgram, previousAlphaProgram);
-	    }
-
-	    dnaWriter.write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
-		    + currentAlphaProgram);
+	    dnaWriter
+		    .write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + "," + program);
 	    dnaWriter.newLine();
 
 	    if (this.flushAlways) {
@@ -405,17 +340,6 @@ public class ExperimentReporter implements Constants {
 	    }
 	    if (dnaWriter != null) {
 		dnaWriter.close();
-		if (fileOutputStream != null) {
-		    fileOutputStream.close();
-		}
-
-		if (gzOutputStream != null) {
-		    gzOutputStream.close();
-		}
-
-		if (osWriter != null) {
-		    osWriter.close();
-		}
 	    }
 
 	} catch (Exception e) {

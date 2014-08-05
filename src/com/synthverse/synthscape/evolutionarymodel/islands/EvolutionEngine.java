@@ -29,8 +29,7 @@ public final class EvolutionEngine implements Constants {
 
     private static Logger logger = Logger.getLogger(EvolutionEngine.class.getName());
     public DescriptiveStatistics fitnessStats = new DescriptiveStatistics();
-    public Program alphaProgram = null;
-    public Program previousAlphaProgram = null;
+    public Program alphaProgram;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -302,12 +301,6 @@ public final class EvolutionEngine implements Constants {
 
 	for (int i = 0; i < aTop; i++) {
 	    topPerformers.add(activeBuffer.get(i));
-	}
-
-	// save the previous alpha program for comparison
-	if (alphaProgram != null) {
-	    previousAlphaProgram = null;
-	    previousAlphaProgram = new Program(alphaProgram);
 	}
 
 	alphaProgram = null;
