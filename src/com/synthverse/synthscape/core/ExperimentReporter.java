@@ -2,17 +2,22 @@ package com.synthverse.synthscape.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.GenotypeInstruction;
+import com.synthverse.stacks.InstructionType;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.DateUtils;
@@ -40,6 +45,7 @@ public class ExperimentReporter implements Constants {
     private BufferedWriter eventWriter = null;
     private BufferedWriter performanceWriter = null;
     private BufferedWriter dnaWriter = null;
+    private StringBuilder savedDnaReportLine = new StringBuilder(STRING_BUFFER_MAX_SIZE);
     private final static char COMMA = ',';
     private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
     private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
@@ -47,6 +53,10 @@ public class ExperimentReporter implements Constants {
     private int numberOfSpecies;
 
     private SummaryStatistics summaryFitnessStats = new SummaryStatistics();
+
+    GZIPOutputStream gzOutputStream = null;
+    OutputStreamWriter osWriter = null;
+    FileOutputStream fileOutputStream = null;
 
     private final boolean flushAlways;
 
@@ -76,11 +86,9 @@ public class ExperimentReporter implements Constants {
 	    performanceWriter = openFile(performanceFileName);
 	}
 
-	if (settings.REPORT_DNA_PROGRESSION) {
-	    String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
-		    settings.JOB_NAME, "" + simulation.seed());
-	    dnaWriter = openFile(dnaProgressionFileName);
-	}
+	String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
+		settings.JOB_NAME, "" + simulation.seed());
+	dnaWriter = openCompressedFile(dnaProgressionFileName);
 
     }
 
@@ -97,6 +105,42 @@ public class ExperimentReporter implements Constants {
 
 	    }
 	    writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
+
+	} catch (Exception e) {
+	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+
+	return writer;
+    }
+
+    private BufferedWriter openCompressedFile(String fileName) {
+
+	BufferedWriter writer = null;
+
+	if (!settings.COMPRESS_DNA_PROGRESSION) {
+	    fileName = fileName.replace(".gz", ".csv");
+	}
+
+	File file = new File(fileName);
+	try {
+	    if (!file.exists()) {
+		file.createNewFile();
+
+	    } else {
+
+	    }
+
+	    if (settings.COMPRESS_DNA_PROGRESSION) {
+		fileOutputStream = new FileOutputStream(fileName, true);
+		gzOutputStream = new GZIPOutputStream(fileOutputStream, FILE_IO_BUFFER_SIZE);
+		osWriter = new OutputStreamWriter(gzOutputStream);
+		writer = new BufferedWriter(osWriter);
+
+	    } else {
+		writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
+	    }
 
 	} catch (Exception e) {
 	    logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
@@ -254,10 +298,9 @@ public class ExperimentReporter implements Constants {
 
     private void writeDnaFieldDescription() {
 	try {
-	    if (settings.REPORT_DNA_PROGRESSION) {
-		dnaWriter.write("SIMULATION,GENERATION,SPECIES,POOL_ID,GENOTYPE");
-		dnaWriter.newLine();
-	    }
+
+	    dnaWriter.write("SIMULATION,GENERATION,SPECIES,POOL_ID,GENOTYPE");
+	    dnaWriter.newLine();
 
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting dna:" + e.getMessage());
@@ -309,18 +352,58 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void reportAlphaProgram(int generation, int poolId, Species species, Program program) {
+    public void comparePrograms(Program current, Program previous) {
+	GenotypeInstruction[] curr = current.getGenotypeArray();
+	GenotypeInstruction[] prev = previous.getGenotypeArray();
+
+	int largerLen = curr.length;
+	int shorterLen = prev.length;
+	if (prev.length > largerLen) {
+	    largerLen = prev.length;
+	    shorterLen = curr.length;
+	}
+
+	int mismatch = 0;
+	int comparisons = 0;
+	for (int i = 0; i < shorterLen; i++) {
+
+	    if (curr[i].getMetaInstructionType() == InstructionType.INSTRUCTION
+		    && prev[i].getMetaInstructionType() == InstructionType.INSTRUCTION) {
+		comparisons++;
+		if (curr[i].getInstruction() != prev[i].getInstruction()) {
+		    mismatch++;
+		}
+	    }
+	}
+
+	double percMismatch = (double) mismatch / comparisons;
+
+	D.p("percMismatch=" + percMismatch);
+
+    }
+
+    public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram,
+	    Program previousAlphaProgram) {
 
 	try {
 
-	    dnaWriter
-		    .write(settings.experimentNumber + "," + generation + "," + species + "," + poolId + "," + program);
-	    dnaWriter.newLine();
-
-	    if (this.flushAlways) {
-		dnaWriter.flush();
+	    if (previousAlphaProgram != null && currentAlphaProgram != null) {
+		comparePrograms(currentAlphaProgram, previousAlphaProgram);
 	    }
 
+	    savedDnaReportLine.delete(0, savedDnaReportLine.length());
+	    savedDnaReportLine.append(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
+		    + currentAlphaProgram);
+
+	    if (settings.REPORT_DNA_PROGRESSION) {
+
+		dnaWriter.write(savedDnaReportLine.toString());
+		dnaWriter.newLine();
+
+		if (this.flushAlways) {
+		    dnaWriter.flush();
+		}
+	    }
 	} catch (Exception e) {
 	    logger.severe("Exception while reporting event:" + e.getMessage());
 	    e.printStackTrace();
@@ -339,7 +422,30 @@ public class ExperimentReporter implements Constants {
 		performanceWriter.close();
 	    }
 	    if (dnaWriter != null) {
+
+		// write out the champion...
+		if (!settings.REPORT_DNA_PROGRESSION) {
+
+		    dnaWriter.write(savedDnaReportLine.toString());
+		    dnaWriter.newLine();
+
+		    if (this.flushAlways) {
+			dnaWriter.flush();
+		    }
+		}
+
 		dnaWriter.close();
+		if (fileOutputStream != null) {
+		    fileOutputStream.close();
+		}
+
+		if (gzOutputStream != null) {
+		    gzOutputStream.close();
+		}
+
+		if (osWriter != null) {
+		    osWriter.close();
+		}
 	    }
 
 	} catch (Exception e) {
