@@ -37,10 +37,11 @@ public class Settings {
     public int GENE_POOL_SIZE = 512;
 
     public double COLLECTION_SITE_DENSITY = 0.015625;
+    // public double COLLECTION_SITE_DENSITY = 0.031250;
 
-    public int NUMBER_OF_COLLECTION_SITES = 4;
+    public int NUMBER_OF_COLLECTION_SITES = 8;
 
-    public double PERC_RESOURCE_CAPTURE_GOAL = 1.0;
+    public double PERC_RESOURCE_CAPTURE_GOAL = 0.75;
 
     public int SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
@@ -91,7 +92,7 @@ public class Settings {
 
     public String EVENT_DATA_FILE = "evnt_dat.csv";
 
-    public String DNA_PROGRESSION_FILE = "dna_dat.csv";
+    public String DNA_PROGRESSION_FILE = "dna_dat.gz";
 
     public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
 
@@ -101,7 +102,10 @@ public class Settings {
 
     public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
 
-    public boolean REPORT_DNA_PROGRESSION = true;
+    public boolean REPORT_DNA_PROGRESSION = false;
+    
+    public boolean COMPRESS_DNA_PROGRESSION = false;
+    
 
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
@@ -493,7 +497,7 @@ public class Settings {
 
 	    int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 	    int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
-	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
+	    int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL)+1;
 	    NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
 	    printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
