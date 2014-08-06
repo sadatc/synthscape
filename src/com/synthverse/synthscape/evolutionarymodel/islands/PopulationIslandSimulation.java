@@ -265,7 +265,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	    if (alphaGeneticDistance != Double.NaN) {
 		islandEvolver.computedAlphaDistance = alphaGeneticDistance;
-		
+
 	    }
 
 	    experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(), islandEvolver.species,
@@ -276,10 +276,11 @@ public class PopulationIslandSimulation extends Simulation {
 	// resourceCaptureStats.printStats();
 
 	experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
-		captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats, archipelagoEvolver.speciesIslandMap,  this.simulationCounter);
+		captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats,
+		archipelagoEvolver.speciesIslandMap, this.simulationCounter);
 
-	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
-		+ captureStats.getMax() + "; sims: " + this.simulationCounter);
+	logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+		+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax());
 
 	clearSpeciesEventStats();
 	captureStats.clear();

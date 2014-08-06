@@ -113,6 +113,8 @@ public class Settings {
 
     public int experimentNumber = 0;
 
+    public String statusCache = "";
+
     private Settings() {
 
     }

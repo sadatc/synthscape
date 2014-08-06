@@ -624,6 +624,8 @@ public class ExperimentReporter implements Constants {
 		// agents and then hold the sums
 		// in a species map...
 
+		settings.statusCache = "";
+		
 		for (Species species : simulation.speciesComposition) {
 
 		    summaryFitnessStats.clear();
@@ -794,7 +796,7 @@ public class ExperimentReporter implements Constants {
 
 		    }
 
-		    D.p("species=" + species + " fitness=" + summaryFitnessStats.getMean());
+		    settings.statusCache += species + ":" + summaryFitnessStats.getMean()+" ";
 
 		}
 

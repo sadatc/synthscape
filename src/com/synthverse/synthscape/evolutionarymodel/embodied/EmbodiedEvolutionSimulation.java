@@ -255,7 +255,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
      * report the statistics
      */
     protected void evolveEmbodiedAgents() {
-	logger.info("********* evolving embodied agents... number of simulations run:" + this.simulationCounter);
 
 	populationFitnessStats.clear();
 
@@ -299,8 +298,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
 		resourceCaptureStats, this.simulationCounter);
 
-	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
-		+ " average fitness=" + populationFitnessStats.getMean());
+	logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+		+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax()+" ["+settings.statusCache+"]");
 
 	// clear pool generation event stats for next generation...
 	for (Agent agent : agents) {
