@@ -66,6 +66,8 @@ public class EmbodiedAgent extends Agent {
     public List<Program> partnerBBuffer = new ArrayList<Program>();
 
     protected long embodiedAgentId;
+    
+    public double computedAlphaDistance;
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species,
 	    int poolSize) {

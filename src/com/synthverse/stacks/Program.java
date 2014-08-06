@@ -19,6 +19,8 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
+import com.synthverse.synthscape.core.D;
+
 import ec.util.MersenneTwisterFast;
 
 /**
@@ -140,16 +142,47 @@ public class Program {
     public final String getFingerPrint() {
 	String result = "";
 	if (size > 0) {
-	    for (int i = 0; i < size &&  i < 50; i++) {
+	    for (int i = 0; i < size && i < 50; i++) {
 		result += genotypeArray[i].getFingerPrint();
 	    }
 	}
 	return result;
     }
-    
-    
-    
-    
+
+    public static double comparePrograms(Program current, Program previous) {
+	double result = Double.NaN;
+
+	if (current != null && previous != null) {
+
+	    GenotypeInstruction[] curr = current.getGenotypeArray();
+	    GenotypeInstruction[] prev = previous.getGenotypeArray();
+
+	    int largerLen = curr.length;
+	    int shorterLen = prev.length;
+	    if (prev.length > largerLen) {
+		largerLen = prev.length;
+		shorterLen = curr.length;
+	    }
+
+	    int mismatch = 0;
+	    int comparisons = 0;
+	    for (int i = 0; i < shorterLen; i++) {
+
+		if (curr[i].getMetaInstructionType() == InstructionType.INSTRUCTION
+			&& prev[i].getMetaInstructionType() == InstructionType.INSTRUCTION) {
+		    comparisons++;
+		    if (curr[i].getInstruction() != prev[i].getInstruction()) {
+			mismatch++;
+		    }
+		}
+	    }
+
+	    result = (double) mismatch / comparisons;
+	}
+
+	return result;
+
+    }
 
     @Override
     public final String toString() {

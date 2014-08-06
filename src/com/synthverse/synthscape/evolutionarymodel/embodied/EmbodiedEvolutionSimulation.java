@@ -15,9 +15,9 @@ import sim.util.Int2D;
 
 import com.synthverse.Main;
 import com.synthverse.stacks.InstructionTranslator;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
@@ -262,6 +262,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	// evolve each agent and keep account of their event and fitness
 	// statistics...
 	generation++;
+
 	for (Agent agent : agents) {
 	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
@@ -274,21 +275,29 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		System.exit(1);
 	    }
 
-	    // add all inidividual fitness stats to the population
 	    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
-	    
-	    experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
-		    embodiedAgent.evolver.evolutionEngine.alphaProgram,
+
+	    // this part computes the genetic distance between the current and
+	    // previous alpha
+
+	    double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.evolver.evolutionEngine.alphaProgram,
 		    embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
+
+	    if (alphaGeneticDistance != Double.NaN) {
+		embodiedAgent.computedAlphaDistance = alphaGeneticDistance;
+	    }
+
+	    experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
+		    embodiedAgent.evolver.evolutionEngine.alphaProgram);
 
 	}
 
 	// resourceCaptureStats.printStats();
 	experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
 		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
-		resourceCaptureStats);
+		resourceCaptureStats, this.simulationCounter);
 
 	logger.info("summary: collections=" + this.generationEventStats.getValue(Event.COLLECTED_RESOURCE)
 		+ " average fitness=" + populationFitnessStats.getMean());

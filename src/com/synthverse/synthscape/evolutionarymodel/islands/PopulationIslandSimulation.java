@@ -14,6 +14,7 @@ import sim.engine.Steppable;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
+import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.D;
@@ -255,15 +256,27 @@ public class PopulationIslandSimulation extends Simulation {
 	    for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
 		populationFitnessStats.addValue(fitnessValue);
 	    }
+
+	    // this part computes the genetic distance between the current and
+	    // previous alpha
+
+	    double alphaGeneticDistance = Program.comparePrograms(islandEvolver.evolutionEngine.alphaProgram,
+		    islandEvolver.evolutionEngine.previousAlphaProgram);
+
+	    if (alphaGeneticDistance != Double.NaN) {
+		islandEvolver.computedAlphaDistance = alphaGeneticDistance;
+		
+	    }
+
 	    experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(), islandEvolver.species,
-		    islandEvolver.evolutionEngine.alphaProgram, islandEvolver.evolutionEngine.previousAlphaProgram);
+		    islandEvolver.evolutionEngine.alphaProgram);
 
 	}
 
 	// resourceCaptureStats.printStats();
 
 	experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
-		captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats);
+		captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats, archipelagoEvolver.speciesIslandMap,  this.simulationCounter);
 
 	logger.info("gen: " + generation + "; fitness: " + populationFitnessStats.getMean() + "; best_capture: "
 		+ captureStats.getMax() + "; sims: " + this.simulationCounter);

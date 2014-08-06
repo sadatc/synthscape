@@ -44,6 +44,8 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
     protected int requestCounter = 1;
     protected int cloneCounter = 1;
     public List<Agent> activeBuffer;
+    
+    public double computedAlphaDistance;
 
     public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
 	    int clonesPerSpecies) throws Exception {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
@@ -17,10 +18,9 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.synthverse.Main;
-import com.synthverse.stacks.GenotypeInstruction;
-import com.synthverse.stacks.InstructionType;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
+import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandEvolver;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
@@ -56,6 +56,8 @@ public class ExperimentReporter implements Constants {
     private int numberOfSpecies;
 
     private SummaryStatistics summaryFitnessStats = new SummaryStatistics();
+
+    private SummaryStatistics summaryAlphaDiffStats = new SummaryStatistics();
 
     GZIPOutputStream gzOutputStream = null;
     OutputStreamWriter osWriter = null;
@@ -355,44 +357,9 @@ public class ExperimentReporter implements Constants {
 
     }
 
-    public void comparePrograms(Program current, Program previous) {
-	GenotypeInstruction[] curr = current.getGenotypeArray();
-	GenotypeInstruction[] prev = previous.getGenotypeArray();
-
-	int largerLen = curr.length;
-	int shorterLen = prev.length;
-	if (prev.length > largerLen) {
-	    largerLen = prev.length;
-	    shorterLen = curr.length;
-	}
-
-	int mismatch = 0;
-	int comparisons = 0;
-	for (int i = 0; i < shorterLen; i++) {
-
-	    if (curr[i].getMetaInstructionType() == InstructionType.INSTRUCTION
-		    && prev[i].getMetaInstructionType() == InstructionType.INSTRUCTION) {
-		comparisons++;
-		if (curr[i].getInstruction() != prev[i].getInstruction()) {
-		    mismatch++;
-		}
-	    }
-	}
-
-	double percMismatch = (double) mismatch / comparisons;
-
-	D.p("percMismatch=" + percMismatch);
-
-    }
-
-    public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram,
-	    Program previousAlphaProgram) {
+    public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram) {
 
 	try {
-
-	    if (previousAlphaProgram != null && currentAlphaProgram != null) {
-		comparePrograms(currentAlphaProgram, previousAlphaProgram);
-	    }
 
 	    StringBuilder alphaCache = getAlphaCacheByPoolId(poolId);
 
@@ -529,7 +496,7 @@ public class ExperimentReporter implements Constants {
 	    if (simulation.isReportPerformance()) {
 		numberOfSpecies = simulation.speciesComposition.size();
 
-		String columnHeader = "GENERATION, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+		String columnHeader = "GENERATION, SIMS, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
 		for (EventType type : EventType.values()) {
 		    if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 			continue;
@@ -541,6 +508,9 @@ public class ExperimentReporter implements Constants {
 
 		for (Species species : simulation.speciesComposition) {
 		    String name = species.toString();
+
+		    columnHeader += ", ";
+		    columnHeader += name + "_ALPHA_DIST";
 
 		    if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.ISLAND_MODEL) {
 			// in the island model, all species share the same total
@@ -606,7 +576,7 @@ public class ExperimentReporter implements Constants {
     public void reportPerformanceEmbodiedModel(int generationCounter, IntervalStats intervalStats,
 	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
 	    ArrayList<Agent> agents, SummaryStatistics captureStats, SummaryStatistics populationFitnessStats,
-	    long simsRun, ResourceCaptureStats resourceCaptureStats) {
+	    long simsRun, ResourceCaptureStats resourceCaptureStats, long simCounter) {
 	try {
 
 	    if (simulation.isReportPerformance()) {
@@ -614,6 +584,9 @@ public class ExperimentReporter implements Constants {
 		sbPerformance.delete(0, sbPerformance.length());
 
 		sbPerformance.append(generationCounter);
+
+		sbPerformance.append(COMMA);
+		sbPerformance.append(simCounter);
 
 		sbPerformance.append(COMMA);
 		sbPerformance.append(captureStats.getSum());
@@ -654,6 +627,7 @@ public class ExperimentReporter implements Constants {
 		for (Species species : simulation.speciesComposition) {
 
 		    summaryFitnessStats.clear();
+		    summaryAlphaDiffStats.clear();
 
 		    long sentTrail = 0;
 		    long receivedTrail = 0;
@@ -680,6 +654,8 @@ public class ExperimentReporter implements Constants {
 		    for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 			if (agent.getSpecies() == species) {
+
+			    summaryAlphaDiffStats.addValue(embodiedAgent.computedAlphaDistance);
 
 			    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
 				summaryFitnessStats.addValue(fitnessValue);
@@ -739,6 +715,9 @@ public class ExperimentReporter implements Constants {
 			}
 
 		    }
+
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append(summaryAlphaDiffStats.getMean());
 
 		    sbPerformance.append(COMMA);
 		    sbPerformance.append(summaryFitnessStats.getMean());
@@ -858,13 +837,17 @@ public class ExperimentReporter implements Constants {
     public void reportPerformanceIslandModel(int generationCounter, IntervalStats intervalStats,
 	    EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
 	    SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun,
-	    ResourceCaptureStats resourceCaptureStats) {
+	    ResourceCaptureStats resourceCaptureStats,
+	    LinkedHashMap<Species, PopulationIslandEvolver> speciesIslandMap, long simCounter) {
 	try {
 	    if (simulation.isReportPerformance()) {
 
 		sbPerformance.delete(0, sbPerformance.length());
 
 		sbPerformance.append(generationCounter);
+		sbPerformance.append(COMMA);
+
+		sbPerformance.append(simCounter);
 		sbPerformance.append(COMMA);
 
 		sbPerformance.append(captureStats.getSum());
@@ -897,6 +880,10 @@ public class ExperimentReporter implements Constants {
 		}
 
 		for (Species species : simulation.speciesComposition) {
+
+		    PopulationIslandEvolver evolver = speciesIslandMap.get(species);
+		    sbPerformance.append(COMMA);
+		    sbPerformance.append((double) evolver.computedAlphaDistance);
 
 		    for (EventType type : EventType.values()) {
 			if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
