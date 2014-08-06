@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
@@ -45,7 +46,9 @@ public class ExperimentReporter implements Constants {
     private BufferedWriter eventWriter = null;
     private BufferedWriter performanceWriter = null;
     private BufferedWriter dnaWriter = null;
-    private StringBuilder savedDnaReportLine = new StringBuilder(STRING_BUFFER_MAX_SIZE);
+
+    private HashMap<Integer, StringBuilder> poolAlphaMap = new HashMap<Integer, StringBuilder>();
+
     private final static char COMMA = ',';
     private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
     private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
@@ -391,13 +394,15 @@ public class ExperimentReporter implements Constants {
 		comparePrograms(currentAlphaProgram, previousAlphaProgram);
 	    }
 
-	    savedDnaReportLine.delete(0, savedDnaReportLine.length());
-	    savedDnaReportLine.append(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
+	    StringBuilder alphaCache = getAlphaCacheByPoolId(poolId);
+
+	    alphaCache.delete(0, alphaCache.length());
+	    alphaCache.append(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
 		    + currentAlphaProgram);
 
 	    if (settings.REPORT_DNA_PROGRESSION) {
 
-		dnaWriter.write(savedDnaReportLine.toString());
+		dnaWriter.write(alphaCache.toString());
 		dnaWriter.newLine();
 
 		if (this.flushAlways) {
@@ -413,6 +418,19 @@ public class ExperimentReporter implements Constants {
 
     }
 
+    private StringBuilder getAlphaCacheByPoolId(int poolId) {
+	StringBuilder cache = null;
+	if (poolAlphaMap.containsKey(poolId)) {
+	    cache = poolAlphaMap.get(poolId);
+	} else {
+	    cache = new StringBuilder(STRING_BUFFER_MAX_SIZE);
+	    poolAlphaMap.put(poolId, cache);
+	}
+
+	return cache;
+
+    }
+
     private void closeFiles() {
 	try {
 	    if (eventWriter != null) {
@@ -423,11 +441,13 @@ public class ExperimentReporter implements Constants {
 	    }
 	    if (dnaWriter != null) {
 
-		// write out the champion...
+		// write out the champions...
 		if (!settings.REPORT_DNA_PROGRESSION) {
 
-		    dnaWriter.write(savedDnaReportLine.toString());
-		    dnaWriter.newLine();
+		    for (StringBuilder alphaCache : poolAlphaMap.values()) {
+			dnaWriter.write(alphaCache.toString());
+			dnaWriter.newLine();
+		    }
 
 		    if (this.flushAlways) {
 			dnaWriter.flush();
