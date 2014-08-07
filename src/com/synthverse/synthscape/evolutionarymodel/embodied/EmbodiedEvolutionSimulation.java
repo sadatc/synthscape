@@ -493,9 +493,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	    logger.info("adding TRANSPORTERs...");
 	}
 
-	if (settings.MODEL_SPECIES.contains("hetero")) {
-	    speciesSet.add(Species.HETERO);
-	    logger.info("adding HETEROs...");
+	if (settings.MODEL_SPECIES.contains("homogenous")) {
+	    speciesSet.add(Species.HOMOGENOUS);
+	    logger.info("adding HOMOGENOUS agents...");
 	}
 
 	return speciesSet;

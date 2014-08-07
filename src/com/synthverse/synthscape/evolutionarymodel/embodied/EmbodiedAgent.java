@@ -226,7 +226,7 @@ public class EmbodiedAgent extends Agent {
 
 	Set<Trait> traits = this.species.getTraits();
 
-	// if its multicapable -- then evalate as a hetero
+	// if its multicapable -- then evalate as a homogenous
 	if (traits.contains(Trait.MULTICAPABLE)) {
 	    this.fitness += computeFitness(Trait.MULTICAPABLE);
 	} else {

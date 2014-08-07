@@ -46,7 +46,7 @@ public enum Species {
 	    return traits;
 	}
 
-    }), HETERO(4, "hetero", new TraitsDefiner() {
+    }), HOMOGENOUS(4, "homogenous", new TraitsDefiner() {
 
 	@Override
 	public LinkedHashSet<Trait> define() {

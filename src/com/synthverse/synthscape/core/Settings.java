@@ -49,7 +49,7 @@ public class Settings {
 
     public EvolutionaryModel EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
 
-    public String MODEL_SPECIES = "hetero";
+    public String MODEL_SPECIES = "homogenous";
 
     public String MODEL_INTERACTIONS = "none";
 
@@ -146,7 +146,7 @@ public class Settings {
 		.withArgName("species")
 		.isRequired()
 		.hasArg()
-		.withDescription("species names [detector, extractor, transporter OR hetero] e.g. detector,transporter")
+		.withDescription("species names [detector, extractor, transporter OR homogenous] e.g. detector,transporter")
 		.create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
@@ -338,7 +338,7 @@ public class Settings {
 	    if (line.hasOption("species")) {
 
 		String speciesNames = line.getOptionValue("species").toLowerCase();
-		if (!(speciesNames.contains("hetero") || speciesNames.contains("extractor")
+		if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
 			|| speciesNames.contains("detector") || speciesNames.contains("transporter"))) {
 		    throw new ParseException("species: " + speciesNames + " was not recognized");
 		}
