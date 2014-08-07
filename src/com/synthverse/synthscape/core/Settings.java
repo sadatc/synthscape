@@ -73,7 +73,7 @@ public class Settings {
 
     public Level REQUESTED_LOG_LEVEL = Level.ALL;
 
-    public SeedType SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
+    public SeedType SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.RANDOM;
 
     public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
     // TODO: separate this, if needed
@@ -200,7 +200,7 @@ public class Settings {
 		.create("job_set"));
 
 	options.addOption(OptionBuilder.withArgName("preset_geno").hasArg()
-		.withDescription("(noops, actions, random) [noops]").create("preset_geno"));
+		.withDescription("(noops, actions, random) [random]").create("preset_geno"));
 
 	options.addOption(OptionBuilder.withArgName("mating_success").hasArg().withType(Double.class)
 		.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]").create("mating_success"));
