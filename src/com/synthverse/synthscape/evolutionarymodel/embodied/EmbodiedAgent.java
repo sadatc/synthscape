@@ -66,7 +66,7 @@ public class EmbodiedAgent extends Agent {
     public List<Program> partnerBBuffer = new ArrayList<Program>();
 
     protected long embodiedAgentId;
-    
+
     public double computedAlphaDistance;
 
     public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species,
@@ -226,8 +226,13 @@ public class EmbodiedAgent extends Agent {
 
 	Set<Trait> traits = this.species.getTraits();
 
-	for (Trait trait : traits) {
-	    this.fitness += computeFitness(trait);
+	// if its multicapable -- then evalate as a hetero
+	if (traits.contains(Trait.MULTICAPABLE)) {
+	    this.fitness += computeFitness(Trait.MULTICAPABLE);
+	} else {
+	    for (Trait trait : traits) {
+		this.fitness += computeFitness(trait);
+	    }
 	}
 	this.activeAgent.setFitness(this.fitness);
 	this.activeAgent.setProvidedFeedback(true);
@@ -248,15 +253,15 @@ public class EmbodiedAgent extends Agent {
     private double computeFitness(Trait trait) {
 	double result = 0.0;
 
-	if (trait == Trait.MULTICAPABLE || trait == Trait.DETECTION) {
+	if (trait == Trait.DETECTION) {
 	    result += computeDetectionFitness();
 	}
 
-	if (trait == Trait.MULTICAPABLE || trait == Trait.EXTRACTION) {
+	if (trait == Trait.EXTRACTION) {
 	    result += computeExtractionFitness();
 	}
 
-	if (trait == Trait.MULTICAPABLE || trait == Trait.PROCESSING) {
+	if (trait == Trait.PROCESSING) {
 	    result += computeProcessingFitness();
 	}
 

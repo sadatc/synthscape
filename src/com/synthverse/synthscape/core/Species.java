@@ -54,8 +54,8 @@ public enum Species {
 
 	    traits.add(Trait.DETECTION);
 	    traits.add(Trait.EXTRACTION);
-
 	    traits.add(Trait.TRANSPORTATION);
+	    traits.add(Trait.MULTICAPABLE);
 
 	    if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 		traits.add(Trait.PROCESSING);
