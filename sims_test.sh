@@ -8,21 +8,21 @@ function sim {
 # First run all the basic tests
 ./compile
 
-sim "isl_hom_none" "island" "detector,extractor,transporter" "none" "/tmp"
-sim "isl_hom_trail" "island" "detector,extractor,transporter" "trail" "/tmp"
-sim "isl_hom_broad" "island" "detector,extractor,transporter" "broadcast" "/tmp"
-sim "isl_hom_uni" "island" "detector,extractor,transporter" "unicast_n" "/tmp"
+#sim "isl_hom_none" "island" "detector,extractor,transporter" "none" "/tmp"
+#sim "isl_hom_trail" "island" "detector,extractor,transporter" "trail" "/tmp"
+#sim "isl_hom_broad" "island" "detector,extractor,transporter" "broadcast" "/tmp"
+#sim "isl_hom_uni" "island" "detector,extractor,transporter" "unicast_n" "/tmp"
 
-sim "isl_het_none" "island" "hetero" "none" "/tmp"
-sim "isl_het_trail" "island" "hetero" "trail" "/tmp"
-sim "isl_het_broad" "island" "hetero" "broadcast" "/tmp"
-sim "isl_het_uni" "island" "hetero" "unicast_n" "/tmp"
+#sim "isl_het_none" "island" "hetero" "none" "/tmp"
+#sim "isl_het_trail" "island" "hetero" "trail" "/tmp"
+#sim "isl_het_broad" "island" "hetero" "broadcast" "/tmp"
+#sim "isl_het_uni" "island" "hetero" "unicast_n" "/tmp"
 
 
-sim "emb_hom_none" "embodied" "detector,extractor,transporter" "none" "/tmp"
-sim "emb_hom_trail" "embodied" "detector,extractor,transporter" "trail" "/tmp"
-sim "emb_hom_broad" "embodied" "detector,extractor,transporter" "broadcast" "/tmp"
-sim "emb_hom_uni" "embodied" "detector,extractor,transporter" "unicast_n" "/tmp"
+#sim "emb_hom_none" "embodied" "detector,extractor,transporter" "none" "/tmp"
+#sim "emb_hom_trail" "embodied" "detector,extractor,transporter" "trail" "/tmp"
+#sim "emb_hom_broad" "embodied" "detector,extractor,transporter" "broadcast" "/tmp"
+#sim "emb_hom_uni" "embodied" "detector,extractor,transporter" "unicast_n" "/tmp"
 
 sim "emb_het_none" "embodied" "hetero" "none" "/tmp"
 sim "emb_het_trail" "embodied" "hetero" "trail" "/tmp"
