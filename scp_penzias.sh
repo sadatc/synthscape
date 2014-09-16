@@ -3,3 +3,4 @@
 rm -f client/synthscape.jar
 ant/bin/ant jar
 scp -r client/synthscape.jar s.chowdhury@penzias:
+scp -r qsub_.sh s.chowdhury@penzias:
