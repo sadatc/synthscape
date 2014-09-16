@@ -62,16 +62,23 @@ public abstract class Simulation extends SimState implements Constants {
     protected ProblemComplexity problemComplexity;
 
     protected IntGrid2D obstacleGrid;
+    protected IntGrid2D benchmarkObstacleGrid;
 
     protected IntGrid2D collectionSiteGrid;
+    protected IntGrid2D benchmarkCollectionSiteGrid;
 
     protected ArrayList<Int2D> collectionSiteList;
+    protected ArrayList<Int2D> benchmarkCollectionSiteList;
 
     protected IntGrid2D initCollisionGrid;
+    protected IntGrid2D benchmarkInitCollisionGrid;
 
     protected ObjectGrid2D resourceGrid;
+    protected ObjectGrid2D benchmarkResourceGrid;
 
     public ResourceStatus[][] resourceStatusArray;
+    public ResourceStatus[][] benchmarkResourceStatusArray;
+
     public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
     protected DoubleGrid2D trailGrid;
@@ -229,10 +236,20 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void createDataStructures() {
 	obstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	benchmarkObstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+
 	collectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	benchmarkCollectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+
 	collectionSiteList = new ArrayList<Int2D>();
+	benchmarkCollectionSiteList = new ArrayList<Int2D>();
+
 	initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+	benchmarkInitCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+
 	resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
+	benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
+
 	trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 	detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
@@ -241,9 +258,11 @@ public abstract class Simulation extends SimState implements Constants {
 	agents = new ArrayList<Agent>();
 
 	resourceStatusArray = new ResourceStatus[gridWidth][gridHeight];
+	benchmarkResourceStatusArray = new ResourceStatus[gridWidth][gridHeight];
 	for (int x = 0; x < gridWidth; x++) {
-	    for (int y = 0; y < gridWidth; y++) {
+	    for (int y = 0; y < gridHeight; y++) {
 		resourceStatusArray[x][y] = new ResourceStatus();
+		benchmarkResourceStatusArray[x][y] = new ResourceStatus();
 	    }
 	}
 
@@ -280,7 +299,7 @@ public abstract class Simulation extends SimState implements Constants {
     final void clearResourceStatusArray() {
 	touchedResources.clear();
 	for (int x = 0; x < gridWidth; x++) {
-	    for (int y = 0; y < gridWidth; y++) {
+	    for (int y = 0; y < gridHeight; y++) {
 		resourceStatusArray[x][y].clear();
 	    }
 	}
@@ -346,7 +365,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void initNonPrimaryCollectionSites() {
 	MersenneTwisterFast randomPrime = this.random;
-	
+
 	for (int i = 0; i < (numberOfCollectionSites - 1); i++) {
 	    int randomX = randomPrime.nextInt(gridWidth);
 	    int randomY = randomPrime.nextInt(gridHeight);
@@ -366,7 +385,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initObstacles() {
 	// create obstacles in random locations
 	MersenneTwisterFast randomPrime = this.random;
-	
+
 	for (int i = 0; i < numberOfObstacles; i++) {
 
 	    int randomX = randomPrime.nextInt(gridWidth);
@@ -386,7 +405,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initResources() {
 
 	MersenneTwisterFast randomPrime = this.random;
-	
+
 	for (int i = 0; i < numberOfResources; i++) {
 
 	    int randomX = 0;
@@ -416,6 +435,41 @@ public abstract class Simulation extends SimState implements Constants {
 	initNonPrimaryCollectionSites();
 	initObstacles();
 	initResources();
+    }
+
+    protected void saveEnvironmentForBenchmark() {
+
+	for (int x = 0; x < gridWidth; x++) {
+	    for (int y = 0; y < gridHeight; y++) {
+		benchmarkObstacleGrid.field[x][y] = obstacleGrid.field[x][y];
+		benchmarkCollectionSiteGrid.field[x][y] = collectionSiteGrid.field[x][y];
+		benchmarkInitCollisionGrid.field[x][y] = initCollisionGrid.field[x][y];
+		benchmarkResourceGrid.field[x][y] = resourceGrid.field[x][y];
+		resourceStatusArray[x][y].cloneTo(benchmarkResourceStatusArray[x][y]);
+	    }
+	}
+	benchmarkCollectionSiteList.clear();
+	for (Int2D coordinate : collectionSiteList) {
+	    benchmarkCollectionSiteList.add(coordinate);
+	}
+    }
+
+    protected void initEnvironmentWithBenchmark() {
+
+	for (int x = 0; x < gridWidth; x++) {
+	    for (int y = 0; y < gridHeight; y++) {
+		obstacleGrid.field[x][y] = benchmarkObstacleGrid.field[x][y];
+		collectionSiteGrid.field[x][y] = benchmarkCollectionSiteGrid.field[x][y];
+		initCollisionGrid.field[x][y] = benchmarkInitCollisionGrid.field[x][y];
+		resourceGrid.field[x][y] = benchmarkResourceGrid.field[x][y];
+		benchmarkResourceStatusArray[x][y].cloneTo(resourceStatusArray[x][y]);
+	    }
+	}
+
+	collectionSiteList.clear();
+	for (Int2D coordinate : benchmarkCollectionSiteList) {
+	    collectionSiteList.add(coordinate);
+	}
     }
 
     protected void initAgents() {
@@ -506,7 +560,18 @@ public abstract class Simulation extends SimState implements Constants {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	initEnvironment();
+	if (this.simulationCounter == 0) {
+	    // save this initial configuration for benchmarking
+	    initEnvironment();
+	    saveEnvironmentForBenchmark();
+
+	} else if (this.simulationCounter % settings.BENCHMARK_GENERATION == 0) {
+	    // every BENCHMARK_GENERATION use benchmark environment...
+	    initEnvironmentWithBenchmark();
+	} else {
+	    initEnvironment();
+	}
+
 	initAgents();
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)

@@ -368,7 +368,17 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	initEnvironment();
+	if (this.simulationCounter == 0) {
+	    // save this initial configuration for benchmarking
+	    initEnvironment();
+	    saveEnvironmentForBenchmark();
+
+	} else if (this.simulationCounter % settings.BENCHMARK_GENERATION == 0) {
+	    // every BENCHMARK_GENERATION use benchmark environment...
+	    initEnvironmentWithBenchmark();
+	} else {
+	    initEnvironment();
+	}
 	initAgents();
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)

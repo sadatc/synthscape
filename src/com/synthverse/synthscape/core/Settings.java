@@ -30,6 +30,8 @@ public class Settings {
 
     public int GENERATIONS = 10000;
 
+    public int BENCHMARK_GENERATION = 100;
+
     public int CLONES_PER_SPECIES = 4;
 
     public int GENE_POOL_SIZE = 512;
@@ -172,6 +174,9 @@ public class Settings {
 
 	options.addOption(OptionBuilder.withArgName("height").hasArg().withType(Integer.class)
 		.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
+
+	options.addOption(OptionBuilder.withArgName("benchmark_generation").hasArg().withType(Integer.class)
+		.withDescription("max steps [" + BENCHMARK_GENERATION + "]").create("benchmark_generation"));
 
 	options.addOption(OptionBuilder.withArgName("max_steps").hasArg().withType(Integer.class)
 		.withDescription("max steps [" + MAX_STEPS_PER_AGENT + "]").create("max_steps"));
@@ -430,6 +435,12 @@ public class Settings {
 
 	    }
 	    printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
+
+	    if (line.hasOption("benchmark_generation")) {
+		BENCHMARK_GENERATION = new Integer(line.getOptionValue("benchmark_generation")).intValue();
+
+	    }
+	    printAndStore("BENCHMARK_GENERATION = " + BENCHMARK_GENERATION);
 
 	    if (line.hasOption("repeat")) {
 		REPEAT = new Integer(line.getOptionValue("repeat")).intValue();
