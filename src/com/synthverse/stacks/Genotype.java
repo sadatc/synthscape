@@ -19,7 +19,6 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
-import com.synthverse.synthscape.core.D;
 import com.synthverse.util.ArrayUtils;
 
 /**

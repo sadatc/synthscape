@@ -2,7 +2,6 @@ package com.synthverse;
 
 import java.util.logging.Logger;
 
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulation;

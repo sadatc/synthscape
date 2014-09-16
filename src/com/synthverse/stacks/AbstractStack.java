@@ -109,9 +109,7 @@ public abstract class AbstractStack {
      */
     public abstract String toString();
 
-    private AbstractStack() {
-    };
-
+    
     public AbstractStack(MersenneTwisterFast randomNumberGenerator) {
 	this.randomNumberGenerator = randomNumberGenerator;
     }

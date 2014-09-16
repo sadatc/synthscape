@@ -139,10 +139,7 @@ public class GenotypeInstruction {
 	this.booleanValue = booleanValue;
     }
 
-    private GenotypeInstruction() {
-	throw new AssertionError("Evolver constructor is restricted");
-    }
-
+   
     static HashMap<Instruction, GenotypeInstruction> cachedMetaInstructions = new HashMap<Instruction, GenotypeInstruction>();
 
     public static GenotypeInstruction fromInstruction(Instruction instruction) {

@@ -20,7 +20,6 @@ package com.synthverse.stacks;
 import java.util.logging.Logger;
 
 import com.synthverse.synthscape.core.Agent;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.util.LogUtils;
 

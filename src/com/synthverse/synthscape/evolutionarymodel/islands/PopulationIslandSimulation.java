@@ -17,7 +17,6 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -98,10 +97,6 @@ public class PopulationIslandSimulation extends Simulation {
 	initTeam();
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
 	agents.clear();
 
 	for (Species species : speciesComposition) {

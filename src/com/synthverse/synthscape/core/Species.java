@@ -70,6 +70,7 @@ public enum Species {
     private int id;
 
     private LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+    @SuppressWarnings("unused")
     private TraitsDefiner traitsDefiner;
 
     Species(int id, String name, TraitsDefiner traitsDefiner) {

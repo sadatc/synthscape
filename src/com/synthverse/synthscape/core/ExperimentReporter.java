@@ -53,6 +53,7 @@ public class ExperimentReporter implements Constants {
     private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
     private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
+    @SuppressWarnings("unused")
     private int numberOfSpecies;
 
     private SummaryStatistics summaryFitnessStats = new SummaryStatistics();

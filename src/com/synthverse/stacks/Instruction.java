@@ -1682,10 +1682,7 @@ public enum Instruction {
     ;
 
     private String mnemonic = null;
-    private int intValue = 0;
-    private boolean boolValue = false;
-    private double floatValue = 0.0;
-
+    
     /**
      * Gets the Mnemonic associated with the Instruction. Mnemonics are an
      * alternative (generally user-friendly) description that is used to

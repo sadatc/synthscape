@@ -18,7 +18,6 @@ import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
@@ -171,10 +170,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	initTeam();
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
 	agents.clear();
 
 	for (Species species : speciesComposition) {
@@ -217,10 +212,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	// next genes from their respective gene pools
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
+	
 
 	for (Agent agent : agents) {
 

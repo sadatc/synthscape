@@ -2,7 +2,6 @@ package com.synthverse.synthscape.core;
 
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import sim.engine.SimState;
@@ -274,10 +273,6 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
     public void _operationLeaveRewards(DoubleGrid2D rewardGrid, Event rewardEvent) {
 	if (Main.settings.PEER_REWARDS) {
-
-	    Int2D location = sim.agentGrid.getObjectLocation(this);
-	    int x = location.x;
-	    int y = location.y;
 
 	    // rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
 	    rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);

@@ -346,11 +346,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     protected void initNonPrimaryCollectionSites() {
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
-
+	
 	for (int i = 0; i < (numberOfCollectionSites - 1); i++) {
 	    int randomX = randomPrime.nextInt(gridWidth);
 	    int randomY = randomPrime.nextInt(gridHeight);
@@ -370,11 +366,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initObstacles() {
 	// create obstacles in random locations
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
-
+	
 	for (int i = 0; i < numberOfObstacles; i++) {
 
 	    int randomX = randomPrime.nextInt(gridWidth);
@@ -394,11 +386,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void initResources() {
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
-
+	
 	for (int i = 0; i < numberOfResources; i++) {
 
 	    int randomX = 0;
@@ -439,10 +427,6 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	MersenneTwisterFast randomPrime = this.random;
-	if (!settings.RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM) {
-	    randomPrime = controlledRandom;
-	    controlledRandom.setSeed(1);
-	}
 	agents.clear();
 
 	for (Species species : speciesComposition) {
@@ -534,6 +518,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	// this is run at the end of each step
 	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
+	    /**
+	     * 
+	     */
+	    private static final long serialVersionUID = -935999426847054013L;
+
 	    public void step(SimState state) {
 
 		simStepCounter++;

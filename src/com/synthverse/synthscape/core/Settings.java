@@ -22,8 +22,6 @@ public class Settings {
 
     private static Settings instance = null;
 
-    public boolean RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = true;
-
     public boolean SHOW_GRAPHICS = false;
 
     public boolean PEER_REWARDS = false;
@@ -103,9 +101,8 @@ public class Settings {
     public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
 
     public boolean REPORT_DNA_PROGRESSION = false;
-    
+
     public boolean COMPRESS_DNA_PROGRESSION = false;
-    
 
     public int lastReportedCaptures = 0;
     public int lastReportedGeneration = 0;
@@ -146,7 +143,8 @@ public class Settings {
 		.withArgName("species")
 		.isRequired()
 		.hasArg()
-		.withDescription("species names [detector, extractor, transporter OR homogenous] e.g. detector,transporter")
+		.withDescription(
+			"species names [detector, extractor, transporter OR homogenous] e.g. detector,transporter")
 		.create("species"));
 
 	options.addOption(OptionBuilder.withArgName("interactions").isRequired().hasArg()
@@ -247,11 +245,6 @@ public class Settings {
 		}
 	    }
 	    printAndStore("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
-
-	    if (line.hasOption("no_randomization")) {
-		RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = false;
-	    }
-	    printAndStore("RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM = " + RANDOMIZE_ENVIRONMENT_FOR_EACH_SIM);
 
 	    if (line.hasOption("show_graphics")) {
 		SHOW_GRAPHICS = true;

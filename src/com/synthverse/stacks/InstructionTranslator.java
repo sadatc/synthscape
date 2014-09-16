@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.util.LogUtils;
 
@@ -234,10 +235,10 @@ public class InstructionTranslator {
 	sb.append(" instructions to the vocabulary...");
 	logger.info(sb.toString());
 
-	/*
-	 * for (Instruction instruction : instructions) {
-	 * logger.info("ADDED INSTRUCTION: " + instruction); }
-	 */
+	for (Instruction instruction : instructions) {
+	    D.p(""+instruction);
+	}
+
 	logger.info("<<< done adding.\n");
 
     }

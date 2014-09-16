@@ -11,7 +11,6 @@ import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.GeneticOperator;
@@ -241,6 +240,7 @@ public final class EvolutionEngine implements Constants {
 	}
     }
 
+    @SuppressWarnings("unused")
     private void printActiveBufferStats() {
 
 	if (generationCounter > 0) {

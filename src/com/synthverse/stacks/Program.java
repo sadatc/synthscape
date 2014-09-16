@@ -19,8 +19,6 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
-import com.synthverse.synthscape.core.D;
-
 import ec.util.MersenneTwisterFast;
 
 /**
@@ -55,9 +53,7 @@ public class Program {
 	this.genotypeArray = instructionArray;
     }
 
-    private Program() {
-
-    }
+    
 
     public Program(Program p) {
 	this.size = p.size;
