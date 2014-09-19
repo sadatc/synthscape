@@ -23,6 +23,8 @@ public class Settings {
     private static Settings instance = null;
 
     public boolean SHOW_GRAPHICS = false;
+    
+    public boolean CLUSTERED = false;
 
     public boolean PEER_REWARDS = false;
 
@@ -114,6 +116,8 @@ public class Settings {
 
     public String statusCache = "";
 
+    public int generationCounter = 0;
+
     private Settings() {
 
     }
@@ -131,6 +135,7 @@ public class Settings {
 	options.addOption(new Option("help", "print this message"));
 	options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 	options.addOption(new Option("show_graphics", "show graphics [default: don't show graphics]"));
+	options.addOption(new Option("clustered", "start agent clustered [default: distributed]"));
 	options.addOption(new Option("peer_rewards", "peer rewards [default: no peer rewards]"));
 
 	options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
@@ -255,6 +260,12 @@ public class Settings {
 		SHOW_GRAPHICS = true;
 	    }
 	    printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
+	    
+	    if (line.hasOption("clustered")) {
+		CLUSTERED = true;
+	    }
+	    printAndStore("CLUSTERED = " + CLUSTERED);
+	    
 
 	    if (line.hasOption("peer_rewards")) {
 		if (EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
