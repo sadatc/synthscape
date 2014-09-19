@@ -376,6 +376,7 @@ public final class EvolutionEngine implements Constants {
 	Collections.sort(activeBuffer, Collections.reverseOrder());
 
 	generationCounter++;
+	settings.generationCounter = generationCounter;
 
     }
 
