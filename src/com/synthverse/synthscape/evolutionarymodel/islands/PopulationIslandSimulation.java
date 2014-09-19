@@ -17,6 +17,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -99,18 +100,34 @@ public class PopulationIslandSimulation extends Simulation {
 	MersenneTwisterFast randomPrime = this.random;
 	agents.clear();
 
+	int previousX = 0;
+	int previousY = 0;
+
 	for (Species species : speciesComposition) {
 
 	    for (int i = 0; i < clonesPerSpecies; i++) {
 
 		int randomX = randomPrime.nextInt(gridWidth);
 		int randomY = randomPrime.nextInt(gridHeight);
-
-		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		    randomX = randomPrime.nextInt(gridWidth);
-		    randomY = randomPrime.nextInt(gridHeight);
+		
+		if(!settings.CLUSTERED) {
+		    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			randomX = randomPrime.nextInt(gridWidth);
+			randomY = randomPrime.nextInt(gridHeight);
+		    }
 		}
+		
+		if (settings.CLUSTERED) {
+		    Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
+		    randomX = clusterLocation.x;
+		    randomY = clusterLocation.y;
+
+		} 
+		
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+		previousX = randomX;
+		previousY = randomY;
+		
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
 
@@ -165,18 +182,11 @@ public class PopulationIslandSimulation extends Simulation {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	if (this.simulationCounter == 0) {
-	    // save this initial configuration for benchmarking
-	    initEnvironment();
-	    saveEnvironmentForBenchmark();
+	initEnvironment();
 
-	} else if (this.simulationCounter % settings.BENCHMARK_GENERATION == 0) {
-	    // every BENCHMARK_GENERATION use benchmark environment...
-	    initEnvironmentWithBenchmark();
-	} else {
-	    initEnvironment();
-	}
 	initAgents();
+
+	saveEnvironmentForBenchmark();
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
 		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="

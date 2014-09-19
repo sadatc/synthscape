@@ -172,6 +172,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	MersenneTwisterFast randomPrime = this.random;
 	agents.clear();
 
+	int previousX = 0;
+	int previousY = 0;
+
 	for (Species species : speciesComposition) {
 
 	    for (int i = 0; i < clonesPerSpecies; i++) {
@@ -179,11 +182,22 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		int randomX = randomPrime.nextInt(gridWidth);
 		int randomY = randomPrime.nextInt(gridHeight);
 
-		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		    randomX = randomPrime.nextInt(gridWidth);
-		    randomY = randomPrime.nextInt(gridHeight);
+		if (!settings.CLUSTERED) {
+		    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			randomX = randomPrime.nextInt(gridWidth);
+			randomY = randomPrime.nextInt(gridHeight);
+		    }
+		}
+
+		if (settings.CLUSTERED) {
+		    Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
+		    randomX = clusterLocation.x;
+		    randomY = clusterLocation.y;
+
 		}
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+		previousX = randomX;
+		previousY = randomY;
 
 		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
 		embodiedAgent.setLocation(randomX, randomY);
@@ -212,7 +226,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	// next genes from their respective gene pools
 
 	MersenneTwisterFast randomPrime = this.random;
-	
 
 	for (Agent agent : agents) {
 
@@ -291,7 +304,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		resourceCaptureStats, this.simulationCounter);
 
 	logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-		+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax()+" ["+settings.statusCache+"]");
+		+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
+		+ settings.statusCache + "]");
 
 	// clear pool generation event stats for next generation...
 	for (Agent agent : agents) {
@@ -348,7 +362,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	intervalStats.resetLastSteps();
 	resetEnvironment();
-	initEnvironment();
+
+	if (settings.generationCounter != 0 && (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
+	    // every BENCHMARK_GENERATION use benchmark environment...
+	    initEnvironmentWithBenchmark();
+	} else {
+	    initEnvironment();
+	}
+
 	initNextAgents();
 
     }
@@ -368,17 +389,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	if (this.simulationCounter == 0) {
-	    // save this initial configuration for benchmarking
-	    initEnvironment();
-	    saveEnvironmentForBenchmark();
+	initEnvironment();
+	saveEnvironmentForBenchmark();
 
-	} else if (this.simulationCounter % settings.BENCHMARK_GENERATION == 0) {
-	    // every BENCHMARK_GENERATION use benchmark environment...
-	    initEnvironmentWithBenchmark();
-	} else {
-	    initEnvironment();
-	}
 	initAgents();
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)

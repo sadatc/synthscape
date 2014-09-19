@@ -483,17 +483,32 @@ public abstract class Simulation extends SimState implements Constants {
 	MersenneTwisterFast randomPrime = this.random;
 	agents.clear();
 
+	int previousX = 0;
+	int previousY = 0;
+
 	for (Species species : speciesComposition) {
 	    for (int i = 0; i < clonesPerSpecies; i++) {
 
 		int randomX = randomPrime.nextInt(gridWidth);
 		int randomY = randomPrime.nextInt(gridHeight);
 
-		while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		    randomX = randomPrime.nextInt(gridWidth);
-		    randomY = randomPrime.nextInt(gridHeight);
+		if(!settings.CLUSTERED) {
+		    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			randomX = randomPrime.nextInt(gridWidth);
+			randomY = randomPrime.nextInt(gridHeight);
+		    }
 		}
+		
+		if (settings.CLUSTERED) {
+		    Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
+		    randomX = clusterLocation.x;
+		    randomY = clusterLocation.y;
+
+		} 
+		
 		initCollisionGrid.field[randomX][randomY] = PRESENT;
+		previousX = randomX;
+		previousY = randomY;
 
 		Agent agent = evolver.getAgent(species, randomX, randomY);
 
@@ -511,6 +526,85 @@ public abstract class Simulation extends SimState implements Constants {
 	    }
 	}
 
+    }
+
+    protected Int2D getClusterLocation(int agentNum, int pX, int pY) {
+
+	MersenneTwisterFast randomPrime = this.random;
+
+	int randomX = pX;
+	int randomY = pY;
+
+	if (agentNum == 0) {
+	    // ignore previous X and Y and just generate new location
+
+	    randomX = randomPrime.nextInt(gridWidth);
+	    randomY = randomPrime.nextInt(gridHeight);
+
+	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+		randomX = randomPrime.nextInt(gridWidth);
+		randomY = randomPrime.nextInt(gridHeight);
+	    }
+	} else {
+	    // find something close to previous X and Y
+	    // we'll look at the 8 locations: N, NW, W, SW, S, SE, E, NE
+	    // if anything is empty, we return it.
+	    // if this fails, we move once cell north and repeat process..
+
+	    if (initCollisionGrid.field[agentGrid.stx(pX)][agentGrid.sty(pY - 1)] != PRESENT) {
+		// N
+		randomY = agentGrid.sty(pY - 1);
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid.sty(pY - 1)] != PRESENT) {
+		// NW
+		randomX = agentGrid.stx(pX - 1);
+		randomY = agentGrid.sty(pY - 1);
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid.sty(pY)] != PRESENT) {
+		// W
+		randomX = agentGrid.stx(pX - 1);
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid.sty(pY + 1)] != PRESENT) {
+		// SW
+		randomX = agentGrid.stx(pX - 1);
+		randomY = agentGrid.sty(pY + 1);
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX)][agentGrid.sty(pY + 1)] != PRESENT) {
+		// S
+		randomY = agentGrid.sty(pY + 1);
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid.sty(pY + 1)] != PRESENT) {
+		// SE
+		randomX = agentGrid.stx(pX + 1);
+		randomY = agentGrid.sty(pY + 1);
+	    } else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid.sty(pY)] != PRESENT) {
+		// E
+		randomX = agentGrid.stx(pX + 1);
+
+	    }
+
+	    else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid.sty(pY - 1)] != PRESENT) {
+		// NE
+		randomX = agentGrid.stx(pX + 1);
+		randomY = agentGrid.sty(pY - 1);
+
+	    } else {
+		// all of these failed...move north and repeat process by moving
+		// north
+		Int2D secondTry = getClusterLocation(agentNum, pX, agentGrid.sty(pY - 1));
+		randomX = secondTry.x;
+		randomY = secondTry.y;
+	    }
+
+	}
+
+	Int2D result = new Int2D(randomX, randomY);
+	return result;
     }
 
     protected void fadeTrails() {
@@ -560,18 +654,8 @@ public abstract class Simulation extends SimState implements Constants {
 	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 		+ " stepsPerSimulation=" + stepsPerSimulation);
 
-	if (this.simulationCounter == 0) {
-	    // save this initial configuration for benchmarking
-	    initEnvironment();
-	    saveEnvironmentForBenchmark();
-
-	} else if (this.simulationCounter % settings.BENCHMARK_GENERATION == 0) {
-	    // every BENCHMARK_GENERATION use benchmark environment...
-	    initEnvironmentWithBenchmark();
-	} else {
-	    initEnvironment();
-	}
-
+	initEnvironment();
+	saveEnvironmentForBenchmark();
 	initAgents();
 
 	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
@@ -657,8 +741,15 @@ public abstract class Simulation extends SimState implements Constants {
 	intervalStats.resetLastSteps();
 	simEventStats.clear();
 	resetEnvironment();
-	initEnvironment();
+
+	if (settings.generationCounter != 0 && (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
+	    // every BENCHMARK_GENERATION use benchmark environment...
+	    initEnvironmentWithBenchmark();
+	} else {
+	    initEnvironment();
+	}
 	initAgents();
+
     }
 
     protected boolean evaluateSimulationTerminateCondition() {
