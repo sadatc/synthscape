@@ -104,7 +104,7 @@ public class Settings {
 
     public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
 
-    public boolean REPORT_DNA_PROGRESSION = false;
+    public boolean REPORT_DNA_PROGRESSION = true;
 
     public boolean COMPRESS_DNA_PROGRESSION = false;
 
