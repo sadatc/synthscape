@@ -30,7 +30,7 @@ public class Settings {
 
 	public long SEED = 1;
 
-	public int GENERATIONS = 10000;
+	public int GENERATIONS = 400;
 
 	public int BENCHMARK_GENERATION = 100;
 
@@ -237,7 +237,7 @@ public class Settings {
 				.withType(Double.class)
 				.withDescription(
 						"%resource capture goal [" + PERC_RESOURCE_CAPTURE_GOAL
-								+ "]").create("goal"));
+								+ "; 0 means no goal]").create("goal"));
 
 		options.addOption(OptionBuilder.withArgName("repeat").hasArg()
 				.withType(Integer.class)
@@ -619,10 +619,16 @@ public class Settings {
 			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
 			int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
+
+			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
+				resourceCaptureGoal = Integer.MAX_VALUE;
+			}
+
 			NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
 			printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 			printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
+
 			printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = "
 					+ resourceCaptureGoal);
 			printAndStore("ACTUAL COLLECTION_SITES = "
