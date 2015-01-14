@@ -4,29 +4,28 @@ import java.util.List;
 
 public abstract class Evolver {
 
-    protected Simulation simulation;
-    
-    protected AgentFactory agentFactory;
-    
-    
-    @SuppressWarnings("unused")
-    private Evolver() {
-	throw new AssertionError("Evolver constructor is restricted");
-    }
+	protected Simulation simulation;
 
-    public Evolver(Simulation simulation, AgentFactory agentFactory) {
-	this.simulation = simulation;
-	this.agentFactory = agentFactory;
-    }
+	protected AgentFactory agentFactory;
 
-    public abstract int evolve();
+	@SuppressWarnings("unused")
+	private Evolver() {
+		throw new AssertionError("Evolver constructor is restricted");
+	}
 
-    public abstract Agent getAgent(Species species, int x, int y);
+	public Evolver(Simulation simulation, AgentFactory agentFactory) {
+		this.simulation = simulation;
+		this.agentFactory = agentFactory;
+	}
 
-    public abstract void init();
+	public abstract int evolve();
 
-    public abstract void provideFeedback(List<Agent> agents, EventStats simStats);
+	public abstract Agent getAgent(Species species, int x, int y);
 
-    public abstract int getGeneration();
+	public abstract void init();
+
+	public abstract void provideFeedback(List<Agent> agents, EventStats simStats);
+
+	public abstract int getGeneration();
 
 }

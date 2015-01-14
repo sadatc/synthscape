@@ -12,23 +12,24 @@ import com.synthverse.util.LogUtils;
 
 public class IslanderAgentFactory extends AgentFactory implements Constants {
 
-    protected static Logger logger = Logger.getLogger(IslanderAgentFactory.class.getName());
+	protected static Logger logger = Logger
+			.getLogger(IslanderAgentFactory.class.getName());
 
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-    }
+	static {
+		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+	}
 
-    public IslanderAgentFactory(Simulation simulation) {
-	super(simulation);
-    }
+	public IslanderAgentFactory(Simulation simulation) {
+		super(simulation);
+	}
 
-    @Override
-    public Agent createNewFactoryAgent(Species species) {
-	//logger.info("IslanderAgentFactory.createNewFactoryAgent()");
-	IslanderAgent agent = new IslanderAgent(simulation, species);
-	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
-	return agent;
-    }
+	@Override
+	public Agent createNewFactoryAgent(Species species) {
+		// logger.info("IslanderAgentFactory.createNewFactoryAgent()");
+		IslanderAgent agent = new IslanderAgent(simulation, species);
+		agent.setMaxSteps(simulation.getMaxStepsPerAgent());
+		agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
+		return agent;
+	}
 
 }

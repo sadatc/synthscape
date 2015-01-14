@@ -9,91 +9,91 @@ package com.synthverse.synthscape.core;
  */
 public class Unicast {
 
-    private Agent senderAgent;
-    private Agent receiverAgent;
-    
-    private int senderX;
-    private int senderY;
+	private Agent senderAgent;
+	private Agent receiverAgent;
 
-    private SignalType signalType;
+	private int senderX;
+	private int senderY;
 
-    private int stepClock;
+	private SignalType signalType;
 
-    public Unicast() {
-	this(null, null, SignalType.GENERIC, 0);
-    }
+	private int stepClock;
 
-    public Unicast(Agent senderAgent, Agent receiverAgent, SignalType signalType, int stepClock) {
-	this.senderAgent = senderAgent;
-	this.receiverAgent = receiverAgent;
-	this.signalType = signalType;
-	this.stepClock = stepClock;
-	if(senderAgent!=null) {
-	    senderX = senderAgent.x;
-	    senderY = senderAgent.y;
+	public Unicast() {
+		this(null, null, SignalType.GENERIC, 0);
 	}
 
-    }
+	public Unicast(Agent senderAgent, Agent receiverAgent,
+			SignalType signalType, int stepClock) {
+		this.senderAgent = senderAgent;
+		this.receiverAgent = receiverAgent;
+		this.signalType = signalType;
+		this.stepClock = stepClock;
+		if (senderAgent != null) {
+			senderX = senderAgent.x;
+			senderY = senderAgent.y;
+		}
 
-    public SignalType getSignalType() {
-	return signalType;
-    }
-
-    public void setSignalType(SignalType signalType) {
-	this.signalType = signalType;
-    }
-
-    public Agent getSenderAgent() {
-	return senderAgent;
-    }
-
-    public void setSenderAgent(Agent senderAgent) {
-	this.senderAgent = senderAgent;
-	if(senderAgent!=null) {
-	    this.senderX = senderAgent.x;
-	    this.senderY = senderAgent.y;
 	}
-    }
 
-    public int getStepClock() {
-	return stepClock;
-    }
+	public SignalType getSignalType() {
+		return signalType;
+	}
 
-    public void setStepClock(int stepClock) {
-	this.stepClock = stepClock;
-    }
+	public void setSignalType(SignalType signalType) {
+		this.signalType = signalType;
+	}
 
-    public Agent getReceiverAgent() {
-        return receiverAgent;
-    }
+	public Agent getSenderAgent() {
+		return senderAgent;
+	}
 
-    public void setReceiverAgent(Agent receiverAgent) {
-        this.receiverAgent = receiverAgent;
-    }
+	public void setSenderAgent(Agent senderAgent) {
+		this.senderAgent = senderAgent;
+		if (senderAgent != null) {
+			this.senderX = senderAgent.x;
+			this.senderY = senderAgent.y;
+		}
+	}
 
-    @Override
-    public String toString() {
-	return "Unicast [senderAgent=" + senderAgent.getAgentId() + ", receiverAgent=" + receiverAgent.getAgentId() + ", signalType="
-		+ signalType + ", stepClock=" + stepClock + "]";
-    }
+	public int getStepClock() {
+		return stepClock;
+	}
 
-    public int getSenderX() {
-        return senderX;
-    }
+	public void setStepClock(int stepClock) {
+		this.stepClock = stepClock;
+	}
 
-    public void setSenderX(int senderX) {
-        this.senderX = senderX;
-    }
+	public Agent getReceiverAgent() {
+		return receiverAgent;
+	}
 
-    public int getSenderY() {
-        return senderY;
-    }
+	public void setReceiverAgent(Agent receiverAgent) {
+		this.receiverAgent = receiverAgent;
+	}
 
-    public void setSenderY(int senderY) {
-        this.senderY = senderY;
-    }
+	@Override
+	public String toString() {
+		return "Unicast [senderAgent=" + senderAgent.getAgentId()
+				+ ", receiverAgent=" + receiverAgent.getAgentId()
+				+ ", signalType=" + signalType + ", stepClock=" + stepClock
+				+ "]";
+	}
 
-    
-    
-    
+	public int getSenderX() {
+		return senderX;
+	}
+
+	public void setSenderX(int senderX) {
+		this.senderX = senderX;
+	}
+
+	public int getSenderY() {
+		return senderY;
+	}
+
+	public void setSenderY(int senderY) {
+		this.senderY = senderY;
+	}
+
 }

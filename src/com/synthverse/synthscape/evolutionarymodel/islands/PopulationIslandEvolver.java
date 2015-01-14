@@ -23,126 +23,131 @@ import com.synthverse.util.LogUtils;
  */
 public class PopulationIslandEvolver extends Evolver implements Constants {
 
-    private EmbodiedAgent ownerAgent = null;
+	private EmbodiedAgent ownerAgent = null;
 
-    protected int generation;
+	protected int generation;
 
-    protected static Logger logger = Logger.getLogger(PopulationIslandEvolver.class.getName());
+	protected static Logger logger = Logger
+			.getLogger(PopulationIslandEvolver.class.getName());
 
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-    }
-
-    protected int clonesPerSpecies;
-    protected int totalPopulation;
-    protected int genePoolSize;
-    protected int genePoolIndex;
-    protected Species species;
-
-    public EvolutionEngine evolutionEngine;
-    protected int requestCounter = 1;
-    protected int cloneCounter = 1;
-    public List<Agent> activeBuffer;
-    
-    public double computedAlphaDistance;
-
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species,
-	    int clonesPerSpecies) throws Exception {
-	this(null, simulation, agentFactory, species, clonesPerSpecies);
-    }
-
-    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
-	    Species species) throws Exception {
-	this(ownerAgent, simulation, agentFactory, species, 1);
-    }
-
-    public PopulationIslandEvolver(Simulation simulation, AgentFactory agentFactory, Species species) throws Exception {
-	this(null, simulation, agentFactory, species, 1);
-    }
-
-    public PopulationIslandEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
-	    Species species, int clonesPerSpecies) throws Exception {
-	super(simulation, agentFactory);
-	if (clonesPerSpecies < 1) {
-	    throw new Exception("clonesPerSpecies can't be <1");
+	static {
+		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
-	setOwnerAgent(ownerAgent);
+	protected int clonesPerSpecies;
+	protected int totalPopulation;
+	protected int genePoolSize;
+	protected int genePoolIndex;
+	protected Species species;
 
-	this.generation = 0;
-	this.species = species;
-	evolutionEngine = new EvolutionEngine(ownerAgent, agentFactory, species);
-	this.clonesPerSpecies = clonesPerSpecies;
-	genePoolSize = evolutionEngine.getGenePoolSize();
-	totalPopulation = clonesPerSpecies * genePoolSize;
-	activeBuffer = evolutionEngine.getActiveBuffer();
-	this.requestCounter = 1;
-	this.genePoolIndex = 0;
-    }
+	public EvolutionEngine evolutionEngine;
+	protected int requestCounter = 1;
+	protected int cloneCounter = 1;
+	public List<Agent> activeBuffer;
 
-    @Override
-    public Agent getAgent(Species species, int x, int y) {
-	Agent returnAgent = null;
+	public double computedAlphaDistance;
 
-	if (requestCounter > totalPopulation) {
-	    requestCounter = 1;
-	    genePoolIndex = 0;
-	    cloneCounter = 1;
+	public PopulationIslandEvolver(Simulation simulation,
+			AgentFactory agentFactory, Species species, int clonesPerSpecies)
+			throws Exception {
+		this(null, simulation, agentFactory, species, clonesPerSpecies);
 	}
 
-	if (cloneCounter > clonesPerSpecies) {
-	    cloneCounter = 1;
-	    genePoolIndex++;
+	public PopulationIslandEvolver(EmbodiedAgent ownerAgent,
+			Simulation simulation, AgentFactory agentFactory, Species species)
+			throws Exception {
+		this(ownerAgent, simulation, agentFactory, species, 1);
 	}
 
-	// get next agent from the gene-pool and clone it
-	activeBuffer = evolutionEngine.getActiveBuffer();
-	Agent archetype = activeBuffer.get(genePoolIndex);
-	returnAgent = agentFactory.getNewFactoryAgent(species);
-	returnAgent.cloneAndLinkGeneArcheType(archetype);
-	returnAgent.getVirtualMachine().resetAll();
-	returnAgent.reset();
-	returnAgent.setGeneration(generation);
-	returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	returnAgent.setX(x);
-	returnAgent.setY(y);
-	requestCounter++;
-	cloneCounter++;
-	return returnAgent;
-    }
+	public PopulationIslandEvolver(Simulation simulation,
+			AgentFactory agentFactory, Species species) throws Exception {
+		this(null, simulation, agentFactory, species, 1);
+	}
 
-    @Override
-    public void init() {
+	public PopulationIslandEvolver(EmbodiedAgent ownerAgent,
+			Simulation simulation, AgentFactory agentFactory, Species species,
+			int clonesPerSpecies) throws Exception {
+		super(simulation, agentFactory);
+		if (clonesPerSpecies < 1) {
+			throw new Exception("clonesPerSpecies can't be <1");
+		}
 
-    }
+		setOwnerAgent(ownerAgent);
 
-    @Override
-    public void provideFeedback(List<Agent> agents, EventStats simStats) {
-	// do nothing, we don't need it.
+		this.generation = 0;
+		this.species = species;
+		evolutionEngine = new EvolutionEngine(ownerAgent, agentFactory, species);
+		this.clonesPerSpecies = clonesPerSpecies;
+		genePoolSize = evolutionEngine.getGenePoolSize();
+		totalPopulation = clonesPerSpecies * genePoolSize;
+		activeBuffer = evolutionEngine.getActiveBuffer();
+		this.requestCounter = 1;
+		this.genePoolIndex = 0;
+	}
 
-    }
+	@Override
+	public Agent getAgent(Species species, int x, int y) {
+		Agent returnAgent = null;
 
-    @Override
-    public int evolve() {
-	evolutionEngine.generateNextGeneration(simulation.random);
-	
-	activeBuffer = evolutionEngine.getActiveBuffer();
-	generation++;
-	return generation;
-    }
+		if (requestCounter > totalPopulation) {
+			requestCounter = 1;
+			genePoolIndex = 0;
+			cloneCounter = 1;
+		}
 
-    @Override
-    public int getGeneration() {
+		if (cloneCounter > clonesPerSpecies) {
+			cloneCounter = 1;
+			genePoolIndex++;
+		}
 
-	return generation;
-    }
+		// get next agent from the gene-pool and clone it
+		activeBuffer = evolutionEngine.getActiveBuffer();
+		Agent archetype = activeBuffer.get(genePoolIndex);
+		returnAgent = agentFactory.getNewFactoryAgent(species);
+		returnAgent.cloneAndLinkGeneArcheType(archetype);
+		returnAgent.getVirtualMachine().resetAll();
+		returnAgent.reset();
+		returnAgent.setGeneration(generation);
+		returnAgent.setMaxSteps(simulation.getMaxStepsPerAgent());
+		returnAgent.setX(x);
+		returnAgent.setY(y);
+		requestCounter++;
+		cloneCounter++;
+		return returnAgent;
+	}
 
-    public EmbodiedAgent getOwnerAgent() {
-	return ownerAgent;
-    }
+	@Override
+	public void init() {
 
-    public void setOwnerAgent(EmbodiedAgent ownerAgent) {
-	this.ownerAgent = ownerAgent;
-    }
+	}
+
+	@Override
+	public void provideFeedback(List<Agent> agents, EventStats simStats) {
+		// do nothing, we don't need it.
+
+	}
+
+	@Override
+	public int evolve() {
+		evolutionEngine.generateNextGeneration(simulation.random);
+
+		activeBuffer = evolutionEngine.getActiveBuffer();
+		generation++;
+		return generation;
+	}
+
+	@Override
+	public int getGeneration() {
+
+		return generation;
+	}
+
+	public EmbodiedAgent getOwnerAgent() {
+		return ownerAgent;
+	}
+
+	public void setOwnerAgent(EmbodiedAgent ownerAgent) {
+		this.ownerAgent = ownerAgent;
+	}
 
 }

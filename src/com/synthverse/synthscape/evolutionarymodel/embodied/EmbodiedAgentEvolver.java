@@ -25,28 +25,31 @@ import com.synthverse.util.LogUtils;
  * @author sadat
  * 
  */
-public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements Constants {
+public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements
+		Constants {
 
-    private static Logger logger = Logger.getLogger(EmbodiedAgentEvolver.class.getName());
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-    }
+	private static Logger logger = Logger.getLogger(EmbodiedAgentEvolver.class
+			.getName());
+	static {
+		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+	}
 
-    public EmbodiedAgentEvolver(EmbodiedAgent ownerAgent, Simulation simulation, AgentFactory agentFactory,
-	    Species species) throws Exception {
-	super(ownerAgent, simulation, agentFactory, species);
-    }
+	public EmbodiedAgentEvolver(EmbodiedAgent ownerAgent,
+			Simulation simulation, AgentFactory agentFactory, Species species)
+			throws Exception {
+		super(ownerAgent, simulation, agentFactory, species);
+	}
 
-    public final void reclaimEmbodiedAgent(final Agent agent) {
-	agentFactory.reclaimAgent(agent);
-    }
+	public final void reclaimEmbodiedAgent(final Agent agent) {
+		agentFactory.reclaimAgent(agent);
+	}
 
-    @Override
-    public int evolve() {
-	evolutionEngine.generateNextGeneration(simulation.random);
-	activeBuffer = evolutionEngine.getActiveBuffer();
-	generation++;
-	return generation;
-    }
+	@Override
+	public int evolve() {
+		evolutionEngine.generateNextGeneration(simulation.random);
+		activeBuffer = evolutionEngine.getActiveBuffer();
+		generation++;
+		return generation;
+	}
 
 }

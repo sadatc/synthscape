@@ -1,4 +1,3 @@
-
 package com.synthverse.synthscape.core;
 
 public enum Task {

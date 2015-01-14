@@ -38,583 +38,609 @@ import ec.util.MersenneTwisterFast;
 @SuppressWarnings("serial")
 public class EmbodiedEvolutionSimulation extends Simulation {
 
-    private Team team = new Team();
+	private Team team = new Team();
 
-    /**
-     * EventStats for the entire generation from the combined Pools
-     */
-    EventStats generationEventStats = new EventStats();
+	/**
+	 * EventStats for the entire generation from the combined Pools
+	 */
+	EventStats generationEventStats = new EventStats();
 
-    public static Settings settings = Settings.getInstance();
+	public static Settings settings = Settings.getInstance();
 
-    private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
+	private static Logger logger = Logger
+			.getLogger(EmbodiedEvolutionSimulation.class.getName());
 
-    private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
+	private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
-    EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
+	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(
+			Species.class);
 
-    int generation = 0;
+	int generation = 0;
 
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-    }
-
-    public EmbodiedEvolutionSimulation(long seed) throws Exception {
-	super(seed);
-	initSpeciesEventStats();
-    }
-
-    public static void main(String[] arg) {
-	String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
-	doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
-	logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
-	logger.info("Diagnosis: total # of islander agents created: "
-		+ IslanderAgent.get_optimizationIslanderAgentCounter());
-	logger.info("Diagnosis: total # of embodied agents created: "
-		+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
-	System.exit(0);
-    }
-
-    public final void clearSpeciesEventStats() {
-	for (EventStats es : speciesEventStatsMap.values()) {
-	    es.clear();
+	static {
+		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
-    }
 
-    public final void initSpeciesEventStats() {
-	for (Species species : speciesComposition) {
-	    EventStats es = new EventStats();
-	    speciesEventStatsMap.put(species, es);
+	public EmbodiedEvolutionSimulation(long seed) throws Exception {
+		super(seed);
+		initSpeciesEventStats();
 	}
-    }
 
-    private void initTeam() {
-	int teamId = team.getTeamId();
-
-	teamId++;
-	team.init();
-	team.setTeamId(teamId);
-	team.setExpectedSize(speciesComposition.size() * clonesPerSpecies);
-
-    }
-
-    protected void init() throws Exception {
-	// we can compute the server name and batch ID right away
-	settings.experimentNumber++;
-	try {
-	    serverName = java.net.InetAddress.getLocalHost().getHostName();
-	} catch (Exception e) {
-	    serverName = "LOCAL";
+	public static void main(String[] arg) {
+		String[] manualArgs = StringUtils.parseArguments("-repeat "
+				+ settings.REPEAT + " -seed " + settings.SEED);
+		doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
+		logger.info("Diagnosis: total # of agents created: "
+				+ Agent.get_optimazationTotalAgentsCounters());
+		logger.info("Diagnosis: total # of islander agents created: "
+				+ IslanderAgent.get_optimizationIslanderAgentCounter());
+		logger.info("Diagnosis: total # of embodied agents created: "
+				+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
+		System.exit(0);
 	}
-	batchId = Long.toHexString(System.currentTimeMillis());
 
-	InstructionTranslator.logStatus();
-
-	setGenePoolSize(configGenePoolSize());
-	setReportEvents(configIsReportEvents());
-	setReportPerformance(configIsReportPerformance());
-
-	setEventFileName(configEventFileName());
-
-	// now set these up based on the concrete simulation
-
-	setExperimentName(configExperimentName());
-	setProblemComplexity(configProblemComplexity());
-
-	setMaxStepsPerAgent(configMaxStepsPerAgent());
-
-	// environmental stuff
-	setGridWidth(configGridWidth());
-	setGridHeight(configGridHeight());
-	setNumberOfCollectionSites(configNumberOfCollectionSites());
-	setObstacleDensity(configObstacleDensity());
-	setResourceDensity(configResourceDensity());
-
-	// interactions
-	setInteractionMechanisms(configInteractionMechanisms());
-
-	// species compositions
-	setClonesPerSpecies(configClonesPerSpecies());
-	setSpeciesComposition(configSpeciesComposition());
-
-	// steps and simulations...
-	setStepsPerSimulation(configStepsPerSimulation());
-	setSimulationsPerExperiment(configSimulationsPerExperiment());
-
-	// agent factory and evolver...
-	setAgentFactory(configAgentFactory());
-	setEmbodiedAgentFactory(configEmbodiedAgentFactory());
-
-	// set these variables
-	double gridArea = gridWidth * gridHeight;
-	numberOfObstacles = (int) (gridArea * obstacleDensity);
-	numberOfResources = (int) (gridArea * resourceDensity);
-	resourceCaptureGoal = (int) ((double) numberOfResources * settings.PERC_RESOURCE_CAPTURE_GOAL);
-
-	createDataStructures();
-
-	simulationCounter = 0;
-	simsRunForThisGeneration = 0;
-
-	numberOfCollectedResources = 0;
-
-	experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
-
-	isToroidalWorld = TOROIDAL_FLAG;
-
-    }
-
-    @Override
-    protected void initAgents() {
-	// populate with agents
-	initTeam();
-
-	MersenneTwisterFast randomPrime = this.random;
-	agents.clear();
-
-	int previousX = 0;
-	int previousY = 0;
-
-	for (Species species : speciesComposition) {
-
-	    for (int i = 0; i < clonesPerSpecies; i++) {
-
-		int randomX = randomPrime.nextInt(gridWidth);
-		int randomY = randomPrime.nextInt(gridHeight);
-
-		if (!settings.CLUSTERED) {
-		    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-			randomX = randomPrime.nextInt(gridWidth);
-			randomY = randomPrime.nextInt(gridHeight);
-		    }
+	public final void clearSpeciesEventStats() {
+		for (EventStats es : speciesEventStatsMap.values()) {
+			es.clear();
 		}
+	}
 
-		if (settings.CLUSTERED) {
-		    Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
-		    randomX = clusterLocation.x;
-		    randomY = clusterLocation.y;
-
+	public final void initSpeciesEventStats() {
+		for (Species species : speciesComposition) {
+			EventStats es = new EventStats();
+			speciesEventStatsMap.put(species, es);
 		}
-		initCollisionGrid.field[randomX][randomY] = PRESENT;
-		previousX = randomX;
-		previousY = randomY;
+	}
 
-		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
-		embodiedAgent.setLocation(randomX, randomY);
-		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
-		embodiedAgent.synchronizeLocationToActiveAgent();
+	private void initTeam() {
+		int teamId = team.getTeamId();
 
-		team.addMember(embodiedAgent);
-		embodiedAgent.setTeam(team);
+		teamId++;
+		team.init();
+		team.setTeamId(teamId);
+		team.setExpectedSize(speciesComposition.size() * clonesPerSpecies);
 
-		agents.add(embodiedAgent);
+	}
 
-		if (!embodiedAgent.isScheduled()) {
-		    schedule.scheduleRepeating(embodiedAgent);
-
-		    embodiedAgent.setScheduled(true);
+	protected void init() throws Exception {
+		// we can compute the server name and batch ID right away
+		settings.experimentNumber++;
+		try {
+			serverName = java.net.InetAddress.getLocalHost().getHostName();
+		} catch (Exception e) {
+			serverName = "LOCAL";
 		}
+		batchId = Long.toHexString(System.currentTimeMillis());
 
-	    }
+		InstructionTranslator.logStatus();
 
-	}
+		setGenePoolSize(configGenePoolSize());
+		setReportEvents(configIsReportEvents());
+		setReportPerformance(configIsReportPerformance());
 
-    }
+		setEventFileName(configEventFileName());
 
-    protected void initNextAgents() {
-	// we already have embodied agents, we just get load the agents with the
-	// next genes from their respective gene pools
+		// now set these up based on the concrete simulation
 
-	MersenneTwisterFast randomPrime = this.random;
+		setExperimentName(configExperimentName());
+		setProblemComplexity(configProblemComplexity());
 
-	for (Agent agent : agents) {
+		setMaxStepsPerAgent(configMaxStepsPerAgent());
 
-	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+		// environmental stuff
+		setGridWidth(configGridWidth());
+		setGridHeight(configGridHeight());
+		setNumberOfCollectionSites(configNumberOfCollectionSites());
+		setObstacleDensity(configObstacleDensity());
+		setResourceDensity(configResourceDensity());
 
-	    int randomX = randomPrime.nextInt(gridWidth);
-	    int randomY = randomPrime.nextInt(gridHeight);
+		// interactions
+		setInteractionMechanisms(configInteractionMechanisms());
 
-	    while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
-		randomX = randomPrime.nextInt(gridWidth);
-		randomY = randomPrime.nextInt(gridHeight);
-	    }
-	    initCollisionGrid.field[randomX][randomY] = PRESENT;
+		// species compositions
+		setClonesPerSpecies(configClonesPerSpecies());
+		setSpeciesComposition(configSpeciesComposition());
 
-	    embodiedAgent.setNextActiveAgent(randomX, randomY);
+		// steps and simulations...
+		setStepsPerSimulation(configStepsPerSimulation());
+		setSimulationsPerExperiment(configSimulationsPerExperiment());
 
-	    embodiedAgent.setLocation(randomX, randomY);
-	    agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
-	    embodiedAgent.synchronizeLocationToActiveAgent();
-	    embodiedAgent.setStepCounter(0);
+		// agent factory and evolver...
+		setAgentFactory(configAgentFactory());
+		setEmbodiedAgentFactory(configEmbodiedAgentFactory());
 
-	    if (!embodiedAgent.isScheduled()) {
-		schedule.scheduleRepeating(embodiedAgent);
-		embodiedAgent.setScheduled(true);
-	    }
+		// set these variables
+		double gridArea = gridWidth * gridHeight;
+		numberOfObstacles = (int) (gridArea * obstacleDensity);
+		numberOfResources = (int) (gridArea * resourceDensity);
+		resourceCaptureGoal = (int) ((double) numberOfResources * settings.PERC_RESOURCE_CAPTURE_GOAL);
 
-	}
-    }
+		createDataStructures();
 
-    /**
-     * Evolve all the embodied agents and compute/aggregate statistics. Finally
-     * report the statistics
-     */
-    protected void evolveEmbodiedAgents() {
+		simulationCounter = 0;
+		simsRunForThisGeneration = 0;
 
-	populationFitnessStats.clear();
+		numberOfCollectedResources = 0;
 
-	// evolve each agent and keep account of their event and fitness
-	// statistics...
-	generation++;
+		experimentReporter = new ExperimentReporter(this,
+				DEFAULT_FLUSH_ALWAYS_FLAG);
 
-	for (Agent agent : agents) {
-	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-
-	    // accumulate event counts for agents...
-	    embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
-
-	    // evolve the agents...
-	    if (embodiedAgent.evolve() != generation) {
-		logger.severe("invalid evolution algorithm implementation");
-		System.exit(1);
-	    }
-
-	    for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
-		populationFitnessStats.addValue(fitnessValue);
-	    }
-
-	    // this part computes the genetic distance between the current and
-	    // previous alpha
-
-	    double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.evolver.evolutionEngine.alphaProgram,
-		    embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
-
-	    if (alphaGeneticDistance != Double.NaN) {
-		embodiedAgent.computedAlphaDistance = alphaGeneticDistance;
-	    }
-
-	    experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
-		    embodiedAgent.evolver.evolutionEngine.alphaProgram);
+		isToroidalWorld = TOROIDAL_FLAG;
 
 	}
 
-	// resourceCaptureStats.printStats();
-	experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
-		speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
-		resourceCaptureStats, this.simulationCounter);
+	@Override
+	protected void initAgents() {
+		// populate with agents
+		initTeam();
 
-	logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-		+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
-		+ settings.statusCache + "]");
+		MersenneTwisterFast randomPrime = this.random;
+		agents.clear();
 
-	// clear pool generation event stats for next generation...
-	for (Agent agent : agents) {
-	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.poolGenerationEventStats.clear();
-	}
-	generationEventStats.clear();
-	captureStats.clear();
-	intervalStats.clear();
-	clearSpeciesEventStats();
-	resourceCaptureStats.clearAll();
+		int previousX = 0;
+		int previousY = 0;
 
-    }
+		for (Species species : speciesComposition) {
 
-    @Override
-    protected void doEndOfStepTasks() {
+			for (int i = 0; i < clonesPerSpecies; i++) {
 
-    }
+				int randomX = randomPrime.nextInt(gridWidth);
+				int randomY = randomPrime.nextInt(gridHeight);
 
-    @Override
-    protected void doEndOfSimulationTasks() {
+				if (!settings.CLUSTERED) {
+					while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+						randomX = randomPrime.nextInt(gridWidth);
+						randomY = randomPrime.nextInt(gridHeight);
+					}
+				}
 
-	// each agent now needs to provide local feedback
-	// each agent has complete record of everything that happened
-	// in poolGenerationEventStats
+				if (settings.CLUSTERED) {
+					Int2D clusterLocation = getClusterLocation(i, previousX,
+							previousY);
+					randomX = clusterLocation.x;
+					randomY = clusterLocation.y;
 
-	for (Agent agent : agents) {
-	    EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
+				}
+				initCollisionGrid.field[randomX][randomY] = PRESENT;
+				previousX = randomX;
+				previousY = randomY;
 
-	    EventStats speciesEventStats = speciesEventStatsMap.get(embodiedAgent.getSpecies());
-	    embodiedAgent.activeAgent.eventStats.aggregateStatsTo(speciesEventStats);
+				EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory
+						.getNewFactoryAgent(species);
+				embodiedAgent.setLocation(randomX, randomY);
+				agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX,
+						randomY));
+				embodiedAgent.synchronizeLocationToActiveAgent();
 
-	    embodiedAgent.evaluateLocalFitness();
-	    // now reclaim the internal agents...
+				team.addMember(embodiedAgent);
+				embodiedAgent.setTeam(team);
 
-	    embodiedAgent.reclaimActiveAgent();
+				agents.add(embodiedAgent);
 
-	}
+				if (!embodiedAgent.isScheduled()) {
+					schedule.scheduleRepeating(embodiedAgent);
 
-	collectResouceCaptureStats();
+					embodiedAgent.setScheduled(true);
+				}
 
-	captureStats.addValue(this.numberOfCollectedResources);
-
-	if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
-	    this.maxResourcesEverCollected = this.numberOfCollectedResources;
-	}
-
-    }
-
-    @Override
-    protected void startNextSimulation() {
-
-	intervalStats.resetLastSteps();
-	resetEnvironment();
-
-	if (settings.generationCounter != 0 && (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
-	    // every BENCHMARK_GENERATION use benchmark environment...
-	    initEnvironmentWithBenchmark();
-	} else {
-	    initEnvironment();
-	}
-
-	initNextAgents();
-
-    }
-
-    @Override
-    protected boolean evaluateSimulationTerminateCondition() {
-
-	boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
-		|| (this.simStepCounter > stepsPerSimulation);
-
-	return result;
-    }
-
-    @Override
-    protected void startSimulation() {
-
-	logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
-		+ " stepsPerSimulation=" + stepsPerSimulation);
-
-	initEnvironment();
-	saveEnvironmentForBenchmark();
-
-	initAgents();
-
-	logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
-		+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
-		+ numberOfResources + " agents=" + agents.size());
-
-	setStartDate();
-	experimentReporter.initReporter();
-
-	// this is run at the end of each step
-	schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
-	    public void step(SimState state) {
-
-		simStepCounter++;
-
-		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-		    fadeTrails();
-		}
-
-		if (Main.settings.PEER_REWARDS) {
-		    fadeRewardGrids();
-		}
-
-		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-		    ageBroadcasts();
-		}
-
-		doEndOfStepTasks();
-
-		// check if simulation should continue...
-		if (evaluateSimulationTerminateCondition()) {
-
-		    doEndOfSimulationTasks();
-
-		    // logger.info("---- end of simulation: collected=" +
-		    // numberOfCollectedResources);
-
-		    simStepCounter = 0;
-		    simulationCounter++;
-		    simsRunForThisGeneration++;
-
-		    if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
-
-			if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
-			    evolveEmbodiedAgents();
-			    simsRunForThisGeneration = 0;
 			}
 
-			/*
-			 * logger.info("---- starting simulation (" +
-			 * simulationCounter + ") with: world=" + (gridHeight *
-			 * gridWidth) + " obstacles=" + numberOfObstacles +
-			 * " sites=" + numberOfCollectionSites + " resources=" +
-			 * numberOfResources + " agents=" + agents.size());
-			 */
+		}
 
-			startNextSimulation();
+	}
 
-		    } else {
-			// end of experiment...
-			if (collectedAllResources()) {
-			    logger.info("!!!ALL RESOURCES COLLECTED!!!");
+	protected void initNextAgents() {
+		// we already have embodied agents, we just get load the agents with the
+		// next genes from their respective gene pools
+
+		MersenneTwisterFast randomPrime = this.random;
+
+		for (Agent agent : agents) {
+
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+
+			int randomX = randomPrime.nextInt(gridWidth);
+			int randomY = randomPrime.nextInt(gridHeight);
+
+			while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+				randomX = randomPrime.nextInt(gridWidth);
+				randomY = randomPrime.nextInt(gridHeight);
+			}
+			initCollisionGrid.field[randomX][randomY] = PRESENT;
+
+			embodiedAgent.setNextActiveAgent(randomX, randomY);
+
+			embodiedAgent.setLocation(randomX, randomY);
+			agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX,
+					randomY));
+			embodiedAgent.synchronizeLocationToActiveAgent();
+			embodiedAgent.setStepCounter(0);
+
+			if (!embodiedAgent.isScheduled()) {
+				schedule.scheduleRepeating(embodiedAgent);
+				embodiedAgent.setScheduled(true);
 			}
 
-			setEndDate();
-			experimentReporter.cleanupReporter();
-			finish();
-			logger.info("<=====  EXPERIMENT ENDS\n");
-		    }
 		}
-	    }
-
-	}, 1);
-
-    }
-
-    @Override
-    public int configGridWidth() {
-	return settings.WORLD_WIDTH;
-    }
-
-    @Override
-    public int configGridHeight() {
-	return settings.WORLD_HEIGHT;
-    }
-
-    @Override
-    public double configObstacleDensity() {
-	return settings.OBSTACLE_DENSITY;
-    }
-
-    @Override
-    public double configResourceDensity() {
-	return settings.RESOURCE_DENSITY;
-    }
-
-    @Override
-    public Set<Species> configSpeciesComposition() {
-
-	Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
-
-	if (settings.MODEL_SPECIES.contains("detector")) {
-	    speciesSet.add(Species.DETECTOR);
-	    logger.info("adding DETECTORs...");
 	}
 
-	if (settings.MODEL_SPECIES.contains("extractor")) {
-	    speciesSet.add(Species.EXTRACTOR);
-	    logger.info("adding EXTRACTORs...");
+	/**
+	 * Evolve all the embodied agents and compute/aggregate statistics. Finally
+	 * report the statistics
+	 */
+	protected void evolveEmbodiedAgents() {
+
+		populationFitnessStats.clear();
+
+		// evolve each agent and keep account of their event and fitness
+		// statistics...
+		generation++;
+
+		for (Agent agent : agents) {
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+
+			// accumulate event counts for agents...
+			embodiedAgent.poolGenerationEventStats
+					.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
+
+			// evolve the agents...
+			if (embodiedAgent.evolve() != generation) {
+				logger.severe("invalid evolution algorithm implementation");
+				System.exit(1);
+			}
+
+			for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
+				populationFitnessStats.addValue(fitnessValue);
+			}
+
+			// this part computes the genetic distance between the current and
+			// previous alpha
+
+			double alphaGeneticDistance = Program.comparePrograms(
+					embodiedAgent.evolver.evolutionEngine.alphaProgram,
+					embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
+
+			if (alphaGeneticDistance != Double.NaN) {
+				embodiedAgent.computedAlphaDistance = alphaGeneticDistance;
+			}
+
+			experimentReporter.reportAlphaProgram(generation,
+					embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
+					embodiedAgent.evolver.evolutionEngine.alphaProgram);
+
+		}
+
+		// resourceCaptureStats.printStats();
+		experimentReporter.reportPerformanceEmbodiedModel(generation,
+				intervalStats, generationEventStats, speciesEventStatsMap,
+				agents, captureStats, populationFitnessStats,
+				simsRunForThisGeneration, resourceCaptureStats,
+				this.simulationCounter);
+
+		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
+				+ "; fitness: " + populationFitnessStats.getMean()
+				+ "; best_capture: " + captureStats.getMax() + " ["
+				+ settings.statusCache + "]");
+
+		// clear pool generation event stats for next generation...
+		for (Agent agent : agents) {
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+			embodiedAgent.poolGenerationEventStats.clear();
+		}
+		generationEventStats.clear();
+		captureStats.clear();
+		intervalStats.clear();
+		clearSpeciesEventStats();
+		resourceCaptureStats.clearAll();
+
 	}
 
-	if (settings.MODEL_SPECIES.contains("transporter")) {
-	    speciesSet.add(Species.TRANSPORTER);
-	    logger.info("adding TRANSPORTERs...");
+	@Override
+	protected void doEndOfStepTasks() {
+
 	}
 
-	if (settings.MODEL_SPECIES.contains("homogenous")) {
-	    speciesSet.add(Species.HOMOGENOUS);
-	    logger.info("adding HOMOGENOUS agents...");
+	@Override
+	protected void doEndOfSimulationTasks() {
+
+		// each agent now needs to provide local feedback
+		// each agent has complete record of everything that happened
+		// in poolGenerationEventStats
+
+		for (Agent agent : agents) {
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+			embodiedAgent.activeAgent.eventStats
+					.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
+			embodiedAgent.activeAgent.eventStats
+					.aggregateStatsTo(generationEventStats);
+
+			EventStats speciesEventStats = speciesEventStatsMap
+					.get(embodiedAgent.getSpecies());
+			embodiedAgent.activeAgent.eventStats
+					.aggregateStatsTo(speciesEventStats);
+
+			embodiedAgent.evaluateLocalFitness();
+			// now reclaim the internal agents...
+
+			embodiedAgent.reclaimActiveAgent();
+
+		}
+
+		collectResouceCaptureStats();
+
+		captureStats.addValue(this.numberOfCollectedResources);
+
+		if (this.numberOfCollectedResources > this.maxResourcesEverCollected) {
+			this.maxResourcesEverCollected = this.numberOfCollectedResources;
+		}
+
 	}
 
-	return speciesSet;
-    }
+	@Override
+	protected void startNextSimulation() {
 
-    @Override
-    public EnumSet<InteractionMechanism> configInteractionMechanisms() {
-	EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
+		intervalStats.resetLastSteps();
+		resetEnvironment();
 
-	if (settings.MODEL_INTERACTIONS.contains("none")) {
-	    logger.info("Agents will not use any interaction instructions");
-	} else {
+		if (settings.generationCounter != 0
+				&& (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
+			// every BENCHMARK_GENERATION use benchmark environment...
+			initEnvironmentWithBenchmark();
+		} else {
+			initEnvironment();
+		}
 
-	    if (settings.MODEL_INTERACTIONS.contains("trail")) {
-		mechanisms.add(InteractionMechanism.TRAIL);
-		logger.info("Agents will use any TRAIL interactions...");
-	    }
+		initNextAgents();
 
-	    if (settings.MODEL_INTERACTIONS.contains("broadcast")) {
-		mechanisms.add(InteractionMechanism.BROADCAST);
-		logger.info("Agents will use any BROADCAST interactions...");
-	    }
-
-	    if (settings.MODEL_INTERACTIONS.contains("unicast_n")) {
-		mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
-		logger.info("Agents will use any UNICAST_CLOSEST_AGENT interactions...");
-	    }
-
-	    if (settings.MODEL_INTERACTIONS.contains("unicast_g")) {
-		mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
-		logger.info("Agents will use any UNICAST_CLIQUE_MEMBER interactions...");
-	    }
 	}
-	return mechanisms;
-    }
 
-    @Override
-    public ProblemComplexity configProblemComplexity() {
-	return settings.PROBLEM_COMPLEXITY;
-    }
+	@Override
+	protected boolean evaluateSimulationTerminateCondition() {
 
-    @Override
-    public int configClonesPerSpecies() {
-	return settings.CLONES_PER_SPECIES;
-    }
+		boolean result = (this.numberOfCollectedResources >= this.resourceCaptureGoal)
+				|| (this.simStepCounter > stepsPerSimulation);
 
-    @Override
-    public int configNumberOfCollectionSites() {
-	return settings.NUMBER_OF_COLLECTION_SITES;
-    }
+		return result;
+	}
 
-    @Override
-    public int configMaxStepsPerAgent() {
-	return settings.MAX_STEPS_PER_AGENT;
-    }
+	@Override
+	protected void startSimulation() {
 
-    @Override
-    public boolean configIsReportEvents() {
-	return REPORT_EVENTS;
-    }
+		logger.info("EXPERIMENT STARTS: expected maxium simulations ="
+				+ simulationsPerExperiment + " stepsPerSimulation="
+				+ stepsPerSimulation);
 
-    @Override
-    public boolean configIsReportPerformance() {
-	return REPORT_PERFORMANCE;
-    }
+		initEnvironment();
+		saveEnvironmentForBenchmark();
 
-    @Override
-    public String configExperimentName() {
-	return "POPULATION_ISLAND_MANUAL";
-    }
+		initAgents();
 
-    @Override
-    public int configSimulationsPerExperiment() {
-	return settings.SIMS_PER_EXPERIMENT;
-    }
+		logger.info("---- starting simulation (" + simulationCounter
+				+ ") with: world=" + (gridHeight * gridWidth) + " obstacles="
+				+ numberOfObstacles + " sites=" + numberOfCollectionSites
+				+ " resources=" + numberOfResources + " agents="
+				+ agents.size());
 
-    @Override
-    public int configStepsPerSimulation() {
-	return settings.MAX_STEPS_PER_AGENT;
-    }
+		setStartDate();
+		experimentReporter.initReporter();
 
-    @Override
-    public String configEventFileName() {
-	return settings.EVENT_DATA_FILE;
-    }
+		// this is run at the end of each step
+		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
+			public void step(SimState state) {
 
-    @Override
-    public Evolver configEvolver() {
-	return null;
-    }
+				simStepCounter++;
 
-    @Override
-    public AgentFactory configAgentFactory() {
-	return new EmbodiedAgentFactory(this);
-    }
+				if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+					fadeTrails();
+				}
 
-    @Override
-    public int configGenePoolSize() {
-	return settings.GENE_POOL_SIZE;
-    }
+				if (Main.settings.PEER_REWARDS) {
+					fadeRewardGrids();
+				}
 
-    @Override
-    public AgentFactory configEmbodiedAgentFactory() {
-	return new IslanderAgentFactory(this);
-    }
+				if (interactionMechanisms
+						.contains(InteractionMechanism.BROADCAST)) {
+					ageBroadcasts();
+				}
+
+				doEndOfStepTasks();
+
+				// check if simulation should continue...
+				if (evaluateSimulationTerminateCondition()) {
+
+					doEndOfSimulationTasks();
+
+					// logger.info("---- end of simulation: collected=" +
+					// numberOfCollectedResources);
+
+					simStepCounter = 0;
+					simulationCounter++;
+					simsRunForThisGeneration++;
+
+					if (!collectedAllResources()
+							&& simulationCounter < simulationsPerExperiment) {
+
+						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+							evolveEmbodiedAgents();
+							simsRunForThisGeneration = 0;
+						}
+
+						/*
+						 * logger.info("---- starting simulation (" +
+						 * simulationCounter + ") with: world=" + (gridHeight *
+						 * gridWidth) + " obstacles=" + numberOfObstacles +
+						 * " sites=" + numberOfCollectionSites + " resources=" +
+						 * numberOfResources + " agents=" + agents.size());
+						 */
+
+						startNextSimulation();
+
+					} else {
+						// end of experiment...
+						if (collectedAllResources()) {
+							logger.info("!!!ALL RESOURCES COLLECTED!!!");
+						}
+
+						setEndDate();
+						experimentReporter.cleanupReporter();
+						finish();
+						logger.info("<=====  EXPERIMENT ENDS\n");
+					}
+				}
+			}
+
+		}, 1);
+
+	}
+
+	@Override
+	public int configGridWidth() {
+		return settings.WORLD_WIDTH;
+	}
+
+	@Override
+	public int configGridHeight() {
+		return settings.WORLD_HEIGHT;
+	}
+
+	@Override
+	public double configObstacleDensity() {
+		return settings.OBSTACLE_DENSITY;
+	}
+
+	@Override
+	public double configResourceDensity() {
+		return settings.RESOURCE_DENSITY;
+	}
+
+	@Override
+	public Set<Species> configSpeciesComposition() {
+
+		Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
+
+		if (settings.MODEL_SPECIES.contains("detector")) {
+			speciesSet.add(Species.DETECTOR);
+			logger.info("adding DETECTORs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("extractor")) {
+			speciesSet.add(Species.EXTRACTOR);
+			logger.info("adding EXTRACTORs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("transporter")) {
+			speciesSet.add(Species.TRANSPORTER);
+			logger.info("adding TRANSPORTERs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("homogenous")) {
+			speciesSet.add(Species.HOMOGENOUS);
+			logger.info("adding HOMOGENOUS agents...");
+		}
+
+		return speciesSet;
+	}
+
+	@Override
+	public EnumSet<InteractionMechanism> configInteractionMechanisms() {
+		EnumSet<InteractionMechanism> mechanisms = EnumSet
+				.noneOf(InteractionMechanism.class);
+
+		if (settings.MODEL_INTERACTIONS.contains("none")) {
+			logger.info("Agents will not use any interaction instructions");
+		} else {
+
+			if (settings.MODEL_INTERACTIONS.contains("trail")) {
+				mechanisms.add(InteractionMechanism.TRAIL);
+				logger.info("Agents will use any TRAIL interactions...");
+			}
+
+			if (settings.MODEL_INTERACTIONS.contains("broadcast")) {
+				mechanisms.add(InteractionMechanism.BROADCAST);
+				logger.info("Agents will use any BROADCAST interactions...");
+			}
+
+			if (settings.MODEL_INTERACTIONS.contains("unicast_n")) {
+				mechanisms.add(InteractionMechanism.UNICAST_CLOSEST_AGENT);
+				logger.info("Agents will use any UNICAST_CLOSEST_AGENT interactions...");
+			}
+
+			if (settings.MODEL_INTERACTIONS.contains("unicast_g")) {
+				mechanisms.add(InteractionMechanism.UNICAST_CLIQUE_MEMBER);
+				logger.info("Agents will use any UNICAST_CLIQUE_MEMBER interactions...");
+			}
+		}
+		return mechanisms;
+	}
+
+	@Override
+	public ProblemComplexity configProblemComplexity() {
+		return settings.PROBLEM_COMPLEXITY;
+	}
+
+	@Override
+	public int configClonesPerSpecies() {
+		return settings.CLONES_PER_SPECIES;
+	}
+
+	@Override
+	public int configNumberOfCollectionSites() {
+		return settings.NUMBER_OF_COLLECTION_SITES;
+	}
+
+	@Override
+	public int configMaxStepsPerAgent() {
+		return settings.MAX_STEPS_PER_AGENT;
+	}
+
+	@Override
+	public boolean configIsReportEvents() {
+		return REPORT_EVENTS;
+	}
+
+	@Override
+	public boolean configIsReportPerformance() {
+		return REPORT_PERFORMANCE;
+	}
+
+	@Override
+	public String configExperimentName() {
+		return "POPULATION_ISLAND_MANUAL";
+	}
+
+	@Override
+	public int configSimulationsPerExperiment() {
+		return settings.SIMS_PER_EXPERIMENT;
+	}
+
+	@Override
+	public int configStepsPerSimulation() {
+		return settings.MAX_STEPS_PER_AGENT;
+	}
+
+	@Override
+	public String configEventFileName() {
+		return settings.EVENT_DATA_FILE;
+	}
+
+	@Override
+	public Evolver configEvolver() {
+		return null;
+	}
+
+	@Override
+	public AgentFactory configAgentFactory() {
+		return new EmbodiedAgentFactory(this);
+	}
+
+	@Override
+	public int configGenePoolSize() {
+		return settings.GENE_POOL_SIZE;
+	}
+
+	@Override
+	public AgentFactory configEmbodiedAgentFactory() {
+		return new IslanderAgentFactory(this);
+	}
 
 }

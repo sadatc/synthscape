@@ -10,8 +10,7 @@ package com.synthverse.synthscape.core;
  */
 
 public abstract class PlaybackSimulation /*
-					  * extends SimState implements
-					  * Constants
-					  */{
+										 * extends SimState implements Constants
+										 */{
 
 }

@@ -18,22 +18,23 @@ import com.synthverse.util.LogUtils;
  */
 public class EmbodiedEvolutionSimulationFancyUI extends FancySimulationUI {
 
-    private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulationFancyUI.class.getName());
-    static {
-	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
-    }
-
-    public EmbodiedEvolutionSimulationFancyUI() throws Exception {
-	super(new EmbodiedEvolutionSimulation(Constants.UI_SIMULATION_RNG_SEED));
-    }
-
-    public static void main(String[] args) {
-	try {
-	    Console c = new Console(new EmbodiedEvolutionSimulationFancyUI());
-	    c.setVisible(true);
-	} catch (Exception e) {
-	    logger.severe("Exception:" + e.getMessage());
-	    e.printStackTrace();
+	private static Logger logger = Logger
+			.getLogger(EmbodiedEvolutionSimulationFancyUI.class.getName());
+	static {
+		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
-    }
+
+	public EmbodiedEvolutionSimulationFancyUI() throws Exception {
+		super(new EmbodiedEvolutionSimulation(Constants.UI_SIMULATION_RNG_SEED));
+	}
+
+	public static void main(String[] args) {
+		try {
+			Console c = new Console(new EmbodiedEvolutionSimulationFancyUI());
+			c.setVisible(true);
+		} catch (Exception e) {
+			logger.severe("Exception:" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }

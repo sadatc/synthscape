@@ -21,59 +21,59 @@ import com.synthverse.stacks.GenotypeInstruction;
 
 public class ArrayUtils {
 
-    private ArrayUtils() {
-	throw new AssertionError("ArrayUtils constructor is restricted");
-    }
-
-    public static final void reverseBooleanArrayInRange(boolean[] b,
-	    int rightIndex) {
-	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    boolean temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	private ArrayUtils() {
+		throw new AssertionError("ArrayUtils constructor is restricted");
 	}
-    }
 
-    public static final void reverseIntArray(int[] b) {
-	for (int left = 0, right = b.length - 1; left < right; left++, right--) {
-	    int temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	public static final void reverseBooleanArrayInRange(boolean[] b,
+			int rightIndex) {
+		for (int left = 0, right = rightIndex; left < right; left++, right--) {
+			boolean temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
 	}
-    }
 
-    public static final void reverseDoubleArrayInRange(double[] b,
-	    int rightIndex) {
-	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    double temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	public static final void reverseIntArray(int[] b) {
+		for (int left = 0, right = b.length - 1; left < right; left++, right--) {
+			int temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
 	}
-    }
 
-    public static final void reverseIntArrayInRange(int[] b, int rightIndex) {
-	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    int temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	public static final void reverseDoubleArrayInRange(double[] b,
+			int rightIndex) {
+		for (int left = 0, right = rightIndex; left < right; left++, right--) {
+			double temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
 	}
-    }
 
-    public static final void reverseInstructionArray(GenotypeInstruction[] b) {
-	for (int left = 0, right = b.length - 1; left < right; left++, right--) {
-	    GenotypeInstruction temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	public static final void reverseIntArrayInRange(int[] b, int rightIndex) {
+		for (int left = 0, right = rightIndex; left < right; left++, right--) {
+			int temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
 	}
-    }
 
-    public static final void reverseInstructionArrayInRange(GenotypeInstruction[] b,
-	    int rightIndex) {
-	for (int left = 0, right = rightIndex; left < right; left++, right--) {
-	    GenotypeInstruction temp = b[left];
-	    b[left] = b[right];
-	    b[right] = temp;
+	public static final void reverseInstructionArray(GenotypeInstruction[] b) {
+		for (int left = 0, right = b.length - 1; left < right; left++, right--) {
+			GenotypeInstruction temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
 	}
-    }
+
+	public static final void reverseInstructionArrayInRange(
+			GenotypeInstruction[] b, int rightIndex) {
+		for (int left = 0, right = rightIndex; left < right; left++, right--) {
+			GenotypeInstruction temp = b[left];
+			b[left] = b[right];
+			b[right] = temp;
+		}
+	}
 
 }

@@ -47,11 +47,9 @@ public abstract class SimulationUI extends GUIState implements Constants {
 		return i;
 	}
 
-	public void  init(Controller controller) {
+	public void init(Controller controller) {
 		super.init(controller);
 	}
-	
-	
 
 	public void quit() {
 		super.quit();
@@ -76,7 +74,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	}
 
 	protected abstract void initPortrayals();
-	
+
 	public void start() {
 		super.start();
 		initPortrayals();

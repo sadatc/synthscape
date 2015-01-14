@@ -28,20 +28,20 @@ import ec.util.MersenneTwisterFast;
  */
 public class CollectionUtils {
 
-    private CollectionUtils() {
-	throw new AssertionError("CollectionUtils constructor is restricted");
-    }
-
-    @SuppressWarnings("unused")
-    public static void clearDeeply(Collection<?> c) {
-	for (Object object : c) {
-	    object = null;
+	private CollectionUtils() {
+		throw new AssertionError("CollectionUtils constructor is restricted");
 	}
-	c.clear();
-    }
 
-    public static <T> T pickRandomFromList(
-	    MersenneTwisterFast randomNumberGenerator, ArrayList<T> l) {
-	return l.get(randomNumberGenerator.nextInt(l.size()));
-    }
+	@SuppressWarnings("unused")
+	public static void clearDeeply(Collection<?> c) {
+		for (Object object : c) {
+			object = null;
+		}
+		c.clear();
+	}
+
+	public static <T> T pickRandomFromList(
+			MersenneTwisterFast randomNumberGenerator, ArrayList<T> l) {
+		return l.get(randomNumberGenerator.nextInt(l.size()));
+	}
 }

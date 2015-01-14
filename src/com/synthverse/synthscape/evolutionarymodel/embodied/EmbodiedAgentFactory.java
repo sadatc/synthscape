@@ -9,23 +9,24 @@ import com.synthverse.synthscape.core.Species;
 
 public class EmbodiedAgentFactory extends AgentFactory implements Constants {
 
-    protected EmbodiedAgentFactory(Simulation simulation) {
-	super(simulation);
-    }
+	protected EmbodiedAgentFactory(Simulation simulation) {
+		super(simulation);
+	}
 
-    public Agent createNewFactoryAgent(Species species, int poolSize)   {
-	
-	EmbodiedAgent agent = new EmbodiedAgent(simulation, simulation.getEmbodiedAgentFactory(),species, poolSize);
-	agent.setMaxSteps(simulation.getMaxStepsPerAgent());
-	agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
-	return agent;
-	
-	
-    }
+	public Agent createNewFactoryAgent(Species species, int poolSize) {
 
-    @Override
-    public Agent createNewFactoryAgent(Species species)  {
-	return createNewFactoryAgent(species, Main.settings.EMBODIED_AGENT_POOL_SIZE);
-    }
+		EmbodiedAgent agent = new EmbodiedAgent(simulation,
+				simulation.getEmbodiedAgentFactory(), species, poolSize);
+		agent.setMaxSteps(simulation.getMaxStepsPerAgent());
+		agent.setInteractionMechanisms(simulation.getInteractionMechanisms());
+		return agent;
+
+	}
+
+	@Override
+	public Agent createNewFactoryAgent(Species species) {
+		return createNewFactoryAgent(species,
+				Main.settings.EMBODIED_AGENT_POOL_SIZE);
+	}
 
 }
