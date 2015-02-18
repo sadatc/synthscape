@@ -8,4 +8,13 @@ public enum InteractionQuality {
 	InteractionQuality(double level) {
 		this.level = level;
 	}
+
+	public double getLevel() {
+		return level;
+	}
+
+	public void setLevel(double level) {
+		this.level = level;
+	}
+
 }
