@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.ProblemComplexity;
+import com.synthverse.synthscape.core.SignalType;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -108,6 +109,26 @@ public class InstructionTranslator {
 						continue;
 					}
 				}
+				
+				
+				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_A)) {
+					if (instruction.name().contains("BROADCAST_A") || instruction.name().contains("UNICAST_CLOSEST_A")) {
+						continue;
+					}	
+				}
+				
+				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_B)) {
+					if (instruction.name().contains("BROADCAST_B") || instruction.name().contains("UNICAST_CLOSEST_B")) {
+						continue;
+					}	
+				}
+				
+				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_C)) {
+					if (instruction.name().contains("BROADCAST_C") || instruction.name().contains("UNICAST_CLOSEST_C")) {
+						continue;
+					}	
+				}
+				
 
 				instructionTable.put(instruction.toString(), instruction);
 				instructionArray.add(instruction);

@@ -2,6 +2,7 @@ package com.synthverse.synthscape.core;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -104,6 +105,9 @@ public class Settings {
 
 	public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGHEST;
 
+	public EnumSet<SignalType> INTERACTION_LEVELS = EnumSet
+			.noneOf(SignalType.class);
+
 	public boolean REPORT_DNA_PROGRESSION = true;
 
 	public boolean COMPRESS_DNA_PROGRESSION = false;
@@ -167,6 +171,11 @@ public class Settings {
 				.withDescription(
 						"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 				.create("interactions"));
+
+		options.addOption(OptionBuilder.withArgName("interaction_levels")
+				.hasArg()
+				.withDescription("interaction level names (a,b,c) [a, b, c] ")
+				.create("interaction_levels"));
 
 		options.addOption(OptionBuilder
 				.withArgName("interaction_quality")
@@ -469,6 +478,37 @@ public class Settings {
 
 			}
 			printAndStore("INTERACTION_QUALITY = " + INTERACTION_QUALITY);
+
+			if (line.hasOption("interaction_levels")) {
+				String levelString = line.getOptionValue("interaction_levels")
+						.toLowerCase();
+
+				String[] levels = levelString.split(",");
+
+				if (levels.length > 0) {
+					int parsedLevelCount = 0;
+					for (String level : levels) {
+						if (level.equals("a")) {
+							INTERACTION_LEVELS.add(SignalType.SIGNAL_A);
+							parsedLevelCount++;
+						}
+						if (level.equals("b")) {
+							INTERACTION_LEVELS.add(SignalType.SIGNAL_B);
+							parsedLevelCount++;
+						}
+						if (level.equals("c")) {
+							INTERACTION_LEVELS.add(SignalType.SIGNAL_C);
+							parsedLevelCount++;
+						}
+					}
+					if (parsedLevelCount <= 0) {
+						throw new ParseException("interactions_levels: "
+								+ levelString + " was not recognized");
+					}
+				}
+
+			}
+			printAndStore("INTERACTION_LEVELS = " + INTERACTION_LEVELS);
 
 			if (line.hasOption("generations")) {
 				GENERATIONS = new Integer(line.getOptionValue("generations"))
