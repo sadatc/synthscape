@@ -169,7 +169,7 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		batchId = Long.toHexString(System.currentTimeMillis());
 
-		//InstructionTranslator.logStatus();
+		InstructionTranslator.logStatus();
 
 		setGenePoolSize(configGenePoolSize());
 		setReportEvents(configIsReportEvents());
@@ -1101,13 +1101,9 @@ public abstract class Simulation extends SimState implements Constants {
 		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
 			SignalType signalType = broadcast.getSignalType();
 			registeredBroadcasts.put(signalType, broadcast);
-		} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
-			if (random.nextDouble() <= 0.9) {
-				SignalType signalType = broadcast.getSignalType();
-				registeredBroadcasts.put(signalType, broadcast);
-			}
 		} else {
-			if (random.nextDouble() <= 0.5) {
+			InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
+			if (random.nextDouble() <= interactionQualitySetting.getLevel()) {
 				SignalType signalType = broadcast.getSignalType();
 				registeredBroadcasts.put(signalType, broadcast);
 			}

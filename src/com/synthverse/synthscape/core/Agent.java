@@ -265,15 +265,15 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
 			trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
-		} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
-			if (sim.random.nextDouble() <= 0.9) {
-				trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX * 0.9;
-			}
 		} else {
-			if (sim.random.nextDouble() <= 0.5) {
-				trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX * 0.5;
+			InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
+			if (sim.random.nextDouble() <= interactionQualitySetting.getLevel()) {
+				trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX
+						* interactionQualitySetting.getLevel();
 			}
+
 		}
+
 		sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
 	}
 
@@ -444,14 +444,13 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 
 					if (targetUnicast != null) {
 
-						boolean doUnicast = true;
-
-						if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
-							if (sim.random.nextDouble() <= 0.9) {
-								doUnicast = true;
-							}
-						} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.POOR) {
-							if (sim.random.nextDouble() <= 0.5) {
+						boolean doUnicast = false;
+						if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
+							doUnicast = true;
+						} else {
+							InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
+							if (sim.random.nextDouble() <= interactionQualitySetting
+									.getLevel()) {
 								doUnicast = true;
 							}
 						}
