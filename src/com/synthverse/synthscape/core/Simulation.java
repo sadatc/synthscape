@@ -1098,7 +1098,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public void registerBroadcast(Broadcast broadcast) {
 
-		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGH) {
+		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
 			SignalType signalType = broadcast.getSignalType();
 			registeredBroadcasts.put(signalType, broadcast);
 		} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {

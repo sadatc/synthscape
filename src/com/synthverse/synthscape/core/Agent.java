@@ -263,7 +263,7 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		int x = location.x;
 		int y = location.y;
 
-		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGH) {
+		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
 			trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
 		} else if (Main.settings.INTERACTION_QUALITY == InteractionQuality.MEDIUM) {
 			if (sim.random.nextDouble() <= 0.9) {

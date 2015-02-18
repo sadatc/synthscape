@@ -102,7 +102,7 @@ public class Settings {
 
 	public List<String> EXPERIMENT_DETAILS = new ArrayList<String>();
 
-	public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGH;
+	public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGHEST;
 
 	public boolean REPORT_DNA_PROGRESSION = true;
 
@@ -459,7 +459,7 @@ public class Settings {
 				} else if (quality.contains("medium")) {
 					INTERACTION_QUALITY = InteractionQuality.MEDIUM;
 				} else if (quality.contains("high")) {
-					INTERACTION_QUALITY = InteractionQuality.HIGH;
+					INTERACTION_QUALITY = InteractionQuality.HIGHEST;
 				} else {
 					throw new ParseException("interactions_quality: " + quality
 							+ " was not recognized");
