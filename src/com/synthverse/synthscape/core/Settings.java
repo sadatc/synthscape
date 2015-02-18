@@ -172,7 +172,7 @@ public class Settings {
 				.withArgName("interaction_quality")
 				.hasArg()
 				.withDescription(
-						"interaction quality (high, medium, low/poor) [high]")
+						"interaction quality (highest, high, medium, low/poor) [highest]")
 				.create("interaction_quality"));
 
 		options.addOption(OptionBuilder.withArgName("generations").hasArg()
@@ -458,8 +458,10 @@ public class Settings {
 					INTERACTION_QUALITY = InteractionQuality.POOR;
 				} else if (quality.contains("medium")) {
 					INTERACTION_QUALITY = InteractionQuality.MEDIUM;
-				} else if (quality.contains("high")) {
+				} else if (quality.contains("highest")) {
 					INTERACTION_QUALITY = InteractionQuality.HIGHEST;
+				} else if (quality.contains("high")) {
+					INTERACTION_QUALITY = InteractionQuality.HIGH;
 				} else {
 					throw new ParseException("interactions_quality: " + quality
 							+ " was not recognized");
