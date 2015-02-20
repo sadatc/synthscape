@@ -4,5 +4,8 @@
 /client
 /client/classes
 /client/jar
+/client6
+/client6/classes
+/client6/jar
 *.DS_Store
 *~
