@@ -31,7 +31,7 @@ public class Settings {
 
 	public long SEED = 1;
 
-	public int GENERATIONS = 400;
+	public int GENERATIONS = 500;
 
 	public int BENCHMARK_GENERATION = 100;
 
@@ -44,7 +44,7 @@ public class Settings {
 
 	public int NUMBER_OF_COLLECTION_SITES = 8;
 
-	public double PERC_RESOURCE_CAPTURE_GOAL = 0.75;
+	public double PERC_RESOURCE_CAPTURE_GOAL = 0.0;
 
 	public int SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
@@ -660,11 +660,13 @@ public class Settings {
 
 			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
+			
+			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
+				PERC_RESOURCE_CAPTURE_GOAL = Integer.MAX_VALUE;
+			}
 			int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
 
-			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
-				resourceCaptureGoal = Integer.MAX_VALUE;
-			}
+			
 
 			NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
