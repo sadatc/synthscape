@@ -432,8 +432,11 @@ public abstract class Simulation extends SimState implements Constants {
 			initCollisionGrid.field[randomX][randomY] = PRESENT;
 
 		}
-		this.numberOfCollectedResources = 0;
 
+	}
+
+	final void resetCollectionCounts() {
+		this.numberOfCollectedResources = 0;
 	}
 
 	protected void initEnvironment() {
@@ -441,6 +444,7 @@ public abstract class Simulation extends SimState implements Constants {
 		initNonPrimaryCollectionSites();
 		initObstacles();
 		initResources();
+		resetCollectionCounts();
 	}
 
 	protected void saveEnvironmentForBenchmark() {
@@ -478,6 +482,7 @@ public abstract class Simulation extends SimState implements Constants {
 		for (Int2D coordinate : benchmarkCollectionSiteList) {
 			collectionSiteList.add(coordinate);
 		}
+		resetCollectionCounts();
 	}
 
 	protected void initAgents() {
