@@ -105,8 +105,7 @@ public class Settings {
 
 	public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGHEST;
 
-	public EnumSet<SignalType> INTERACTION_LEVELS = EnumSet
-			.noneOf(SignalType.class);
+	public int INTERACTION_LEVELS = 3;
 
 	public boolean REPORT_DNA_PROGRESSION = true;
 
@@ -174,7 +173,7 @@ public class Settings {
 
 		options.addOption(OptionBuilder.withArgName("interaction_levels")
 				.hasArg()
-				.withDescription("interaction level names (a,b,c) [a, b, c] ")
+				.withDescription("interaction level names (1,2,3) [3] ")
 				.create("interaction_levels"));
 
 		options.addOption(OptionBuilder
@@ -480,34 +479,22 @@ public class Settings {
 			printAndStore("INTERACTION_QUALITY = " + INTERACTION_QUALITY);
 
 			if (line.hasOption("interaction_levels")) {
-				String levelString = line.getOptionValue("interaction_levels")
-						.toLowerCase();
 
-				String[] levels = levelString.split(",");
+				String levelString = line.getOptionValue("interaction_levels");
 
-				if (levels.length > 0) {
-					int parsedLevelCount = 0;
-					for (String level : levels) {
-						if (level.equals("a")) {
-							INTERACTION_LEVELS.add(SignalType.SIGNAL_A);
-							parsedLevelCount++;
-						}
-						if (level.equals("b")) {
-							INTERACTION_LEVELS.add(SignalType.SIGNAL_B);
-							parsedLevelCount++;
-						}
-						if (level.equals("c")) {
-							INTERACTION_LEVELS.add(SignalType.SIGNAL_C);
-							parsedLevelCount++;
-						}
+				try {
+					INTERACTION_LEVELS = new Integer(levelString);
+					if (INTERACTION_LEVELS != 1 && INTERACTION_LEVELS != 2
+							&& INTERACTION_LEVELS != 3) {
+						throw new ParseException(
+								"interactions_levels must be 1, 2, or 3 ");
 					}
-					if (parsedLevelCount <= 0) {
-						throw new ParseException("interactions_levels: "
-								+ levelString + " was not recognized");
-					}
+				} catch (Exception e) {
+					throw new ParseException("interactions_levels: "
+							+ levelString + " was not recognized");
 				}
-
 			}
+
 			printAndStore("INTERACTION_LEVELS = " + INTERACTION_LEVELS);
 
 			if (line.hasOption("generations")) {
@@ -660,13 +647,11 @@ public class Settings {
 
 			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
-			
+
 			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
 				PERC_RESOURCE_CAPTURE_GOAL = Integer.MAX_VALUE;
 			}
 			int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
-
-			
 
 			NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
