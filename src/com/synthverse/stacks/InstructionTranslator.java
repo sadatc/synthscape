@@ -82,59 +82,56 @@ public class InstructionTranslator {
 				}
 			}
 
+			// now depending on interactions -- pick and choose instructions
 			if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains("none")) {
-				if (!instruction.name().contains("TRAIL")
-						&& !instruction.name().contains("BROADCAST")
-						&& !instruction.name().contains("UNICAST")) {
-
-					instructionTable.put(instruction.toString(), instruction);
-					instructionArray.add(instruction);
+				// no instructions -- drop trail, broad, unicast
+				if (instruction.name().contains("TRAIL")
+						|| instruction.name().contains("BROADCAST")
+						|| instruction.name().contains("UNICAST")) {
+					continue;
 				}
-			} else {
-				if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
-						"trail")) {
-					if (instruction.name().contains("TRAIL")) {
-						continue;
-					}
+			} else if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
+					"trail")) {
+				if (instruction.name().contains("BROADCAST")
+						|| instruction.name().contains("UNICAST")) {
+					continue;
 				}
-				if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
-						"broadcast")) {
-					if (instruction.name().contains("BROADCAST")) {
-						continue;
-					}
+			} else if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
+					"broadcast")) {
+				if (instruction.name().contains("TRAIL")
+						|| instruction.name().contains("UNICAST")) {
+					continue;
 				}
-				if (!Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
-						"unicast_n")) {
-					if (instruction.name().contains("UNICAST_CLOSEST")) {
-						continue;
-					}
+			} else if (Main.settings.MODEL_INTERACTIONS.toLowerCase().contains(
+					"unicast_n")) {
+				if (instruction.name().contains("TRAIL")
+						|| instruction.name().contains("BROADCAST")) {
+					continue;
 				}
-				
-				
-				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_A)) {
-					if (instruction.name().contains("BROADCAST_A") || instruction.name().contains("UNICAST_CLOSEST_A")) {
-						continue;
-					}	
-				}
-				
-				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_B)) {
-					if (instruction.name().contains("BROADCAST_B") || instruction.name().contains("UNICAST_CLOSEST_B")) {
-						continue;
-					}	
-				}
-				
-				if( !Main.settings.INTERACTION_LEVELS.contains(SignalType.SIGNAL_C)) {
-					if (instruction.name().contains("BROADCAST_C") || instruction.name().contains("UNICAST_CLOSEST_C")) {
-						continue;
-					}	
-				}
-				
-
-				instructionTable.put(instruction.toString(), instruction);
-				instructionArray.add(instruction);
 			}
 
+			if (Main.settings.INTERACTION_LEVELS == 2) {
+				// allow only A and B
+				if (instruction.name().contains("BROADCAST_C")
+						|| instruction.name().contains("UNICAST_CLOSEST_C")) {
+					continue;
+				}
+			}
+
+			if (Main.settings.INTERACTION_LEVELS == 1) {
+				// allow only A
+				if (instruction.name().contains("BROADCAST_B")
+						|| instruction.name().contains("UNICAST_CLOSEST_B")
+						|| instruction.name().contains("BROADCAST_C")
+						|| instruction.name().contains("UNICAST_CLOSEST_C")) {
+					continue;
+				}
+			}
+
+			instructionTable.put(instruction.toString(), instruction);
+			instructionArray.add(instruction);
 		}
+
 	}
 
 	private InstructionTranslator() {
