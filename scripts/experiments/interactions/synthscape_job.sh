@@ -15,7 +15,7 @@
 #PBS -V
 
 # job array with jobs numbered in range
-#PBS -J 1-30
+#PBS -J 1-7
 
 # join output and error
 #PBS -j oe
@@ -26,6 +26,7 @@ cd ${PBS_O_WORKDIR}
 export PATH=/usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin:${PATH}
 export CLASSPATH=/home/s.chowdhury
 DATA_DIR="${PBS_O_WORKDIR}/data/${PBS_JOBNAME}"
+REPEATS=20
 
 # create data directory based on job name
 if [ ! -d "${DATA_DIR}" ]; then
@@ -34,4 +35,4 @@ fi
 
 #java -Xms2048M -Xmx2048M -jar synthscape.jar -species hetero -interactions none -model island -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat 50 -job_set ${PBS_ARRAY_INDEX}
 
-java -Xms2048M -Xmx2048M -jar synthscape.jar ${SIM_PARAMS} -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat 50 -job_set ${PBS_ARRAY_INDEX}
+java -Xms2048M -Xmx2048M -jar synthscape.jar ${SIM_PARAMS} -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat ${REPEATS} -job_set ${PBS_ARRAY_INDEX}
