@@ -16,7 +16,7 @@ public class Broadcast {
 	private int stepClock;
 
 	public Broadcast() {
-		this(null, SignalType.GENERIC, -1, -1, 0);
+		this(null, SignalType.SIGNAL_A, -1, -1, 0);
 	}
 
 	public Broadcast(Agent senderAgent, SignalType signalType, int x, int y,

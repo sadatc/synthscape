@@ -20,7 +20,7 @@ public class Unicast {
 	private int stepClock;
 
 	public Unicast() {
-		this(null, null, SignalType.GENERIC, 0);
+		this(null, null, SignalType.SIGNAL_A, 0);
 	}
 
 	public Unicast(Agent senderAgent, Agent receiverAgent,

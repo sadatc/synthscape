@@ -43,7 +43,7 @@ public class Trail {
 	}
 
 	public Trail() {
-		this(SignalType.GENERIC, -1, -1);
+		this(SignalType.SIGNAL_A, -1, -1);
 	}
 
 }
