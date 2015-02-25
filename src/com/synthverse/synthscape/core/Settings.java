@@ -1,8 +1,9 @@
 package com.synthverse.synthscape.core;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -136,6 +137,8 @@ public class Settings {
 		Options options = new Options();
 
 		options.addOption(new Option("help", "print this message"));
+		options.addOption(new Option("include_entropy",
+				"attempt to include entroy in SEED"));
 		options.addOption(new Option("no_randomization",
 				"do not randomize each sim [default: randomize]"));
 		options.addOption(new Option("show_graphics",
@@ -590,10 +593,25 @@ public class Settings {
 			if (line.hasOption("job_set")) {
 				JOB_SET = new Integer(line.getOptionValue("job_set"))
 						.longValue();
+
 				SEED = (JOB_SET * REPEAT) + SEED;
 
 			}
 			printAndStore("JOB_SET = " + JOB_SET);
+
+			if (line.hasOption("include_entropy")) {
+				SecureRandom sec = new SecureRandom();
+				byte[] sbuf = sec.generateSeed(8);
+				ByteBuffer bb = ByteBuffer.wrap(sbuf);
+				long secureRandom = bb.getLong();
+				secureRandom += System.nanoTime();
+				SEED = (JOB_SET * REPEAT) + SEED + secureRandom;
+				if(SEED < 0) {
+					SEED = -SEED;
+				}
+
+			}
+
 			D.p("SEED = " + SEED);
 
 			if (line.hasOption("data_dir")) {
