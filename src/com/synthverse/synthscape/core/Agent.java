@@ -17,8 +17,12 @@ import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.util.LogUtils;
 
-public abstract class Agent implements Constants, Steppable, Valuable,
-		Comparable<Agent> {
+public abstract class Agent
+		implements
+			Constants,
+			Steppable,
+			Valuable,
+			Comparable<Agent> {
 
 	protected static final long serialVersionUID = -5129827193602692370L;
 	protected static Logger logger = Logger.getLogger(Agent.class.getName());
@@ -297,27 +301,27 @@ public abstract class Agent implements Constants, Steppable, Valuable,
 		ResourceState resourceState = (ResourceState) resourceGrid.field[x][y];
 
 		switch (action) {
-		case EXTRACTION:
-			if (resourceState == ResourceState.RAW) {
-				resourceGrid.field[x][y] = ResourceState.EXTRACTED;
-				sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
-				sim.resourceStatusArray[x][y].extractionStep = sim.simStepCounter;
-				sim.touchedResources.add(sim.resourceStatusArray[x][y]);
-				actionPerformed = true;
-			}
-			break;
-		case PROCESSING:
-			if (resourceState == ResourceState.EXTRACTED) {
-				resourceGrid.field[x][y] = ResourceState.PROCESSED;
-				sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
-				sim.resourceStatusArray[x][y].processingStep = sim.simStepCounter;
-				sim.touchedResources.add(sim.resourceStatusArray[x][y]);
-				actionPerformed = true;
-			}
-			break;
-		default:
-			logger.severe("_operationPerformResourceAction: action is invalid -- should have never come here");
-			System.exit(-1);
+			case EXTRACTION :
+				if (resourceState == ResourceState.RAW) {
+					resourceGrid.field[x][y] = ResourceState.EXTRACTED;
+					sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
+					sim.resourceStatusArray[x][y].extractionStep = sim.simStepCounter;
+					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
+					actionPerformed = true;
+				}
+				break;
+			case PROCESSING :
+				if (resourceState == ResourceState.EXTRACTED) {
+					resourceGrid.field[x][y] = ResourceState.PROCESSED;
+					sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
+					sim.resourceStatusArray[x][y].processingStep = sim.simStepCounter;
+					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
+					actionPerformed = true;
+				}
+				break;
+			default :
+				logger.severe("_operationPerformResourceAction: action is invalid -- should have never come here");
+				System.exit(-1);
 		}
 
 		return actionPerformed;
