@@ -1,0 +1,32 @@
+#!/bin/sh
+
+sed '102d;202d;302d;402d' het_broad_100.csv > ~/tmp/het_broad_100.csv
+sed '102d;202d;302d;402d' het_broad_1s.csv > ~/tmp/het_broad_1s.csv
+sed '102d;202d;302d;402d' het_broad_25.csv > ~/tmp/het_broad_25.csv
+sed '102d;202d;302d;402d' het_broad_2s.csv > ~/tmp/het_broad_2s.csv
+sed '102d;202d;302d;402d' het_broad_3s.csv > ~/tmp/het_broad_3s.csv
+sed '102d;202d;302d;402d' het_broad_50.csv > ~/tmp/het_broad_50.csv
+sed '102d;202d;302d;402d' het_broad_75.csv > ~/tmp/het_broad_75.csv
+sed '102d;202d;302d;402d' het_trail_100.csv > ~/tmp/het_trail_100.csv
+sed '102d;202d;302d;402d' het_trail_25.csv > ~/tmp/het_trail_25.csv
+sed '102d;202d;302d;402d' het_trail_50.csv > ~/tmp/het_trail_50.csv
+sed '102d;202d;302d;402d' het_trail_75.csv > ~/tmp/het_trail_75.csv
+sed '102d;202d;302d;402d' het_uni_100.csv > ~/tmp/het_uni_100.csv
+sed '102d;202d;302d;402d' het_uni_1s.csv > ~/tmp/het_uni_1s.csv
+sed '102d;202d;302d;402d' het_uni_25.csv > ~/tmp/het_uni_25.csv
+sed '102d;202d;302d;402d' het_uni_2s.csv > ~/tmp/het_uni_2s.csv
+sed '102d;202d;302d;402d' het_uni_3s.csv > ~/tmp/het_uni_3s.csv
+sed '102d;202d;302d;402d' het_uni_50.csv > ~/tmp/het_uni_50.csv
+sed '102d;202d;302d;402d' het_uni_75.csv > ~/tmp/het_uni_75.csv
+sed '102d;202d;302d;402d' hom_broad_100.csv > ~/tmp/hom_broad_100.csv
+sed '102d;202d;302d;402d' hom_broad_25.csv > ~/tmp/hom_broad_25.csv
+sed '102d;202d;302d;402d' hom_broad_50.csv > ~/tmp/hom_broad_50.csv
+sed '102d;202d;302d;402d' hom_broad_75.csv > ~/tmp/hom_broad_75.csv
+sed '102d;202d;302d;402d' hom_trail_100.csv > ~/tmp/hom_trail_100.csv
+sed '102d;202d;302d;402d' hom_trail_25.csv > ~/tmp/hom_trail_25.csv
+sed '102d;202d;302d;402d' hom_trail_50.csv > ~/tmp/hom_trail_50.csv
+sed '102d;202d;302d;402d' hom_trail_75.csv > ~/tmp/hom_trail_75.csv
+sed '102d;202d;302d;402d' hom_uni_100.csv > ~/tmp/hom_uni_100.csv
+sed '102d;202d;302d;402d' hom_uni_25.csv > ~/tmp/hom_uni_25.csv
+sed '102d;202d;302d;402d' hom_uni_50.csv > ~/tmp/hom_uni_50.csv
+sed '102d;202d;302d;402d' hom_uni_75.csv > ~/tmp/hom_uni_75.csv
