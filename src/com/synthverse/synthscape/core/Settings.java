@@ -106,7 +106,7 @@ public class Settings {
 
 	public InteractionQuality INTERACTION_QUALITY = InteractionQuality.HIGHEST;
 
-	public int INTERACTION_LEVELS = 3;
+	public boolean CONSTRAINED_INTERACTIONS = true;
 
 	public boolean REPORT_DNA_PROGRESSION = true;
 
@@ -174,10 +174,12 @@ public class Settings {
 						"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 				.create("interactions"));
 
-		options.addOption(OptionBuilder.withArgName("interaction_levels")
+		options.addOption(OptionBuilder
+				.withArgName("unconstrained_interactions")
 				.hasArg()
-				.withDescription("interaction level names (1,2,3) [3] ")
-				.create("interaction_levels"));
+				.withDescription(
+						"use unconstrainted interactions [default: constrained]")
+				.create("unconstrained_interactions"));
 
 		options.addOption(OptionBuilder
 				.withArgName("interaction_quality")
@@ -481,24 +483,13 @@ public class Settings {
 			}
 			printAndStore("INTERACTION_QUALITY = " + INTERACTION_QUALITY);
 
-			if (line.hasOption("interaction_levels")) {
+			if (line.hasOption("unconstrained_interactions")) {
 
-				String levelString = line.getOptionValue("interaction_levels");
-
-				try {
-					INTERACTION_LEVELS = new Integer(levelString);
-					if (INTERACTION_LEVELS != 1 && INTERACTION_LEVELS != 2
-							&& INTERACTION_LEVELS != 3) {
-						throw new ParseException(
-								"interactions_levels must be 1, 2, or 3 ");
-					}
-				} catch (Exception e) {
-					throw new ParseException("interactions_levels: "
-							+ levelString + " was not recognized");
-				}
+				CONSTRAINED_INTERACTIONS = false;
 			}
 
-			printAndStore("INTERACTION_LEVELS = " + INTERACTION_LEVELS);
+			printAndStore("CONSTRAINED_INTERACTIONS = "
+					+ CONSTRAINED_INTERACTIONS);
 
 			if (line.hasOption("generations")) {
 				GENERATIONS = new Integer(line.getOptionValue("generations"))
@@ -606,7 +597,7 @@ public class Settings {
 				long secureRandom = bb.getLong();
 				secureRandom += System.nanoTime();
 				SEED = (JOB_SET * REPEAT) + SEED + secureRandom;
-				if(SEED < 0) {
+				if (SEED < 0) {
 					SEED = -SEED;
 				}
 

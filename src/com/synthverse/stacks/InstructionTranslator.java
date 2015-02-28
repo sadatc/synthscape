@@ -110,24 +110,6 @@ public class InstructionTranslator {
 				}
 			}
 
-			if (Main.settings.INTERACTION_LEVELS == 2) {
-				// allow only A and B
-				if (instruction.name().contains("BROADCAST_C")
-						|| instruction.name().contains("UNICAST_CLOSEST_C")) {
-					continue;
-				}
-			}
-
-			if (Main.settings.INTERACTION_LEVELS == 1) {
-				// allow only A
-				if (instruction.name().contains("BROADCAST_B")
-						|| instruction.name().contains("UNICAST_CLOSEST_B")
-						|| instruction.name().contains("BROADCAST_C")
-						|| instruction.name().contains("UNICAST_CLOSEST_C")) {
-					continue;
-				}
-			}
-
 			instructionTable.put(instruction.toString(), instruction);
 			instructionArray.add(instruction);
 		}
