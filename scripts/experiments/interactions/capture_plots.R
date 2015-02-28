@@ -1,189 +1,239 @@
 # island model
 library(ggplot2)
 
-row_data <- read.csv(file="isl_het_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, no interaction",row_data)
+#heterogenous
+#trail
+row_data <- read.csv(file="het_trail_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="25",row_data)
 data <- row_data
 
-row_data <- read.csv(file="isl_het_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, trail",row_data)
+row_data <- read.csv(file="het_trail_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="50",row_data)
 data <- rbind(data,row_data)
 
 
-row_data <- read.csv(file="isl_het_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, broadcast",row_data)
+row_data <- read.csv(file="het_trail_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="75",row_data)
 data <- rbind(data,row_data)
 
-row_data <- read.csv(file="isl_het_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, unicast",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="isl_hom_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, no interaction",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="isl_hom_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, trail",row_data)
+row_data <- read.csv(file="het_trail_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="100",row_data)
 data <- rbind(data,row_data)
 
 
-row_data <- read.csv(file="isl_hom_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, broadcast",row_data)
+
+#broad
+row_data <- read.csv(file="het_broad_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="25",row_data)
 data <- rbind(data,row_data)
 
-row_data <- read.csv(file="isl_hom_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, unicast",row_data)
+row_data <- read.csv(file="het_broad_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="50",row_data)
 data <- rbind(data,row_data)
 
-data$type <- factor(data$type)
 
-# pdf("isl_capture.pdf")
-png("isl_capture.png",  
-  width     = 6,
-  height    = 6,
-  units     = "in",
-  res=360)
+row_data <- read.csv(file="het_broad_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="75",row_data)
+data <- rbind(data,row_data)
 
-print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
-geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-facet_wrap( ~ type, scale="free", ncol=2) + 
-ggtitle("Island Model Capture Trends") +  
+row_data <- read.csv(file="het_broad_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="100",row_data)
+data <- rbind(data,row_data)
+
+
+#unicast
+row_data <- read.csv(file="het_uni_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="25",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="het_uni_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="50",row_data)
+data <- rbind(data,row_data)
+
+
+row_data <- read.csv(file="het_uni_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="75",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="het_uni_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="heterogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="100",row_data)
+data <- rbind(data,row_data)
+
+
+
+#homogenous
+#trail
+row_data <- read.csv(file="hom_trail_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="25",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_trail_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="50",row_data)
+data <- rbind(data,row_data)
+
+
+row_data <- read.csv(file="hom_trail_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="75",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_trail_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="trail",row_data)
+row_data <- cbind(level="100",row_data)
+data <- rbind(data,row_data)
+
+
+
+#broad
+row_data <- read.csv(file="hom_broad_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="25",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_broad_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="50",row_data)
+data <- rbind(data,row_data)
+
+
+row_data <- read.csv(file="hom_broad_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="75",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_broad_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="broadcast",row_data)
+row_data <- cbind(level="100",row_data)
+data <- rbind(data,row_data)
+
+
+#unicast
+row_data <- read.csv(file="hom_uni_25.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="25",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_uni_50.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="50",row_data)
+data <- rbind(data,row_data)
+
+
+row_data <- read.csv(file="hom_uni_75.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="75",row_data)
+data <- rbind(data,row_data)
+
+row_data <- read.csv(file="hom_uni_100.csv")
+row_data <- row_data[,c("GENERATION","CAPTURES_BEST_CASE")]
+row_data$CAPTURES_BEST_CASE <- row_data$CAPTURES_BEST_CASE/16
+row_data <- cbind(model="homogenous",row_data)
+row_data <- cbind(interaction="unicast",row_data)
+row_data <- cbind(level="100",row_data)
+data <- rbind(data,row_data)
+
+
+data$model <- factor(data$model)
+data$interaction <- factor(data$interaction)
+data$level <- factor(data$level)
+
+pdf("capture_plots.pdf")
+#png("interactions.png", width = 8, height = 4, units = "in", res=180)
+print(ggplot(data,aes(x=GENERATION,y=CAPTURES_BEST_CASE))+
+xlim(0,500)+
+#scale_y_continuous(labels =  percent_format()) +
+#geom_point(aes(shape=interaction), fill="white", color="black", size=1.75,  alpha=1/4)+
+geom_line(aes(color=level), size=0.75)+
+facet_grid( interaction ~ model, scales="free_y") +  
+xlab("Generation")+ylab("Resources Capture %") +
+ggtitle("Resource Capture Trends vs. Interaction Quality") +  
 theme_bw() +
-theme(text = element_text(size = 9)))
+theme( text = element_text(size = 9)))
 
 dev.off()
 
 
 
-row_data <- read.csv(file="emb_het_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, no interaction",row_data)
-data <- row_data
-
-row_data <- read.csv(file="emb_het_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, trail",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="emb_het_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, broadcast",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="emb_het_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, unicast",row_data)
-data <- rbind(data,row_data)
-
-
-
-row_data <- read.csv(file="emb_hom_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, no interaction",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="emb_hom_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, trail",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="emb_hom_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, broadcast",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="emb_hom_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, unicast",row_data)
-data <- rbind(data,row_data)
-
-data$type <- factor(data$type)
-
-
-png("emb_capture.png",  
-  width     = 6,
-  height    = 6,
-  units     = "in",
-  res=360)
-
-print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
-geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-facet_wrap( ~ type, scale="free", ncol=2) + 
-ggtitle("Embodied Model Capture Trends") +  
-theme_bw() +
-theme(text = element_text(size = 9)))
-
-dev.off()
-
-
-row_data <- read.csv(file="ali_het_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, no interaction",row_data)
-data <- row_data
-
-row_data <- read.csv(file="ali_het_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, trail",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="ali_het_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, broadcast",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="ali_het_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="heterogenous, unicast",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="ali_hom_none.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, no interaction",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="ali_hom_trail.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, trail",row_data)
-data <- rbind(data,row_data)
-
-
-row_data <- read.csv(file="ali_hom_broad.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, broadcast",row_data)
-data <- rbind(data,row_data)
-
-row_data <- read.csv(file="ali_hom_uni.csv")
-row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-row_data <- cbind(type="homogenous, unicast",row_data)
-data <- rbind(data,row_data)
-
-data$type <- factor(data$type)
-
-
-png("ali_capture.png",  
-  width     = 6,
-  height    = 6,
-  units     = "in",
-  res=360)
-
-print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
-geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-facet_wrap( ~ type, scale="free", ncol=2) + 
-ggtitle("ALife Model Capture Tends") +  
-theme_bw() +
-theme(text = element_text(size = 9)))
-
-dev.off()

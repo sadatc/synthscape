@@ -1,8 +1,8 @@
 #!/bin/sh
 
-SYNTH_BIN_DIR=/Users/sadat/synthscape/bin
-DATA_DIR=/Users/sadat/data_bionetics/data
-OUTPUT_DIR=/Users/sadat/data_bionetics/convergence
+SYNTH_BIN_DIR=/Users/sadat/synthscape/client
+DATA_DIR=/Users/sadat/data
+OUTPUT_DIR=/Users/sadat/convergence
 
 # create OUTPUT_DIR if it doesn't exist
 if [ ! -d "${OUTPUT_DIR}" ]; then
@@ -14,61 +14,52 @@ rm -rf ${OUTPUT_DIR}/*
 
 cd ${SYNTH_BIN_DIR}
 
-# ISLAND MODEL
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_het_none/ -outfile ${OUTPUT_DIR}/ihen.csv
+#homogenous case
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_het_broad/ -outfile ${OUTPUT_DIR}/iheb.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_het_trail/ -outfile ${OUTPUT_DIR}/ihet.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_het_uni/ -outfile ${OUTPUT_DIR}/iheu.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_broad_100/ -outfile ${OUTPUT_DIR}/hom_broad_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_broad_75/ -outfile ${OUTPUT_DIR}/hom_broad_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_broad_50/ -outfile ${OUTPUT_DIR}/hom_broad_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_broad_25/ -outfile ${OUTPUT_DIR}/hom_broad_25.csv
 
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_hom_none/ -outfile ${OUTPUT_DIR}/ihon.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_trail_100/ -outfile ${OUTPUT_DIR}/hom_trail_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_trail_75/ -outfile ${OUTPUT_DIR}/hom_trail_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_trail_50/ -outfile ${OUTPUT_DIR}/hom_trail_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_trail_25/ -outfile ${OUTPUT_DIR}/hom_trail_25.csv
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_hom_broad/ -outfile ${OUTPUT_DIR}/ihob.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_hom_trail/ -outfile ${OUTPUT_DIR}/ihot.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/isl_hom_uni/ -outfile ${OUTPUT_DIR}/ihou.csv
-
-# EMBODIED MODEL
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_het_none/ -outfile ${OUTPUT_DIR}/ehen.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_het_broad/ -outfile ${OUTPUT_DIR}/eheb.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_het_trail/ -outfile ${OUTPUT_DIR}/ehet.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_het_uni/ -outfile ${OUTPUT_DIR}/eheu.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_uni_100/ -outfile ${OUTPUT_DIR}/hom_uni_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_uni_75/ -outfile ${OUTPUT_DIR}/hom_uni_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_uni_50/ -outfile ${OUTPUT_DIR}/hom_uni_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/hom_uni_25/ -outfile ${OUTPUT_DIR}/hom_uni_25.csv
 
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_hom_none/ -outfile ${OUTPUT_DIR}/ehon.csv
+#heterogenous case
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_hom_broad/ -outfile ${OUTPUT_DIR}/ehob.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_hom_trail/ -outfile ${OUTPUT_DIR}/ehot.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/emb_hom_uni/ -outfile ${OUTPUT_DIR}/ehou.csv
-
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_100/ -outfile ${OUTPUT_DIR}/het_broad_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_75/ -outfile ${OUTPUT_DIR}/het_broad_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_50/ -outfile ${OUTPUT_DIR}/het_broad_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_25/ -outfile ${OUTPUT_DIR}/het_broad_25.csv
 
 
-# ALIFE MODEL
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_trail_100/ -outfile ${OUTPUT_DIR}/het_trail_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_trail_75/ -outfile ${OUTPUT_DIR}/het_trail_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_trail_50/ -outfile ${OUTPUT_DIR}/het_trail_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_trail_25/ -outfile ${OUTPUT_DIR}/het_trail_25.csv
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_het_none/ -outfile ${OUTPUT_DIR}/ahen.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_het_broad/ -outfile ${OUTPUT_DIR}/aheb.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_het_trail/ -outfile ${OUTPUT_DIR}/ahet.csv
-
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_het_uni/ -outfile ${OUTPUT_DIR}/aheu.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_100/ -outfile ${OUTPUT_DIR}/het_uni_100.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_75/ -outfile ${OUTPUT_DIR}/het_uni_75.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_50/ -outfile ${OUTPUT_DIR}/het_uni_50.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_25/ -outfile ${OUTPUT_DIR}/het_uni_25.csv
 
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_hom_none/ -outfile ${OUTPUT_DIR}/ahon.csv
+#content
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_hom_broad/ -outfile ${OUTPUT_DIR}/ahob.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_1s/ -outfile ${OUTPUT_DIR}/het_broad_1s.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_2s/ -outfile ${OUTPUT_DIR}/het_broad_2s.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_broad_3s/ -outfile ${OUTPUT_DIR}/het_broad_3s.csv
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_hom_trail/ -outfile ${OUTPUT_DIR}/ahot.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_1s/ -outfile ${OUTPUT_DIR}/het_uni_1s.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_2s/ -outfile ${OUTPUT_DIR}/het_uni_2s.csv
+java  -cp "./synthscape.jar" com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/het_uni_3s/ -outfile ${OUTPUT_DIR}/het_uni_3s.csv
 
-java  -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.synthscape.analysis.Analyzer -dir ${DATA_DIR}/alife_hom_uni/ -outfile ${OUTPUT_DIR}/ahou.csv
