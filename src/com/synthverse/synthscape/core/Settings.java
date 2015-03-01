@@ -32,7 +32,7 @@ public class Settings {
 
 	public long SEED = 1;
 
-	public int GENERATIONS = 500;
+	public int GENERATIONS = 1000;
 
 	public int BENCHMARK_GENERATION = 100;
 
