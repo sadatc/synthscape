@@ -96,6 +96,14 @@ public abstract class Agent
 	public Unicast receivedUnicastB = new Unicast();
 	public Unicast receivedUnicastC = new Unicast();
 
+	public boolean detectedBroadcastA = false;
+	public boolean detectedBroadcastB = false;
+	public boolean detectedBroadcastC = false;
+
+	public boolean detectedUnicastA = false;
+	public boolean detectedUnicastB = false;
+	public boolean detectedUnicastC = false;
+
 	private boolean hosted = false;
 	private Agent hostAgent = null;
 
@@ -334,20 +342,93 @@ public abstract class Agent
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 				if (broadcast != null) {
-					// logger.info("moving to a broadcast:" + signalType);
 
-					if (signalType == SignalType.SIGNAL_A) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA,
-								"" + this.agentId);
-					} else if (signalType == SignalType.SIGNAL_B) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA,
-								"" + this.agentId);
-					} else if (signalType == SignalType.SIGNAL_C) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA,
-								"" + this.agentId);
+					if (Main.settings.CONSTRAINED_INTERACTIONS) {
+						// constrained version:
+						// 3 task: extractor=A, transporter=B
+						// 4 task: extractor=A, processor=B, transporter=C
+
+						Event event = null;
+
+						if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+							// 3 task problem
+
+							if (species.getTraits().contains(Trait.EXTRACTION)
+									&& signalType == SignalType.SIGNAL_A) {
+
+								event = Event.RECEIVED_BROADCAST_A;
+
+							} else if (species.getTraits().contains(
+									Trait.TRANSPORTATION)
+									&& signalType == SignalType.SIGNAL_B) {
+
+								event = Event.RECEIVED_BROADCAST_B;
+							} else {
+								signalType = null;
+
+							}
+
+						} else {
+							// 4 task problem
+							if (species.getTraits().contains(Trait.EXTRACTION)
+									&& signalType == SignalType.SIGNAL_A) {
+
+								event = Event.RECEIVED_BROADCAST_A;
+							} else if (species.getTraits().contains(
+									Trait.PROCESSING)
+									&& signalType == SignalType.SIGNAL_B) {
+
+								event = Event.RECEIVED_BROADCAST_B;
+							} else if (species.getTraits().contains(
+									Trait.TRANSPORTATION)
+									&& signalType == SignalType.SIGNAL_C) {
+
+								event = Event.RECEIVED_BROADCAST_C;
+							} else {
+								signalType = null;
+
+							}
+						}
+						if (signalType != null && event != null) {
+
+							sim.recordEvent(this, event, NA, "" + this.agentId);
+
+							Agent detectorAgent = this;
+							if (this.isHosted()) {
+								detectorAgent = this.getHostAgent();
+							}
+							if (signalType == SignalType.SIGNAL_A) {
+								detectorAgent.detectedBroadcastA = true;
+							} else if (signalType == SignalType.SIGNAL_B) {
+								detectorAgent.detectedBroadcastB = true;
+							} else if (signalType == SignalType.SIGNAL_C) {
+								detectorAgent.detectedBroadcastC = true;
+							}
+
+							_operationMoveAbsolute(broadcast.getX(),
+									broadcast.getY());
+							// TODO: change state such that agent remembers of
+							// having received broadcast
+						}
+
+					} else {
+
+						// unconstrained version
+						if (signalType == SignalType.SIGNAL_A) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
+									NA, "" + this.agentId);
+						} else if (signalType == SignalType.SIGNAL_B) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
+									NA, "" + this.agentId);
+						} else if (signalType == SignalType.SIGNAL_C) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
+									NA, "" + this.agentId);
+						}
+
+						_operationMoveAbsolute(broadcast.getX(),
+								broadcast.getY());
+
 					}
-
-					_operationMoveAbsolute(broadcast.getX(), broadcast.getY());
 
 				}
 			}
@@ -359,20 +440,56 @@ public abstract class Agent
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-				Broadcast broadcast = new Broadcast(this, signalType, this.x,
-						this.y, 0);
-				sim.registerBroadcast(broadcast);
 
-				if (signalType == SignalType.SIGNAL_A) {
-					sim.recordEvent(this, Event.SENT_BROADCAST_A, ""
-							+ this.agentId, NA);
-				} else if (signalType == SignalType.SIGNAL_B) {
-					sim.recordEvent(this, Event.SENT_BROADCAST_B, ""
-							+ this.agentId, NA);
-				} else if (signalType == SignalType.SIGNAL_C) {
-					sim.recordEvent(this, Event.SENT_BROADCAST_C, ""
-							+ this.agentId, NA);
+				if (Main.settings.CONSTRAINED_INTERACTIONS) {
+					// constrained version
+					// detectors can send signal A only
+					// extractors can send signal B only
+					// processors can send signal C only
+					SignalType finalSignalType = null;
+					Event event = null;
+					if (species.getTraits().contains(Trait.DETECTION)
+							&& signalType == SignalType.SIGNAL_A) {
+						finalSignalType = SignalType.SIGNAL_A;
+						event = Event.SENT_BROADCAST_A;
+					}
+					if (species.getTraits().contains(Trait.EXTRACTION)
+							&& signalType == SignalType.SIGNAL_B) {
+						finalSignalType = SignalType.SIGNAL_B;
+						event = Event.SENT_BROADCAST_B;
+					}
+
+					if (species.getTraits().contains(Trait.EXTRACTION)
+							&& signalType == SignalType.SIGNAL_C) {
+						finalSignalType = SignalType.SIGNAL_C;
+						event = Event.SENT_BROADCAST_C;
+					}
+					if (finalSignalType != null && event != null) {
+						Broadcast broadcast = new Broadcast(this,
+								finalSignalType, this.x, this.y, 0);
+						sim.registerBroadcast(broadcast);
+						sim.recordEvent(this, event, "" + this.agentId, NA);
+					}
+
+				} else {
+
+					// unconstrained version
+					Broadcast broadcast = new Broadcast(this, signalType,
+							this.x, this.y, 0);
+					sim.registerBroadcast(broadcast);
+
+					if (signalType == SignalType.SIGNAL_A) {
+						sim.recordEvent(this, Event.SENT_BROADCAST_A, ""
+								+ this.agentId, NA);
+					} else if (signalType == SignalType.SIGNAL_B) {
+						sim.recordEvent(this, Event.SENT_BROADCAST_B, ""
+								+ this.agentId, NA);
+					} else if (signalType == SignalType.SIGNAL_C) {
+						sim.recordEvent(this, Event.SENT_BROADCAST_C, ""
+								+ this.agentId, NA);
+					}
 				}
+
 			}
 		}
 	}
@@ -387,22 +504,259 @@ public abstract class Agent
 				Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 
 				if (broadcast != null) {
-					if (signalType == SignalType.SIGNAL_A) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA,
-								"" + this.agentId);
-					} else if (signalType == SignalType.SIGNAL_B) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA,
-								"" + this.agentId);
-					} else if (signalType == SignalType.SIGNAL_C) {
-						sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA,
-								"" + this.agentId);
-					}
 
-					result = true;
+					if (Main.settings.CONSTRAINED_INTERACTIONS) {
+						// constrained version:
+						// 3 task: extractor=A, transporter=B
+						// 4 task: extractor=A, processor=B, transporter=C
+
+						SignalType finalSignalType = null;
+						Event event = null;
+
+						if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+							// 3 task problem
+
+							if (species.getTraits().contains(Trait.EXTRACTION)
+									&& signalType == SignalType.SIGNAL_A) {
+								finalSignalType = SignalType.SIGNAL_A;
+								event = Event.RECEIVED_BROADCAST_A;
+							}
+
+							if (species.getTraits().contains(
+									Trait.TRANSPORTATION)
+									&& signalType == SignalType.SIGNAL_B) {
+								finalSignalType = SignalType.SIGNAL_B;
+								event = Event.RECEIVED_BROADCAST_B;
+							}
+
+						} else {
+							// 4 task problem
+							if (species.getTraits().contains(Trait.EXTRACTION)
+									&& signalType == SignalType.SIGNAL_A) {
+								finalSignalType = SignalType.SIGNAL_A;
+								event = Event.RECEIVED_BROADCAST_A;
+							}
+							if (species.getTraits().contains(Trait.PROCESSING)
+									&& signalType == SignalType.SIGNAL_B) {
+								finalSignalType = SignalType.SIGNAL_B;
+								event = Event.RECEIVED_BROADCAST_B;
+							}
+							if (species.getTraits().contains(
+									Trait.TRANSPORTATION)
+									&& signalType == SignalType.SIGNAL_C) {
+								finalSignalType = SignalType.SIGNAL_C;
+								event = Event.RECEIVED_BROADCAST_C;
+							}
+						}
+						if (finalSignalType != null && event != null) {
+
+							sim.recordEvent(this, event, NA, "" + this.agentId);
+
+							Agent detectorAgent = this;
+							if (this.isHosted()) {
+								detectorAgent = this.getHostAgent();
+							}
+							if (signalType == SignalType.SIGNAL_A) {
+								detectorAgent.detectedBroadcastA = true;
+							} else if (signalType == SignalType.SIGNAL_B) {
+								detectorAgent.detectedBroadcastB = true;
+							} else if (signalType == SignalType.SIGNAL_C) {
+								detectorAgent.detectedBroadcastC = true;
+							}
+
+							result = true;
+							// TODO: change state such that agent remembers of
+							// having received broadcast
+						}
+
+					} else {
+
+						// unconstrained
+						if (signalType == SignalType.SIGNAL_A) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
+									NA, "" + this.agentId);
+						} else if (signalType == SignalType.SIGNAL_B) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
+									NA, "" + this.agentId);
+						} else if (signalType == SignalType.SIGNAL_C) {
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
+									NA, "" + this.agentId);
+						}
+
+						result = true;
+					}
 				}
 			}
 		}
 		return result;
+	}
+
+	public final void operationUnicastClosest_Unconstrained(
+			SignalType signalType) {
+
+		//
+		// -- UNCONSTRAINED VERSION ---
+		//
+		// find the closest agent...
+		Agent closestAgent = findClosestAgent(this.x, this.y, 1);
+
+		if (closestAgent != null) {
+
+			// if this is a hosted agent, we'll UNICAST to the host
+			if (closestAgent.isHosted()) {
+				closestAgent = closestAgent.getHostAgent();
+			}
+
+			Unicast targetUnicast = null;
+			Agent senderAgent = this;
+			if (this.isHosted()) {
+				senderAgent = this.getHostAgent();
+			}
+
+			if (signalType == SignalType.SIGNAL_A) {
+				targetUnicast = closestAgent.receivedUnicastA;
+				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
+						+ senderAgent.agentId, "" + closestAgent.agentId);
+			} else if (signalType == SignalType.SIGNAL_B) {
+				targetUnicast = closestAgent.receivedUnicastB;
+				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
+						+ senderAgent.agentId, "" + closestAgent.agentId);
+			} else if (signalType == SignalType.SIGNAL_C) {
+				targetUnicast = closestAgent.receivedUnicastC;
+				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
+						+ senderAgent.agentId, "" + closestAgent.agentId);
+			}
+
+			if (targetUnicast != null) {
+
+				boolean doUnicast = false;
+				if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
+					doUnicast = true;
+				} else {
+					InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
+					if (sim.random.nextDouble() <= interactionQualitySetting
+							.getLevel()) {
+						doUnicast = true;
+					}
+				}
+
+				if (doUnicast) {
+					targetUnicast.setReceiverAgent(closestAgent);
+					targetUnicast.setSenderAgent(senderAgent);
+					targetUnicast.setSignalType(signalType);
+					targetUnicast.setStepClock(-1);
+				}
+			}
+		}
+		//
+		// -- UNCONSTRAINED VERSION ---
+		//
+	}
+
+	public final void operationUnicastClosest_Constrained(SignalType signalType) {
+
+		//
+		// -- CONSTRAINED VERSION ---
+		//
+		// find the closest agent...
+
+		// constrained version
+		// 3task: det sig a to ext and ext sig b to trans
+		// 4task: det sig a to ext, ext sig b to proc and proc sig c
+		// to trans
+		SignalType finalSignlalType = null;
+		Event event = null;
+		Trait targetTrait = null;
+
+		// determine if this singalType is allowed by the species designation
+
+		if (species.getTraits().contains(Trait.DETECTION)
+				&& signalType == SignalType.SIGNAL_A) {
+			finalSignlalType = SignalType.SIGNAL_A;
+			event = Event.SENT_UNICAST_A_CLOSEST;
+			targetTrait = Trait.EXTRACTION;
+		}
+
+		if (species.getTraits().contains(Trait.EXTRACTION)
+				&& this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+				&& signalType == SignalType.SIGNAL_B) {
+			finalSignlalType = SignalType.SIGNAL_B;
+			event = Event.SENT_UNICAST_B_CLOSEST;
+			targetTrait = Trait.TRANSPORTATION;
+		}
+
+		if (species.getTraits().contains(Trait.PROCESSING)
+				&& this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS
+				&& signalType == SignalType.SIGNAL_C) {
+			finalSignlalType = SignalType.SIGNAL_C;
+			event = Event.SENT_UNICAST_C_CLOSEST;
+			targetTrait = Trait.TRANSPORTATION;
+		}
+
+		// at this point we know the signal type and the event
+		// we now need to find the right target agent.
+		if (finalSignlalType != null && event != null && targetTrait != null) {
+			/*
+			 * Broadcast broadcast = new Broadcast(this, signalType, this.x,
+			 * this.y, 0); sim.registerBroadcast(broadcast);
+			 * sim.recordEvent(this, event, "" + this.agentId, NA);
+			 */
+
+			// FIXME: code here
+
+			Agent closestAgent = findClosestAgent(this.x, this.y, 1,
+					targetTrait);
+
+			if (closestAgent != null) {
+
+				// if this is a hosted agent, we'll UNICAST to the host
+				if (closestAgent.isHosted()) {
+					closestAgent = closestAgent.getHostAgent();
+				}
+
+				Unicast targetUnicast = null;
+				Agent senderAgent = this;
+				if (this.isHosted()) {
+					senderAgent = this.getHostAgent();
+				}
+
+				if (signalType == SignalType.SIGNAL_A) {
+					targetUnicast = closestAgent.receivedUnicastA;
+					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
+							+ senderAgent.agentId, "" + closestAgent.agentId);
+				} else if (signalType == SignalType.SIGNAL_B) {
+					targetUnicast = closestAgent.receivedUnicastB;
+					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
+							+ senderAgent.agentId, "" + closestAgent.agentId);
+				} else if (signalType == SignalType.SIGNAL_C) {
+					targetUnicast = closestAgent.receivedUnicastC;
+					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
+							+ senderAgent.agentId, "" + closestAgent.agentId);
+				}
+
+				if (targetUnicast != null) {
+
+					boolean doUnicast = false;
+					if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
+						doUnicast = true;
+					} else {
+						InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
+						if (sim.random.nextDouble() <= interactionQualitySetting
+								.getLevel()) {
+							doUnicast = true;
+						}
+					}
+
+					if (doUnicast) {
+						targetUnicast.setReceiverAgent(closestAgent);
+						targetUnicast.setSenderAgent(senderAgent);
+						targetUnicast.setSignalType(signalType);
+						targetUnicast.setStepClock(-1);
+					}
+				}
+			}
+		}
+
 	}
 
 	public void operationUnicastClosest(SignalType signalType) {
@@ -412,68 +766,14 @@ public abstract class Agent
 			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
-				// find the closest agent...
-				// Agent closestAgent = findClosestModelAgent(this.x, this.y);
-				Agent closestAgent = findClosestAgent(this.x, this.y, 1);
+				if (Main.settings.CONSTRAINED_INTERACTIONS) {
 
-				if (closestAgent != null) {
+					operationUnicastClosest_Constrained(signalType);
 
-					// if this is a hosted agent, we'll UNICAST to the host
-					if (closestAgent.isHosted()) {
-						closestAgent = closestAgent.getHostAgent();
-					}
+				} else {
 
-					Unicast targetUnicast = null;
-					Agent senderAgent = this;
-					if (this.isHosted()) {
-						senderAgent = this.getHostAgent();
-					}
+					operationUnicastClosest_Unconstrained(signalType);
 
-					if (signalType == SignalType.SIGNAL_A) {
-						targetUnicast = closestAgent.receivedUnicastA;
-						sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
-								+ senderAgent.agentId, ""
-								+ closestAgent.agentId);
-					} else if (signalType == SignalType.SIGNAL_B) {
-						targetUnicast = closestAgent.receivedUnicastB;
-						sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
-								+ senderAgent.agentId, ""
-								+ closestAgent.agentId);
-					} else if (signalType == SignalType.SIGNAL_C) {
-						targetUnicast = closestAgent.receivedUnicastC;
-						sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
-								+ senderAgent.agentId, ""
-								+ closestAgent.agentId);
-					}
-
-					if (targetUnicast != null) {
-
-						boolean doUnicast = false;
-						if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
-							doUnicast = true;
-						} else {
-							InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
-							if (sim.random.nextDouble() <= interactionQualitySetting
-									.getLevel()) {
-								doUnicast = true;
-							}
-						}
-
-						if (doUnicast) {
-							targetUnicast.setReceiverAgent(closestAgent);
-							targetUnicast.setSenderAgent(senderAgent);
-							targetUnicast.setSignalType(signalType);
-							targetUnicast.setStepClock(-1);
-						}
-					}
-
-					/*
-					 * D.p("Unicast:" + targetUnicast + "(" + closestAgent.x +
-					 * "," + closestAgent.y + "," + senderAgent.x + "," +
-					 * senderAgent.y + ")" + " distance:" +
-					 * distance(closestAgent.x, closestAgent.y, senderAgent.x,
-					 * senderAgent.y));
-					 */
 				}
 
 			}
@@ -490,50 +790,132 @@ public abstract class Agent
 
 				Unicast targetUnicast = null;
 
-				if (signalType == SignalType.SIGNAL_A) {
+				if (Main.settings.CONSTRAINED_INTERACTIONS) {
+					// constrained
+					Agent receivingAgent = this;
+					Event event = null;
+
 					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastA;
-					} else {
-						targetUnicast = this.receivedUnicastA;
+						receivingAgent = this.getHostAgent();
+					}
+
+					// determine if the appropriate unicast is being received
+					// thats fit to the trait
+
+					if (signalType == SignalType.SIGNAL_A
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.EXTRACTION)) {
+
+						targetUnicast = receivingAgent.receivedUnicastA;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_A_CLOSEST;
+						}
+					}
+
+					if (signalType == SignalType.SIGNAL_B
+							&& this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.TRANSPORTATION)) {
+
+						targetUnicast = receivingAgent.receivedUnicastB;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_B_CLOSEST;
+						}
+					}
+
+					if (signalType == SignalType.SIGNAL_C
+							&& this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.TRANSPORTATION)) {
+
+						targetUnicast = receivingAgent.receivedUnicastC;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_C_CLOSEST;
+						}
+					}
+
+					if (event != null && targetUnicast != null
+							&& targetUnicast.getSenderAgent() != null) {
+						_operationMoveAbsolute(targetUnicast.getSenderX(),
+								targetUnicast.getSenderY());
+						sim.recordEvent(this, event, ""
+								+ targetUnicast.getSenderAgent().getId(), ""
+								+ targetUnicast.getReceiverAgent().getId());
+
+						Agent detectorAgent = this;
+						if (this.isHosted()) {
+							detectorAgent = this.getHostAgent();
+						}
+						if (signalType == SignalType.SIGNAL_A) {
+							detectorAgent.detectedUnicastA = true;
+						} else if (signalType == SignalType.SIGNAL_B) {
+							detectorAgent.detectedUnicastB = true;
+						} else if (signalType == SignalType.SIGNAL_C) {
+							detectorAgent.detectedUnicastC = true;
+						}
+
+					}
+					// end of constrained
+
+				} else {
+
+					// unconstrained
+					if (signalType == SignalType.SIGNAL_A) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastA;
+						} else {
+							targetUnicast = this.receivedUnicastA;
+						}
+
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_A_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+						}
+					} else if (signalType == SignalType.SIGNAL_B) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastB;
+						} else {
+							targetUnicast = this.receivedUnicastB;
+						}
+
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_B_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+						}
+					} else if (signalType == SignalType.SIGNAL_C) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastC;
+						} else {
+							targetUnicast = this.receivedUnicastC;
+						}
+
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_C_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+						}
 					}
 
 					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
+						_operationMoveAbsolute(targetUnicast.getSenderX(),
+								targetUnicast.getSenderY());
 					}
-				} else if (signalType == SignalType.SIGNAL_B) {
-					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastB;
-					} else {
-						targetUnicast = this.receivedUnicastB;
-					}
+					// end of unconstrained
 
-					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
-					}
-				} else if (signalType == SignalType.SIGNAL_C) {
-					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastC;
-					} else {
-						targetUnicast = this.receivedUnicastC;
-					}
-
-					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
-					}
-				}
-
-				if (targetUnicast.getSenderAgent() != null) {
-					_operationMoveAbsolute(targetUnicast.getSenderX(),
-							targetUnicast.getSenderY());
 				}
 
 			}
@@ -548,48 +930,129 @@ public abstract class Agent
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 				Unicast targetUnicast = null;
+				if (Main.settings.CONSTRAINED_INTERACTIONS) {
 
-				if (signalType == SignalType.SIGNAL_A) {
+					// constrained
+					Agent receivingAgent = this;
+					Event event = null;
+
 					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastA;
-					} else {
+						receivingAgent = this.getHostAgent();
+					}
+
+					// determine if the appropriate unicast is being received
+					// thats fit to the trait
+
+					if (signalType == SignalType.SIGNAL_A
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.EXTRACTION)) {
+
 						targetUnicast = this.receivedUnicastA;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_A_CLOSEST;
+						}
 					}
 
-					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
-						result = true;
-					}
-				} else if (signalType == SignalType.SIGNAL_B) {
-					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastB;
-					} else {
+					if (signalType == SignalType.SIGNAL_B
+							&& this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.TRANSPORTATION)) {
+
 						targetUnicast = this.receivedUnicastB;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_B_CLOSEST;
+						}
 					}
 
-					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
-						result = true;
-					}
-				} else if (signalType == SignalType.SIGNAL_C) {
-					if (this.isHosted()) {
-						targetUnicast = this.getHostAgent().receivedUnicastC;
-					} else {
+					if (signalType == SignalType.SIGNAL_C
+							&& this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS
+							&& receivingAgent.getSpecies().getTraits()
+									.contains(Trait.TRANSPORTATION)) {
+
 						targetUnicast = this.receivedUnicastC;
+
+						if (targetUnicast.getSenderAgent() != null) {
+							event = Event.RECEIVED_UNICAST_C_CLOSEST;
+						}
 					}
-					if (targetUnicast.getSenderAgent() != null) {
-						sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST,
-								"" + targetUnicast.getSenderAgent().getId(), ""
-										+ targetUnicast.getReceiverAgent()
-												.getId());
+
+					if (event != null && targetUnicast != null
+							&& targetUnicast.getSenderAgent() != null) {
+
+						sim.recordEvent(this, event, ""
+								+ targetUnicast.getSenderAgent().getId(), ""
+								+ targetUnicast.getReceiverAgent().getId());
 						result = true;
+
+						Agent detectorAgent = this;
+						if (this.isHosted()) {
+							detectorAgent = this.getHostAgent();
+						}
+						if (signalType == SignalType.SIGNAL_A) {
+							detectorAgent.detectedUnicastA = true;
+						} else if (signalType == SignalType.SIGNAL_B) {
+							detectorAgent.detectedUnicastB = true;
+						} else if (signalType == SignalType.SIGNAL_C) {
+							detectorAgent.detectedUnicastC = true;
+						}
+
 					}
+					// end of constrained
+
+				} else {
+
+					// unconstrained version
+					if (signalType == SignalType.SIGNAL_A) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastA;
+						} else {
+							targetUnicast = this.receivedUnicastA;
+						}
+
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_A_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+							result = true;
+						}
+					} else if (signalType == SignalType.SIGNAL_B) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastB;
+						} else {
+							targetUnicast = this.receivedUnicastB;
+						}
+
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_B_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+							result = true;
+						}
+					} else if (signalType == SignalType.SIGNAL_C) {
+						if (this.isHosted()) {
+							targetUnicast = this.getHostAgent().receivedUnicastC;
+						} else {
+							targetUnicast = this.receivedUnicastC;
+						}
+						if (targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this,
+									Event.RECEIVED_UNICAST_C_CLOSEST, ""
+											+ targetUnicast.getSenderAgent()
+													.getId(), ""
+											+ targetUnicast.getReceiverAgent()
+													.getId());
+							result = true;
+						}
+					}
+					// unconstrained version
 				}
 
 			}
@@ -794,6 +1257,50 @@ public abstract class Agent
 	 * @param y
 	 * @return
 	 */
+	public final Agent findClosestAgent(int x, int y, int minimumDistance,
+			Trait agentTrait) {
+		// TODO: find out why some agents can be in the same location
+		// (minimumDistance=0) -- this maybe valid
+
+		Agent closestAgent = null;
+		Bag agentBag = sim.agentGrid.getAllObjects();
+		double closestDistance = Double.MAX_VALUE;
+
+		for (int i = 0; i < agentBag.numObjs; i++) {
+
+			Agent agent = (Agent) agentBag.get(i);
+
+			if (agent.getSpecies().getTraits().contains(agentTrait)) {
+				if (agent == this) {
+					continue;
+				}
+				if (this.isHosted() && agent == this.getHostAgent()) {
+					continue;
+				}
+
+				if (agent.isHosted() && agent.getHostAgent() == this) {
+					continue;
+				}
+
+				double distance = distance(agent.x, agent.y, this.x, this.y);
+				if (distance >= minimumDistance && distance < closestDistance) {
+					closestAgent = agent;
+					closestDistance = distance;
+				}
+			}
+
+		}
+
+		return closestAgent;
+	}
+
+	/**
+	 * Find the closest agent to x and y
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public final Agent findClosestAgent(int x, int y, int minimumDistance) {
 		// TODO: find out why some agents can be in the same location
 		// (minimumDistance=0) -- this maybe valid
@@ -927,74 +1434,251 @@ public abstract class Agent
 	}
 
 	public final void operationExtractResource() {
-		sim.recordEvent(this, Event.ATTEMPT_EXTRACT, NA, NA);
-		if (species.getTraits().contains(Trait.EXTRACTION)) {
+		if (Main.settings.CONSTRAINED_INTERACTIONS) {
+			// constrained
+			sim.recordEvent(this, Event.ATTEMPT_EXTRACT, NA, NA);
+			if (species.getTraits().contains(Trait.EXTRACTION)) {
 
-			if (_operationPerformResourceAction(Task.EXTRACTION,
-					this.sim.resourceGrid)) {
-				// sim.statistics.stepData.resourceExtracts++;
-				sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-				_operationLeaveRewards(sim.detectorRewardGrid,
-						Event.DROPPED_DETECTOR_REWARDS);
+				boolean canExtract = false;
 
+				if (this.isHosted()) {
+					canExtract = this.getHostAgent().detectedBroadcastA
+							|| this.getHostAgent().detectedUnicastA;
+				} else {
+					canExtract = this.detectedBroadcastA
+							|| this.detectedUnicastA;
+				}
+
+				// only extract if allowed
+				if (canExtract
+						&& _operationPerformResourceAction(Task.EXTRACTION,
+								this.sim.resourceGrid)) {
+					// sim.statistics.stepData.resourceExtracts++;
+					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
+					_operationLeaveRewards(sim.detectorRewardGrid,
+							Event.DROPPED_DETECTOR_REWARDS);
+
+					// now reset the detected signal...
+					if (this.isHosted()) {
+						if (this.getHostAgent().detectedBroadcastA) {
+							this.getHostAgent().detectedBroadcastA = false;
+						}
+						if (this.getHostAgent().detectedUnicastA) {
+							this.getHostAgent().detectedUnicastA = false;
+						}
+					} else {
+						if (this.detectedBroadcastA) {
+							this.detectedBroadcastA = false;
+						}
+						if (this.detectedUnicastA) {
+							this.detectedUnicastA = false;
+						}
+					}
+				}
+
+				updateLocationStatus(this.x, this.y);
 			}
 
-			updateLocationStatus(this.x, this.y);
+			// constrained
+
+		} else {
+			// unconstrained
+			sim.recordEvent(this, Event.ATTEMPT_EXTRACT, NA, NA);
+			if (species.getTraits().contains(Trait.EXTRACTION)) {
+
+				if (_operationPerformResourceAction(Task.EXTRACTION,
+						this.sim.resourceGrid)) {
+					// sim.statistics.stepData.resourceExtracts++;
+					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
+					_operationLeaveRewards(sim.detectorRewardGrid,
+							Event.DROPPED_DETECTOR_REWARDS);
+
+				}
+
+				updateLocationStatus(this.x, this.y);
+			}
 		}
 	}
 
 	public void operationProcessResource() {
-		sim.recordEvent(this, Event.ATTEMPT_PROCESS, NA, NA);
-		if (species.getTraits().contains(Trait.PROCESSING)) {
+		if (Main.settings.CONSTRAINED_INTERACTIONS) {
+			// constrained
+			sim.recordEvent(this, Event.ATTEMPT_PROCESS, NA, NA);
 
-			if (_operationPerformResourceAction(Task.PROCESSING,
-					this.sim.resourceGrid)) {
-				// sim.statistics.stepData.resourceProcesses++;
-				sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-				_operationLeaveRewards(sim.extractorRewardGrid,
-						Event.DROPPED_EXTRACTOR_REWARDS);
+			if (species.getTraits().contains(Trait.PROCESSING)) {
+
+				boolean canProcess = false;
+
+				if (this.isHosted()) {
+					canProcess = this.getHostAgent().detectedBroadcastB
+							|| this.getHostAgent().detectedUnicastB;
+				} else {
+					canProcess = this.detectedBroadcastB
+							|| this.detectedUnicastB;
+				}
+
+				if (canProcess
+						&& _operationPerformResourceAction(Task.PROCESSING,
+								this.sim.resourceGrid)) {
+					// sim.statistics.stepData.resourceProcesses++;
+					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
+					_operationLeaveRewards(sim.extractorRewardGrid,
+							Event.DROPPED_EXTRACTOR_REWARDS);
+
+					// now reset the detected signal...
+					if (this.isHosted()) {
+						if (this.getHostAgent().detectedBroadcastB) {
+							this.getHostAgent().detectedBroadcastB = false;
+						}
+						if (this.getHostAgent().detectedUnicastB) {
+							this.getHostAgent().detectedUnicastB = false;
+						}
+					} else {
+						if (this.detectedBroadcastB) {
+							this.detectedBroadcastB = false;
+						}
+						if (this.detectedUnicastB) {
+							this.detectedUnicastB = false;
+						}
+					}
+
+				}
+
+				updateLocationStatus(this.x, this.y);
 			}
+			// constrained
 
-			updateLocationStatus(this.x, this.y);
+		} else {
+			// unconstrained
+			sim.recordEvent(this, Event.ATTEMPT_PROCESS, NA, NA);
+			if (species.getTraits().contains(Trait.PROCESSING)) {
+
+				if (_operationPerformResourceAction(Task.PROCESSING,
+						this.sim.resourceGrid)) {
+					// sim.statistics.stepData.resourceProcesses++;
+					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
+					_operationLeaveRewards(sim.extractorRewardGrid,
+							Event.DROPPED_EXTRACTOR_REWARDS);
+				}
+
+				updateLocationStatus(this.x, this.y);
+			}
+			// unconstrained
 		}
 
 	}
 
 	public final void operationLoadResource() {
-		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
-		if (species.getTraits().contains(Trait.TRANSPORTATION)) {
-			updateLocationStatus(this.x, this.y);
-			if (locationHasExtractedResource || locationHasProcessedResource
-					|| locationHasRawResource) {
-				if (!isCarryingResource) {
-					isCarryingResource = true;
-					stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
+		if (Main.settings.CONSTRAINED_INTERACTIONS) {
+			// constrained...
+			// 3 task: only if B was received
+			// 4 task only if C was received
+			sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
+			if (species.getTraits().contains(Trait.TRANSPORTATION)) {
+				updateLocationStatus(this.x, this.y);
 
-					this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+				boolean canTransport = false;
 
-					// copy over the state of the resource
-					sim.resourceStatusArray[x][y]
-							.cloneTo(statusOfCarriedResource);
-
-					statusOfCarriedResource.numTimesLoaded++;
-
-					// now clear the resource
-					sim.resourceStatusArray[x][y].clear();
-					sim.resourceStatusArray[x][y].state = ResourceState.NULL;
-
-					// need to keep track of this resource...
-					sim.touchedResources.remove(sim.resourceStatusArray[x][y]);
-					sim.touchedResources.add(statusOfCarriedResource);
-
-					updateLocationStatus(this.x, this.y);
-					sim.recordEvent(this, Event.LOADED_RESOURCE, NA, NA);
+				if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+					if (this.isHosted()) {
+						canTransport = this.getHostAgent().detectedBroadcastB
+								|| this.getHostAgent().detectedUnicastB;
+					} else {
+						canTransport = this.detectedBroadcastB
+								|| this.detectedUnicastB;
+					}
+				} else {
+					if (this.isHosted()) {
+						canTransport = this.getHostAgent().detectedBroadcastC
+								|| this.getHostAgent().detectedUnicastC;
+					} else {
+						canTransport = this.detectedBroadcastC
+								|| this.detectedUnicastC;
+					}
 				}
+
+				if (canTransport) {
+					if (locationHasExtractedResource
+							|| locationHasProcessedResource
+							|| locationHasRawResource) {
+						if (!isCarryingResource) {
+							isCarryingResource = true;
+							stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
+
+							this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+
+							// copy over the state of the resource
+							sim.resourceStatusArray[x][y]
+									.cloneTo(statusOfCarriedResource);
+
+							statusOfCarriedResource.numTimesLoaded++;
+
+							// now clear the resource
+							sim.resourceStatusArray[x][y].clear();
+							sim.resourceStatusArray[x][y].state = ResourceState.NULL;
+
+							// need to keep track of this resource...
+							sim.touchedResources
+									.remove(sim.resourceStatusArray[x][y]);
+							sim.touchedResources.add(statusOfCarriedResource);
+
+							updateLocationStatus(this.x, this.y);
+							sim.recordEvent(this, Event.LOADED_RESOURCE, NA, NA);
+						}
+					}
+				}
+
 			}
 
+		} else {
+
+			// unconstrained...
+			sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
+			if (species.getTraits().contains(Trait.TRANSPORTATION)) {
+				updateLocationStatus(this.x, this.y);
+				if (locationHasExtractedResource
+						|| locationHasProcessedResource
+						|| locationHasRawResource) {
+					if (!isCarryingResource) {
+						isCarryingResource = true;
+						stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
+
+						this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+
+						// copy over the state of the resource
+						sim.resourceStatusArray[x][y]
+								.cloneTo(statusOfCarriedResource);
+
+						statusOfCarriedResource.numTimesLoaded++;
+
+						// now clear the resource
+						sim.resourceStatusArray[x][y].clear();
+						sim.resourceStatusArray[x][y].state = ResourceState.NULL;
+
+						// need to keep track of this resource...
+						sim.touchedResources
+								.remove(sim.resourceStatusArray[x][y]);
+						sim.touchedResources.add(statusOfCarriedResource);
+
+						updateLocationStatus(this.x, this.y);
+						sim.recordEvent(this, Event.LOADED_RESOURCE, NA, NA);
+					}
+				}
+
+			}
+			// // unconstrained...
 		}
 	}
 
 	public final void operationUnLoadResource() {
+		if (Main.settings.CONSTRAINED_INTERACTIONS) {
+			operationUnLoadResource_Constrained();
+		} else {
+			operationUnLoadResource_Unconstrained();
+		}
+	}
+
+	public final void operationUnLoadResource_Unconstrained() {
 		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 		if (species.getTraits().contains(Trait.TRANSPORTATION)
 				&& isCarryingResource) {
@@ -1092,6 +1776,175 @@ public abstract class Agent
 
 				}
 
+			}
+
+			updateLocationStatus(this.x, this.y);
+
+		}
+	}
+
+	public final void operationUnLoadResource_Constrained() {
+		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
+		if (species.getTraits().contains(Trait.TRANSPORTATION)
+				&& isCarryingResource) {
+			updateLocationStatus(x, y);
+
+			boolean canTransport = false;
+			if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+				if (this.isHosted()) {
+					canTransport = this.getHostAgent().detectedBroadcastB
+							|| this.getHostAgent().detectedUnicastB;
+				} else {
+					canTransport = this.detectedBroadcastB
+							|| this.detectedUnicastB;
+				}
+			} else {
+				if (this.isHosted()) {
+					canTransport = this.getHostAgent().detectedBroadcastC
+							|| this.getHostAgent().detectedUnicastC;
+				} else {
+					canTransport = this.detectedBroadcastC
+							|| this.detectedUnicastC;
+				}
+			}
+
+			if (canTransport) {
+
+				if (!locationHasExtractedResource
+						&& !locationHasProcessedResource
+						&& !locationHasRawResource) {
+
+					isCarryingResource = false;
+
+					// depending on problem complexity, this resource maybe
+					// ready to be reclaimed or dropped
+
+					boolean dropResource = true; // assume we'll drop it
+
+					if (this.locationIsCollectionSite) {
+						// depending on the problem complexity and current state
+						// this resource maybe reclaimed
+
+						if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+							if (stateOfCarriedResource == ResourceState.EXTRACTED) {
+								dropResource = false;
+								this.sim.numberOfCollectedResources++;
+								sim.recordEvent(this, Event.UNLOADED_RESOURCE,
+										NA, NA);
+								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
+										NA, NA);
+								_operationLeaveRewards(sim.extractorRewardGrid,
+										Event.DROPPED_EXTRACTOR_REWARDS);
+
+								// resource has been collected, now we need to
+								// reset the receive signal flag
+
+								// now reset the detected signal...
+								if (this.isHosted()) {
+									if (this.getHostAgent().detectedBroadcastB) {
+										this.getHostAgent().detectedBroadcastB = false;
+									}
+									if (this.getHostAgent().detectedUnicastB) {
+										this.getHostAgent().detectedUnicastB = false;
+									}
+								} else {
+									if (this.detectedBroadcastB) {
+										this.detectedBroadcastB = false;
+									}
+									if (this.detectedUnicastB) {
+										this.detectedUnicastB = false;
+									}
+								}
+
+								// save over this status
+								ResourceStatus collectedResourceStatus = new ResourceStatus();
+								statusOfCarriedResource
+										.cloneTo(collectedResourceStatus);
+								collectedResourceStatus.captureStep = sim.simStepCounter;
+								sim.touchedResources
+										.remove(statusOfCarriedResource);
+								statusOfCarriedResource.clear();
+								sim.touchedResources
+										.add(collectedResourceStatus);
+
+								// logger.info("CAPTURE!! 3 complex");
+							}
+
+						} else if (this.sim.problemComplexity
+								.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+							if (stateOfCarriedResource == ResourceState.PROCESSED) {
+								dropResource = false;
+								this.sim.numberOfCollectedResources++;
+								sim.recordEvent(this, Event.UNLOADED_RESOURCE,
+										NA, NA);
+								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
+										NA, NA);
+								_operationLeaveRewards(sim.processorRewardGrid,
+										Event.DROPPED_PROCESSOR_REWARDS);
+
+								// now reset the detected signal...
+								if (this.isHosted()) {
+									if (this.getHostAgent().detectedBroadcastC) {
+										this.getHostAgent().detectedBroadcastC = false;
+									}
+									if (this.getHostAgent().detectedUnicastC) {
+										this.getHostAgent().detectedUnicastC = false;
+									}
+								} else {
+									if (this.detectedBroadcastC) {
+										this.detectedBroadcastC = false;
+									}
+									if (this.detectedUnicastC) {
+										this.detectedUnicastC = false;
+									}
+								}
+
+								// save over this status
+								ResourceStatus collectedResourceStatus = new ResourceStatus();
+								statusOfCarriedResource
+										.cloneTo(collectedResourceStatus);
+								collectedResourceStatus.captureStep = sim.simStepCounter;
+								sim.touchedResources
+										.remove(statusOfCarriedResource);
+								statusOfCarriedResource.clear();
+								sim.touchedResources
+										.add(collectedResourceStatus);
+
+								// logger.info("CAPTURE!! 4 complex");
+
+							}
+
+						} else {
+							logger.severe("Problem Complexity Unknown!");
+							System.exit(-1);
+						}
+
+					}
+
+					if (dropResource) {
+						this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+
+						// this is a resource drop...place the resource back in
+						// the
+						// grid
+						statusOfCarriedResource
+								.cloneTo(this.sim.resourceStatusArray[x][y]);
+						this.sim.resourceStatusArray[x][y].x = x;
+						this.sim.resourceStatusArray[x][y].y = y;
+						this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
+
+						// need to keep track of this resource...
+						sim.touchedResources.remove(statusOfCarriedResource);
+						sim.touchedResources
+								.add(this.sim.resourceStatusArray[x][y]);
+
+						statusOfCarriedResource.clear();
+
+						sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+
+					}
+
+				}
 			}
 
 			updateLocationStatus(this.x, this.y);
