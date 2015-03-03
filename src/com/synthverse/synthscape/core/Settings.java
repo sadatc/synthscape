@@ -486,6 +486,13 @@ public class Settings {
 			if (line.hasOption("unconstrained_interactions")) {
 
 				CONSTRAINED_INTERACTIONS = false;
+
+			}
+
+			if (MODEL_INTERACTIONS.toLowerCase().contains("trail")) {
+
+				CONSTRAINED_INTERACTIONS = false;
+				D.p("Warning! With trail interaction, constrained interactions are not allowed, setting to false..");
 			}
 
 			printAndStore("CONSTRAINED_INTERACTIONS = "
