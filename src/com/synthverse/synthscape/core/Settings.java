@@ -108,7 +108,7 @@ public class Settings {
 
 	public boolean CONSTRAINED_INTERACTIONS = true;
 
-	public boolean REPORT_DNA_PROGRESSION = true;
+	public boolean REPORT_DNA_PROGRESSION = false;
 
 	public boolean COMPRESS_DNA_PROGRESSION = false;
 
