@@ -407,6 +407,7 @@ public abstract class Agent
 
 							_operationMoveAbsolute(broadcast.getX(),
 									broadcast.getY());
+							broadcast.markReceived();
 							// TODO: change state such that agent remembers of
 							// having received broadcast
 						}
@@ -427,6 +428,7 @@ public abstract class Agent
 
 						_operationMoveAbsolute(broadcast.getX(),
 								broadcast.getY());
+						broadcast.markReceived();
 
 					}
 
@@ -563,6 +565,7 @@ public abstract class Agent
 							} else if (signalType == SignalType.SIGNAL_C) {
 								detectorAgent.detectedBroadcastC = true;
 							}
+							broadcast.markReceived();
 
 							result = true;
 							// TODO: change state such that agent remembers of
@@ -582,6 +585,7 @@ public abstract class Agent
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
 									NA, "" + this.agentId);
 						}
+						broadcast.markReceived();
 
 						result = true;
 					}

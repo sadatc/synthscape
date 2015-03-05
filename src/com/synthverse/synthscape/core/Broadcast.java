@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.core;
 
+import java.util.BitSet;
+
 /**
  * An interaction that has a source agent, location, and a signal type
  * 
@@ -7,6 +9,10 @@ package com.synthverse.synthscape.core;
  * 
  */
 public class Broadcast {
+
+	static int idCounter = 0;
+	static BitSet sent = new BitSet(1000000);
+	int id;
 
 	private Agent senderAgent;
 
@@ -26,7 +32,9 @@ public class Broadcast {
 		this.y = y;
 		this.signalType = signalType;
 		this.stepClock = stepClock;
-
+		this.id = idCounter;
+		idCounter++;
+		sent.set(this.id);
 	}
 
 	public SignalType getSignalType() {
@@ -67,6 +75,28 @@ public class Broadcast {
 
 	public void setStepClock(int stepClock) {
 		this.stepClock = stepClock;
+	}
+
+	public static void resetIdCounter() {
+		Broadcast.idCounter = 0;
+		sent.clear();
+	}
+
+	public static long getCounter() {
+		return Broadcast.idCounter;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void markReceived() {
+		sent.clear(this.id);
+	}
+
+	static public int getUsed() {
+
+		return sent.cardinality();
 	}
 
 	@Override
