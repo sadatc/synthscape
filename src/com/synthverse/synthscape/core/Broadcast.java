@@ -77,12 +77,12 @@ public class Broadcast {
 		this.stepClock = stepClock;
 	}
 
-	public static void resetIdCounter() {
+	final public static void resetSendReceiveCounters() {
 		Broadcast.idCounter = 0;
 		sent.clear();
 	}
 
-	public static long getCounter() {
+	final public static long getCounter() {
 		return Broadcast.idCounter;
 	}
 
@@ -90,11 +90,11 @@ public class Broadcast {
 		return id;
 	}
 
-	public void markReceived() {
+	final public void markReceived() {
 		sent.clear(this.id);
 	}
 
-	static public int getUsed() {
+	final static public int getUsed() {
 
 		return sent.cardinality();
 	}

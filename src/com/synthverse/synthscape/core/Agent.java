@@ -92,9 +92,9 @@ public abstract class Agent
 
 	protected boolean providedFeedback = false;
 
-	public Unicast receivedUnicastA = new Unicast();
-	public Unicast receivedUnicastB = new Unicast();
-	public Unicast receivedUnicastC = new Unicast();
+	public Unicast receivedUnicastA = null;
+	public Unicast receivedUnicastB = null;
+	public Unicast receivedUnicastC = null;
 
 	public boolean detectedBroadcastA = false;
 	public boolean detectedBroadcastB = false;
@@ -618,15 +618,21 @@ public abstract class Agent
 			}
 
 			if (signalType == SignalType.SIGNAL_A) {
+				closestAgent.receivedUnicastA = new Unicast(SignalType.SIGNAL_A);
 				targetUnicast = closestAgent.receivedUnicastA;
+
 				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
 						+ senderAgent.agentId, "" + closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_B) {
+				closestAgent.receivedUnicastB = new Unicast(SignalType.SIGNAL_B);
 				targetUnicast = closestAgent.receivedUnicastB;
+
 				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
 						+ senderAgent.agentId, "" + closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_C) {
+				closestAgent.receivedUnicastC = new Unicast(SignalType.SIGNAL_C);
 				targetUnicast = closestAgent.receivedUnicastC;
+
 				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
 						+ senderAgent.agentId, "" + closestAgent.agentId);
 			}
@@ -725,15 +731,24 @@ public abstract class Agent
 				}
 
 				if (signalType == SignalType.SIGNAL_A) {
+					closestAgent.receivedUnicastA = new Unicast(
+							SignalType.SIGNAL_A);
 					targetUnicast = closestAgent.receivedUnicastA;
+
 					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
 							+ senderAgent.agentId, "" + closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_B) {
+					closestAgent.receivedUnicastB = new Unicast(
+							SignalType.SIGNAL_B);
 					targetUnicast = closestAgent.receivedUnicastB;
+
 					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
 							+ senderAgent.agentId, "" + closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_C) {
+					closestAgent.receivedUnicastC = new Unicast(
+							SignalType.SIGNAL_C);
 					targetUnicast = closestAgent.receivedUnicastC;
+
 					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
 							+ senderAgent.agentId, "" + closestAgent.agentId);
 				}
@@ -812,7 +827,8 @@ public abstract class Agent
 
 						targetUnicast = receivingAgent.receivedUnicastA;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_A_CLOSEST;
 						}
 					}
@@ -824,7 +840,8 @@ public abstract class Agent
 
 						targetUnicast = receivingAgent.receivedUnicastB;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_B_CLOSEST;
 						}
 					}
@@ -836,7 +853,8 @@ public abstract class Agent
 
 						targetUnicast = receivingAgent.receivedUnicastC;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_C_CLOSEST;
 						}
 					}
@@ -845,9 +863,11 @@ public abstract class Agent
 							&& targetUnicast.getSenderAgent() != null) {
 						_operationMoveAbsolute(targetUnicast.getSenderX(),
 								targetUnicast.getSenderY());
+
 						sim.recordEvent(this, event, ""
 								+ targetUnicast.getSenderAgent().getId(), ""
 								+ targetUnicast.getReceiverAgent().getId());
+						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
 						if (this.isHosted()) {
@@ -874,7 +894,8 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastA;
 						}
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_A_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()
@@ -889,7 +910,8 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastB;
 						}
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_B_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()
@@ -904,7 +926,8 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastC;
 						}
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_C_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()
@@ -914,7 +937,8 @@ public abstract class Agent
 						}
 					}
 
-					if (targetUnicast.getSenderAgent() != null) {
+					if (targetUnicast != null
+							&& targetUnicast.getSenderAgent() != null) {
 						_operationMoveAbsolute(targetUnicast.getSenderX(),
 								targetUnicast.getSenderY());
 					}
@@ -953,7 +977,8 @@ public abstract class Agent
 
 						targetUnicast = this.receivedUnicastA;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_A_CLOSEST;
 						}
 					}
@@ -965,7 +990,8 @@ public abstract class Agent
 
 						targetUnicast = this.receivedUnicastB;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_B_CLOSEST;
 						}
 					}
@@ -977,7 +1003,8 @@ public abstract class Agent
 
 						targetUnicast = this.receivedUnicastC;
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_C_CLOSEST;
 						}
 					}
@@ -989,6 +1016,7 @@ public abstract class Agent
 								+ targetUnicast.getSenderAgent().getId(), ""
 								+ targetUnicast.getReceiverAgent().getId());
 						result = true;
+						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
 						if (this.isHosted()) {
@@ -1015,7 +1043,8 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastA;
 						}
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_A_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()
@@ -1031,7 +1060,8 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastB;
 						}
 
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_B_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()
@@ -1046,7 +1076,8 @@ public abstract class Agent
 						} else {
 							targetUnicast = this.receivedUnicastC;
 						}
-						if (targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null
+								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_C_CLOSEST, ""
 											+ targetUnicast.getSenderAgent()

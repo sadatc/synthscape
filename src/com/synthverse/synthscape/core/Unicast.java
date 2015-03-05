@@ -1,5 +1,7 @@
 package com.synthverse.synthscape.core;
 
+import java.util.BitSet;
+
 /**
  * An interaction that has a source agent, target agent, location, and a signal
  * type
@@ -8,6 +10,10 @@ package com.synthverse.synthscape.core;
  * 
  */
 public class Unicast {
+
+	static int idCounter = 0;
+	static BitSet sent = new BitSet(1000000);
+	int id;
 
 	private Agent senderAgent;
 	private Agent receiverAgent;
@@ -23,6 +29,10 @@ public class Unicast {
 		this(null, null, SignalType.SIGNAL_A, 0);
 	}
 
+	public Unicast(SignalType st) {
+		this(null, null, st, 0);
+	}
+
 	public Unicast(Agent senderAgent, Agent receiverAgent,
 			SignalType signalType, int stepClock) {
 		this.senderAgent = senderAgent;
@@ -33,6 +43,9 @@ public class Unicast {
 			senderX = senderAgent.x;
 			senderY = senderAgent.y;
 		}
+		this.id = idCounter;
+		idCounter++;
+		sent.set(this.id);
 
 	}
 
@@ -94,6 +107,24 @@ public class Unicast {
 
 	public void setSenderY(int senderY) {
 		this.senderY = senderY;
+	}
+
+	final public void markReceived() {
+		sent.clear(this.id);
+	}
+
+	final static public int getUsed() {
+
+		return sent.cardinality();
+	}
+
+	final public static void resetSendReceiveCounters() {
+		Unicast.idCounter = 0;
+		sent.clear();
+	}
+	
+	final public static long getCounter() {
+		return Unicast.idCounter;
 	}
 
 }
