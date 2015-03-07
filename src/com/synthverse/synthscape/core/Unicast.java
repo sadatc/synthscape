@@ -12,7 +12,7 @@ import java.util.BitSet;
 public class Unicast {
 
 	static int idCounter = 0;
-	static BitSet sent = new BitSet(1000000);
+	static BitSet sent = new BitSet(Constants.DEFAULT_BITSET_SIZE);
 	int id;
 
 	private Agent senderAgent;

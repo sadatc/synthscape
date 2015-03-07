@@ -82,4 +82,6 @@ public interface Constants {
 
 	public static final int UNASSIGNED_AGENT_ID = -99;
 
+	public static final int DEFAULT_BITSET_SIZE = 1000000;
+
 }
