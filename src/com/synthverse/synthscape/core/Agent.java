@@ -270,23 +270,24 @@ public abstract class Agent
 		}
 	}
 
-	public void _operationLeaveTrail(DoubleGrid2D trailGridParam) {
+	public void _operationLeaveTrail(TrailGridWrapper trailGridWrapper) {
 		Int2D location = sim.agentGrid.getObjectLocation(this);
 		int x = location.x;
 		int y = location.y;
 
 		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
-			trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX;
+			trailGridWrapper.setTrail(x, y, Constants.TRAIL_LEVEL_MAX);
+			sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
 		} else {
 			InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
 			if (sim.random.nextDouble() <= interactionQualitySetting.getLevel()) {
-				trailGridParam.field[x][y] = Constants.TRAIL_LEVEL_MAX
-						* interactionQualitySetting.getLevel();
+				trailGridWrapper.setTrail(x, y, Constants.TRAIL_LEVEL_MAX);
+				sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
+
 			}
 
 		}
 
-		sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
 	}
 
 	public void _operationLeaveRewards(DoubleGrid2D rewardGrid,
@@ -1096,7 +1097,7 @@ public abstract class Agent
 		return result;
 	}
 
-	public final void _operationFollowTrail(DoubleGrid2D trail) {
+	public final void _operationFollowTrail(TrailGridWrapper trailGridWrapper) {
 		sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 		// we need to check all neighboring cells to detect which one
 		// has the highest concentration of trail A and then
@@ -1107,10 +1108,10 @@ public abstract class Agent
 			for (int deltaY = -1; deltaY <= 1; deltaY++) {
 				// except for the center...
 				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trail.stx(this.x + deltaX);
-					int scanY = trail.sty(this.y + deltaY);
+					int scanX = trailGridWrapper.grid.stx(this.x + deltaX);
+					int scanY = trailGridWrapper.grid.sty(this.y + deltaY);
 
-					double trailAmount = trail.field[scanX][scanY];
+					double trailAmount = trailGridWrapper.grid.field[scanX][scanY];
 					if (trailAmount > maxTrail) {
 						maxTrail = (int) trailAmount;
 						maxX = scanX;
@@ -1125,6 +1126,7 @@ public abstract class Agent
 		if (maxTrail > 0) {
 			sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
 			_operationMoveAbsolute(maxX, maxY);
+			sim.trailGridWrapper.markUsed(maxX, maxY);
 		} else {
 			_operationRandomMove();
 		}
@@ -1380,14 +1382,14 @@ public abstract class Agent
 
 	public final void operationFollowTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-			_operationFollowTrail(sim.trailGrid);
+			_operationFollowTrail(sim.trailGridWrapper);
 			// sim.statistics.stepData.trailFollows++;
 		}
 	}
 
 	public void operationLeaveTrail() {
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
-			_operationLeaveTrail(sim.trailGrid);
+			_operationLeaveTrail(sim.trailGridWrapper);
 			updateLocationStatus(this.x, this.y);
 
 		}
@@ -1461,6 +1463,7 @@ public abstract class Agent
 			if (this.locationHasTrail) {
 				sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, ""
 						+ this.agentId);
+				sim.trailGridWrapper.markUsed(x, y);
 			}
 			return this.locationHasTrail;
 		} else {
@@ -2041,12 +2044,9 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.trailGrid.field[x][y] >= 1) {
+		if (sim.trailGridWrapper.grid.field[x][y] >= 1) {
 			this.locationHasTrail = true;
-			if (locationIsChanging) {
-				sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, ""
-						+ this.agentId);
-			}
+
 		} else {
 			this.locationHasTrail = false;
 		}

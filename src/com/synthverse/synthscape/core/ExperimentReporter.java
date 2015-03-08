@@ -593,7 +593,7 @@ public class ExperimentReporter implements Constants {
 
 				}
 
-				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM";
+				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 
 				performanceWriter.write(columnHeader);
 				performanceWriter.newLine();
@@ -847,14 +847,18 @@ public class ExperimentReporter implements Constants {
 							sbPerformance.append(COMMA);
 							sbPerformance.append(receivedUnicastClosestC);
 						}
-
+						D.p("XXX:"+species+":A:"+sentUnicastClosestA+":"+receivedUnicastClosestA+"--B:"+sentUnicastClosestB+":"+receivedUnicastClosestB);
 					}
 
 					settings.statusCache += species + ":"
 							+ summaryFitnessStats.getMean() + " ";
 
 				}
+				
 
+
+				
+				
 				sbPerformance.append(COMMA);
 				sbPerformance
 						.append(resourceCaptureStats.detectionToCaptureInterval
@@ -877,6 +881,31 @@ public class ExperimentReporter implements Constants {
 				sbPerformance.append(COMMA);
 				sbPerformance.append(resourceCaptureStats.touchedResources
 						.getMean());
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Trail.getCounter());
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Trail.getUsed());
+				Trail.resetSendReceiveCounters();
+				
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Broadcast.getCounter());
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Broadcast.getUsed());
+				Broadcast.resetSendReceiveCounters();
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Unicast.getCounter());
+				
+				sbPerformance.append(COMMA);
+				sbPerformance.append(Unicast.getUsed());
+				Unicast.resetSendReceiveCounters();
+				
+				
+				
 
 				performanceWriter.write(sbPerformance.toString());
 

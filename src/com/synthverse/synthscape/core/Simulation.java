@@ -81,7 +81,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
-	protected DoubleGrid2D trailGrid;
+	//protected DoubleGrid2D trailGridOld;
+	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
 	protected DoubleGrid2D extractorRewardGrid;
 	protected DoubleGrid2D detectorRewardGrid;
@@ -255,7 +256,9 @@ public abstract class Simulation extends SimState implements Constants {
 		resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 		benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 
-		trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		//trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
+		
 		extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
@@ -283,7 +286,7 @@ public abstract class Simulation extends SimState implements Constants {
 		resourceGrid.setTo(ResourceState.NULL);
 		clearResourceStatusArray();
 
-		trailGrid.setTo(ABSENT);
+		trailGridWrapper.grid.setTo(ABSENT);
 		extractorRewardGrid.setTo(ABSENT);
 		detectorRewardGrid.setTo(ABSENT);
 		processorRewardGrid.setTo(ABSENT);
@@ -631,8 +634,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void fadeTrails() {
-		trailGrid.lowerBound(0.0);
-		trailGrid.multiply(DEFAULT_TRAIL_EVAPORATION_CONSTANT);
+		trailGridWrapper.fadeTrails();
 	}
 
 	protected void fadeRewardGrids() {

@@ -102,7 +102,7 @@ public class FancySimulationUI extends SimulationUI {
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.BLACK));
 
-		initPortrayal(trailPortrayal, theState.trailGrid,
+		initPortrayal(trailPortrayal, theState.trailGridWrapper.grid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
