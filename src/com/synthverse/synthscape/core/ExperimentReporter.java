@@ -82,24 +82,23 @@ public class ExperimentReporter implements Constants {
 	}
 
 	private void openFiles() {
+		String seedString = Long.toString(settings.SEED, 16);
 
 		if (simulation.isReportEvents()) {
 			String eventFileName = constructFileName(settings.DATA_DIR,
-					settings.EVENT_DATA_FILE, settings.JOB_NAME, ""
-							+ simulation.seed());
+					settings.EVENT_DATA_FILE, settings.JOB_NAME, seedString);
 			eventWriter = openFile(eventFileName);
 		}
 
 		if (simulation.isReportPerformance()) {
 			String performanceFileName = constructFileName(settings.DATA_DIR,
-					settings.PERFORMANCE_DATA_FILE, settings.JOB_NAME, ""
-							+ simulation.seed());
+					settings.PERFORMANCE_DATA_FILE, settings.JOB_NAME,
+					seedString);
 			performanceWriter = openFile(performanceFileName);
 		}
 
 		String dnaProgressionFileName = constructFileName(settings.DATA_DIR,
-				settings.DNA_PROGRESSION_FILE, settings.JOB_NAME, ""
-						+ simulation.seed());
+				settings.DNA_PROGRESSION_FILE, settings.JOB_NAME, seedString);
 		dnaWriter = openCompressedFile(dnaProgressionFileName);
 
 	}
@@ -192,8 +191,8 @@ public class ExperimentReporter implements Constants {
 						new FileWriter(file.getAbsoluteFile(), false),
 						FILE_IO_BUFFER_SIZE);
 
-				detailWriter.write("SEED=" + simulation.seed() + "-"
-						+ (simulation.seed() + settings.REPEAT - 1));
+				detailWriter.write("SEED=" + settings.SEED + "-"
+						+ (settings.SEED + settings.REPEAT - 1));
 
 				detailWriter.newLine();
 
@@ -218,8 +217,8 @@ public class ExperimentReporter implements Constants {
 	}
 
 	private final String constructFileName(String dir, String fileName,
-			String job, String id) {
-		return dir + File.separator + job + id + "_"
+			String jobName, String simulationSeed) {
+		return dir + File.separator + jobName + "_" + simulationSeed + "_"
 				+ DateUtils.getFileNameDateStamp() + "_" + fileName;
 
 	}
@@ -653,7 +652,8 @@ public class ExperimentReporter implements Constants {
 
 						SummaryStatistics stats = intervalStats
 								.getTypeIntervalStats(type);
-						sbPerformance.append((stats != null) ? stats.getMean()
+						sbPerformance.append((stats != null)
+								? stats.getMean()
 								: "");
 
 					}
@@ -847,18 +847,17 @@ public class ExperimentReporter implements Constants {
 							sbPerformance.append(COMMA);
 							sbPerformance.append(receivedUnicastClosestC);
 						}
-						D.p("XXX:"+species+":A:"+sentUnicastClosestA+":"+receivedUnicastClosestA+"--B:"+sentUnicastClosestB+":"+receivedUnicastClosestB);
+						D.p("XXX:" + species + ":A:" + sentUnicastClosestA
+								+ ":" + receivedUnicastClosestA + "--B:"
+								+ sentUnicastClosestB + ":"
+								+ receivedUnicastClosestB);
 					}
 
 					settings.statusCache += species + ":"
 							+ summaryFitnessStats.getMean() + " ";
 
 				}
-				
 
-
-				
-				
 				sbPerformance.append(COMMA);
 				sbPerformance
 						.append(resourceCaptureStats.detectionToCaptureInterval
@@ -881,31 +880,27 @@ public class ExperimentReporter implements Constants {
 				sbPerformance.append(COMMA);
 				sbPerformance.append(resourceCaptureStats.touchedResources
 						.getMean());
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Trail.getCounter());
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Trail.getUsed());
 				Trail.resetSendReceiveCounters();
-				
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Broadcast.getCounter());
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Broadcast.getUsed());
 				Broadcast.resetSendReceiveCounters();
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Unicast.getCounter());
-				
+
 				sbPerformance.append(COMMA);
 				sbPerformance.append(Unicast.getUsed());
 				Unicast.resetSendReceiveCounters();
-				
-				
-				
 
 				performanceWriter.write(sbPerformance.toString());
 
@@ -971,7 +966,8 @@ public class ExperimentReporter implements Constants {
 
 						SummaryStatistics stats = intervalStats
 								.getTypeIntervalStats(type);
-						sbPerformance.append((stats != null) ? stats.getMean()
+						sbPerformance.append((stats != null)
+								? stats.getMean()
 								: "");
 
 					}

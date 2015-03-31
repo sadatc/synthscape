@@ -603,7 +603,11 @@ public class Settings {
 				ByteBuffer bb = ByteBuffer.wrap(sbuf);
 				long secureRandom = bb.getLong();
 				secureRandom += System.nanoTime();
-				SEED = (JOB_SET * REPEAT) + SEED + secureRandom;
+				if (line.hasOption("job_set")) {
+					SEED = (JOB_SET * REPEAT) + SEED + secureRandom;
+				} else {
+					SEED = secureRandom;
+				}
 				if (SEED < 0) {
 					SEED = -SEED;
 				}
