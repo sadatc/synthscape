@@ -593,7 +593,6 @@ public class Settings {
 						.longValue();
 
 				SEED = (JOB_SET * REPEAT) + SEED;
-
 			}
 			printAndStore("JOB_SET = " + JOB_SET);
 
@@ -611,7 +610,6 @@ public class Settings {
 				if (SEED < 0) {
 					SEED = -SEED;
 				}
-
 			}
 
 			D.p("SEED = " + SEED);
@@ -694,7 +692,7 @@ public class Settings {
 			} else {
 				System.err.println("Parsing failed.  Reason: "
 						+ exp.getMessage());
-				//formatter.printHelp("com.synthverse.Main", options);
+				// formatter.printHelp("com.synthverse.Main", options);
 				System.exit(1);
 			}
 		}
