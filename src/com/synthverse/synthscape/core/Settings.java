@@ -694,7 +694,7 @@ public class Settings {
 			} else {
 				System.err.println("Parsing failed.  Reason: "
 						+ exp.getMessage());
-				formatter.printHelp("com.synthverse.Main", options);
+				//formatter.printHelp("com.synthverse.Main", options);
 				System.exit(1);
 			}
 		}
