@@ -135,10 +135,11 @@ public class Settings {
 	public void processCommandLineInput(String[] args) {
 		// build up all the command line options
 		Options options = new Options();
+		
 
 		options.addOption(new Option("help", "print this message"));
-		options.addOption(new Option("include_entropy",
-				"attempt to include entroy in SEED"));
+		options.addOption(new Option("random_seed",
+				"always start with random seed"));
 		options.addOption(new Option("no_randomization",
 				"do not randomize each sim [default: randomize]"));
 		options.addOption(new Option("show_graphics",
@@ -596,7 +597,7 @@ public class Settings {
 			}
 			printAndStore("JOB_SET = " + JOB_SET);
 
-			if (line.hasOption("include_entropy")) {
+			if (line.hasOption("random_seed")) {
 				SecureRandom sec = new SecureRandom();
 				byte[] sbuf = sec.generateSeed(8);
 				ByteBuffer bb = ByteBuffer.wrap(sbuf);
