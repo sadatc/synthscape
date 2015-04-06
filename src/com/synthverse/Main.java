@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulation;
+import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulationFancyUI;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulationFancyUI;
@@ -31,12 +32,24 @@ public class Main {
 				}
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
 				// embodied model
-				EmbodiedEvolutionSimulation.main(args);
+				if (settings.SHOW_GRAPHICS) {
+
+					throw new RuntimeException(
+							"Graphics mode for Embodied model has not been implemented");
+
+				} else {
+					EmbodiedEvolutionSimulation.main(args);
+				}
 
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
 				// alife model
 
-				ALifeEvolutionSimulation.main(args);
+				if (settings.SHOW_GRAPHICS) {
+					ALifeEvolutionSimulationFancyUI.main(args);
+				} else {
+					ALifeEvolutionSimulation.main(args);
+
+				}
 
 			} else {
 				logger.severe("UNKNOWN MODEL REQUESTED!");
