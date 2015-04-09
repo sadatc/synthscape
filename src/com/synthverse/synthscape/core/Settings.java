@@ -135,17 +135,21 @@ public class Settings {
 	public void processCommandLineInput(String[] args) {
 		// build up all the command line options
 		Options options = new Options();
-		
 
 		options.addOption(new Option("help", "print this message"));
+
 		options.addOption(new Option("random_seed",
 				"always start with random seed"));
+
 		options.addOption(new Option("no_randomization",
 				"do not randomize each sim [default: randomize]"));
+
 		options.addOption(new Option("show_graphics",
 				"show graphics [default: don't show graphics]"));
+
 		options.addOption(new Option("clustered",
 				"start agent clustered [default: distributed]"));
+
 		options.addOption(new Option("peer_rewards",
 				"peer rewards [default: no peer rewards]"));
 
@@ -168,31 +172,27 @@ public class Settings {
 				.create("species"));
 
 		options.addOption(OptionBuilder
-				.withArgName("interactions")
+				.withArgName("int")
 				.isRequired()
 				.hasArg()
 				.withDescription(
 						"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
-				.create("interactions"));
+				.create("int"));
+
+		options.addOption(new Option(("unconstrained"),
+				"use unconstrainted interactions [default: constrained]"));
 
 		options.addOption(OptionBuilder
-				.withArgName("unconstrained_interactions")
-				.hasArg()
-				.withDescription(
-						"use unconstrainted interactions [default: constrained]")
-				.create("unconstrained_interactions"));
-
-		options.addOption(OptionBuilder
-				.withArgName("interaction_quality")
+				.withArgName("iquality")
 				.hasArg()
 				.withDescription(
 						"interaction quality (highest, high, medium, low/poor) [highest]")
-				.create("interaction_quality"));
+				.create("iquality"));
 
-		options.addOption(OptionBuilder.withArgName("generations").hasArg()
+		options.addOption(OptionBuilder.withArgName("gen").hasArg()
 				.withType(Integer.class)
 				.withDescription("maximum generations [" + GENERATIONS + "]")
-				.create("generations"));
+				.create("gen"));
 
 		options.addOption(OptionBuilder
 				.withArgName("clones")
@@ -202,18 +202,18 @@ public class Settings {
 						"clones per species [" + CLONES_PER_SPECIES + "]")
 				.create("clones"));
 
-		options.addOption(OptionBuilder.withArgName("pool_size").hasArg()
+		options.addOption(OptionBuilder.withArgName("psize").hasArg()
 				.withType(Integer.class)
 				.withDescription("gene pool size [" + GENE_POOL_SIZE + "]")
-				.create("pool_size"));
+				.create("psize"));
 
 		options.addOption(OptionBuilder
-				.withArgName("collection_site_density")
+				.withArgName("cdensity")
 				.hasArg()
 				.withType(Integer.class)
 				.withDescription(
-						"collection site density [" + COLLECTION_SITE_DENSITY
-								+ "]").create("collection_site_density"));
+						"cdensity [" + COLLECTION_SITE_DENSITY
+								+ "]").create("cdensity"));
 
 		options.addOption(OptionBuilder.withArgName("width").hasArg()
 				.withType(Integer.class)
@@ -225,25 +225,25 @@ public class Settings {
 				.withDescription("world height [" + WORLD_HEIGHT + "]")
 				.create("height"));
 
-		options.addOption(OptionBuilder.withArgName("benchmark_generation")
+		options.addOption(OptionBuilder.withArgName("bench")
 				.hasArg().withType(Integer.class)
 				.withDescription("max steps [" + BENCHMARK_GENERATION + "]")
-				.create("benchmark_generation"));
+				.create("bench"));
 
-		options.addOption(OptionBuilder.withArgName("max_steps").hasArg()
+		options.addOption(OptionBuilder.withArgName("msteps").hasArg()
 				.withType(Integer.class)
 				.withDescription("max steps [" + MAX_STEPS_PER_AGENT + "]")
-				.create("max_steps"));
+				.create("msteps"));
 
-		options.addOption(OptionBuilder.withArgName("obstacle_density")
-				.hasArg().withType(Double.class)
+		options.addOption(OptionBuilder.withArgName("odensity").hasArg()
+				.withType(Double.class)
 				.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]")
-				.create("obstacle_density"));
+				.create("odensity"));
 
-		options.addOption(OptionBuilder.withArgName("resource_density")
-				.hasArg().withType(Double.class)
+		options.addOption(OptionBuilder.withArgName("rdensity").hasArg()
+				.withType(Double.class)
 				.withDescription("resource density [" + RESOURCE_DENSITY + "]")
-				.create("resource_density"));
+				.create("rdensity"));
 
 		options.addOption(OptionBuilder
 				.withArgName("goal")
@@ -258,9 +258,9 @@ public class Settings {
 				.withDescription("repeat experiment [" + REPEAT + "]")
 				.create("repeat"));
 
-		options.addOption(OptionBuilder.withArgName("data_dir").hasArg()
+		options.addOption(OptionBuilder.withArgName("ddir").hasArg()
 				.withDescription("data dir [" + DATA_DIR + "]")
-				.create("data_dir"));
+				.create("ddir"));
 
 		options.addOption(OptionBuilder.withArgName("job_name").hasArg()
 				.withDescription("job name [" + JOB_NAME + "]")
@@ -269,34 +269,34 @@ public class Settings {
 		options.addOption(OptionBuilder.withArgName("job_set").hasArg()
 				.withDescription("job set [" + JOB_SET + "]").create("job_set"));
 
-		options.addOption(OptionBuilder.withArgName("preset_geno").hasArg()
+		options.addOption(OptionBuilder.withArgName("preset").hasArg()
 				.withDescription("(noops, actions, random) [random]")
-				.create("preset_geno"));
+				.create("preset"));
 
 		options.addOption(OptionBuilder
-				.withArgName("mating_success")
+				.withArgName("ms")
 				.hasArg()
 				.withType(Double.class)
 				.withDescription(
 						"mating success rate [" + MATING_SUCCESS_RATE + "]")
-				.create("mating_success"));
+				.create("ms"));
 
 		options.addOption(OptionBuilder
-				.withArgName("mating_prox_rad")
+				.withArgName("mpr")
 				.hasArg()
 				.withType(Integer.class)
 				.withDescription(
 						"mating proximity radius [" + MATING_PROXIMITY_RADIUS
-								+ "]").create("mating_prox_rad"));
+								+ "]").create("mpr"));
 
 		options.addOption(OptionBuilder
-				.withArgName("mating_gen_freq")
+				.withArgName("mgf")
 				.hasArg()
 				.withType(Integer.class)
 				.withDescription(
 						"mating generation frequency ["
 								+ MATING_GENERATION_FREQUENCY + "]")
-				.create("mating_gen_freq"));
+				.create("mgf"));
 
 		options.addOption(OptionBuilder.withArgName("seed").hasArg()
 				.withType(Long.class)
@@ -374,36 +374,36 @@ public class Settings {
 			printAndStore("PERC_RESOURCE_CAPTURE_GOAL = "
 					+ PERC_RESOURCE_CAPTURE_GOAL);
 
-			if (line.hasOption("obstacle_density")) {
+			if (line.hasOption("odensity")) {
 				OBSTACLE_DENSITY = new Double(
-						line.getOptionValue("obstacle_density")).doubleValue();
+						line.getOptionValue("odensity")).doubleValue();
 			}
 
 			printAndStore("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
 
-			if (line.hasOption("resource_density")) {
-				RESOURCE_DENSITY = new Double(
-						line.getOptionValue("resource_density")).doubleValue();
+			if (line.hasOption("rdensity")) {
+				RESOURCE_DENSITY = new Double(line.getOptionValue("rdensity"))
+						.doubleValue();
 			}
 			printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
-			if (line.hasOption("mating_success")) {
+			if (line.hasOption("ms")) {
 				MATING_SUCCESS_RATE = new Double(
-						line.getOptionValue("mating_success")).doubleValue();
+						line.getOptionValue("ms")).doubleValue();
 			}
 			printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
-			if (line.hasOption("mating_prox_rad")) {
+			if (line.hasOption("mpr")) {
 				MATING_PROXIMITY_RADIUS = new Integer(
-						line.getOptionValue("mating_prox_rad")).intValue();
+						line.getOptionValue("mpr")).intValue();
 
 			}
 			printAndStore("MATING_PROXIMITY_RADIUS = "
 					+ MATING_PROXIMITY_RADIUS);
 
-			if (line.hasOption("mating_gen_freq")) {
+			if (line.hasOption("mgf")) {
 				MATING_GENERATION_FREQUENCY = new Integer(
-						line.getOptionValue("mating_gen_freq")).intValue();
+						line.getOptionValue("mgf")).intValue();
 
 			}
 			printAndStore("MATING_GENERATION_FREQUENCY = "
@@ -450,8 +450,8 @@ public class Settings {
 			}
 			printAndStore("MODEL_SPECIES = " + MODEL_SPECIES);
 
-			if (line.hasOption("interactions")) {
-				String interactions = line.getOptionValue("interactions")
+			if (line.hasOption("int")) {
+				String interactions = line.getOptionValue("int")
 						.toLowerCase();
 				if (!(interactions.contains("none")
 						|| interactions.contains("trail")
@@ -465,8 +465,8 @@ public class Settings {
 			}
 			printAndStore("MODEL_INTERACTIONS = " + MODEL_INTERACTIONS);
 
-			if (line.hasOption("interaction_quality")) {
-				String quality = line.getOptionValue("interaction_quality")
+			if (line.hasOption("iquality")) {
+				String quality = line.getOptionValue("iquality")
 						.toLowerCase();
 				if (quality.contains("poor") || quality.contains("low")) {
 					INTERACTION_QUALITY = InteractionQuality.POOR;
@@ -477,14 +477,14 @@ public class Settings {
 				} else if (quality.contains("high")) {
 					INTERACTION_QUALITY = InteractionQuality.HIGH;
 				} else {
-					throw new ParseException("interactions_quality: " + quality
+					throw new ParseException("iquality: " + quality
 							+ " was not recognized");
 				}
 
 			}
 			printAndStore("INTERACTION_QUALITY = " + INTERACTION_QUALITY);
 
-			if (line.hasOption("unconstrained_interactions")) {
+			if (line.hasOption("unconstrained")) {
 
 				CONSTRAINED_INTERACTIONS = false;
 
@@ -499,15 +499,15 @@ public class Settings {
 			printAndStore("CONSTRAINED_INTERACTIONS = "
 					+ CONSTRAINED_INTERACTIONS);
 
-			if (line.hasOption("generations")) {
-				GENERATIONS = new Integer(line.getOptionValue("generations"))
+			if (line.hasOption("gen")) {
+				GENERATIONS = new Integer(line.getOptionValue("gen"))
 						.intValue();
 
 			}
 			printAndStore("GENERATIONS = " + GENERATIONS);
 
-			if (line.hasOption("preset_geno")) {
-				String seedPreset = line.getOptionValue("preset_geno");
+			if (line.hasOption("preset")) {
+				String seedPreset = line.getOptionValue("preset");
 				if (seedPreset.equalsIgnoreCase("random")) {
 					SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.RANDOM;
 				}
@@ -518,7 +518,7 @@ public class Settings {
 					SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
 
 				} else {
-					throw new ParseException("preset_geno: " + seedPreset
+					throw new ParseException("preset: " + seedPreset
 							+ " was not recognized");
 				}
 
@@ -534,8 +534,8 @@ public class Settings {
 			}
 			printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
-			if (line.hasOption("pool_size")) {
-				GENE_POOL_SIZE = new Integer(line.getOptionValue("pool_size"))
+			if (line.hasOption("psize")) {
+				GENE_POOL_SIZE = new Integer(line.getOptionValue("psize"))
 						.intValue();
 				EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
 
@@ -544,9 +544,9 @@ public class Settings {
 			printAndStore("EMBODIED_AGENT_POOL_SIZE = "
 					+ EMBODIED_AGENT_POOL_SIZE);
 
-			if (line.hasOption("collection_site_density")) {
+			if (line.hasOption("cdensity")) {
 				COLLECTION_SITE_DENSITY = new Double(
-						line.getOptionValue("collection_site_density"))
+						line.getOptionValue("cdensity"))
 						.intValue();
 
 			}
@@ -569,16 +569,16 @@ public class Settings {
 
 			MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
 
-			if (line.hasOption("max_steps")) {
+			if (line.hasOption("msteps")) {
 				MAX_STEPS_PER_AGENT = new Integer(
-						line.getOptionValue("max_steps")).intValue();
+						line.getOptionValue("msteps")).intValue();
 
 			}
 			printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
-			if (line.hasOption("benchmark_generation")) {
+			if (line.hasOption("bench")) {
 				BENCHMARK_GENERATION = new Integer(
-						line.getOptionValue("benchmark_generation")).intValue();
+						line.getOptionValue("bench")).intValue();
 
 			}
 			printAndStore("BENCHMARK_GENERATION = " + BENCHMARK_GENERATION);
@@ -615,8 +615,8 @@ public class Settings {
 
 			D.p("SEED = " + SEED);
 
-			if (line.hasOption("data_dir")) {
-				DATA_DIR = line.getOptionValue("data_dir");
+			if (line.hasOption("ddir")) {
+				DATA_DIR = line.getOptionValue("ddir");
 
 				File dir = new File(DATA_DIR);
 				if (dir.exists() && dir.isDirectory()) {
