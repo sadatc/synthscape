@@ -409,8 +409,6 @@ public abstract class Agent
 							_operationMoveAbsolute(broadcast.getX(),
 									broadcast.getY());
 							broadcast.markReceived();
-							// TODO: change state such that agent remembers of
-							// having received broadcast
 						}
 
 					} else {
@@ -569,8 +567,7 @@ public abstract class Agent
 							broadcast.markReceived();
 
 							result = true;
-							// TODO: change state such that agent remembers of
-							// having received broadcast
+
 						}
 
 					} else {

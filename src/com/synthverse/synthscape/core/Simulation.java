@@ -158,8 +158,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void init() throws Exception {
-		// TODO: init is not common across all evaluators, they need to be fixed
-		// at some point
+
 		settings.experimentNumber++;
 
 		// we can compute the server name and batch ID right away
@@ -817,8 +816,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public void recordEvent(Agent agent, Event event, String source,
 			String destination) {
-		// TODO: fix reportEvent so it can take ints too for source and
-		// destination
+
 		agent.eventStats.recordValue(event);
 
 		// additional stats we are interested in:
