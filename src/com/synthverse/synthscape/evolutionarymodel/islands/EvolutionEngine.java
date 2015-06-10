@@ -310,7 +310,7 @@ public final class EvolutionEngine implements Constants {
 	}
 
 	public String getPoolCompositionString() {
-		String msg = "";
+		String msg = EMPTY_STRING;
 
 		int fitnessBin = (int) activeBuffer.get(0).getFitness();
 
