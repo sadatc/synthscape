@@ -84,4 +84,8 @@ public interface Constants {
 
 	public static final int DEFAULT_BITSET_SIZE = 1000000;
 
+	public static final String CSV_DOUBLE_FORMAT = "%.3f";
+	
+	public static final String EMPTY_STRING = "";
+
 }
