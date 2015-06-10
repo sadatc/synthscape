@@ -112,7 +112,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		batchId = Long.toHexString(System.currentTimeMillis());
 
-		InstructionTranslator.logStatus();
+		//InstructionTranslator.logStatus();
 
 		setGenePoolSize(configGenePoolSize());
 		setReportEvents(configIsReportEvents());
