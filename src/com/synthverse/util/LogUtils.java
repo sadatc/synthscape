@@ -30,8 +30,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.synthverse.stacks.Config;
+import com.synthverse.synthscape.core.Constants;
 
-public final class LogUtils {
+public final class LogUtils implements Constants {
 
 	public static final int MAX_FILE_RECORD_LIMIT = 1000000;
 	public static final int MAX_FILE_COUNT = 10;
@@ -54,7 +55,7 @@ public final class LogUtils {
 	private static final String FINER_SYMBOL = "~~ ";
 	private static final String FINEST_SYMBOL = "~~~";
 
-	private static final String EMPTY_STRING = "";
+	
 	private static DateFormat dateFormat = null;
 
 	static {
@@ -126,7 +127,7 @@ public final class LogUtils {
 			java.util.logging.SimpleFormatter {
 		public String format(LogRecord record) {
 
-			StringBuilder SB = new StringBuilder("");
+			StringBuilder SB = new StringBuilder(EMPTY_STRING);
 			SB.append(dateFormat.format(new Date(record.getMillis())));
 			SB.append("|");
 
@@ -140,7 +141,7 @@ public final class LogUtils {
 			java.util.logging.SimpleFormatter {
 		public String format(LogRecord record) {
 
-			StringBuilder SB = new StringBuilder("");
+			StringBuilder SB = new StringBuilder(EMPTY_STRING);
 			SB.append(dateFormat.format(new Date(record.getMillis())));
 			SB.append("|");
 
@@ -176,7 +177,7 @@ public final class LogUtils {
 	private static class CustomDetailedLogFormatter extends
 			java.util.logging.SimpleFormatter {
 		public String format(LogRecord record) {
-			StringBuilder SB = new StringBuilder("");
+			StringBuilder SB = new StringBuilder(EMPTY_STRING);
 			SB.append(record.getMillis());
 			SB.append(":");
 			SB.append(record.getLevel().toString());
@@ -201,7 +202,7 @@ public final class LogUtils {
 	private static class CustomSimplestLogFormatter extends
 			java.util.logging.SimpleFormatter {
 		public String format(LogRecord record) {
-			StringBuilder SB = new StringBuilder("");
+			StringBuilder SB = new StringBuilder(EMPTY_STRING);
 			SB.append(record.getMessage());
 			SB.append("\n");
 			return SB.toString();
