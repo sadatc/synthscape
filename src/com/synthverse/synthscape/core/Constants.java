@@ -36,7 +36,7 @@ public interface Constants {
 
 	public static final int ABSENT = 0;
 
-	public static final String NA = "-1";
+	public static final int NA = -1;
 
 	public static final int TRAIL_LEVEL_MAX = 100;
 
