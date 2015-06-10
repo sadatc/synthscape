@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.util.LogUtils;
 
-public class GenotypeInstruction {
+public class GenotypeInstruction implements Constants {
 	private static Logger logger = Logger.getLogger(GenotypeInstruction.class
 			.getName());
 	static {
@@ -39,11 +40,11 @@ public class GenotypeInstruction {
 		if (instructionType == InstructionType.INSTRUCTION) {
 			result = instruction.getMnemonic().charAt(0);
 		} else if (instructionType == InstructionType.INT_VALUE) {
-			result = ("" + intValue).charAt(0);
+			result = (Integer.toString(intValue)).charAt(0);
 		} else if (instructionType == InstructionType.BOOL_VALUE) {
 			result = booleanValue ? 'T' : 'F';
 		} else if (instructionType == InstructionType.FLOAT_VALUE) {
-			result = ("" + floatValue).charAt(0);
+			result = (Double.toString(floatValue)).charAt(0);
 		} else {
 			logger.severe("FATAL error in determining instruction type. Program should have never reached here...");
 			System.exit(1);
@@ -56,15 +57,15 @@ public class GenotypeInstruction {
 	@Override
 	public String toString() {
 
-		String result = "";
+		String result = EMPTY_STRING;
 		if (instructionType == InstructionType.INSTRUCTION) {
 			result = instruction.toString();
 		} else if (instructionType == InstructionType.INT_VALUE) {
-			result = "" + intValue;
+			result = Integer.toString(intValue);
 		} else if (instructionType == InstructionType.BOOL_VALUE) {
-			result = "" + booleanValue;
+			result = Boolean.toString(booleanValue);
 		} else if (instructionType == InstructionType.FLOAT_VALUE) {
-			result = "" + floatValue;
+			result = Double.toString(floatValue);
 		} else {
 			logger.info("FATAL error in determining instruction type. Program should have never reached here...");
 			System.exit(1);
