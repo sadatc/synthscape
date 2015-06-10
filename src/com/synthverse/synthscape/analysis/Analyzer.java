@@ -67,7 +67,7 @@ public class Analyzer implements Constants {
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine line = parser.parse(options, args);
-		String directoryName = "";
+		String directoryName = EMPTY_STRING;
 		String outFileName = null;
 
 		if (line.hasOption("outfile")
@@ -322,7 +322,7 @@ public class Analyzer implements Constants {
 			String value = values[i].trim();
 			double doubleValue = 0.0;
 			// if it's empty or nan re-interpret as 0
-			if (value.equals("") || value.equalsIgnoreCase("nan")) {
+			if (value.equals(EMPTY_STRING) || value.equalsIgnoreCase("nan")) {
 				// do nothing...
 			} else {
 				doubleValue = new Double(value).doubleValue();
