@@ -10,7 +10,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import com.synthverse.Main;
 import com.synthverse.util.LogUtils;
 
-public class IntervalStats {
+public class IntervalStats implements Constants {
 
 	private static Logger logger = Logger.getLogger(IntervalStats.class
 			.getName());
@@ -246,7 +246,7 @@ public class IntervalStats {
 			for (EventType type : eventTypes) {
 
 				SummaryStatistics stats = eventTypeIntervalStatsMap.get(type);
-				String msg = "";
+				String msg = EMPTY_STRING;
 
 				msg += " n=" + stats.getN();
 				msg += "\tmin=" + stats.getMin();
