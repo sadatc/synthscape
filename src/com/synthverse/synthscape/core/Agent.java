@@ -277,12 +277,12 @@ public abstract class Agent
 
 		if (Main.settings.INTERACTION_QUALITY == InteractionQuality.HIGHEST) {
 			trailGridWrapper.setTrail(x, y, Constants.TRAIL_LEVEL_MAX);
-			sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
+			sim.recordEvent(this, Event.SENT_TRAIL, this.agentId, NA);
 		} else {
 			InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
 			if (sim.random.nextDouble() <= interactionQualitySetting.getLevel()) {
 				trailGridWrapper.setTrail(x, y, Constants.TRAIL_LEVEL_MAX);
-				sim.recordEvent(this, Event.SENT_TRAIL, "" + this.agentId, NA);
+				sim.recordEvent(this, Event.SENT_TRAIL, this.agentId, NA);
 
 			}
 
@@ -296,7 +296,7 @@ public abstract class Agent
 
 			// rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
 			rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
-			sim.recordEvent(this, rewardEvent, "" + this.agentId, NA);
+			sim.recordEvent(this, rewardEvent, this.agentId, NA);
 
 		}
 
@@ -392,7 +392,7 @@ public abstract class Agent
 						}
 						if (signalType != null && event != null) {
 
-							sim.recordEvent(this, event, NA, "" + this.agentId);
+							sim.recordEvent(this, event, NA, this.agentId);
 
 							Agent detectorAgent = this;
 							if (this.isHosted()) {
@@ -416,13 +416,13 @@ public abstract class Agent
 						// unconstrained version
 						if (signalType == SignalType.SIGNAL_A) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_B) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_C) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						}
 
 						_operationMoveAbsolute(broadcast.getX(),
@@ -469,7 +469,7 @@ public abstract class Agent
 						Broadcast broadcast = new Broadcast(this,
 								finalSignalType, this.x, this.y, 0);
 						sim.registerBroadcast(broadcast);
-						sim.recordEvent(this, event, "" + this.agentId, NA);
+						sim.recordEvent(this, event, this.agentId, NA);
 					}
 
 				} else {
@@ -480,14 +480,14 @@ public abstract class Agent
 					sim.registerBroadcast(broadcast);
 
 					if (signalType == SignalType.SIGNAL_A) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_A, ""
-								+ this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_A,
+								this.agentId, NA);
 					} else if (signalType == SignalType.SIGNAL_B) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_B, ""
-								+ this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_B,
+								this.agentId, NA);
 					} else if (signalType == SignalType.SIGNAL_C) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_C, ""
-								+ this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_C,
+								this.agentId, NA);
 					}
 				}
 
@@ -551,7 +551,7 @@ public abstract class Agent
 						}
 						if (finalSignalType != null && event != null) {
 
-							sim.recordEvent(this, event, NA, "" + this.agentId);
+							sim.recordEvent(this, event, NA, this.agentId);
 
 							Agent detectorAgent = this;
 							if (this.isHosted()) {
@@ -575,13 +575,13 @@ public abstract class Agent
 						// unconstrained
 						if (signalType == SignalType.SIGNAL_A) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_B) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_C) {
 							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
-									NA, "" + this.agentId);
+									NA, this.agentId);
 						}
 						broadcast.markReceived();
 
@@ -619,20 +619,20 @@ public abstract class Agent
 				closestAgent.receivedUnicastA = new Unicast(SignalType.SIGNAL_A);
 				targetUnicast = closestAgent.receivedUnicastA;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
-						+ senderAgent.agentId, "" + closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST,
+						senderAgent.agentId, closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_B) {
 				closestAgent.receivedUnicastB = new Unicast(SignalType.SIGNAL_B);
 				targetUnicast = closestAgent.receivedUnicastB;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
-						+ senderAgent.agentId, "" + closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST,
+						senderAgent.agentId, closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_C) {
 				closestAgent.receivedUnicastC = new Unicast(SignalType.SIGNAL_C);
 				targetUnicast = closestAgent.receivedUnicastC;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
-						+ senderAgent.agentId, "" + closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST,
+						senderAgent.agentId, closestAgent.agentId);
 			}
 
 			if (targetUnicast != null) {
@@ -707,7 +707,7 @@ public abstract class Agent
 			/*
 			 * Broadcast broadcast = new Broadcast(this, signalType, this.x,
 			 * this.y, 0); sim.registerBroadcast(broadcast);
-			 * sim.recordEvent(this, event, "" + this.agentId, NA);
+			 * sim.recordEvent(this, event, this.agentId, NA);
 			 */
 
 			// FIXME: code here
@@ -733,22 +733,22 @@ public abstract class Agent
 							SignalType.SIGNAL_A);
 					targetUnicast = closestAgent.receivedUnicastA;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, ""
-							+ senderAgent.agentId, "" + closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST,
+							senderAgent.agentId, closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_B) {
 					closestAgent.receivedUnicastB = new Unicast(
 							SignalType.SIGNAL_B);
 					targetUnicast = closestAgent.receivedUnicastB;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, ""
-							+ senderAgent.agentId, "" + closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST,
+							senderAgent.agentId, closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_C) {
 					closestAgent.receivedUnicastC = new Unicast(
 							SignalType.SIGNAL_C);
 					targetUnicast = closestAgent.receivedUnicastC;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, ""
-							+ senderAgent.agentId, "" + closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST,
+							senderAgent.agentId, closestAgent.agentId);
 				}
 
 				if (targetUnicast != null) {
@@ -862,9 +862,11 @@ public abstract class Agent
 						_operationMoveAbsolute(targetUnicast.getSenderX(),
 								targetUnicast.getSenderY());
 
-						sim.recordEvent(this, event, ""
-								+ targetUnicast.getSenderAgent().getId(), ""
-								+ targetUnicast.getReceiverAgent().getId());
+						sim.recordEvent(this, event, EMPTY_STRING
+								+ targetUnicast.getSenderAgent().getId(),
+								EMPTY_STRING
+										+ targetUnicast.getReceiverAgent()
+												.getId());
 						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
@@ -895,9 +897,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_A_CLOSEST, ""
+									Event.RECEIVED_UNICAST_A_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 						}
@@ -911,9 +914,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_B_CLOSEST, ""
+									Event.RECEIVED_UNICAST_B_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 						}
@@ -927,9 +931,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_C_CLOSEST, ""
+									Event.RECEIVED_UNICAST_C_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 						}
@@ -1010,9 +1015,11 @@ public abstract class Agent
 					if (event != null && targetUnicast != null
 							&& targetUnicast.getSenderAgent() != null) {
 
-						sim.recordEvent(this, event, ""
-								+ targetUnicast.getSenderAgent().getId(), ""
-								+ targetUnicast.getReceiverAgent().getId());
+						sim.recordEvent(this, event, EMPTY_STRING
+								+ targetUnicast.getSenderAgent().getId(),
+								EMPTY_STRING
+										+ targetUnicast.getReceiverAgent()
+												.getId());
 						result = true;
 						targetUnicast.markReceived();
 
@@ -1044,9 +1051,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_A_CLOSEST, ""
+									Event.RECEIVED_UNICAST_A_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 							result = true;
@@ -1061,9 +1069,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_B_CLOSEST, ""
+									Event.RECEIVED_UNICAST_B_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 							result = true;
@@ -1077,9 +1086,10 @@ public abstract class Agent
 						if (targetUnicast != null
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_C_CLOSEST, ""
+									Event.RECEIVED_UNICAST_C_CLOSEST,
+									EMPTY_STRING
 											+ targetUnicast.getSenderAgent()
-													.getId(), ""
+													.getId(), EMPTY_STRING
 											+ targetUnicast.getReceiverAgent()
 													.getId());
 							result = true;
@@ -1121,7 +1131,7 @@ public abstract class Agent
 		// or move randomly
 
 		if (maxTrail > 0) {
-			sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, "" + this.agentId);
+			sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, this.agentId);
 			_operationMoveAbsolute(maxX, maxY);
 			sim.trailGridWrapper.markUsed(maxX, maxY);
 		} else {
@@ -1458,8 +1468,7 @@ public abstract class Agent
 		if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 			updateLocationStatus(x, y);
 			if (this.locationHasTrail) {
-				sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, ""
-						+ this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_TRAIL, NA, this.agentId);
 				sim.trailGridWrapper.markUsed(x, y);
 			}
 			return this.locationHasTrail;
@@ -2020,24 +2029,24 @@ public abstract class Agent
 		if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
 			this.locationHasExtractorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA, ""
-						+ this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA,
+						this.agentId);
 			}
 		}
 
 		if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
 			this.locationHasDetectorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA, ""
-						+ this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA,
+						this.agentId);
 			}
 		}
 
 		if (sim.processorRewardGrid.field[x][y] >= 1.0) {
 			this.locationHasProcessorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA, ""
-						+ this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA,
+						this.agentId);
 			}
 		}
 
@@ -2090,7 +2099,7 @@ public abstract class Agent
 	}
 
 	public String getSignature() {
-		String result = "" + this.getAgentId();
+		String result = Integer.toString(this.getAgentId());
 		if (this.program != null) {
 			result += ":" + this.program.getSignature();
 
@@ -2100,7 +2109,7 @@ public abstract class Agent
 	}
 
 	public String getFingerPrint() {
-		String result = "" + this.getAgentId();
+		String result = Integer.toString(this.getAgentId());
 		if (this.program != null) {
 			result += ":" + this.program.getFingerPrint();
 
