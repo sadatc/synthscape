@@ -169,7 +169,7 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		batchId = Long.toHexString(System.currentTimeMillis());
 
-		InstructionTranslator.logStatus();
+		//InstructionTranslator.logStatus();
 
 		setGenePoolSize(configGenePoolSize());
 		setReportEvents(configIsReportEvents());
