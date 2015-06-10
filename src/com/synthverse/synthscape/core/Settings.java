@@ -16,13 +16,13 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-public class Settings {
+public class Settings implements Constants {
 
 	public enum SeedType {
 		NOOPS, ACTIONS, RANDOM;
 	}
 
-	private static Settings instance = null;
+	private static Settings instance = null; 
 
 	public boolean SHOW_GRAPHICS = false;
 
@@ -118,7 +118,7 @@ public class Settings {
 
 	public int experimentNumber = 0;
 
-	public String statusCache = "";
+	public String statusCache = EMPTY_STRING;
 
 	public int generationCounter = 0;
 
@@ -409,7 +409,7 @@ public class Settings {
 			printAndStore("MATING_GENERATION_FREQUENCY = "
 					+ MATING_GENERATION_FREQUENCY);
 
-			if (line.hasOption("seed")) {
+			if (line.hasOption("seed")) { 
 				SEED = new Integer(line.getOptionValue("seed")).longValue();
 
 			}
@@ -639,7 +639,7 @@ public class Settings {
 
 			if (line.hasOption("job_name")) {
 				String jobName = line.getOptionValue("job_name");
-				if (!jobName.trim().equals("")) {
+				if (!jobName.trim().equals(EMPTY_STRING)) {
 					JOB_NAME = jobName;
 				}
 
