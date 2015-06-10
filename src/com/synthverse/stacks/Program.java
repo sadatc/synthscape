@@ -19,6 +19,8 @@ package com.synthverse.stacks;
 
 import java.util.Arrays;
 
+import com.synthverse.synthscape.core.Constants;
+
 import ec.util.MersenneTwisterFast;
 
 /**
@@ -31,7 +33,7 @@ import ec.util.MersenneTwisterFast;
  * @author sadat
  * 
  */
-public class Program {
+public class Program implements Constants {
 
 	private GenotypeInstruction[] genotypeArray = null;
 	private int size;
@@ -136,7 +138,7 @@ public class Program {
 	}
 
 	public final String getFingerPrint() {
-		String result = "";
+		String result = EMPTY_STRING;
 		if (size > 0) {
 			for (int i = 0; i < size && i < 50; i++) {
 				result += genotypeArray[i].getFingerPrint();
