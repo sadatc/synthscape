@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.ProblemComplexity;
-import com.synthverse.synthscape.core.SignalType;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -249,7 +249,7 @@ public class InstructionTranslator {
 		logger.info(sb.toString());
 
 		for (Instruction instruction : instructions) {
-			D.p("" + instruction);
+			D.p(instruction.toString());
 		}
 
 		logger.info("<<< done adding.\n");
