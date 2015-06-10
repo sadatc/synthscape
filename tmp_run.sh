@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xms256M -Xmx512M -jar /tmp/synthscape_build/synthscape.jar "$@"
+java -Xms2048M -Xmx2048M -jar /tmp/synthscape_build/synthscape.jar "$@"
