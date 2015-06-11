@@ -25,7 +25,6 @@ import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 
 import com.synthverse.Main;
-import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.LogUtils;
 
@@ -81,7 +80,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
-	//protected DoubleGrid2D trailGridOld;
+	// protected DoubleGrid2D trailGridOld;
 	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
 	protected DoubleGrid2D extractorRewardGrid;
@@ -169,7 +168,7 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		batchId = Long.toHexString(System.currentTimeMillis());
 
-		//InstructionTranslator.logStatus();
+		// InstructionTranslator.logStatus();
 
 		setGenePoolSize(configGenePoolSize());
 		setReportEvents(configIsReportEvents());
@@ -255,9 +254,9 @@ public abstract class Simulation extends SimState implements Constants {
 		resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 		benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 
-		//trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
-		
+
 		extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
@@ -814,21 +813,10 @@ public abstract class Simulation extends SimState implements Constants {
 		startSimulation();
 	}
 
-	public void recordEvent(Agent agent, Event event, String source,
-			String destination) {
+	public void recordEvent(Agent agent, Event event, long source,
+			long destination) {
 
 		agent.eventStats.recordValue(event);
-
-		// additional stats we are interested in:
-		// time between detections
-		// time between extractions
-		// time between processing
-		// time between loads
-		// time between unloads
-		// time between captures
-		// time between tasks! (any of the above)
-
-		// time between trails, interactions, broadcasts, unicasts
 
 		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
 		intervalStats.recordValue(event, agent.getSpecies(), simStepCounter);
