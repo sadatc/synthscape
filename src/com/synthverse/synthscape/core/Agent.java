@@ -862,11 +862,9 @@ public abstract class Agent
 						_operationMoveAbsolute(targetUnicast.getSenderX(),
 								targetUnicast.getSenderY());
 
-						sim.recordEvent(this, event, EMPTY_STRING
-								+ targetUnicast.getSenderAgent().getId(),
-								EMPTY_STRING
-										+ targetUnicast.getReceiverAgent()
-												.getId());
+						sim.recordEvent(this, event, targetUnicast
+								.getSenderAgent().getId(), targetUnicast
+								.getReceiverAgent().getId());
 						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
@@ -898,11 +896,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_A_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
 						if (this.isHosted()) {
@@ -915,11 +910,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_B_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
 						if (this.isHosted()) {
@@ -932,11 +924,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_C_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 						}
 					}
 
@@ -1015,11 +1004,9 @@ public abstract class Agent
 					if (event != null && targetUnicast != null
 							&& targetUnicast.getSenderAgent() != null) {
 
-						sim.recordEvent(this, event, EMPTY_STRING
-								+ targetUnicast.getSenderAgent().getId(),
-								EMPTY_STRING
-										+ targetUnicast.getReceiverAgent()
-												.getId());
+						sim.recordEvent(this, event, targetUnicast
+								.getSenderAgent().getId(), targetUnicast
+								.getReceiverAgent().getId());
 						result = true;
 						targetUnicast.markReceived();
 
@@ -1052,11 +1039,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_A_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
@@ -1070,11 +1054,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_B_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
@@ -1087,11 +1068,8 @@ public abstract class Agent
 								&& targetUnicast.getSenderAgent() != null) {
 							sim.recordEvent(this,
 									Event.RECEIVED_UNICAST_C_CLOSEST,
-									EMPTY_STRING
-											+ targetUnicast.getSenderAgent()
-													.getId(), EMPTY_STRING
-											+ targetUnicast.getReceiverAgent()
-													.getId());
+									targetUnicast.getSenderAgent().getId(),
+									targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					}
