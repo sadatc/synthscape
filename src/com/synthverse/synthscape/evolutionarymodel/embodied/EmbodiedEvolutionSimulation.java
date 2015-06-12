@@ -56,9 +56,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			Species.class);
 
 	int generation = 0;
-	
+
 	long reportTime = System.currentTimeMillis();
-	
+	long deltaTime = 0;
+	long allocatedMemory = 0;
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -115,7 +116,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 		batchId = Long.toHexString(System.currentTimeMillis());
 
-		//InstructionTranslator.logStatus();
+		// InstructionTranslator.logStatus();
 
 		setGenePoolSize(configGenePoolSize());
 		setReportEvents(configIsReportEvents());
@@ -169,7 +170,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				DEFAULT_FLUSH_ALWAYS_FLAG);
 
 		isToroidalWorld = TOROIDAL_FLAG;
-		
 
 	}
 
@@ -315,18 +315,26 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 
 		// resourceCaptureStats.printStats();
+		
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime
+				.getRuntime().freeMemory()) / (1024 * 1024);
+		long currentTime = System.currentTimeMillis();
+		deltaTime = currentTime - reportTime;
+
+		
 		experimentReporter.reportPerformanceEmbodiedModel(generation,
 				intervalStats, generationEventStats, speciesEventStatsMap,
 				agents, captureStats, populationFitnessStats,
 				simsRunForThisGeneration, resourceCaptureStats,
-				this.simulationCounter);
+				this.simulationCounter, deltaTime,
+				allocatedMemory);
 
-		long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/(1024*1024);
-		long currentTime = System.currentTimeMillis();
+		
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
 				+ "; best_capture: " + captureStats.getMax() + " ["
-				+ settings.statusCache + "] time_delta_ms="+(currentTime - reportTime)+" allocMB="+allocatedMemory);
+				+ settings.statusCache + "] time_delta_ms=" + deltaTime
+				+ " allocMB=" + allocatedMemory);
 		reportTime = currentTime;
 
 		// clear pool generation event stats for next generation...
@@ -427,12 +435,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				+ numberOfObstacles + " sites=" + numberOfCollectionSites
 				+ " resources=" + numberOfResources + " agents="
 				+ agents.size());
-		
 
 		setStartDate();
 		experimentReporter.initReporter();
-		
-		
+
 		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step

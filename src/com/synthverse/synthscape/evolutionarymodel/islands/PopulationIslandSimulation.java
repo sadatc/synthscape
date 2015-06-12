@@ -40,6 +40,8 @@ public class PopulationIslandSimulation extends Simulation {
 
 	int generation = 0;
 	long reportTime = System.currentTimeMillis();
+	long deltaTime = 0;
+	long allocatedMemory = 0;
 
 	public static Settings settings = Settings.getInstance();
 
@@ -203,7 +205,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 		setStartDate();
 		experimentReporter.initReporter();
-		
+
 		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step
@@ -307,17 +309,21 @@ public class PopulationIslandSimulation extends Simulation {
 
 		// resourceCaptureStats.printStats();
 
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime
+				.getRuntime().freeMemory()) / (1024 * 1024);
+		long currentTime = System.currentTimeMillis();
+		deltaTime = currentTime - reportTime;
+
 		experimentReporter.reportPerformanceIslandModel(generation,
 				intervalStats, simEventStats, speciesEventStatsMap,
 				captureStats, populationFitnessStats, simsRunForThisGeneration,
 				resourceCaptureStats, archipelagoEvolver.speciesIslandMap,
-				this.simulationCounter);
-		long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/(1024*1024);
+				this.simulationCounter, deltaTime, allocatedMemory);
 
-		long currentTime = System.currentTimeMillis();
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
-				+ "; best_capture: " + captureStats.getMax()+" time_delta_ms="+(currentTime - reportTime)+" allocMB="+allocatedMemory);
+				+ "; best_capture: " + captureStats.getMax()
+				+ " time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
 		reportTime = currentTime;
 
 		clearSpeciesEventStats();

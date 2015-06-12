@@ -51,7 +51,7 @@ public class ExperimentReporter implements Constants {
 	private HashMap<Integer, StringBuilder> poolAlphaMap = new HashMap<Integer, StringBuilder>();
 
 	private final static char COMMA = ',';
-	
+
 	private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 	private StringBuilder sbPerformance = new StringBuilder(
 			STRING_BUFFER_MAX_SIZE);
@@ -171,7 +171,8 @@ public class ExperimentReporter implements Constants {
 	private void writeExperimentDetails() {
 
 		settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR,
-				settings.EXPERIMENT_DETAILS_FILE_MAIN, settings.JOB_NAME, EMPTY_STRING);
+				settings.EXPERIMENT_DETAILS_FILE_MAIN, settings.JOB_NAME,
+				EMPTY_STRING);
 
 		// if this is a whole set of experiments sharing the same job
 		// description
@@ -271,27 +272,33 @@ public class ExperimentReporter implements Constants {
 				eventWriter.append(COMMA);
 				eventWriter.append(Integer.toString(simulation.getGridWidth()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation.getGridHeight()));
+				eventWriter
+						.append(Integer.toString(simulation.getGridHeight()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Double.toString(simulation.getObstacleDensity()));
+				eventWriter.append(Double.toString(simulation
+						.getObstacleDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Double.toString(simulation.getResourceDensity()));
+				eventWriter.append(Double.toString(simulation
+						.getResourceDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation.getClonesPerSpecies()));
+				eventWriter.append(Integer.toString(simulation
+						.getClonesPerSpecies()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation.getGenePoolSize()));
+				eventWriter.append(Integer.toString(simulation
+						.getGenePoolSize()));
 				eventWriter.append(COMMA);
 
-				eventWriter
-						.append(Integer.toString(simulation.getNumberOfCollectionSites()));
+				eventWriter.append(Integer.toString(simulation
+						.getNumberOfCollectionSites()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation.getMaxStepsPerAgent()));
+				eventWriter.append(Integer.toString(simulation
+						.getMaxStepsPerAgent()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation.getProblemComplexity().getId()));
+				eventWriter.append(Integer.toString(simulation
+						.getProblemComplexity().getId()));
 				eventWriter.append(COMMA);
 
-				eventWriter
-						.append(simulation.getSpeciesCompositionString());
+				eventWriter.append(simulation.getSpeciesCompositionString());
 
 				eventWriter.append(COMMA);
 
@@ -523,7 +530,7 @@ public class ExperimentReporter implements Constants {
 			if (simulation.isReportPerformance()) {
 				numberOfSpecies = simulation.speciesComposition.size();
 
-				String columnHeader = "GENERATION, SIMS, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+				String columnHeader = "GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
 				for (EventType type : EventType.values()) {
 					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
 						continue;
@@ -612,7 +619,8 @@ public class ExperimentReporter implements Constants {
 			EnumMap<Species, EventStats> speciesEventStatsMap,
 			ArrayList<Agent> agents, SummaryStatistics captureStats,
 			SummaryStatistics populationFitnessStats, long simsRun,
-			ResourceCaptureStats resourceCaptureStats, long simCounter) {
+			ResourceCaptureStats resourceCaptureStats, long simCounter,
+			long timeDelta, long allocatedMemory) {
 		try {
 
 			if (simulation.isReportPerformance()) {
@@ -623,6 +631,12 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, simCounter);
+
+				formattedAppend(sbPerformance, COMMA);
+				formattedAppend(sbPerformance, timeDelta);
+				
+				formattedAppend(sbPerformance, COMMA);
+				formattedAppend(sbPerformance, allocatedMemory);
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, captureStats.getSum());
@@ -938,11 +952,10 @@ public class ExperimentReporter implements Constants {
 
 	}
 
-	
 	public final void formattedAppend(StringBuilder sb, char value) {
 		sb.append(value);
 	}
-	
+
 	public final void formattedAppend(StringBuilder sb, int value) {
 		sb.append(value);
 	}
@@ -956,8 +969,8 @@ public class ExperimentReporter implements Constants {
 	}
 
 	public final void formattedAppend(StringBuilder sb, double value) {
-		//sb.append(value);
-		sb.append( String.format( Constants.CSV_DOUBLE_FORMAT, value ));
+		// sb.append(value);
+		sb.append(String.format(Constants.CSV_DOUBLE_FORMAT, value));
 	}
 
 	public void reportPerformanceIslandModel(int generationCounter,
@@ -967,7 +980,7 @@ public class ExperimentReporter implements Constants {
 			SummaryStatistics populationFitnessStats, long simsRun,
 			ResourceCaptureStats resourceCaptureStats,
 			LinkedHashMap<Species, PopulationIslandEvolver> speciesIslandMap,
-			long simCounter) {
+			long simCounter, long timeDelta, long allocatedMemory) {
 		try {
 			if (simulation.isReportPerformance()) {
 
@@ -978,6 +991,12 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, simCounter);
 				formattedAppend(sbPerformance, COMMA);
+				
+				formattedAppend(sbPerformance, COMMA);
+				formattedAppend(sbPerformance, timeDelta);
+				
+				formattedAppend(sbPerformance, COMMA);
+				formattedAppend(sbPerformance, allocatedMemory);
 
 				formattedAppend(sbPerformance, captureStats.getSum());
 				formattedAppend(sbPerformance, COMMA);
