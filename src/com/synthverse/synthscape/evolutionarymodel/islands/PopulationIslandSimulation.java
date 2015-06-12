@@ -39,6 +39,7 @@ public class PopulationIslandSimulation extends Simulation {
 	private Team team = new Team();
 
 	int generation = 0;
+	long reportTime = System.currentTimeMillis();
 
 	public static Settings settings = Settings.getInstance();
 
@@ -310,10 +311,14 @@ public class PopulationIslandSimulation extends Simulation {
 				resourceCaptureStats, archipelagoEvolver.speciesIslandMap,
 				this.simulationCounter);
 
+		long currentTime = System.currentTimeMillis();
+		
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
-				+ "; best_capture: " + captureStats.getMax());
+				+ "; best_capture: " + captureStats.getMax() + "time_delta_ms="+(currentTime - reportTime));
 
+		reportTime = currentTime;
+		
 		clearSpeciesEventStats();
 		captureStats.clear();
 		populationFitnessStats.clear();

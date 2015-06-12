@@ -56,6 +56,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			Species.class);
 
 	int generation = 0;
+	long reportTime = System.currentTimeMillis();
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -316,12 +317,16 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				agents, captureStats, populationFitnessStats,
 				simsRunForThisGeneration, resourceCaptureStats,
 				this.simulationCounter);
-
+		
+		long currentTime = System.currentTimeMillis();
+		
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
 				+ "; best_capture: " + captureStats.getMax() + " ["
-				+ settings.statusCache + "]");
+				+ settings.statusCache + "] time_delta_ms="+(currentTime - reportTime));
 
+		reportTime = currentTime;
+		
 		// clear pool generation event stats for next generation...
 		for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
