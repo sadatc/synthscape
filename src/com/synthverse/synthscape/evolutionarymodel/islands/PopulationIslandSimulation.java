@@ -310,12 +310,14 @@ public class PopulationIslandSimulation extends Simulation {
 				captureStats, populationFitnessStats, simsRunForThisGeneration,
 				resourceCaptureStats, archipelagoEvolver.speciesIslandMap,
 				this.simulationCounter);
-
+		
+		long allocatedMemory = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/(1024*1024);
+		
 		long currentTime = System.currentTimeMillis();
 		
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
-				+ "; best_capture: " + captureStats.getMax() + "time_delta_ms="+(currentTime - reportTime));
+				+ "; best_capture: " + captureStats.getMax() + "time_delta_ms="+(currentTime - reportTime)+" allocMB="+allocatedMemory);
 
 		reportTime = currentTime;
 		
