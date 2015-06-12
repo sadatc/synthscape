@@ -437,6 +437,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				+ agents.size());
 
 		setStartDate();
+		
+		// this synchronizes the seed value for repeated experiments
+		settings.SEED = (int) this.seed();
 		experimentReporter.initReporter();
 
 		reportTime = System.currentTimeMillis();
@@ -502,6 +505,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
+						//settings.resetRandomSeedIfNeeded(state);
 					}
 				}
 			}

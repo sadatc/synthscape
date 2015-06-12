@@ -689,6 +689,10 @@ public abstract class Simulation extends SimState implements Constants {
 				+ agents.size());
 
 		setStartDate();
+
+		// this synchronizes the seed value for repeated experiments
+		settings.SEED = (int) this.seed();
+
 		experimentReporter.initReporter();
 
 		// this is run at the end of each step
@@ -746,6 +750,7 @@ public abstract class Simulation extends SimState implements Constants {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
+						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}
 			}

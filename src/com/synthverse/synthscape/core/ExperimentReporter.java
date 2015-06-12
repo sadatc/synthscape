@@ -83,7 +83,7 @@ public class ExperimentReporter implements Constants {
 	}
 
 	private void openFiles() {
-		String seedString = Long.toString(settings.SEED, 16);
+		String seedString = Integer.toString(settings.SEED, 16);
 
 		if (simulation.isReportEvents()) {
 			String eventFileName = constructFileName(settings.DATA_DIR,

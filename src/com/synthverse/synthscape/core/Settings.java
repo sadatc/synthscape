@@ -16,13 +16,15 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import sim.engine.SimState;
+
 public class Settings implements Constants {
 
 	public enum SeedType {
 		NOOPS, ACTIONS, RANDOM;
 	}
 
-	private static Settings instance = null; 
+	private static Settings instance = null;
 
 	public boolean SHOW_GRAPHICS = false;
 
@@ -30,7 +32,7 @@ public class Settings implements Constants {
 
 	public boolean PEER_REWARDS = false;
 
-	public long SEED = 1;
+	public int SEED = 1;
 
 	public int GENERATIONS = 1000;
 
@@ -90,7 +92,9 @@ public class Settings implements Constants {
 
 	public String JOB_NAME = "test";
 
-	public long JOB_SET = 0;
+	public int JOB_SET = 0;
+
+	public boolean RANDOMIZE_SIM_SEED = false;
 
 	public String PERFORMANCE_DATA_FILE = "perf_dat.csv";
 
@@ -207,13 +211,10 @@ public class Settings implements Constants {
 				.withDescription("gene pool size [" + GENE_POOL_SIZE + "]")
 				.create("psize"));
 
-		options.addOption(OptionBuilder
-				.withArgName("cdensity")
-				.hasArg()
+		options.addOption(OptionBuilder.withArgName("cdensity").hasArg()
 				.withType(Integer.class)
-				.withDescription(
-						"cdensity [" + COLLECTION_SITE_DENSITY
-								+ "]").create("cdensity"));
+				.withDescription("cdensity [" + COLLECTION_SITE_DENSITY + "]")
+				.create("cdensity"));
 
 		options.addOption(OptionBuilder.withArgName("width").hasArg()
 				.withType(Integer.class)
@@ -225,8 +226,8 @@ public class Settings implements Constants {
 				.withDescription("world height [" + WORLD_HEIGHT + "]")
 				.create("height"));
 
-		options.addOption(OptionBuilder.withArgName("bench")
-				.hasArg().withType(Integer.class)
+		options.addOption(OptionBuilder.withArgName("bench").hasArg()
+				.withType(Integer.class)
 				.withDescription("max steps [" + BENCHMARK_GENERATION + "]")
 				.create("bench"));
 
@@ -259,8 +260,7 @@ public class Settings implements Constants {
 				.create("repeat"));
 
 		options.addOption(OptionBuilder.withArgName("ddir").hasArg()
-				.withDescription("data dir [" + DATA_DIR + "]")
-				.create("ddir"));
+				.withDescription("data dir [" + DATA_DIR + "]").create("ddir"));
 
 		options.addOption(OptionBuilder.withArgName("job_name").hasArg()
 				.withDescription("job name [" + JOB_NAME + "]")
@@ -375,8 +375,8 @@ public class Settings implements Constants {
 					+ PERC_RESOURCE_CAPTURE_GOAL);
 
 			if (line.hasOption("odensity")) {
-				OBSTACLE_DENSITY = new Double(
-						line.getOptionValue("odensity")).doubleValue();
+				OBSTACLE_DENSITY = new Double(line.getOptionValue("odensity"))
+						.doubleValue();
 			}
 
 			printAndStore("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
@@ -388,8 +388,8 @@ public class Settings implements Constants {
 			printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
 			if (line.hasOption("ms")) {
-				MATING_SUCCESS_RATE = new Double(
-						line.getOptionValue("ms")).doubleValue();
+				MATING_SUCCESS_RATE = new Double(line.getOptionValue("ms"))
+						.doubleValue();
 			}
 			printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
@@ -409,8 +409,8 @@ public class Settings implements Constants {
 			printAndStore("MATING_GENERATION_FREQUENCY = "
 					+ MATING_GENERATION_FREQUENCY);
 
-			if (line.hasOption("seed")) { 
-				SEED = new Integer(line.getOptionValue("seed")).longValue();
+			if (line.hasOption("seed")) {
+				SEED = new Integer(line.getOptionValue("seed")).intValue();
 
 			}
 
@@ -451,8 +451,7 @@ public class Settings implements Constants {
 			printAndStore("MODEL_SPECIES = " + MODEL_SPECIES);
 
 			if (line.hasOption("int")) {
-				String interactions = line.getOptionValue("int")
-						.toLowerCase();
+				String interactions = line.getOptionValue("int").toLowerCase();
 				if (!(interactions.contains("none")
 						|| interactions.contains("trail")
 						|| interactions.contains("broadcast") || interactions
@@ -466,8 +465,7 @@ public class Settings implements Constants {
 			printAndStore("MODEL_INTERACTIONS = " + MODEL_INTERACTIONS);
 
 			if (line.hasOption("iquality")) {
-				String quality = line.getOptionValue("iquality")
-						.toLowerCase();
+				String quality = line.getOptionValue("iquality").toLowerCase();
 				if (quality.contains("poor") || quality.contains("low")) {
 					INTERACTION_QUALITY = InteractionQuality.POOR;
 				} else if (quality.contains("medium")) {
@@ -546,8 +544,7 @@ public class Settings implements Constants {
 
 			if (line.hasOption("cdensity")) {
 				COLLECTION_SITE_DENSITY = new Double(
-						line.getOptionValue("cdensity"))
-						.intValue();
+						line.getOptionValue("cdensity")).intValue();
 
 			}
 			printAndStore("COLLECTION_SITE_DENSITY = "
@@ -570,15 +567,15 @@ public class Settings implements Constants {
 			MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
 
 			if (line.hasOption("msteps")) {
-				MAX_STEPS_PER_AGENT = new Integer(
-						line.getOptionValue("msteps")).intValue();
+				MAX_STEPS_PER_AGENT = new Integer(line.getOptionValue("msteps"))
+						.intValue();
 
 			}
 			printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
 			if (line.hasOption("bench")) {
-				BENCHMARK_GENERATION = new Integer(
-						line.getOptionValue("bench")).intValue();
+				BENCHMARK_GENERATION = new Integer(line.getOptionValue("bench"))
+						.intValue();
 
 			}
 			printAndStore("BENCHMARK_GENERATION = " + BENCHMARK_GENERATION);
@@ -591,26 +588,15 @@ public class Settings implements Constants {
 
 			if (line.hasOption("job_set")) {
 				JOB_SET = new Integer(line.getOptionValue("job_set"))
-						.longValue();
+						.intValue();
 
 				SEED = (JOB_SET * REPEAT) + SEED;
 			}
 			printAndStore("JOB_SET = " + JOB_SET);
 
 			if (line.hasOption("random_seed")) {
-				SecureRandom sec = new SecureRandom();
-				byte[] sbuf = sec.generateSeed(8);
-				ByteBuffer bb = ByteBuffer.wrap(sbuf);
-				long secureRandom = bb.getLong();
-				secureRandom += System.nanoTime();
-				if (line.hasOption("job_set")) {
-					SEED = (JOB_SET * REPEAT) + SEED + secureRandom;
-				} else {
-					SEED = secureRandom;
-				}
-				if (SEED < 0) {
-					SEED = -SEED;
-				}
+				this.RANDOMIZE_SIM_SEED = true;
+				SEED = Settings.getSecureRandom();
 			}
 
 			D.p("SEED = " + SEED);
@@ -700,6 +686,22 @@ public class Settings implements Constants {
 
 	}
 
+	public static SecureRandom secureRandomDevice = new SecureRandom();
+
+	public final static int getSecureRandom() {
+
+		byte[] sbuf = secureRandomDevice.generateSeed(32);
+		ByteBuffer bb = ByteBuffer.wrap(sbuf);
+		int secureRandom = bb.getInt();
+		secureRandom += (int) System.nanoTime();
+		
+		// this ensures always +ve numbers
+		if(secureRandom < 0) {
+			secureRandom = -secureRandom;
+		}
+		return secureRandom;
+	}
+
 	public static Settings getInstance() {
 		if (instance == null) {
 			instance = new Settings();
@@ -707,6 +709,14 @@ public class Settings implements Constants {
 
 		return instance;
 
+	}
+
+	public final void resetRandomSeedIfNeeded(SimState simState) {
+		if (RANDOMIZE_SIM_SEED) {
+			SEED = Settings.getSecureRandom();
+			simState.setSeed(SEED);
+			
+		}
 	}
 
 }
