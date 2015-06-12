@@ -169,6 +169,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				DEFAULT_FLUSH_ALWAYS_FLAG);
 
 		isToroidalWorld = TOROIDAL_FLAG;
+		
 
 	}
 
@@ -425,9 +426,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				+ numberOfObstacles + " sites=" + numberOfCollectionSites
 				+ " resources=" + numberOfResources + " agents="
 				+ agents.size());
+		
 
 		setStartDate();
 		experimentReporter.initReporter();
+		
+		
+		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {

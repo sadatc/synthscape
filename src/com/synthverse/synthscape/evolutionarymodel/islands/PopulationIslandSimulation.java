@@ -203,6 +203,8 @@ public class PopulationIslandSimulation extends Simulation {
 
 		setStartDate();
 		experimentReporter.initReporter();
+		
+		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
