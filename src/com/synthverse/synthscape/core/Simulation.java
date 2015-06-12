@@ -838,7 +838,7 @@ public abstract class Simulation extends SimState implements Constants {
 		this.endDate = new java.util.Date();
 	}
 
-	public String getSpeciesCompositionSting() {
+	public String getSpeciesCompositionString() {
 		StringBuilder sb = new StringBuilder();
 
 		for (Species species : speciesComposition) {
