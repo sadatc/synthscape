@@ -269,35 +269,33 @@ public class ExperimentReporter implements Constants {
 								.getReportFormattedDateString(simulation
 										.getStartDate()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getGridWidth());
+				eventWriter.append(Integer.toString(simulation.getGridWidth()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getGridHeight());
+				eventWriter.append(Integer.toString(simulation.getGridHeight()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getObstacleDensity());
+				eventWriter.append(Double.toString(simulation.getObstacleDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getResourceDensity());
+				eventWriter.append(Double.toString(simulation.getResourceDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getClonesPerSpecies());
+				eventWriter.append(Integer.toString(simulation.getClonesPerSpecies()));
 				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getGenePoolSize());
-				eventWriter.append(COMMA);
-
-				eventWriter
-						.append(EMPTY_STRING + simulation.getNumberOfCollectionSites());
-				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING + simulation.getMaxStepsPerAgent());
-				eventWriter.append(COMMA);
-				eventWriter.append(EMPTY_STRING
-						+ simulation.getProblemComplexity().getId());
+				eventWriter.append(Integer.toString(simulation.getGenePoolSize()));
 				eventWriter.append(COMMA);
 
 				eventWriter
-						.append(EMPTY_STRING + simulation.getSpeciesCompositionSting());
+						.append(Integer.toString(simulation.getNumberOfCollectionSites()));
+				eventWriter.append(COMMA);
+				eventWriter.append(Integer.toString(simulation.getMaxStepsPerAgent()));
+				eventWriter.append(COMMA);
+				eventWriter.append(Integer.toString(simulation.getProblemComplexity().getId()));
+				eventWriter.append(COMMA);
+
+				eventWriter
+						.append(simulation.getSpeciesCompositionString());
 
 				eventWriter.append(COMMA);
 
-				eventWriter.append(EMPTY_STRING
-						+ simulation.getInteractionMechanismsString());
+				eventWriter.append(simulation.getInteractionMechanismsString());
 
 				eventWriter.newLine();
 				eventWriter.newLine();
@@ -958,8 +956,8 @@ public class ExperimentReporter implements Constants {
 	}
 
 	public final void formattedAppend(StringBuilder sb, double value) {
-		sb.append(value);
-		//sb.append( String.format( Constants.CSV_DOUBLE_FORMAT, value ));
+		//sb.append(value);
+		sb.append( String.format( Constants.CSV_DOUBLE_FORMAT, value ));
 	}
 
 	public void reportPerformanceIslandModel(int generationCounter,
