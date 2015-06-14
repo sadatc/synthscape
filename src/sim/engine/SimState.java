@@ -6,10 +6,13 @@
 
 package sim.engine;
 import ec.util.*;
+
 import java.util.*;
 import java.io.*;
 import java.util.zip.*;
 import java.text.*;
+
+import com.synthverse.synthscape.core.Settings;
 
 /** SimState represents the simulation proper.  Your simulations generally will contain one top-level object which subclasses from SimState.
 
@@ -441,14 +444,14 @@ public class SimState implements java.io.Serializable
             System.exit(0);
             }
 
-        final boolean quiet = keyExists("-quiet", args);
-        
-        // sadatc@gmail.com: Jun 14, 2015: quiet is turned true always.
+        final boolean quiet = keyExists("-quiet", args);        
 
         java.text.NumberFormat n = java.text.NumberFormat.getInstance();
         n.setMinimumFractionDigits(0);
+               
         if (!quiet) System.err.println("MASON Version " + n.format(version()) + ".  For further options, try adding ' -help' at end.");
-
+     
+        
         // figure the checkpoint modulo
         double _until = Double.POSITIVE_INFINITY;
         String until_s = argumentForKey("-until", args);
@@ -582,7 +585,7 @@ public class SimState implements java.io.Serializable
                 
                         // start from checkpoint?  Note this will only happen if there is only ONE thread, so it's okay to change the job number here
                         if (rep == 0 && checkpointFile!=null)  // only job 0 loads from checkpoint
-                            {
+                            {                            
                             if (!quiet) printlnSynchronized("Loading from checkpoint " + checkpointFile);
                             state = SimState.readFromCheckpoint(new File(checkpointFile));
                             if (state == null)   // there was an error -- it got printed out to the screen, so just quit
@@ -610,7 +613,7 @@ public class SimState implements java.io.Serializable
                             state = generator.newInstance(seed,args);
                             state.nameThread();
                             state.job = job;
-                            state.seed = seed;
+                            state.seed = seed;                           
                             if (!quiet) printlnSynchronized("Job: " + state.job() + " Seed: " + state.seed());
                             state.start();
                             }
@@ -645,7 +648,9 @@ public class SimState implements java.io.Serializable
                             if (time > 0 && steps % time == 0)
                                 {
                                 clock = System.currentTimeMillis();
-                                if (!quiet) printlnSynchronized("Job " + job + ": " + "Steps: " + steps + " Time: " + state.schedule.getTimestamp("At Start", "Done") + " Rate: " + rateFormat.format((1000.0 *(steps - firstSteps)) / (clock - oldClock)));
+                                // sadatc@gmail.com: 6/14/2015: suppressing message to reduce logging...                             
+                                //if (!quiet) printlnSynchronized("Job " + job + ": " + "Steps: " + steps + " Time: " + state.schedule.getTimestamp("At Start", "Done") + " Rate: " + rateFormat.format((1000.0 *(steps - firstSteps)) / (clock - oldClock)));
+                                
                                 firstSteps = steps;
                                 oldClock = clock;
                                 }
@@ -669,7 +674,10 @@ public class SimState implements java.io.Serializable
                             }
 
                         job++;
-                        seed++;
+                        // sadatc@gmail.com: 6/14/2015: the next seed is completely regenerated instead of just 
+                        // incremented:
+                        //seed++;
+                        seed = Settings.getSecureRandom();
                         }
                     }
                 });
