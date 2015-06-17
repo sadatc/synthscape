@@ -98,11 +98,12 @@ public class FancySimulationUI extends SimulationUI {
 
 				));
 
+		/*
 		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+				new sim.util.gui.SimpleColorMap(NO, YES, new Color(0,
 						0, 0, 0), Color.BLACK));
 
-		initPortrayal(trailPortrayal, theState.trailGridWrapper.grid,
+		initPortrayal(trailPortrayal, theState.trailGridWrapper.strengthGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
@@ -112,6 +113,7 @@ public class FancySimulationUI extends SimulationUI {
 
 				});
 
+*/
 		agentPortrayal.setField(theState.agentGrid);
 
 		agentPortrayal
@@ -127,7 +129,7 @@ public class FancySimulationUI extends SimulationUI {
 
 						}));
 
-		// this draws the grid lines
+		// this draws the strengthGrid lines
 		worldPortrayal.setField(theState.obstacleGrid);
 		worldPortrayal.setPortrayalForAll(new RectanglePortrayal2D(
 				Color.LIGHT_GRAY, false));

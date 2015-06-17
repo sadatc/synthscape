@@ -23,9 +23,11 @@ import sim.field.grid.IntGrid2D;
 import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
+import sim.util.MutableDouble;
 
 import com.synthverse.Main;
 import com.synthverse.util.DateUtils;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -60,20 +62,20 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected ProblemComplexity problemComplexity;
 
-	protected IntGrid2D obstacleGrid;
-	protected IntGrid2D benchmarkObstacleGrid;
+	protected SparseGrid2D obstacleGrid;
+	protected SparseGrid2D benchmarkObstacleGrid;
 
-	protected IntGrid2D collectionSiteGrid;
-	protected IntGrid2D benchmarkCollectionSiteGrid;
+	protected SparseGrid2D collectionSiteGrid;
+	protected SparseGrid2D benchmarkCollectionSiteGrid;
 
 	protected ArrayList<Int2D> collectionSiteList;
 	protected ArrayList<Int2D> benchmarkCollectionSiteList;
 
-	protected IntGrid2D initCollisionGrid;
-	protected IntGrid2D benchmarkInitCollisionGrid;
+	protected SparseGrid2D initCollisionGrid;
+	protected SparseGrid2D benchmarkInitCollisionGrid;
 
-	protected ObjectGrid2D resourceGrid;
-	protected ObjectGrid2D benchmarkResourceGrid;
+	protected SparseGrid2D resourceGrid;
+	protected SparseGrid2D benchmarkResourceGrid;
 
 	public ResourceStatus[][] resourceStatusArray;
 	public ResourceStatus[][] benchmarkResourceStatusArray;
@@ -83,9 +85,13 @@ public abstract class Simulation extends SimState implements Constants {
 	// protected DoubleGrid2D trailGridOld;
 	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
-	protected DoubleGrid2D extractorRewardGrid;
-	protected DoubleGrid2D detectorRewardGrid;
-	protected DoubleGrid2D processorRewardGrid;
+	// originally, these peer reward variables were implemented as grids
+	// however, the reward was offered in all coordinates... the idea is
+	// the reward is offered to all agents with the appropriate traits
+	// however, updating grids is a waste of CPU time...
+	protected MutableDouble extractorPeerReward;
+	protected MutableDouble detectorPeerReward;
+	protected MutableDouble processorPeerReward;
 
 	public SparseGrid2D agentGrid;
 
@@ -237,29 +243,27 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void createDataStructures() {
-		obstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-		benchmarkObstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+		obstacleGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkObstacleGrid = new SparseGrid2D(gridWidth, gridHeight);
 
-		collectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-		benchmarkCollectionSiteGrid = new IntGrid2D(gridWidth, gridHeight,
-				ABSENT);
+		collectionSiteGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkCollectionSiteGrid = new SparseGrid2D(gridWidth, gridHeight);
 
 		collectionSiteList = new ArrayList<Int2D>();
 		benchmarkCollectionSiteList = new ArrayList<Int2D>();
 
-		initCollisionGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-		benchmarkInitCollisionGrid = new IntGrid2D(gridWidth, gridHeight,
-				ABSENT);
+		initCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkInitCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
 
-		resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
-		benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
+		resourceGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkResourceGrid = new SparseGrid2D(gridWidth, gridHeight);
 
-		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
+		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, NO);
+		trailGridWrapper.createNew(gridWidth, gridHeight);
 
-		extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		extractorPeerReward = new MutableDouble();
+		detectorPeerReward = new MutableDouble();
+		processorPeerReward = new MutableDouble();
 		agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 		agents = new ArrayList<Agent>();
 
@@ -276,18 +280,16 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void resetEnvironment() {
 
-		obstacleGrid.setTo(ABSENT);
-		collectionSiteGrid.setTo(ABSENT);
 		collectionSiteList.clear();
-		initCollisionGrid.setTo(ABSENT);
+		initCollisionGrid.clear();
 
-		resourceGrid.setTo(ResourceState.NULL);
+		resourceGrid.clear();
 		clearResourceStatusArray();
 
-		trailGridWrapper.grid.setTo(ABSENT);
-		extractorRewardGrid.setTo(ABSENT);
-		detectorRewardGrid.setTo(ABSENT);
-		processorRewardGrid.setTo(ABSENT);
+		trailGridWrapper.strengthGrid.clear();
+		extractorPeerReward.val = 0.0;
+		detectorPeerReward.val = 0.0;
+		processorPeerReward.val = 0.0;
 
 		registeredBroadcasts.clear();
 
@@ -364,8 +366,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void initPrimaryCollectionSite() {
 		// set the primary collection site
-		collectionSiteGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
-		initCollisionGrid.field[settings.PRIMARY_COLLECTION_SITE_X][settings.PRIMARY_COLLECTION_SITE_Y] = PRESENT;
+		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X,
+				settings.PRIMARY_COLLECTION_SITE_Y, YES);
+		GridUtils.set(initCollisionGrid, settings.PRIMARY_COLLECTION_SITE_X,
+				settings.PRIMARY_COLLECTION_SITE_Y, YES);
+
 		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X,
 				settings.PRIMARY_COLLECTION_SITE_Y));
 	}
@@ -377,13 +382,14 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 			// make sure there isn't an obstacle there already...
-			while (collectionSiteGrid.field[randomX][randomY] == PRESENT) {
+			while (GridUtils.getBoolean(collectionSiteGrid, randomX, randomY) == YES) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 
 			}
-			collectionSiteGrid.field[randomX][randomY] = PRESENT;
-			initCollisionGrid.field[randomX][randomY] = PRESENT;
+			GridUtils.set(collectionSiteGrid, randomX, randomY, YES);
+			GridUtils.set(initCollisionGrid, randomX, randomY, YES);
+
 			collectionSiteList.add(new Int2D(randomX, randomY));
 
 		}
@@ -398,12 +404,12 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 			// make sure there isn't an obstacle there already...
-			while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			while (GridUtils.getBoolean(initCollisionGrid, randomX, randomY) == YES) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
-			initCollisionGrid.field[randomX][randomY] = PRESENT;
-			obstacleGrid.field[randomX][randomY] = PRESENT;
+			GridUtils.set(initCollisionGrid, randomX, randomY, YES);
+			obstacleGrid.setObjectLocation(Boolean.TRUE, randomX, randomY);
 
 		}
 
@@ -423,14 +429,15 @@ public abstract class Simulation extends SimState implements Constants {
 			do {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
-			} while (initCollisionGrid.field[randomX][randomY] == PRESENT);
-			resourceGrid.field[randomX][randomY] = ResourceState.RAW;
+			} while (GridUtils.getBoolean(initCollisionGrid, randomX, randomY) == YES);
+
+			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
 			resourceStatusArray[randomX][randomY].x = randomX;
 			resourceStatusArray[randomX][randomY].y = randomY;
 
-			initCollisionGrid.field[randomX][randomY] = PRESENT;
+			GridUtils.set(initCollisionGrid, randomX, randomY, YES);
 
 		}
 
@@ -448,18 +455,25 @@ public abstract class Simulation extends SimState implements Constants {
 		resetCollectionCounts();
 	}
 
+	public static ResourceStatus[][] copyResourceStatusArray(
+			ResourceStatus[][] input) {
+		if (input == null)
+			return null;
+		ResourceStatus[][] result = new ResourceStatus[input.length][];
+		for (int r = 0; r < input.length; r++) {
+			result[r] = input[r].clone();
+		}
+		return result;
+	}
+
 	protected void saveEnvironmentForBenchmark() {
 
-		for (int x = 0; x < gridWidth; x++) {
-			for (int y = 0; y < gridHeight; y++) {
-				benchmarkObstacleGrid.field[x][y] = obstacleGrid.field[x][y];
-				benchmarkCollectionSiteGrid.field[x][y] = collectionSiteGrid.field[x][y];
-				benchmarkInitCollisionGrid.field[x][y] = initCollisionGrid.field[x][y];
-				benchmarkResourceGrid.field[x][y] = resourceGrid.field[x][y];
-				resourceStatusArray[x][y]
-						.cloneTo(benchmarkResourceStatusArray[x][y]);
-			}
-		}
+		benchmarkObstacleGrid = new SparseGrid2D(obstacleGrid);
+		benchmarkCollectionSiteGrid = new SparseGrid2D(collectionSiteGrid);
+		benchmarkInitCollisionGrid = new SparseGrid2D(initCollisionGrid);
+		benchmarkResourceGrid = new SparseGrid2D(resourceGrid);
+		benchmarkResourceStatusArray = copyResourceStatusArray(resourceStatusArray);
+
 		benchmarkCollectionSiteList.clear();
 		for (Int2D coordinate : collectionSiteList) {
 			benchmarkCollectionSiteList.add(coordinate);
@@ -468,22 +482,18 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void initEnvironmentWithBenchmark() {
 
-		for (int x = 0; x < gridWidth; x++) {
-			for (int y = 0; y < gridHeight; y++) {
-				obstacleGrid.field[x][y] = benchmarkObstacleGrid.field[x][y];
-				collectionSiteGrid.field[x][y] = benchmarkCollectionSiteGrid.field[x][y];
-				initCollisionGrid.field[x][y] = benchmarkInitCollisionGrid.field[x][y];
-				resourceGrid.field[x][y] = benchmarkResourceGrid.field[x][y];
-				benchmarkResourceStatusArray[x][y]
-						.cloneTo(resourceStatusArray[x][y]);
-			}
-		}
+		obstacleGrid = new SparseGrid2D(benchmarkObstacleGrid);
+		collectionSiteGrid = new SparseGrid2D(benchmarkCollectionSiteGrid);
+		initCollisionGrid = new SparseGrid2D(benchmarkInitCollisionGrid);
+		resourceGrid = new SparseGrid2D(benchmarkResourceGrid);
+		resourceStatusArray = copyResourceStatusArray(benchmarkResourceStatusArray);
 
 		collectionSiteList.clear();
 		for (Int2D coordinate : benchmarkCollectionSiteList) {
 			collectionSiteList.add(coordinate);
 		}
 		resetCollectionCounts();
+
 	}
 
 	protected void initAgents() {
@@ -507,7 +517,8 @@ public abstract class Simulation extends SimState implements Constants {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+					while (GridUtils.getBoolean(initCollisionGrid, randomX,
+							randomY) == YES) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -521,7 +532,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 				}
 
-				initCollisionGrid.field[randomX][randomY] = PRESENT;
+				GridUtils.set(initCollisionGrid, randomX, randomY, YES);
 				previousX = randomX;
 				previousY = randomY;
 
@@ -556,7 +567,7 @@ public abstract class Simulation extends SimState implements Constants {
 			randomX = randomPrime.nextInt(gridWidth);
 			randomY = randomPrime.nextInt(gridHeight);
 
-			while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			while (GridUtils.getBoolean(initCollisionGrid, randomX, randomY) == YES) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
@@ -566,52 +577,52 @@ public abstract class Simulation extends SimState implements Constants {
 			// if anything is empty, we return it.
 			// if this fails, we move once cell north and repeat process..
 
-			if (initCollisionGrid.field[agentGrid.stx(pX)][agentGrid
-					.sty(pY - 1)] != PRESENT) {
+			if (GridUtils.getBoolean(initCollisionGrid, agentGrid.stx(pX),
+					agentGrid.sty(pY - 1)) != YES) {
 				// N
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid
-					.sty(pY - 1)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX - 1), agentGrid.sty(pY - 1)) != YES) {
 				// NW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid
-					.sty(pY)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX - 1), agentGrid.sty(pY)) != YES) {
 				// W
 				randomX = agentGrid.stx(pX - 1);
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX - 1)][agentGrid
-					.sty(pY + 1)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX - 1), agentGrid.sty(pY + 1)) != YES) {
 				// SW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX)][agentGrid
-					.sty(pY + 1)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid, agentGrid.stx(pX),
+					agentGrid.sty(pY + 1)) != YES) {
 				// S
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid
-					.sty(pY + 1)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX + 1), agentGrid.sty(pY + 1)) != YES) {
 				// SE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY + 1);
-			} else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid
-					.sty(pY)] != PRESENT) {
+			} else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX + 1), agentGrid.sty(pY)) != YES) {
 				// E
 				randomX = agentGrid.stx(pX + 1);
 
 			}
 
-			else if (initCollisionGrid.field[agentGrid.stx(pX + 1)][agentGrid
-					.sty(pY - 1)] != PRESENT) {
+			else if (GridUtils.getBoolean(initCollisionGrid,
+					agentGrid.stx(pX + 1), agentGrid.sty(pY - 1)) != YES) {
 				// NE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY - 1);
@@ -635,16 +646,23 @@ public abstract class Simulation extends SimState implements Constants {
 		trailGridWrapper.fadeTrails();
 	}
 
-	protected void fadeRewardGrids() {
+	protected void fadeRewards() {
 
-		extractorRewardGrid.lowerBound(0.0);
-		extractorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+		extractorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
+		if (extractorPeerReward.val < 0.0) {
+			extractorPeerReward.val = 0.0;
+		}
 
-		detectorRewardGrid.lowerBound(0.0);
-		detectorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+		detectorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
+		if (detectorPeerReward.val < 0.0) {
+			detectorPeerReward.val = 0.0;
+		}
 
 		if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-			processorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+			processorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
+			if (processorPeerReward.val < 0.0) {
+				processorPeerReward.val = 0.0;
+			}
 		}
 
 	}
@@ -711,7 +729,7 @@ public abstract class Simulation extends SimState implements Constants {
 				}
 
 				if (Main.settings.PEER_REWARDS) {
-					fadeRewardGrids();
+					fadeRewards();
 				}
 
 				if (interactionMechanisms

@@ -8,13 +8,16 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.ObjectGrid2D;
+import sim.field.grid.SparseGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
+import sim.util.MutableDouble;
 import sim.util.Valuable;
 
 import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 public abstract class Agent
@@ -158,7 +161,12 @@ public abstract class Agent
 	}
 
 	public final boolean locationHasObstacle(int x, int y) {
-		return (sim.obstacleGrid.field[x][y] == PRESENT);
+		if (sim.obstacleGrid.getObjectsAtLocation(x, y) != null) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	/*
@@ -175,7 +183,7 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
+			if (!locationHasObstacle(newX, newY)) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -197,7 +205,7 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
+			if (!locationHasObstacle(newX, newY)) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -226,7 +234,7 @@ public abstract class Agent
 			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
 					&& xMod < sim.getGridWidth() && yMod >= 0
 					&& yMod < sim.getGridHeight()
-					&& sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+					&& (!locationHasObstacle(xMod, yMod))) {
 				newX = xMod;
 				newY = yMod;
 				foundNewUblockedLocation = true;
@@ -290,12 +298,12 @@ public abstract class Agent
 
 	}
 
-	public void _operationLeaveRewards(DoubleGrid2D rewardGrid,
+	public void _operationLeaveRewards(MutableDouble rewardHolder,
 			Event rewardEvent) {
 		if (Main.settings.PEER_REWARDS) {
 
-			// rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
-			rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
+			rewardHolder.val = Constants.REWARD_LEVEL_MAX;
+
 			sim.recordEvent(this, rewardEvent, this.agentId, NA);
 
 		}
@@ -303,16 +311,17 @@ public abstract class Agent
 	}
 
 	public final boolean _operationPerformResourceAction(Task action,
-			ObjectGrid2D resourceGrid) {
+			SparseGrid2D resourceGrid) {
 
 		boolean actionPerformed = false;
 
-		ResourceState resourceState = (ResourceState) resourceGrid.field[x][y];
+		ResourceState resourceState = GridUtils.getResourceState(resourceGrid,
+				x, y);
 
 		switch (action) {
 			case EXTRACTION :
 				if (resourceState == ResourceState.RAW) {
-					resourceGrid.field[x][y] = ResourceState.EXTRACTED;
+					GridUtils.set(resourceGrid, x, y, ResourceState.EXTRACTED);
 					sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
 					sim.resourceStatusArray[x][y].extractionStep = sim.simStepCounter;
 					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
@@ -321,7 +330,7 @@ public abstract class Agent
 				break;
 			case PROCESSING :
 				if (resourceState == ResourceState.EXTRACTED) {
-					resourceGrid.field[x][y] = ResourceState.PROCESSED;
+					GridUtils.set(resourceGrid, x, y, ResourceState.PROCESSED);
 					sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
 					sim.resourceStatusArray[x][y].processingStep = sim.simStepCounter;
 					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
@@ -1093,10 +1102,13 @@ public abstract class Agent
 			for (int deltaY = -1; deltaY <= 1; deltaY++) {
 				// except for the center...
 				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trailGridWrapper.grid.stx(this.x + deltaX);
-					int scanY = trailGridWrapper.grid.sty(this.y + deltaY);
+					int scanX = trailGridWrapper.strengthGrid.stx(this.x
+							+ deltaX);
+					int scanY = trailGridWrapper.strengthGrid.sty(this.y
+							+ deltaY);
 
-					double trailAmount = trailGridWrapper.grid.field[scanX][scanY];
+					double trailAmount = trailGridWrapper.getTrailStrengthAt(
+							scanX, scanY);
 					if (trailAmount > maxTrail) {
 						maxTrail = (int) trailAmount;
 						maxX = scanX;
@@ -1477,7 +1489,7 @@ public abstract class Agent
 								this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorRewardGrid,
+					_operationLeaveRewards(sim.detectorPeerReward,
 							Event.DROPPED_DETECTOR_REWARDS);
 
 					// now reset the detected signal...
@@ -1512,7 +1524,7 @@ public abstract class Agent
 						this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorRewardGrid,
+					_operationLeaveRewards(sim.detectorPeerReward,
 							Event.DROPPED_DETECTOR_REWARDS);
 
 				}
@@ -1544,7 +1556,7 @@ public abstract class Agent
 								this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorRewardGrid,
+					_operationLeaveRewards(sim.extractorPeerReward,
 							Event.DROPPED_EXTRACTOR_REWARDS);
 
 					// now reset the detected signal...
@@ -1579,7 +1591,7 @@ public abstract class Agent
 						this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorRewardGrid,
+					_operationLeaveRewards(sim.extractorPeerReward,
 							Event.DROPPED_EXTRACTOR_REWARDS);
 				}
 
@@ -1625,9 +1637,10 @@ public abstract class Agent
 							|| locationHasRawResource) {
 						if (!isCarryingResource) {
 							isCarryingResource = true;
-							stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
-							this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+							stateOfCarriedResource = getResourceStateAt(x, y);
+							this.sim.resourceGrid.setObjectLocation(
+									ResourceState.NULL, x, y);
 
 							// copy over the state of the resource
 							sim.resourceStatusArray[x][y]
@@ -1663,9 +1676,10 @@ public abstract class Agent
 						|| locationHasRawResource) {
 					if (!isCarryingResource) {
 						isCarryingResource = true;
-						stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
-						this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+						stateOfCarriedResource = getResourceStateAt(x, y);
+						this.sim.resourceGrid.setObjectLocation(
+								ResourceState.NULL, x, y);
 
 						// copy over the state of the resource
 						sim.resourceStatusArray[x][y]
@@ -1727,7 +1741,7 @@ public abstract class Agent
 									NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
 									NA);
-							_operationLeaveRewards(sim.extractorRewardGrid,
+							_operationLeaveRewards(sim.extractorPeerReward,
 									Event.DROPPED_EXTRACTOR_REWARDS);
 
 							// save over this status
@@ -1752,7 +1766,7 @@ public abstract class Agent
 									NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
 									NA);
-							_operationLeaveRewards(sim.processorRewardGrid,
+							_operationLeaveRewards(sim.processorPeerReward,
 									Event.DROPPED_PROCESSOR_REWARDS);
 
 							// save over this status
@@ -1777,10 +1791,11 @@ public abstract class Agent
 				}
 
 				if (dropResource) {
-					this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+					this.sim.resourceGrid.setObjectLocation(
+							stateOfCarriedResource, x, y);
 
 					// this is a resource drop...place the resource back in the
-					// grid
+					// strengthGrid
 					statusOfCarriedResource
 							.cloneTo(this.sim.resourceStatusArray[x][y]);
 					this.sim.resourceStatusArray[x][y].x = x;
@@ -1855,7 +1870,7 @@ public abstract class Agent
 										NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
 										NA, NA);
-								_operationLeaveRewards(sim.extractorRewardGrid,
+								_operationLeaveRewards(sim.extractorPeerReward,
 										Event.DROPPED_EXTRACTOR_REWARDS);
 
 								// resource has been collected, now we need to
@@ -1901,7 +1916,7 @@ public abstract class Agent
 										NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
 										NA, NA);
-								_operationLeaveRewards(sim.processorRewardGrid,
+								_operationLeaveRewards(sim.processorPeerReward,
 										Event.DROPPED_PROCESSOR_REWARDS);
 
 								// now reset the detected signal...
@@ -1944,11 +1959,12 @@ public abstract class Agent
 					}
 
 					if (dropResource) {
-						this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+						this.sim.resourceGrid.setObjectLocation(
+								stateOfCarriedResource, x, y);
 
 						// this is a resource drop...place the resource back in
 						// the
-						// grid
+						// strengthGrid
 						statusOfCarriedResource
 								.cloneTo(this.sim.resourceStatusArray[x][y]);
 						this.sim.resourceStatusArray[x][y].x = x;
@@ -1996,15 +2012,16 @@ public abstract class Agent
 		this.locationHasDetectorReward = false;
 		this.locationHasProcessorReward = false;
 
-		if (sim.resourceGrid.field[x][y] == ResourceState.RAW) {
+		ResourceState locationResourceState = getResourceStateAt(x, y);
+		if (locationResourceState == ResourceState.RAW) {
 			this.locationHasRawResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.EXTRACTED) {
+		} else if (locationResourceState == ResourceState.EXTRACTED) {
 			this.locationHasExtractedResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED) {
+		} else if (locationResourceState == ResourceState.PROCESSED) {
 			this.locationHasProcessedResource = true;
 		}
 
-		if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.extractorPeerReward.val >= 1.0) {
 			this.locationHasExtractorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA,
@@ -2012,7 +2029,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.detectorPeerReward.val >= 1.0) {
 			this.locationHasDetectorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA,
@@ -2020,7 +2037,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.processorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.processorPeerReward.val >= 1.0) {
 			this.locationHasProcessorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA,
@@ -2028,14 +2045,14 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.trailGridWrapper.grid.field[x][y] >= 1) {
+		if (sim.trailGridWrapper.getTrailStrengthAt(x, y) >= 1) {
 			this.locationHasTrail = true;
 
 		} else {
 			this.locationHasTrail = false;
 		}
 
-		if (sim.collectionSiteGrid.field[x][y] > 0) {
+		if (GridUtils.getBoolean(sim.collectionSiteGrid, x, y) == YES) {
 			this.locationIsCollectionSite = true;
 		} else {
 			this.locationIsCollectionSite = false;
@@ -2310,6 +2327,29 @@ public abstract class Agent
 
 	public void setHostAgent(Agent hostAgent) {
 		this.hostAgent = hostAgent;
+	}
+
+	public final ResourceState getResourceStateAt(int x, int y) {
+		ResourceState result = ResourceState.NULL;
+
+		Bag results = this.sim.resourceGrid.getObjectsAtLocation(x, y);
+		if (results != null) {
+			result = (ResourceState) results.get(0);
+		}
+
+		return result;
+	}
+
+	public final double getSparseGridDoubleValueAt(SparseGrid2D grid, int x,
+			int y) {
+		double result = 0.0;
+
+		Bag results = (Bag) grid.getObjectsAtLocation(x, y);
+		if (results != null) {
+			result = (Double) results.get(0);
+		}
+
+		return result;
 	}
 
 }

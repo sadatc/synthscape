@@ -59,7 +59,8 @@ public class SimpleSimulationUI extends SimulationUI {
 	protected void initPortrayals() {
 		Simulation theState = (Simulation) state;
 
-		initPortrayal(trailPortrayal, theState.trailGridWrapper.grid,
+		/*
+		initPortrayal(trailPortrayal, theState.trailGridWrapper.strengthGrid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
 						Color.YELLOW) {
@@ -70,13 +71,13 @@ public class SimpleSimulationUI extends SimulationUI {
 				});
 
 		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+				new sim.util.gui.SimpleColorMap(NO, YES, new Color(0,
 						0, 0, 0), Color.BLACK));
 
 		initPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+				new sim.util.gui.SimpleColorMap(NO, YES, new Color(0,
 						0, 0, 0), Color.GREEN));
-
+		*/
 		resourcePortrayal.setField(theState.resourceGrid);
 		resourcePortrayal.setPortrayalForAll(new FacetedPortrayal2D(
 				new SimplePortrayal2D[] {

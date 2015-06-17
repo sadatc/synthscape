@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.core;
 
-final public class ResourceStatus implements Constants {
+final public class ResourceStatus implements Constants, Cloneable {
 
 	public int x;
 	public int y;
@@ -29,6 +29,21 @@ final public class ResourceStatus implements Constants {
 		this.numTimesDetected = 0;
 		this.numTimesLoaded = 0;
 		this.numTimesUnloaded = 0;
+	}
+
+	public ResourceStatus clone() throws CloneNotSupportedException {
+		ResourceStatus cloned = (ResourceStatus) super.clone();
+		cloned.state = this.state;
+		cloned.x = this.x;
+		cloned.y = this.y;
+		cloned.detectionStep = this.detectionStep;
+		cloned.extractionStep = this.extractionStep;
+		cloned.processingStep = this.processingStep;
+		cloned.captureStep = this.captureStep;
+		cloned.numTimesDetected = this.numTimesDetected;
+		cloned.numTimesLoaded = this.numTimesLoaded;
+		cloned.numTimesUnloaded = this.numTimesUnloaded;
+		return cloned;
 	}
 
 	final public void cloneTo(ResourceStatus status) {

@@ -13,6 +13,7 @@ public enum Species {
 			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
 			traits.add(Trait.DETECTION);
 
+			// the traits are created in that manner
 			return traits;
 		}
 

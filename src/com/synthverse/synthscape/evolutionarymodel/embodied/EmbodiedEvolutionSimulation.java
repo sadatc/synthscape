@@ -30,6 +30,7 @@ import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
@@ -192,7 +193,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+					while (GridUtils.getBoolean(initCollisionGrid, randomX,
+							randomY) == YES) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -205,7 +207,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					randomY = clusterLocation.y;
 
 				}
-				initCollisionGrid.field[randomX][randomY] = PRESENT;
+				GridUtils.set(initCollisionGrid, randomX, randomY, YES);
+
 				previousX = randomX;
 				previousY = randomY;
 
@@ -246,11 +249,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 
-			while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			while (GridUtils.getBoolean(initCollisionGrid, randomX, randomY) == YES) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
-			initCollisionGrid.field[randomX][randomY] = PRESENT;
+			GridUtils.set(initCollisionGrid, randomX, randomY, YES);
 
 			embodiedAgent.setNextActiveAgent(randomX, randomY);
 
@@ -315,21 +318,18 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 
 		// resourceCaptureStats.printStats();
-		
+
 		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime
 				.getRuntime().freeMemory()) / (1024 * 1024);
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - reportTime;
 
-		
 		experimentReporter.reportPerformanceEmbodiedModel(generation,
 				intervalStats, generationEventStats, speciesEventStatsMap,
 				agents, captureStats, populationFitnessStats,
 				simsRunForThisGeneration, resourceCaptureStats,
-				this.simulationCounter, deltaTime,
-				allocatedMemory);
+				this.simulationCounter, deltaTime, allocatedMemory);
 
-		
 		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
 				+ "; fitness: " + populationFitnessStats.getMean()
 				+ "; best_capture: " + captureStats.getMax() + " ["
@@ -437,7 +437,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				+ agents.size());
 
 		setStartDate();
-		
+
 		// this synchronizes the seed value for repeated experiments
 		settings.SEED = (int) this.seed();
 		experimentReporter.initReporter();
@@ -455,7 +455,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				}
 
 				if (Main.settings.PEER_REWARDS) {
-					fadeRewardGrids();
+					fadeRewards();
 				}
 
 				if (interactionMechanisms
@@ -505,7 +505,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
-						//settings.resetRandomSeedIfNeeded(state);
+						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}
 			}

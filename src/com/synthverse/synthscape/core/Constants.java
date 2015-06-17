@@ -32,9 +32,11 @@ public interface Constants {
 
 	// SIMULATION RELATED CONSTANTS
 
-	public static final int PRESENT = 1;
 
-	public static final int ABSENT = 0;
+	
+	public static final Boolean YES = Boolean.TRUE;
+
+	public static final Boolean NO = Boolean.FALSE;
 
 	public static final int NA = -1;
 

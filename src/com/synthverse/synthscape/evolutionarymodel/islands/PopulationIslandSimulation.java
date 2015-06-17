@@ -28,6 +28,7 @@ import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
@@ -118,7 +119,7 @@ public class PopulationIslandSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+					while(GridUtils.getBoolean(initCollisionGrid, randomX, randomY)==YES) {					
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -132,7 +133,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 				}
 
-				initCollisionGrid.field[randomX][randomY] = PRESENT;
+				GridUtils.set(initCollisionGrid,randomX,randomY, YES);
 				previousX = randomX;
 				previousY = randomY;
 
@@ -222,7 +223,7 @@ public class PopulationIslandSimulation extends Simulation {
 				}
 
 				if (Main.settings.PEER_REWARDS) {
-					fadeRewardGrids();
+					fadeRewards();
 				}
 
 				if (interactionMechanisms
