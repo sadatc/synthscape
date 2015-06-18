@@ -689,10 +689,10 @@ public class SimState implements java.io.Serializable
                         job++;
                         // sadatc@gmail.com: 6/14/2015: the next seed is completely regenerated instead of just 
                         // incremented:
-                        if(!Settings.RANDOMIZE_SIM_SEED) {
-                        	seed++;
+                        if(Settings.RANDOMIZE_SIM_SEED) {
+                        	seed = Settings.getSecureRandom();                        	
                         } else {
-                        	seed = Settings.getSecureRandom();
+                        	seed++;
                         }
                         }
                     }

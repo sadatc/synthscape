@@ -583,7 +583,7 @@ public class Settings implements Constants {
 			}
 			printAndStore("NUM_EXPERIMENTS = " + REPEAT);
 
-			if (!RANDOMIZE_SIM_SEED) {
+			if (RANDOMIZE_SIM_SEED) {
 				SEED = Settings.getSecureRandom();
 			}
 
