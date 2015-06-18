@@ -92,7 +92,7 @@ public class Settings implements Constants {
 
     public String JOB_NAME = "test";
 
-    public boolean RANDOMIZE_SIM_SEED = false;
+    public static boolean RANDOMIZE_SIM_SEED = true;
 
     public String PERFORMANCE_DATA_FILE = "perf_dat.csv";
 
@@ -287,6 +287,11 @@ public class Settings implements Constants {
 		SHOW_GRAPHICS = true;
 	    }
 	    printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
+	    
+	    if (line.hasOption("no_randomization")) {
+			RANDOMIZE_SIM_SEED = false;
+		}
+		printAndStore("RANDOMIZE_SIM_SEED = " + RANDOMIZE_SIM_SEED);
 
 	    if (line.hasOption("clustered")) {
 		CLUSTERED = true;
@@ -502,8 +507,10 @@ public class Settings implements Constants {
 
 	    }
 	    printAndStore("NUM_EXPERIMENTS = " + REPEAT);
-
+	    
+	    if(!RANDOMIZE_SIM_SEED) {
 	    SEED = Settings.getSecureRandom();
+	    }
 
 	    D.p("SEED = " + SEED);
 
