@@ -102,10 +102,13 @@ public class GridUtils {
 		if (objects != null) {
 			MutableDouble mutableObject = (MutableDouble) objects.get(0);
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		} else {
 			MutableDouble mutableObject = new MutableDouble();
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		}
+		
 	}
 
 	public static void set(SparseGrid2D grid, int x, int y, int val) {
@@ -113,9 +116,11 @@ public class GridUtils {
 		if (objects != null) {
 			MutableInt mutableObject = (MutableInt) objects.get(0);
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		} else {
 			MutableInt mutableObject = new MutableInt();
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		}
 	}
 
@@ -124,9 +129,11 @@ public class GridUtils {
 		if (objects != null) {
 			MutableLong mutableObject = (MutableLong) objects.get(0);
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		} else {
 			MutableLong mutableObject = new MutableLong();
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		}
 	}
 
@@ -136,9 +143,11 @@ public class GridUtils {
 			MutableResourceState mutableObject = (MutableResourceState) objects
 					.get(0);
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		} else {
 			MutableResourceState mutableObject = new MutableResourceState();
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		}
 	}
 
@@ -147,9 +156,11 @@ public class GridUtils {
 		if (objects != null) {
 			MutableBoolean mutableObject = (MutableBoolean) objects.get(0);
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		} else {
 			MutableBoolean mutableObject = new MutableBoolean();
 			mutableObject.val = val;
+			grid.setObjectLocation(mutableObject, x, y);
 		}
 	}
 
