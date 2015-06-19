@@ -1,41 +1,89 @@
 package com.synthverse.synthscape.core;
 
-import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.ObjectGrid2D;
+import com.synthverse.util.GridUtils;
+
+import sim.field.grid.SparseGrid2D;
+import sim.util.Bag;
+import sim.util.MutableDouble;
 
 public class TrailGridWrapper {
 
-	public DoubleGrid2D grid = null;
-	public ObjectGrid2D objectGrid = null;
+	public SparseGrid2D strengthGrid = null;
+	public SparseGrid2D objectGrid = null;
 
 	public TrailGridWrapper() {
 		D.p("created new TrailGridWrapper");
 	}
 
-	final public void createNew(int gridWidth, int gridHeight, int startValue) {
-		grid = new DoubleGrid2D(gridWidth, gridHeight, startValue);
-		objectGrid = new ObjectGrid2D(gridWidth, gridHeight);
-
+	final public void createNew(int gridWidth, int gridHeight) {
+		strengthGrid = new SparseGrid2D(gridWidth, gridHeight);
+		objectGrid = new SparseGrid2D(gridWidth, gridHeight);
 	}
 
-	final public void setTrail(int x, int y, double strength) {
+	final public void setTrail(int x, int y, double strengthValue) {
 		Trail trail = new Trail(x, y);
-		grid.field[x][y] = strength;
-		objectGrid.field[x][y] = trail;
+		GridUtils.set(strengthGrid, x, y, strengthValue);
+		objectGrid.removeObjectsAtLocation(x, y);
+		objectGrid.setObjectLocation(trail, x, y);
+
 	}
-	
-	final public void fadeTrails() {
-		grid.lowerBound(0.0);
-		grid.multiply(Constants.DEFAULT_TRAIL_EVAPORATION_CONSTANT);
-	}
-	
+
 	final public void markUsed(int x, int y) {
-		Trail trail = (Trail)objectGrid.field[x][y];
-		if(trail!=null) {
-			trail.markReceived();
-		} else {
-			D.p("puzzling, should never come here!");
+		Bag objects = objectGrid.getObjectsAtLocation(x, y);
+		if (objects != null) {
+			Trail trail = (Trail) objects.get(0);
+			if (trail != null) {
+				trail.markReceived();
+			} else {
+				D.p("puzzling, should never come here!");
+			}
 		}
+
+	}
+
+	final double getTrailStrengthAt(int x, int y) {
+		return GridUtils.getDouble(strengthGrid, x, y);
+	}
+
+	final public void sparseGrid2DMultiply(
+			SparseGrid2D mutableDoubleSparseGrid, double multiplier) {
+		Bag objects = mutableDoubleSparseGrid.getAllObjects();
+		int size = objects.size();
+		for (int i = 0; i < size; i++) {
+			MutableDouble d = (MutableDouble) (objects.get(i));
+			d.val *= multiplier;
+			if (d.val < 0.0) {
+				d.val = 0.0;
+			}
+		}
+	}
+
+	final public void cleanupZeros(SparseGrid2D mutableDoubleSparseGrid) {
+		Bag objects = mutableDoubleSparseGrid.getAllObjects();
+		Bag removableObjects = new Bag();
+
+		for (int i = 0; i < objects.size(); i++) {
+			MutableDouble d = (MutableDouble) (objects.get(i));
+			if (d.val <= 0.0) {
+				removableObjects.add(d);
+			}
+		}
+
+		for (int i = 0; i < removableObjects.size(); i++) {
+			mutableDoubleSparseGrid.remove(removableObjects.get(i));
+		}
+	}
+
+	final public void fadeTrails() {
+		sparseGrid2DMultiply(strengthGrid,
+				Constants.DEFAULT_TRAIL_EVAPORATION_CONSTANT);
+		cleanupZeros(strengthGrid);
+		// FIXME: remove values that are 0s
+	}
+
+	final public void clear() {
+		strengthGrid.clear();
+		objectGrid.clear();
 	}
 
 }

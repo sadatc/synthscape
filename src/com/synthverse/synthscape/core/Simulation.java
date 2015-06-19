@@ -257,9 +257,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
 		benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
-
-		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
+		
+		trailGridWrapper.createNew(gridWidth, gridHeight);
 
 		extractorPeerReward = new MutableDouble();
 		detectorPeerReward = new MutableDouble();
@@ -290,7 +289,7 @@ public abstract class Simulation extends SimState implements Constants {
 		resourceGrid.setTo(ResourceState.NULL);
 		clearResourceStatusArray();
 
-		trailGridWrapper.grid.setTo(ABSENT);
+		trailGridWrapper.clear();
 
 		extractorPeerReward.val = 0.0;
 		detectorPeerReward.val = 0.0;

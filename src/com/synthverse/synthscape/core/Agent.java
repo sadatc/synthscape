@@ -1095,10 +1095,10 @@ public abstract class Agent
 			for (int deltaY = -1; deltaY <= 1; deltaY++) {
 				// except for the center...
 				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trailGridWrapper.grid.stx(this.x + deltaX);
-					int scanY = trailGridWrapper.grid.sty(this.y + deltaY);
+					int scanX = trailGridWrapper.strengthGrid.stx(this.x + deltaX);
+					int scanY = trailGridWrapper.strengthGrid.sty(this.y + deltaY);
 
-					double trailAmount = trailGridWrapper.grid.field[scanX][scanY];
+					double trailAmount = trailGridWrapper.getTrailStrengthAt(scanX, scanY);					
 					if (trailAmount > maxTrail) {
 						maxTrail = (int) trailAmount;
 						maxX = scanX;
@@ -2030,7 +2030,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.trailGridWrapper.grid.field[x][y] >= 1) {
+		if (sim.trailGridWrapper.getTrailStrengthAt(x, y) >= 1) {
 			this.locationHasTrail = true;
 
 		} else {
