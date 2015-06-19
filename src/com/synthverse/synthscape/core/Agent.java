@@ -16,6 +16,7 @@ import sim.util.Valuable;
 import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 public abstract class Agent
@@ -159,7 +160,7 @@ public abstract class Agent
 	}
 
 	public final boolean locationHasObstacle(int x, int y) {
-		return (sim.obstacleGrid.field[x][y] == PRESENT);
+		return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
 	}
 
 	/*
@@ -176,7 +177,8 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
+			
+			if ( ! locationHasObstacle(newX,newY) ) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -198,7 +200,7 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if (sim.obstacleGrid.field[newX][newY] != PRESENT) {
+			if ( ! locationHasObstacle(newX,newY) ) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -227,7 +229,7 @@ public abstract class Agent
 			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
 					&& xMod < sim.getGridWidth() && yMod >= 0
 					&& yMod < sim.getGridHeight()
-					&& sim.obstacleGrid.field[xMod][yMod] == ABSENT) {
+					&& (! locationHasObstacle(xMod,yMod)) ) {
 				newX = xMod;
 				newY = yMod;
 				foundNewUblockedLocation = true;

@@ -27,6 +27,7 @@ import sim.util.MutableDouble;
 
 import com.synthverse.Main;
 import com.synthverse.util.DateUtils;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
@@ -61,8 +62,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected ProblemComplexity problemComplexity;
 
-	protected IntGrid2D obstacleGrid;
-	protected IntGrid2D benchmarkObstacleGrid;
+	protected SparseGrid2D obstacleGrid;
+	protected SparseGrid2D benchmarkObstacleGrid;
 
 	protected IntGrid2D collectionSiteGrid;
 	protected IntGrid2D benchmarkCollectionSiteGrid;
@@ -242,8 +243,8 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void createDataStructures() {
-		obstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
-		benchmarkObstacleGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
+		obstacleGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkObstacleGrid = new SparseGrid2D(gridWidth, gridHeight);
 
 		collectionSiteGrid = new IntGrid2D(gridWidth, gridHeight, ABSENT);
 		benchmarkCollectionSiteGrid = new IntGrid2D(gridWidth, gridHeight,
@@ -282,7 +283,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void resetEnvironment() {
 
-		obstacleGrid.setTo(ABSENT);
+		// TODO: try making this obstacleGrid = new SparseGrid2D() as suggested
+		obstacleGrid.clear();
 		collectionSiteGrid.setTo(ABSENT);
 		collectionSiteList.clear();
 		initCollisionGrid.setTo(ABSENT);
@@ -410,7 +412,7 @@ public abstract class Simulation extends SimState implements Constants {
 				randomY = randomPrime.nextInt(gridHeight);
 			}
 			initCollisionGrid.field[randomX][randomY] = PRESENT;
-			obstacleGrid.field[randomX][randomY] = PRESENT;
+			GridUtils.set(obstacleGrid, randomX, randomY, Boolean.TRUE);
 
 		}
 
@@ -457,9 +459,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void saveEnvironmentForBenchmark() {
 
+		benchmarkObstacleGrid = new SparseGrid2D(obstacleGrid);
 		for (int x = 0; x < gridWidth; x++) {
 			for (int y = 0; y < gridHeight; y++) {
-				benchmarkObstacleGrid.field[x][y] = obstacleGrid.field[x][y];
+
 				benchmarkCollectionSiteGrid.field[x][y] = collectionSiteGrid.field[x][y];
 				benchmarkInitCollisionGrid.field[x][y] = initCollisionGrid.field[x][y];
 				benchmarkResourceGrid.field[x][y] = resourceGrid.field[x][y];
@@ -475,9 +478,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void initEnvironmentWithBenchmark() {
 
+		obstacleGrid = new SparseGrid2D(benchmarkObstacleGrid);
+
 		for (int x = 0; x < gridWidth; x++) {
 			for (int y = 0; y < gridHeight; y++) {
-				obstacleGrid.field[x][y] = benchmarkObstacleGrid.field[x][y];
+
 				collectionSiteGrid.field[x][y] = benchmarkCollectionSiteGrid.field[x][y];
 				initCollisionGrid.field[x][y] = benchmarkInitCollisionGrid.field[x][y];
 				resourceGrid.field[x][y] = benchmarkResourceGrid.field[x][y];
@@ -648,7 +653,7 @@ public abstract class Simulation extends SimState implements Constants {
 			extractorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
 
 			// this will get rid of fractions
-			extractorPeerReward.val = (int) extractorPeerReward.val; 
+			extractorPeerReward.val = (int) extractorPeerReward.val;
 
 		}
 		if (extractorPeerReward.val < 0) {
@@ -657,7 +662,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		if (detectorPeerReward.val > 0) {
 			detectorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
-			
+
 			// this will get rid of fractions
 			detectorPeerReward.val = (int) detectorPeerReward.val;
 		}
@@ -669,7 +674,7 @@ public abstract class Simulation extends SimState implements Constants {
 		if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 			if (processorPeerReward.val < 0) {
 				processorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
-				
+
 				// this will get rid of fractions
 				detectorPeerReward.val = (int) detectorPeerReward.val;
 			}
