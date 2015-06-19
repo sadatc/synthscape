@@ -214,4 +214,15 @@ public class GridUtils {
 		return result;
 	}
 
+	public static boolean gridHasAnObjectAt(SparseGrid2D grid, int x, int y) {
+		boolean result = false;
+
+		Bag objects = grid.getObjectsAtLocation(x, y);
+		if (objects != null) {
+			result = true;
+		}
+
+		return result;
+	}
+
 }
