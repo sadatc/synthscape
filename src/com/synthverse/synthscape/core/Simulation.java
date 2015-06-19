@@ -23,6 +23,7 @@ import sim.field.grid.IntGrid2D;
 import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
+import sim.util.MutableDouble;
 
 import com.synthverse.Main;
 import com.synthverse.util.DateUtils;
@@ -83,9 +84,13 @@ public abstract class Simulation extends SimState implements Constants {
 	// protected DoubleGrid2D trailGridOld;
 	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
-	protected DoubleGrid2D extractorPeerReward;
-	protected DoubleGrid2D detectorPeerReward;
-	protected DoubleGrid2D processorPeerReward;
+	// originally, these peer reward variables were implemented as grids
+	// however, the reward was offered in all coordinates... the idea is
+	// the reward is offered to all agents with the appropriate traits
+	// however, updating grids is a waste of CPU time...
+	protected MutableDouble extractorPeerReward;
+	protected MutableDouble detectorPeerReward;
+	protected MutableDouble processorPeerReward;
 
 	public SparseGrid2D agentGrid;
 
@@ -257,9 +262,10 @@ public abstract class Simulation extends SimState implements Constants {
 		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
 
-		extractorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		detectorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		processorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		extractorPeerReward = new MutableDouble();
+		detectorPeerReward = new MutableDouble();
+		processorPeerReward = new MutableDouble();
+
 		agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 		agents = new ArrayList<Agent>();
 
@@ -285,9 +291,10 @@ public abstract class Simulation extends SimState implements Constants {
 		clearResourceStatusArray();
 
 		trailGridWrapper.grid.setTo(ABSENT);
-		extractorPeerReward.setTo(ABSENT);
-		detectorPeerReward.setTo(ABSENT);
-		processorPeerReward.setTo(ABSENT);
+
+		extractorPeerReward.val = 0.0;
+		detectorPeerReward.val = 0.0;
+		processorPeerReward.val = 0.0;
 
 		registeredBroadcasts.clear();
 
@@ -637,14 +644,38 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void fadeRewardGrids() {
 
-		extractorPeerReward.lowerBound(0.0);
-		extractorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+		if (extractorPeerReward.val > 0) {
+			extractorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
 
-		detectorPeerReward.lowerBound(0.0);
-		detectorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+			// this will get rid of fractions
+			extractorPeerReward.val = (int) extractorPeerReward.val; 
+
+		}
+		if (extractorPeerReward.val < 0) {
+			extractorPeerReward.val = 0;
+		}
+
+		if (detectorPeerReward.val > 0) {
+			detectorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
+			
+			// this will get rid of fractions
+			detectorPeerReward.val = (int) detectorPeerReward.val;
+		}
+
+		if (detectorPeerReward.val < 0) {
+			detectorPeerReward.val = 0;
+		}
 
 		if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-			processorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+			if (processorPeerReward.val < 0) {
+				processorPeerReward.val *= DEFAULT_REWARD_EVAPORATION_CONSTANT;
+				
+				// this will get rid of fractions
+				detectorPeerReward.val = (int) detectorPeerReward.val;
+			}
+			if (processorPeerReward.val < 0) {
+				processorPeerReward.val = 0;
+			}
 		}
 
 	}

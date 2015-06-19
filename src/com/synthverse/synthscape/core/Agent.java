@@ -10,6 +10,7 @@ import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.ObjectGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
+import sim.util.MutableDouble;
 import sim.util.Valuable;
 
 import com.synthverse.Main;
@@ -290,18 +291,17 @@ public abstract class Agent
 
 	}
 
-	public void _operationLeaveRewards(DoubleGrid2D rewardGrid,
+	public void _operationLeaveRewards(MutableDouble rewardHolder,
 			Event rewardEvent) {
 		if (Main.settings.PEER_REWARDS) {
 
-			// rewardGrid.field[x][y] = Constants.REWARD_LEVEL_MAX;
-			rewardGrid.setTo(Constants.REWARD_LEVEL_MAX);
+			rewardHolder.val = Constants.REWARD_LEVEL_MAX;
+
 			sim.recordEvent(this, rewardEvent, this.agentId, NA);
 
 		}
 
 	}
-
 	public final boolean _operationPerformResourceAction(Task action,
 			ObjectGrid2D resourceGrid) {
 
@@ -2004,7 +2004,7 @@ public abstract class Agent
 			this.locationHasProcessedResource = true;
 		}
 
-		if (sim.extractorPeerReward.field[x][y] >= 1.0) {
+		if (sim.extractorPeerReward.val >= 1.0) {
 			this.locationHasExtractorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA,
@@ -2012,7 +2012,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.detectorPeerReward.field[x][y] >= 1.0) {
+		if (sim.detectorPeerReward.val >= 1.0) {
 			this.locationHasDetectorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA,
@@ -2020,7 +2020,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.processorPeerReward.field[x][y] >= 1.0) {
+		if (sim.processorPeerReward.val >= 1.0) {
 			this.locationHasProcessorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA,
