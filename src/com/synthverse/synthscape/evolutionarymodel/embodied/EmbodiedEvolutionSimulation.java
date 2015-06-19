@@ -30,6 +30,7 @@ import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
+import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
@@ -192,7 +193,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {					
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -205,7 +206,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					randomY = clusterLocation.y;
 
 				}
-				initCollisionGrid.field[randomX][randomY] = PRESENT;
+				GridUtils.set(initCollisionGrid, randomX, randomY, true);				
 				previousX = randomX;
 				previousY = randomY;
 
@@ -246,11 +247,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 
-			while (initCollisionGrid.field[randomX][randomY] == PRESENT) {
+			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
-			initCollisionGrid.field[randomX][randomY] = PRESENT;
+			
+			GridUtils.set(initCollisionGrid, randomX, randomY, true);
+			
 
 			embodiedAgent.setNextActiveAgent(randomX, randomY);
 

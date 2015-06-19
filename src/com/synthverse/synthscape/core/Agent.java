@@ -2037,7 +2037,7 @@ public abstract class Agent
 			this.locationHasTrail = false;
 		}
 
-		if (sim.collectionSiteGrid.field[x][y] > 0) {
+		if (GridUtils.gridHasAnObjectAt(sim.collectionSiteGrid, x, y)) {		
 			this.locationIsCollectionSite = true;
 		} else {
 			this.locationIsCollectionSite = false;
