@@ -83,9 +83,9 @@ public abstract class Simulation extends SimState implements Constants {
 	// protected DoubleGrid2D trailGridOld;
 	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
-	protected DoubleGrid2D extractorRewardGrid;
-	protected DoubleGrid2D detectorRewardGrid;
-	protected DoubleGrid2D processorRewardGrid;
+	protected DoubleGrid2D extractorPeerReward;
+	protected DoubleGrid2D detectorPeerReward;
+	protected DoubleGrid2D processorPeerReward;
 
 	public SparseGrid2D agentGrid;
 
@@ -257,9 +257,9 @@ public abstract class Simulation extends SimState implements Constants {
 		// trailGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		trailGridWrapper.createNew(gridWidth, gridHeight, ABSENT);
 
-		extractorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		detectorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
-		processorRewardGrid = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		extractorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		detectorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
+		processorPeerReward = new DoubleGrid2D(gridWidth, gridHeight, ABSENT);
 		agentGrid = new SparseGrid2D(gridWidth, gridHeight);
 		agents = new ArrayList<Agent>();
 
@@ -285,9 +285,9 @@ public abstract class Simulation extends SimState implements Constants {
 		clearResourceStatusArray();
 
 		trailGridWrapper.grid.setTo(ABSENT);
-		extractorRewardGrid.setTo(ABSENT);
-		detectorRewardGrid.setTo(ABSENT);
-		processorRewardGrid.setTo(ABSENT);
+		extractorPeerReward.setTo(ABSENT);
+		detectorPeerReward.setTo(ABSENT);
+		processorPeerReward.setTo(ABSENT);
 
 		registeredBroadcasts.clear();
 
@@ -637,14 +637,14 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void fadeRewardGrids() {
 
-		extractorRewardGrid.lowerBound(0.0);
-		extractorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+		extractorPeerReward.lowerBound(0.0);
+		extractorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 
-		detectorRewardGrid.lowerBound(0.0);
-		detectorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+		detectorPeerReward.lowerBound(0.0);
+		detectorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 
 		if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-			processorRewardGrid.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
+			processorPeerReward.multiply(DEFAULT_REWARD_EVAPORATION_CONSTANT);
 		}
 
 	}

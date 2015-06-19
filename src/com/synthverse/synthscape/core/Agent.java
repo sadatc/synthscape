@@ -1477,7 +1477,7 @@ public abstract class Agent
 								this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorRewardGrid,
+					_operationLeaveRewards(sim.detectorPeerReward,
 							Event.DROPPED_DETECTOR_REWARDS);
 
 					// now reset the detected signal...
@@ -1512,7 +1512,7 @@ public abstract class Agent
 						this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorRewardGrid,
+					_operationLeaveRewards(sim.detectorPeerReward,
 							Event.DROPPED_DETECTOR_REWARDS);
 
 				}
@@ -1544,7 +1544,7 @@ public abstract class Agent
 								this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorRewardGrid,
+					_operationLeaveRewards(sim.extractorPeerReward,
 							Event.DROPPED_EXTRACTOR_REWARDS);
 
 					// now reset the detected signal...
@@ -1579,7 +1579,7 @@ public abstract class Agent
 						this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorRewardGrid,
+					_operationLeaveRewards(sim.extractorPeerReward,
 							Event.DROPPED_EXTRACTOR_REWARDS);
 				}
 
@@ -1727,7 +1727,7 @@ public abstract class Agent
 									NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
 									NA);
-							_operationLeaveRewards(sim.extractorRewardGrid,
+							_operationLeaveRewards(sim.extractorPeerReward,
 									Event.DROPPED_EXTRACTOR_REWARDS);
 
 							// save over this status
@@ -1752,7 +1752,7 @@ public abstract class Agent
 									NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
 									NA);
-							_operationLeaveRewards(sim.processorRewardGrid,
+							_operationLeaveRewards(sim.processorPeerReward,
 									Event.DROPPED_PROCESSOR_REWARDS);
 
 							// save over this status
@@ -1855,7 +1855,7 @@ public abstract class Agent
 										NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
 										NA, NA);
-								_operationLeaveRewards(sim.extractorRewardGrid,
+								_operationLeaveRewards(sim.extractorPeerReward,
 										Event.DROPPED_EXTRACTOR_REWARDS);
 
 								// resource has been collected, now we need to
@@ -1901,7 +1901,7 @@ public abstract class Agent
 										NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
 										NA, NA);
-								_operationLeaveRewards(sim.processorRewardGrid,
+								_operationLeaveRewards(sim.processorPeerReward,
 										Event.DROPPED_PROCESSOR_REWARDS);
 
 								// now reset the detected signal...
@@ -2004,7 +2004,7 @@ public abstract class Agent
 			this.locationHasProcessedResource = true;
 		}
 
-		if (sim.extractorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.extractorPeerReward.field[x][y] >= 1.0) {
 			this.locationHasExtractorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA,
@@ -2012,7 +2012,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.detectorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.detectorPeerReward.field[x][y] >= 1.0) {
 			this.locationHasDetectorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA,
@@ -2020,7 +2020,7 @@ public abstract class Agent
 			}
 		}
 
-		if (sim.processorRewardGrid.field[x][y] >= 1.0) {
+		if (sim.processorPeerReward.field[x][y] >= 1.0) {
 			this.locationHasProcessorReward = true;
 			if (Main.settings.PEER_REWARDS) {
 				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA,
