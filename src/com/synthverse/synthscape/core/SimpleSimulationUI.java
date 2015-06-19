@@ -69,10 +69,11 @@ public class SimpleSimulationUI extends SimulationUI {
 
 				});
 
+/*		
 		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.BLACK));
-
+*/
 		initPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.GREEN));
