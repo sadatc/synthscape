@@ -18,9 +18,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.IntGrid2D;
-import sim.field.grid.ObjectGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Int2D;
 import sim.util.MutableDouble;
@@ -82,7 +79,6 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
-	// protected DoubleGrid2D trailGridOld;
 	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
 	// originally, these peer reward variables were implemented as grids
