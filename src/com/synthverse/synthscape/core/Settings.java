@@ -59,9 +59,9 @@ public class Settings implements Constants {
 
 	public String MODEL_INTERACTIONS = "none";
 
-	public int WORLD_WIDTH = 16;
+	public int WORLD_WIDTH = 32;
 
-	public int WORLD_HEIGHT = 16;
+	public int WORLD_HEIGHT = 32;
 
 	public double OBSTACLE_DENSITY = 0.125;
 

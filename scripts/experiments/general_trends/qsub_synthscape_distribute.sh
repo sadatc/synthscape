@@ -34,4 +34,4 @@ fi
 
 #java -Xms2048M -Xmx2048M -jar synthscape.jar -species hetero -interactions none -model island -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat 50 -job_set ${PBS_ARRAY_INDEX}
 
-java -Xms2048M -Xmx2048M -jar synthscape.jar -species ${SPECIES} -interactions ${INTERACTIONS} -model ${MODEL} -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat 50 -job_set ${PBS_ARRAY_INDEX}
+java -Xms2048M -Xmx2048M -jar synthscape.jar -species ${SPECIES} -int ${INTERACTIONS} -model ${MODEL} -job_name ${PBS_JOBNAME} -data_dir ${DATA_DIR} -repeat 50 
