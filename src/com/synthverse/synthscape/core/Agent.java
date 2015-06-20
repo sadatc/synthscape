@@ -1125,53 +1125,6 @@ public abstract class Agent
 
 	}
 
-	public final void _operationFollowTrail(DoubleGrid2D trailA,
-			DoubleGrid2D trailB, DoubleGrid2D trailC) {
-		// we need to check all neighboring cells to detect which one
-		// has the highest concentration of trail A and then
-		// move there. If none is found, move at random
-		int maxTrail = Integer.MIN_VALUE;
-		int maxX = 0, maxY = 0;
-		for (int deltaX = -1; deltaX <= 1; deltaX++) {
-			for (int deltaY = -1; deltaY <= 1; deltaY++) {
-				// except for the center...
-				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trailA.stx(this.x + deltaX);
-					int scanY = trailA.sty(this.y + deltaY);
-
-					double trailAmountA = trailA.field[scanX][scanY];
-					if (trailAmountA > maxTrail) {
-						maxTrail = (int) trailAmountA;
-						maxX = scanX;
-						maxY = scanY;
-					}
-
-					double trailAmountB = trailB.field[scanX][scanY];
-					if (trailAmountB > maxTrail) {
-						maxTrail = (int) trailAmountB;
-						maxX = scanX;
-						maxY = scanY;
-					}
-
-					double trailAmountC = trailC.field[scanX][scanY];
-					if (trailAmountC > maxTrail) {
-						maxTrail = (int) trailAmountC;
-						maxX = scanX;
-						maxY = scanY;
-					}
-				}
-			}
-		}
-		// now move to the highest concentration
-		// or move randomly
-		if (maxTrail > 0) {
-			_operationMoveAbsolute(maxX, maxY);
-		} else {
-			_operationRandomMove();
-		}
-
-	}
-
 	/*
 	 * public final void operationMove(int newX, int newY) {
 	 * 
