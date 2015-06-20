@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.SparseGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
