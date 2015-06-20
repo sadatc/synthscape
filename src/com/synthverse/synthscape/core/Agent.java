@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.ObjectGrid2D;
+import sim.field.grid.SparseGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.MutableDouble;
@@ -177,8 +177,8 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			
-			if ( ! locationHasObstacle(newX,newY) ) {
+
+			if (!locationHasObstacle(newX, newY)) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -200,7 +200,7 @@ public abstract class Agent
 		// apply moving logic, only if we are moving to a new location
 		if (newX != location.x || newY != location.y) {
 			// also, only move if new location is not an obstacle
-			if ( ! locationHasObstacle(newX,newY) ) {
+			if (!locationHasObstacle(newX, newY)) {
 
 				previousX = location.x;
 				previousY = location.y;
@@ -229,7 +229,7 @@ public abstract class Agent
 			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
 					&& xMod < sim.getGridWidth() && yMod >= 0
 					&& yMod < sim.getGridHeight()
-					&& (! locationHasObstacle(xMod,yMod)) ) {
+					&& (!locationHasObstacle(xMod, yMod))) {
 				newX = xMod;
 				newY = yMod;
 				foundNewUblockedLocation = true;
@@ -305,16 +305,18 @@ public abstract class Agent
 
 	}
 	public final boolean _operationPerformResourceAction(Task action,
-			ObjectGrid2D resourceGrid) {
+			SparseGrid2D resourceGrid) {
 
 		boolean actionPerformed = false;
 
-		ResourceState resourceState = (ResourceState) resourceGrid.field[x][y];
+		ResourceState resourceState = GridUtils.getResourceState(resourceGrid,
+				x, y);
 
 		switch (action) {
 			case EXTRACTION :
 				if (resourceState == ResourceState.RAW) {
-					resourceGrid.field[x][y] = ResourceState.EXTRACTED;
+
+					GridUtils.set(resourceGrid, x, y, ResourceState.EXTRACTED);
 					sim.resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
 					sim.resourceStatusArray[x][y].extractionStep = sim.simStepCounter;
 					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
@@ -323,7 +325,7 @@ public abstract class Agent
 				break;
 			case PROCESSING :
 				if (resourceState == ResourceState.EXTRACTED) {
-					resourceGrid.field[x][y] = ResourceState.PROCESSED;
+					GridUtils.set(resourceGrid, x, y, ResourceState.PROCESSED);
 					sim.resourceStatusArray[x][y].state = ResourceState.PROCESSED;
 					sim.resourceStatusArray[x][y].processingStep = sim.simStepCounter;
 					sim.touchedResources.add(sim.resourceStatusArray[x][y]);
@@ -1095,10 +1097,13 @@ public abstract class Agent
 			for (int deltaY = -1; deltaY <= 1; deltaY++) {
 				// except for the center...
 				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trailGridWrapper.strengthGrid.stx(this.x + deltaX);
-					int scanY = trailGridWrapper.strengthGrid.sty(this.y + deltaY);
+					int scanX = trailGridWrapper.strengthGrid.stx(this.x
+							+ deltaX);
+					int scanY = trailGridWrapper.strengthGrid.sty(this.y
+							+ deltaY);
 
-					double trailAmount = trailGridWrapper.getTrailStrengthAt(scanX, scanY);					
+					double trailAmount = trailGridWrapper.getTrailStrengthAt(
+							scanX, scanY);
 					if (trailAmount > maxTrail) {
 						maxTrail = (int) trailAmount;
 						maxX = scanX;
@@ -1627,9 +1632,12 @@ public abstract class Agent
 							|| locationHasRawResource) {
 						if (!isCarryingResource) {
 							isCarryingResource = true;
-							stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
-							this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+							stateOfCarriedResource = GridUtils
+									.getResourceState(this.sim.resourceGrid, x,
+											y);
+
+							this.sim.resourceGrid.removeObjectsAtLocation(x, y);
 
 							// copy over the state of the resource
 							sim.resourceStatusArray[x][y]
@@ -1665,9 +1673,10 @@ public abstract class Agent
 						|| locationHasRawResource) {
 					if (!isCarryingResource) {
 						isCarryingResource = true;
-						stateOfCarriedResource = (ResourceState) this.sim.resourceGrid.field[x][y];
 
-						this.sim.resourceGrid.field[x][y] = ResourceState.NULL;
+						stateOfCarriedResource = GridUtils.getResourceState(
+								this.sim.resourceGrid, x, y);
+						this.sim.resourceGrid.removeObjectsAtLocation(x, y);
 
 						// copy over the state of the resource
 						sim.resourceStatusArray[x][y]
@@ -1779,7 +1788,9 @@ public abstract class Agent
 				}
 
 				if (dropResource) {
-					this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+
+					GridUtils.set(this.sim.resourceGrid, x, y,
+							stateOfCarriedResource);
 
 					// this is a resource drop...place the resource back in the
 					// grid
@@ -1946,7 +1957,8 @@ public abstract class Agent
 					}
 
 					if (dropResource) {
-						this.sim.resourceGrid.field[x][y] = stateOfCarriedResource;
+						GridUtils.set(this.sim.resourceGrid, x, y,
+								stateOfCarriedResource);
 
 						// this is a resource drop...place the resource back in
 						// the
@@ -1998,11 +2010,11 @@ public abstract class Agent
 		this.locationHasDetectorReward = false;
 		this.locationHasProcessorReward = false;
 
-		if (sim.resourceGrid.field[x][y] == ResourceState.RAW) {
+		if (GridUtils.getResourceState(sim.resourceGrid, x, y) == ResourceState.RAW) {
 			this.locationHasRawResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.EXTRACTED) {
+		} else if (GridUtils.getResourceState(sim.resourceGrid, x, y) == ResourceState.EXTRACTED) {
 			this.locationHasExtractedResource = true;
-		} else if (sim.resourceGrid.field[x][y] == ResourceState.PROCESSED) {
+		} else if (GridUtils.getResourceState(sim.resourceGrid, x, y) == ResourceState.PROCESSED) {
 			this.locationHasProcessedResource = true;
 		}
 
@@ -2037,7 +2049,7 @@ public abstract class Agent
 			this.locationHasTrail = false;
 		}
 
-		if (GridUtils.gridHasAnObjectAt(sim.collectionSiteGrid, x, y)) {		
+		if (GridUtils.gridHasAnObjectAt(sim.collectionSiteGrid, x, y)) {
 			this.locationIsCollectionSite = true;
 		} else {
 			this.locationIsCollectionSite = false;

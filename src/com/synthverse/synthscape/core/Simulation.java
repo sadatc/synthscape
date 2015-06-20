@@ -74,8 +74,8 @@ public abstract class Simulation extends SimState implements Constants {
 	protected SparseGrid2D initCollisionGrid;
 	protected SparseGrid2D benchmarkInitCollisionGrid;
 
-	protected ObjectGrid2D resourceGrid;
-	protected ObjectGrid2D benchmarkResourceGrid;
+	protected SparseGrid2D resourceGrid;
+	protected SparseGrid2D benchmarkResourceGrid;
 
 	public ResourceStatus[][] resourceStatusArray;
 	public ResourceStatus[][] benchmarkResourceStatusArray;
@@ -255,9 +255,9 @@ public abstract class Simulation extends SimState implements Constants {
 		initCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
 		benchmarkInitCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
 
-		resourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
-		benchmarkResourceGrid = new ObjectGrid2D(gridWidth, gridHeight);
-		
+		resourceGrid = new SparseGrid2D(gridWidth, gridHeight);
+		benchmarkResourceGrid = new SparseGrid2D(gridWidth, gridHeight);
+
 		trailGridWrapper.createNew(gridWidth, gridHeight);
 
 		extractorPeerReward = new MutableDouble();
@@ -286,7 +286,7 @@ public abstract class Simulation extends SimState implements Constants {
 		collectionSiteList.clear();
 		initCollisionGrid.clear();
 
-		resourceGrid.setTo(ResourceState.NULL);
+		resourceGrid.clear();
 		clearResourceStatusArray();
 
 		trailGridWrapper.clear();
@@ -310,6 +310,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	final void clearResourceStatusArray() {
 		touchedResources.clear();
+		// TODO: time this against simply creating a new status array object
 		for (int x = 0; x < gridWidth; x++) {
 			for (int y = 0; y < gridHeight; y++) {
 				resourceStatusArray[x][y].clear();
@@ -437,7 +438,7 @@ public abstract class Simulation extends SimState implements Constants {
 				randomY = randomPrime.nextInt(gridHeight);
 			} while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX,
 					randomY));
-			resourceGrid.field[randomX][randomY] = ResourceState.RAW;
+			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
 			resourceStatusArray[randomX][randomY].x = randomX;
@@ -461,18 +462,25 @@ public abstract class Simulation extends SimState implements Constants {
 		resetCollectionCounts();
 	}
 
+	public static ResourceStatus[][] copyResourceStatusArray(
+			ResourceStatus[][] input) {
+		if (input == null)
+			return null;
+		ResourceStatus[][] result = new ResourceStatus[input.length][];
+		for (int r = 0; r < input.length; r++) {
+			result[r] = input[r].clone();
+		}
+		return result;
+	}
+
 	protected void saveEnvironmentForBenchmark() {
 
 		benchmarkObstacleGrid = new SparseGrid2D(obstacleGrid);
 		benchmarkCollectionSiteGrid = new SparseGrid2D(collectionSiteGrid);
 		benchmarkInitCollisionGrid = new SparseGrid2D(initCollisionGrid);
-		for (int x = 0; x < gridWidth; x++) {
-			for (int y = 0; y < gridHeight; y++) {
-				benchmarkResourceGrid.field[x][y] = resourceGrid.field[x][y];
-				resourceStatusArray[x][y]
-						.cloneTo(benchmarkResourceStatusArray[x][y]);
-			}
-		}
+		benchmarkResourceGrid = new SparseGrid2D(resourceGrid);
+		benchmarkResourceStatusArray = copyResourceStatusArray(resourceStatusArray);
+
 		benchmarkCollectionSiteList.clear();
 		for (Int2D coordinate : collectionSiteList) {
 			benchmarkCollectionSiteList.add(coordinate);
@@ -484,15 +492,8 @@ public abstract class Simulation extends SimState implements Constants {
 		obstacleGrid = new SparseGrid2D(benchmarkObstacleGrid);
 		collectionSiteGrid = new SparseGrid2D(benchmarkCollectionSiteGrid);
 		initCollisionGrid = new SparseGrid2D(benchmarkInitCollisionGrid);
-
-		for (int x = 0; x < gridWidth; x++) {
-			for (int y = 0; y < gridHeight; y++) {
-
-				resourceGrid.field[x][y] = benchmarkResourceGrid.field[x][y];
-				benchmarkResourceStatusArray[x][y]
-						.cloneTo(resourceStatusArray[x][y]);
-			}
-		}
+		resourceGrid = new SparseGrid2D(benchmarkResourceGrid);
+		resourceStatusArray = copyResourceStatusArray(benchmarkResourceStatusArray);
 
 		collectionSiteList.clear();
 		for (Int2D coordinate : benchmarkCollectionSiteList) {
@@ -537,8 +538,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 				}
 
-				GridUtils
-						.set(initCollisionGrid, randomX, randomY, true);
+				GridUtils.set(initCollisionGrid, randomX, randomY, true);
 
 				previousX = randomX;
 				previousY = randomY;
