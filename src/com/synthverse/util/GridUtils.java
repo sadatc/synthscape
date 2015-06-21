@@ -2,6 +2,7 @@ package com.synthverse.util;
 
 import sim.field.grid.SparseGrid2D;
 import sim.util.Bag;
+import sim.util.Int2D;
 import sim.util.MutableDouble;
 
 import com.synthverse.synthscape.core.ResourceState;
@@ -108,7 +109,7 @@ public class GridUtils {
 			mutableObject.val = val;
 			grid.setObjectLocation(mutableObject, x, y);
 		}
-		
+
 	}
 
 	public static void set(SparseGrid2D grid, int x, int y, int val) {
@@ -235,7 +236,45 @@ public class GridUtils {
 
 		return result;
 	}
-	
-	
 
+	public static void removeAllObjectsAt(SparseGrid2D grid, int x, int y) {
+
+		Bag objects = grid.getObjectsAtLocation(x, y);
+		if (objects != null) {
+			grid.removeObjectsAtLocation(x, y);
+		}
+
+	}
+
+	public static SparseGrid2D cloneBooleanGrid(SparseGrid2D grid) {
+		SparseGrid2D result = new SparseGrid2D(grid.getWidth(),
+				grid.getHeight());
+		Bag objects = grid.getAllObjects();
+		Int2D location = null;
+		for (int i = 0; i < objects.numObjs; i++) {
+			MutableBoolean object = (MutableBoolean) objects.get(i);
+			location = grid.getObjectLocation(object);
+			MutableBoolean clone = new MutableBoolean(object.val);
+			result.setObjectLocation(clone, location);
+		}
+		return result;
+	}
+
+	
+	public static SparseGrid2D cloneResourceGrid(SparseGrid2D grid) {
+		SparseGrid2D result = new SparseGrid2D(grid.getWidth(),
+				grid.getHeight());
+		Bag objects = grid.getAllObjects();
+		Int2D location = null;
+		for (int i = 0; i < objects.numObjs; i++) {
+			MutableResourceState object = (MutableResourceState) objects.get(i);
+			location = grid.getObjectLocation(object);
+			MutableResourceState clone = new MutableResourceState(object.val);
+			result.setObjectLocation(clone, location);
+		}
+		return result;
+	}
+
+	
+	
 }
