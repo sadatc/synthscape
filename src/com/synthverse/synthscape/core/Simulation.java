@@ -471,10 +471,13 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void saveEnvironmentForBenchmark() {
 
-		benchmarkObstacleGrid = new SparseGrid2D(obstacleGrid);
-		benchmarkCollectionSiteGrid = new SparseGrid2D(collectionSiteGrid);
-		benchmarkInitCollisionGrid = new SparseGrid2D(initCollisionGrid);
-		benchmarkResourceGrid = new SparseGrid2D(resourceGrid);
+	
+		benchmarkObstacleGrid = GridUtils.cloneBooleanGrid(obstacleGrid);
+		benchmarkCollectionSiteGrid = GridUtils.cloneBooleanGrid(collectionSiteGrid);
+		benchmarkInitCollisionGrid = GridUtils.cloneBooleanGrid(initCollisionGrid);
+		benchmarkResourceGrid = GridUtils.cloneResourceGrid(resourceGrid);
+		
+		
 		benchmarkResourceStatusArray = copyResourceStatusArray(resourceStatusArray);
 
 		benchmarkCollectionSiteList.clear();
@@ -484,11 +487,16 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void initEnvironmentWithBenchmark() {
+		
+		
+		obstacleGrid = GridUtils.cloneBooleanGrid(benchmarkObstacleGrid);
+		collectionSiteGrid = GridUtils.cloneBooleanGrid(benchmarkCollectionSiteGrid);
+		initCollisionGrid = GridUtils.cloneBooleanGrid(benchmarkInitCollisionGrid);
+		resourceGrid = GridUtils.cloneResourceGrid(benchmarkResourceGrid);
+		
+		
+		
 
-		obstacleGrid = new SparseGrid2D(benchmarkObstacleGrid);
-		collectionSiteGrid = new SparseGrid2D(benchmarkCollectionSiteGrid);
-		initCollisionGrid = new SparseGrid2D(benchmarkInitCollisionGrid);
-		resourceGrid = new SparseGrid2D(benchmarkResourceGrid);
 		resourceStatusArray = copyResourceStatusArray(benchmarkResourceStatusArray);
 
 		collectionSiteList.clear();
