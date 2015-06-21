@@ -21,7 +21,7 @@
 cd ${PBS_O_WORKDIR}
 
 if [ ${SERVER} == "andy"  ] ; then
-	export PATH=/usr/lib64/jvm/jre-1.6.0-ibm/bin/java:${PATH}
+	export PATH=/usr/lib64/jvm/jre-1.6.0-ibm/bin:${PATH}
 else
 	export PATH=/opt/jdk1.8.0_45/bin:${PATH}
 fi	
