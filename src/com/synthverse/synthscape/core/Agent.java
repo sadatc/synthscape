@@ -1589,7 +1589,10 @@ public abstract class Agent
 									.getResourceState(this.sim.resourceGrid, x,
 											y);
 
-							this.sim.resourceGrid.removeObjectsAtLocation(x, y);
+							GridUtils.removeAllObjectsAt(this.sim.resourceGrid,
+									x, y);
+							// this.sim.resourceGrid.removeObjectsAtLocation(x,
+							// y);
 
 							// copy over the state of the resource
 							sim.resourceStatusArray[x][y]
@@ -1628,7 +1631,9 @@ public abstract class Agent
 
 						stateOfCarriedResource = GridUtils.getResourceState(
 								this.sim.resourceGrid, x, y);
-						this.sim.resourceGrid.removeObjectsAtLocation(x, y);
+
+						GridUtils.removeAllObjectsAt(this.sim.resourceGrid, x,
+								y);
 
 						// copy over the state of the resource
 						sim.resourceStatusArray[x][y]

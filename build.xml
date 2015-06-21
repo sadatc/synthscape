@@ -18,7 +18,7 @@
 
 	<target name="compile" depends="clean">
 		<mkdir dir="${build.dir}/classes" />
-		<javac includeantruntime="false" target="1.8" source="1.8" destdir="${build.dir}/classes" deprecation="${javac.deprecation}" debug="${javac.debug}" debuglevel="${javac.debuglevel}" optimize="${javac.optimize}" classpathref="classpath">
+		<javac includeantruntime="false" destdir="${build.dir}/classes" target="1.7" source="1.7" deprecation="${javac.deprecation}" debug="${javac.debug}" debuglevel="${javac.debuglevel}" optimize="${javac.optimize}" classpathref="classpath">
 			<src>
 				<pathelement location="${source.dir}" />
 			</src>
