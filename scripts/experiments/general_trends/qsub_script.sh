@@ -41,4 +41,4 @@ if [ ! -d "${DATA_DIR}" ]; then
    mkdir ${DATA_DIR}
 fi
 
-java -Xms2048M -Xmx2048M -jar ../../../synthscape.jar -species ${SPECIES} -int ${INTERACTIONS} -model ${MODEL} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} -repeat 500 ${EXTRA_PARAMS}
+java -Xms2048M -Xmx2048M -jar  ../../../synthscape.jar ${SIM_PARAMS} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} 
