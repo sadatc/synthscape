@@ -1,7 +1,12 @@
 #!/bin/bash
+# Author: Sadat Chowdhury (sadatc@gmail.com)
+# Last Updated: June, 2015
 #
-# My serial PBS test job.
-#
+# Purpose: Runs a PBS Job. 
+# This sub-script is meant to be invoked by a parent script that selects
+# appropriate simulation parameters and uses this script to distribute the 
+# simulation on the PBS compute nodes.
+# 
 
 #PBS -q production
 
@@ -20,7 +25,9 @@
 # Change to working directory
 cd ${PBS_O_WORKDIR}
 
+# depending on the HPCC cluster server, pick the appropriate JVM
 if [ ${SERVER} == "andy"  ] ; then
+	# unfortunately, still runs the older JVM
 	export PATH=/usr/lib64/jvm/jre-1.6.0-ibm/bin:${PATH}
 else
 	export PATH=/opt/jdk1.8.0_45/bin:${PATH}
@@ -34,4 +41,4 @@ if [ ! -d "${DATA_DIR}" ]; then
    mkdir ${DATA_DIR}
 fi
 
-java -Xms2048M -Xmx2048M -jar ../../../synthscape.jar -species ${SPECIES} -int ${INTERACTIONS} -model ${MODEL} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} -repeat 500 
+java -Xms2048M -Xmx2048M -jar ../../../synthscape.jar -species ${SPECIES} -int ${INTERACTIONS} -model ${MODEL} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} -repeat 500 ${EXTRA_PARAMS}
