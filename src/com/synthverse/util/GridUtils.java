@@ -4,12 +4,13 @@ import sim.field.grid.SparseGrid2D;
 import sim.util.Bag;
 import sim.util.Int2D;
 import sim.util.MutableDouble;
+import sim.util.Valuable;
 
 import com.synthverse.synthscape.core.ResourceState;
 
 public class GridUtils {
 
-	static class MutableInt implements Cloneable {
+	static class MutableInt implements Cloneable, Valuable {
 		private static final long serialVersionUID = 1;
 
 		public int val;
@@ -29,9 +30,13 @@ public class GridUtils {
 				return null; // never happens
 			}
 		}
+		@Override
+		public double doubleValue() {
+			return val;
+		}
 	}
 
-	static class MutableLong implements Cloneable {
+	static class MutableLong implements Cloneable, Valuable {
 		private static final long serialVersionUID = 1;
 
 		public long val;
@@ -51,9 +56,14 @@ public class GridUtils {
 				return null; // never happens
 			}
 		}
+
+		@Override
+		public double doubleValue() {
+			return val;
+		}
 	}
 
-	static class MutableBoolean implements Cloneable {
+	static class MutableBoolean implements Cloneable, Valuable {
 		private static final long serialVersionUID = 1;
 
 		public boolean val;
@@ -73,12 +83,21 @@ public class GridUtils {
 				return null; // never happens
 			}
 		}
+
+		@Override
+		public double doubleValue() {
+			if (val) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
 	}
 
-	static class MutableResourceState implements Cloneable {
+	static class MutableResourceState implements Cloneable, Valuable {
 		private static final long serialVersionUID = 1;
 
-		public ResourceState val;
+		public ResourceState val = ResourceState.NULL;
 
 		public MutableResourceState() {
 			val = ResourceState.NULL;
@@ -94,6 +113,11 @@ public class GridUtils {
 			} catch (CloneNotSupportedException e) {
 				return null; // never happens
 			}
+		}
+
+		@Override
+		public double doubleValue() {
+			return val.doubleValue();
 		}
 	}
 
@@ -260,7 +284,6 @@ public class GridUtils {
 		return result;
 	}
 
-	
 	public static SparseGrid2D cloneResourceGrid(SparseGrid2D grid) {
 		SparseGrid2D result = new SparseGrid2D(grid.getWidth(),
 				grid.getHeight());
@@ -275,6 +298,4 @@ public class GridUtils {
 		return result;
 	}
 
-	
-	
 }
