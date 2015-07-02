@@ -10,9 +10,8 @@ import javax.swing.ImageIcon;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.engine.SimState;
+import sim.field.grid.IntGrid2D;
 import sim.portrayal.SimplePortrayal2D;
-import sim.portrayal.grid.FastValueGridPortrayal2D;
-import sim.portrayal.grid.ObjectGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
@@ -32,14 +31,13 @@ public class FancySimulationUI extends SimulationUI {
 	protected ValueGridPortrayal2D worldPortrayal;
 
 	protected void initStructures() {
-		collectionSitePortrayal = new ValueGridPortrayal2D("CollectionSite");
-		resourcePortrayal = new ObjectGridPortrayal2D();
-		obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle");
-		// above, true = immutable
+		collectionSitePortrayal = new SparseGridPortrayal2D();
+		resourcePortrayal = new SparseGridPortrayal2D();
+		obstaclesPortrayal = new SparseGridPortrayal2D();
 
 		agentPortrayal = new SparseGridPortrayal2D();
-		trailPortrayal = new FastValueGridPortrayal2D("Trail");
-		worldPortrayal = new ValueGridPortrayal2D("World");
+		trailPortrayal = new SparseGridPortrayal2D();
+		worldPortrayal = new ValueGridPortrayal2D();
 	}
 
 	public void init(Controller controller) {
@@ -55,35 +53,32 @@ public class FancySimulationUI extends SimulationUI {
 		displayFrame.setVisible(true);
 
 		// attach all the portrayals
+		display.attach(worldPortrayal, "World");
 
 		display.attach(obstaclesPortrayal, "Obstacles");
 		display.attach(collectionSitePortrayal, "Collection Sites");
 		display.attach(resourcePortrayal, "Resources");
 		display.attach(trailPortrayal, "Trails");
 		display.attach(agentPortrayal, "Agents");
-		// display.detatchAll();
+
 	}
 
 	public void initPortrayals() {
 		Simulation theState = (Simulation) state;
 
-		// image based portrayal
+		// collection sites
 		collectionSitePortrayal.setField(theState.collectionSiteGrid);
+		collectionSitePortrayal.setPortrayalForAll(new ImagePortrayal2D(
+				new ImageIcon(GRID_ICON_COLLECTION_SITE),
+				GRID_ICON_SCALE_FACTOR));
 
-		collectionSitePortrayal.setPortrayalForAll(new FacetedPortrayal2D(
-				new SimplePortrayal2D[] {
-						new RectanglePortrayal2D(Color.TRANSLUCENT, false),
-						new ImagePortrayal2D(new ImageIcon(
-								GRID_ICON_COLLECTION_SITE),
-								GRID_ICON_SCALE_FACTOR) }));
-
-		// image based portrayal
+		// resources -- they can be in different states
 		resourcePortrayal.setField(theState.resourceGrid);
 		resourcePortrayal
 				.setPortrayalForAll(new FacetedPortrayal2D(
-						new SimplePortrayal2D[] {
+						new SimplePortrayal2D[]{
 								new RectanglePortrayal2D(Color.TRANSLUCENT,
-										false),
+										true),
 								new ImagePortrayal2D(new ImageIcon(
 										GRID_ICON_RAW_RESOURCE),
 										GRID_ICON_SCALE_FACTOR),
@@ -97,26 +92,41 @@ public class FancySimulationUI extends SimulationUI {
 						}
 
 				));
-/*
-		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
-						0, 0, 0), Color.BLACK));
 
-		initPortrayal(trailPortrayal, theState.trailGridWrapper.grid,
-				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
-						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
-						Color.YELLOW) {
-					public double filterLevel(double level) {
-						return Math.sqrt(Math.sqrt(level));
-					}
+		// obstacles sites
+		obstaclesPortrayal.setField(theState.obstacleGrid);
+		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(
+				Color.BLACK, true));
 
-				});
-*/
+		// trails
+		trailPortrayal.setField(theState.trailGridWrapper.strengthGrid);
+		trailPortrayal.setPortrayalForAll(new RectanglePortrayal2D(
+				Color.YELLOW, true));
+		
+
+		/*
+		trailPortrayal.setMap(new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
+				TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0), Color.YELLOW) {
+			public double filterLevel(double level) {
+				return Math.sqrt(Math.sqrt(level));
+			}
+		});
+		*/
+
+		/*
+		 * initPortrayal(obstaclesPortrayal, theState.obstacleGrid, new
+		 * sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0, 0, 0, 0),
+		 * Color.BLACK));
+		 * 
+		 * initPortrayal(trailPortrayal, theState.trailGridWrapper.grid, }
+		 * 
+		 * });
+		 */
 		agentPortrayal.setField(theState.agentGrid);
 
 		agentPortrayal
 				.setPortrayalForAll(new FacetedPortrayal2D(
-						new SimplePortrayal2D[] {
+						new SimplePortrayal2D[]{
 
 								new ImagePortrayal2D(new ImageIcon(
 										GRID_ICON_AGENT),
@@ -128,9 +138,11 @@ public class FancySimulationUI extends SimulationUI {
 						}));
 
 		// this draws the grid lines
-		worldPortrayal.setField(theState.obstacleGrid);
+		IntGrid2D worldGrid = new IntGrid2D(theState.gridWidth,
+				theState.gridHeight, 1);
+		worldPortrayal.setField(worldGrid);
 		worldPortrayal.setPortrayalForAll(new RectanglePortrayal2D(
-				Color.LIGHT_GRAY, false));
+				Color.LIGHT_GRAY, 0.99, false));
 
 		display.reset();
 		display.repaint();

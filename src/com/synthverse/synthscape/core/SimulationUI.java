@@ -8,8 +8,8 @@ import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.field.grid.DoubleGrid2D;
 import sim.field.grid.IntGrid2D;
+import sim.field.grid.SparseGrid2D;
 import sim.portrayal.Inspector;
-import sim.portrayal.grid.ObjectGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.util.gui.SimpleColorMap;
@@ -19,10 +19,10 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	protected Display2D display;
 	protected JFrame displayFrame;
 
-	protected ValueGridPortrayal2D collectionSitePortrayal;
-	protected ObjectGridPortrayal2D resourcePortrayal;
-	protected ValueGridPortrayal2D obstaclesPortrayal;
-	protected ValueGridPortrayal2D trailPortrayal;
+	protected SparseGridPortrayal2D collectionSitePortrayal;
+	protected SparseGridPortrayal2D resourcePortrayal;
+	protected SparseGridPortrayal2D obstaclesPortrayal;
+	protected SparseGridPortrayal2D trailPortrayal;
 
 	protected SparseGridPortrayal2D agentPortrayal;
 
@@ -59,6 +59,15 @@ public abstract class SimulationUI extends GUIState implements Constants {
 		display = null;
 	}
 
+	
+	protected void initPortrayal(SparseGridPortrayal2D portrayal,
+			SparseGrid2D grid, SimpleColorMap colorMap) {
+
+		portrayal.setField(grid);
+		//portrayal.setMap(colorMap);
+	}
+	
+	
 	protected void initPortrayal(ValueGridPortrayal2D portrayal,
 			IntGrid2D grid, SimpleColorMap colorMap) {
 

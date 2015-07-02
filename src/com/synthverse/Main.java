@@ -46,6 +46,7 @@ public class Main {
 
 				if (settings.SHOW_GRAPHICS) {
 					ALifeEvolutionSimulationFancyUI.main(args);
+
 				} else {
 					ALifeEvolutionSimulation.main(args);
 

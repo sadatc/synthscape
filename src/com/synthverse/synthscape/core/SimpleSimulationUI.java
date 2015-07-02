@@ -9,12 +9,11 @@ import sim.display.Controller;
 import sim.display.Display2D;
 import sim.engine.SimState;
 import sim.portrayal.SimplePortrayal2D;
-import sim.portrayal.grid.ObjectGridPortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
-import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
 import sim.portrayal.simple.OvalPortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
+import sim.portrayal.simple.ShapePortrayal2D;
 
 public class SimpleSimulationUI extends SimulationUI {
 
@@ -30,7 +29,7 @@ public class SimpleSimulationUI extends SimulationUI {
 
 		super.init(controller);
 
-		display = new Display2D(600, 600, this);
+		display = new Display2D(300, 300, this);
 		display.setClipping(false);
 
 		displayFrame = display.createFrame();
@@ -49,17 +48,25 @@ public class SimpleSimulationUI extends SimulationUI {
 	}
 
 	protected void initStructures() {
-		collectionSitePortrayal = new ValueGridPortrayal2D("CollectionSite");
-		resourcePortrayal = new ObjectGridPortrayal2D();
-		obstaclesPortrayal = new ValueGridPortrayal2D("Obstacle");
+		collectionSitePortrayal = new SparseGridPortrayal2D();
+		resourcePortrayal = new SparseGridPortrayal2D();
+		obstaclesPortrayal = new SparseGridPortrayal2D();
 		agentPortrayal = new SparseGridPortrayal2D();
-		trailPortrayal = new ValueGridPortrayal2D("Trail");
+		trailPortrayal = new SparseGridPortrayal2D();
 	}
 
 	protected void initPortrayals() {
 		Simulation theState = (Simulation) state;
+	
 
 		/*
+		 * 
+		
+			initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
+				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
+						0, 0, 0), Color.BLACK));
+
+		
 		initPortrayal(trailPortrayal, theState.trailGridWrapper.grid,
 				new sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN,
 						TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
@@ -71,14 +78,11 @@ public class SimpleSimulationUI extends SimulationUI {
 				});
 
 	
-		initPortrayal(obstaclesPortrayal, theState.obstacleGrid,
-				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
-						0, 0, 0), Color.BLACK));
-
+	
 		initPortrayal(collectionSitePortrayal, theState.collectionSiteGrid,
 				new sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0,
 						0, 0, 0), Color.GREEN));
-*/
+
 		resourcePortrayal.setField(theState.resourceGrid);
 		resourcePortrayal.setPortrayalForAll(new FacetedPortrayal2D(
 				new SimplePortrayal2D[] {
@@ -91,7 +95,14 @@ public class SimpleSimulationUI extends SimulationUI {
 
 		));
 
+*/
 		agentPortrayal.setField(theState.agentGrid);
+		// agentPortrayal.setPortrayalForAll(new OvalPortrayal2D(Color.BLACK,
+		// true));
+		agentPortrayal.setPortrayalForAll(new ShapePortrayal2D(
+				ShapePortrayal2D.X_POINTS_TRIANGLE_UP,
+				ShapePortrayal2D.Y_POINTS_TRIANGLE_UP, Color.BLACK));
+		
 		display.reset();
 		display.repaint();
 	}

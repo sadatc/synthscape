@@ -818,6 +818,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void startNextSimulation() {
+		logger.info("+");
 
 		intervalStats.resetLastSteps();
 		simEventStats.clear();

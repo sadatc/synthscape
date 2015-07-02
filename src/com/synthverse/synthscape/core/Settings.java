@@ -38,7 +38,7 @@ public class Settings implements Constants {
 
 	public int BENCHMARK_GENERATION = 100;
 
-	public int CLONES_PER_SPECIES = 8;
+	public int CLONES_PER_SPECIES = 1;
 
 	public int GENE_POOL_SIZE = 512;
 
