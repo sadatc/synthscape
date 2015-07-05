@@ -1,20 +1,21 @@
-package com.synthverse.synthscape.core;
+package com.synthverse.synthscape.core.gui;
 
 import javax.swing.JFrame;
+
+import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.Simulation;
 
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
 import sim.engine.SimState;
-import sim.field.grid.DoubleGrid2D;
-import sim.field.grid.IntGrid2D;
-import sim.field.grid.SparseGrid2D;
 import sim.portrayal.Inspector;
 import sim.portrayal.grid.SparseGridPortrayal2D;
-import sim.portrayal.grid.ValueGridPortrayal2D;
-import sim.util.gui.SimpleColorMap;
 
 public abstract class SimulationUI extends GUIState implements Constants {
+
+	public long __counter = 0;
+
 	protected Simulation sim;
 	protected Display2D display;
 	protected JFrame displayFrame;
@@ -23,7 +24,6 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	protected SparseGridPortrayal2D resourcePortrayal;
 	protected SparseGridPortrayal2D obstaclesPortrayal;
 	protected SparseGridPortrayal2D trailPortrayal;
-
 	protected SparseGridPortrayal2D agentPortrayal;
 
 	protected abstract void initStructures();
@@ -59,29 +59,6 @@ public abstract class SimulationUI extends GUIState implements Constants {
 		display = null;
 	}
 
-	
-	protected void initPortrayal(SparseGridPortrayal2D portrayal,
-			SparseGrid2D grid, SimpleColorMap colorMap) {
-
-		portrayal.setField(grid);
-		//portrayal.setMap(colorMap);
-	}
-	
-	
-	protected void initPortrayal(ValueGridPortrayal2D portrayal,
-			IntGrid2D grid, SimpleColorMap colorMap) {
-
-		portrayal.setField(grid);
-		portrayal.setMap(colorMap);
-	}
-
-	protected void initPortrayal(ValueGridPortrayal2D portrayal,
-			DoubleGrid2D grid, SimpleColorMap colorMap) {
-		portrayal.setField(grid);
-		portrayal.setMap(colorMap);
-
-	}
-
 	protected abstract void initPortrayals();
 
 	public void start() {
@@ -103,7 +80,9 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	public SimulationUI(SimState state) {
 		super(state);
 		initStructures();
-		setSim((Simulation) state);
+		if (state instanceof Simulation) {
+			setSim((Simulation) state);
+		}
 	}
 
 	public static String getName() {

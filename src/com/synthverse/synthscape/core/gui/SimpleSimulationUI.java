@@ -1,9 +1,11 @@
 /**
  * 
  */
-package com.synthverse.synthscape.core;
+package com.synthverse.synthscape.core.gui;
 
 import java.awt.Color;
+
+import com.synthverse.synthscape.core.Simulation;
 
 import sim.display.Controller;
 import sim.display.Display2D;

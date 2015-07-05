@@ -20,22 +20,28 @@ public class Main {
 
 	public static void main(String[] args) {
 		try {
+			settings.originalArgs = args;
 			settings.processCommandLineInput(args);
 
 			if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
 				// island model
 
 				if (settings.SHOW_GRAPHICS) {
+					// the console simulator will be instantiated in a thread
+					// within
 					PopulationIslandSimulationFancyUI.main(args);
 				} else {
-					PopulationIslandSimulation.main(args);
+					// this simply starts the thread that runs the console
+					// simulator
+					Thread t = new Thread(new PopulationIslandSimulation.PopulationIslandSimulationThread(),
+							"PopulationIslandSimulationThread");
+					t.start();
 				}
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
 				// embodied model
 				if (settings.SHOW_GRAPHICS) {
 
-					throw new RuntimeException(
-							"Graphics mode for Embodied model has not been implemented");
+					throw new RuntimeException("Graphics mode for Embodied model has not been implemented");
 
 				} else {
 					EmbodiedEvolutionSimulation.main(args);

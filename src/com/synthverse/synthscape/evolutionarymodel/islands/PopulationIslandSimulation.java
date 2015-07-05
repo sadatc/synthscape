@@ -37,6 +37,25 @@ import ec.util.MersenneTwisterFast;
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
 
+	/**
+	 * Thread just runs the Population Island Simulator
+	 * 
+	 * @author sadat
+	 *
+	 */
+	public static class PopulationIslandSimulationThread implements Runnable {
+		String[] args;
+
+		public PopulationIslandSimulationThread() {
+			this.args = Main.settings.originalArgs;
+		}
+
+		@Override
+		public void run() {
+			PopulationIslandSimulation.main(args);
+		}
+	}
+
 	private Team team = new Team();
 
 	int generation = 0;
@@ -48,11 +67,9 @@ public class PopulationIslandSimulation extends Simulation {
 
 	private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
-	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(
-			Species.class);
+	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
 
-	private static Logger logger = Logger
-			.getLogger(PopulationIslandSimulation.class.getName());
+	private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
@@ -77,11 +94,9 @@ public class PopulationIslandSimulation extends Simulation {
 	}
 
 	public static void main(String[] arg) {
-		String[] manualArgs = StringUtils.parseArguments("-repeat "
-				+ settings.REPEAT + " -seed " + settings.SEED);
+		String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 		doLoop(PopulationIslandSimulation.class, manualArgs);
-		logger.info("Diagnosis: total # of agents created: "
-				+ Agent.get_optimazationTotalAgentsCounters());
+		logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 		logger.info("Diagnosis: total # of islander agents created: "
 				+ IslanderAgent.get_optimizationIslanderAgentCounter());
 		logger.info("Diagnosis: total # of embodied agents created: "
@@ -126,15 +141,14 @@ public class PopulationIslandSimulation extends Simulation {
 				}
 
 				if (settings.CLUSTERED) {
-					Int2D clusterLocation = getClusterLocation(i, previousX,
-							previousY);
+					Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
 					randomX = clusterLocation.x;
 					randomY = clusterLocation.y;
 
 				}
 
 				GridUtils.set(initCollisionGrid, randomX, randomY, true);
-				
+
 				previousX = randomX;
 				previousY = randomY;
 
@@ -167,8 +181,7 @@ public class PopulationIslandSimulation extends Simulation {
 			agent.eventStats.aggregateStatsTo(simEventStats);
 			agent.eventStats.aggregateStatsTo(experimentEventStats);
 
-			EventStats speciesEventStats = speciesEventStatsMap.get(agent
-					.getSpecies());
+			EventStats speciesEventStats = speciesEventStatsMap.get(agent.getSpecies());
 			agent.eventStats.aggregateStatsTo(speciesEventStats);
 		}
 		// simEventStats.printEventTypeStats();
@@ -189,9 +202,8 @@ public class PopulationIslandSimulation extends Simulation {
 	@Override
 	protected void startSimulation() {
 
-		logger.info("EXPERIMENT STARTS: expected maxium simulations ="
-				+ simulationsPerExperiment + " stepsPerSimulation="
-				+ stepsPerSimulation);
+		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();
 
@@ -199,14 +211,12 @@ public class PopulationIslandSimulation extends Simulation {
 
 		saveEnvironmentForBenchmark();
 
-		logger.info("---- starting simulation (" + simulationCounter
-				+ ") with: world=" + (gridHeight * gridWidth) + " obstacles="
-				+ numberOfObstacles + " sites=" + numberOfCollectionSites
-				+ " resources=" + numberOfResources + " agents="
-				+ agents.size());
+		logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+				+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+				+ numberOfResources + " agents=" + agents.size());
 
 		setStartDate();
-		
+
 		// this synchronizes the seed value for repeated experiments
 		settings.SEED = (int) this.seed();
 		experimentReporter.initReporter();
@@ -227,8 +237,7 @@ public class PopulationIslandSimulation extends Simulation {
 					fadeRewardGrids();
 				}
 
-				if (interactionMechanisms
-						.contains(InteractionMechanism.BROADCAST)) {
+				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 					ageBroadcasts();
 				}
 
@@ -244,8 +253,7 @@ public class PopulationIslandSimulation extends Simulation {
 					simulationCounter++;
 					simsRunForThisGeneration++;
 
-					if (!collectedAllResources()
-							&& simulationCounter < simulationsPerExperiment) {
+					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 							evolvePopulationIslands();
@@ -265,7 +273,7 @@ public class PopulationIslandSimulation extends Simulation {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
-						//settings.resetRandomSeedIfNeeded(state);
+						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}
 			}
@@ -282,24 +290,21 @@ public class PopulationIslandSimulation extends Simulation {
 
 		generation++;
 
-		for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap
-				.values()) {
+		for (PopulationIslandEvolver islandEvolver : archipelagoEvolver.speciesIslandMap.values()) {
 			if (islandEvolver.evolve() != generation) {
 				logger.severe("invalid evolution algorithm implementation");
 				System.exit(1);
 
 			}
 
-			for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats
-					.getValues()) {
+			for (double fitnessValue : islandEvolver.evolutionEngine.fitnessStats.getValues()) {
 				populationFitnessStats.addValue(fitnessValue);
 			}
 
 			// this part computes the genetic distance between the current and
 			// previous alpha
 
-			double alphaGeneticDistance = Program.comparePrograms(
-					islandEvolver.evolutionEngine.alphaProgram,
+			double alphaGeneticDistance = Program.comparePrograms(islandEvolver.evolutionEngine.alphaProgram,
 					islandEvolver.evolutionEngine.previousAlphaProgram);
 
 			if (alphaGeneticDistance != Double.NaN) {
@@ -307,29 +312,24 @@ public class PopulationIslandSimulation extends Simulation {
 
 			}
 
-			experimentReporter.reportAlphaProgram(generation,
-					islandEvolver.species.getId(), islandEvolver.species,
+			experimentReporter.reportAlphaProgram(generation, islandEvolver.species.getId(), islandEvolver.species,
 					islandEvolver.evolutionEngine.alphaProgram);
 
 		}
 
 		// resourceCaptureStats.printStats();
 
-		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime
-				.getRuntime().freeMemory()) / (1024 * 1024);
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - reportTime;
 
-		experimentReporter.reportPerformanceIslandModel(generation,
-				intervalStats, simEventStats, speciesEventStatsMap,
-				captureStats, populationFitnessStats, simsRunForThisGeneration,
-				resourceCaptureStats, archipelagoEvolver.speciesIslandMap,
-				this.simulationCounter, deltaTime, allocatedMemory);
+		experimentReporter.reportPerformanceIslandModel(generation, intervalStats, simEventStats, speciesEventStatsMap,
+				captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats,
+				archipelagoEvolver.speciesIslandMap, this.simulationCounter, deltaTime, allocatedMemory);
 
-		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
-				+ "; fitness: " + populationFitnessStats.getMean()
-				+ "; best_capture: " + captureStats.getMax()
-				+ " time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+		logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+				+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " time_delta_ms="
+				+ deltaTime + " allocMB=" + allocatedMemory);
 		reportTime = currentTime;
 
 		clearSpeciesEventStats();
@@ -390,8 +390,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	public EnumSet<InteractionMechanism> configInteractionMechanisms() {
-		EnumSet<InteractionMechanism> mechanisms = EnumSet
-				.noneOf(InteractionMechanism.class);
+		EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 		if (settings.MODEL_INTERACTIONS.contains("none")) {
 			logger.info("Agents will not use any interaction instructions");

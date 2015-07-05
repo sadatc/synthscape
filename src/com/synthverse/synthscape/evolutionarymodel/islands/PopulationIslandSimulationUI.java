@@ -9,7 +9,7 @@ import sim.display.Console;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.SimpleSimulationUI;
+import com.synthverse.synthscape.core.gui.SimpleSimulationUI;
 import com.synthverse.util.LogUtils;
 
 /**

@@ -5,12 +5,12 @@ package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import java.util.logging.Logger;
 
-import sim.display.Console;
-
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.FancySimulationUI;
+import com.synthverse.synthscape.core.gui.FancySimulationUI;
 import com.synthverse.util.LogUtils;
+
+import sim.display.Console;
 
 /**
  * @author sadat
@@ -18,14 +18,17 @@ import com.synthverse.util.LogUtils;
  */
 public class PopulationIslandSimulationFancyUI extends FancySimulationUI {
 
-	private static Logger logger = Logger
-			.getLogger(PopulationIslandSimulationFancyUI.class.getName());
+	private static Logger logger = Logger.getLogger(PopulationIslandSimulationFancyUI.class.getName());
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
 	public PopulationIslandSimulationFancyUI() throws Exception {
-		super(new PopulationIslandSimulation(Constants.UI_SIMULATION_RNG_SEED));
+		super(new PopulationIslandViewModel(Constants.UI_SIMULATION_RNG_SEED));
+		Thread t = new Thread(new PopulationIslandSimulation.PopulationIslandSimulationThread(),
+				"PopulationIslandSimulationThread");
+		t.start();
+
 	}
 
 	public static void main(String[] args) {
