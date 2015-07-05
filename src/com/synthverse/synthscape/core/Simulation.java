@@ -23,6 +23,7 @@ import sim.util.Int2D;
 import sim.util.MutableDouble;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.gui.SimulationUI;
 import com.synthverse.util.DateUtils;
 import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
@@ -59,10 +60,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected ProblemComplexity problemComplexity;
 
-	protected SparseGrid2D obstacleGrid;
+	public SparseGrid2D obstacleGrid;
 	protected SparseGrid2D benchmarkObstacleGrid;
 
-	protected SparseGrid2D collectionSiteGrid;
+	public SparseGrid2D collectionSiteGrid;
 	protected SparseGrid2D benchmarkCollectionSiteGrid;
 
 	protected ArrayList<Int2D> collectionSiteList;
@@ -71,7 +72,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected SparseGrid2D initCollisionGrid;
 	protected SparseGrid2D benchmarkInitCollisionGrid;
 
-	protected SparseGrid2D resourceGrid;
+	public SparseGrid2D resourceGrid;
 	protected SparseGrid2D benchmarkResourceGrid;
 
 	public ResourceStatus[][] resourceStatusArray;
@@ -79,7 +80,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
-	protected TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
+	public TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
 
 	// originally, these peer reward variables were implemented as grids
 	// however, the reward was offered in all coordinates... the idea is
@@ -109,9 +110,9 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected int numberOfCollectionSites;
 
-	protected int gridWidth;
+	public int gridWidth;
 
-	protected int gridHeight;
+	public int gridHeight;
 
 	protected String experimentName;
 	protected boolean reportEvents = false;
@@ -131,10 +132,8 @@ public abstract class Simulation extends SimState implements Constants {
 	protected int simulationsPerExperiment;
 	protected int stepsPerSimulation;
 
-	protected Set<Species> speciesComposition = new TreeSet<Species>(
-			new SpeciesComparator());
-	protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet
-			.noneOf(InteractionMechanism.class);
+	protected Set<Species> speciesComposition = new TreeSet<Species>(new SpeciesComparator());
+	protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 	protected String eventFileName;
 
@@ -153,6 +152,9 @@ public abstract class Simulation extends SimState implements Constants {
 	// need this for efficiency
 
 	public ResourceCaptureStats resourceCaptureStats = new ResourceCaptureStats();
+
+	public boolean updateViewModel = false;
+	public int lastGenerationViewed = 0;
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -225,8 +227,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		numberOfCollectedResources = 0;
 
-		experimentReporter = new ExperimentReporter(this,
-				DEFAULT_FLUSH_ALWAYS_FLAG);
+		experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 		isToroidalWorld = TOROIDAL_FLAG;
 
@@ -367,13 +368,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void initPrimaryCollectionSite() {
 		// set the primary collection site
-		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X,
-				settings.PRIMARY_COLLECTION_SITE_Y, true);
-		GridUtils.set(initCollisionGrid, settings.PRIMARY_COLLECTION_SITE_X,
-				settings.PRIMARY_COLLECTION_SITE_Y, true);
+		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
+		GridUtils.set(initCollisionGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
 
-		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X,
-				settings.PRIMARY_COLLECTION_SITE_Y));
+		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
 	}
 	protected void initNonPrimaryCollectionSites() {
 		MersenneTwisterFast randomPrime = this.random;
@@ -382,8 +380,7 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 			// make sure there isn't an obstacle there already...
-			while (GridUtils.gridHasAnObjectAt(collectionSiteGrid, randomX,
-					randomY)) {
+			while (GridUtils.gridHasAnObjectAt(collectionSiteGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 
@@ -406,8 +403,7 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 			// make sure there isn't an obstacle there already...
-			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX,
-					randomY)) {
+			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
@@ -432,8 +428,7 @@ public abstract class Simulation extends SimState implements Constants {
 			do {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
-			} while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX,
-					randomY));
+			} while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY));
 			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
@@ -458,8 +453,7 @@ public abstract class Simulation extends SimState implements Constants {
 		resetCollectionCounts();
 	}
 
-	public static ResourceStatus[][] copyResourceStatusArray(
-			ResourceStatus[][] input) {
+	public static ResourceStatus[][] copyResourceStatusArray(ResourceStatus[][] input) {
 		if (input == null)
 			return null;
 		ResourceStatus[][] result = new ResourceStatus[input.length][];
@@ -471,13 +465,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void saveEnvironmentForBenchmark() {
 
-	
 		benchmarkObstacleGrid = GridUtils.cloneBooleanGrid(obstacleGrid);
 		benchmarkCollectionSiteGrid = GridUtils.cloneBooleanGrid(collectionSiteGrid);
 		benchmarkInitCollisionGrid = GridUtils.cloneBooleanGrid(initCollisionGrid);
 		benchmarkResourceGrid = GridUtils.cloneResourceGrid(resourceGrid);
-		
-		
+
 		benchmarkResourceStatusArray = copyResourceStatusArray(resourceStatusArray);
 
 		benchmarkCollectionSiteList.clear();
@@ -487,15 +479,11 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void initEnvironmentWithBenchmark() {
-		
-		
+
 		obstacleGrid = GridUtils.cloneBooleanGrid(benchmarkObstacleGrid);
 		collectionSiteGrid = GridUtils.cloneBooleanGrid(benchmarkCollectionSiteGrid);
 		initCollisionGrid = GridUtils.cloneBooleanGrid(benchmarkInitCollisionGrid);
 		resourceGrid = GridUtils.cloneResourceGrid(benchmarkResourceGrid);
-		
-		
-		
 
 		resourceStatusArray = copyResourceStatusArray(benchmarkResourceStatusArray);
 
@@ -527,16 +515,14 @@ public abstract class Simulation extends SimState implements Constants {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (GridUtils.gridHasAnObjectAt(initCollisionGrid,
-							randomX, randomY)) {
+					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
 				}
 
 				if (settings.CLUSTERED) {
-					Int2D clusterLocation = getClusterLocation(i, previousX,
-							previousY);
+					Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
 					randomX = clusterLocation.x;
 					randomY = clusterLocation.y;
 
@@ -578,8 +564,7 @@ public abstract class Simulation extends SimState implements Constants {
 			randomX = randomPrime.nextInt(gridWidth);
 			randomY = randomPrime.nextInt(gridHeight);
 
-			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX,
-					randomY)) {
+			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
@@ -589,53 +574,45 @@ public abstract class Simulation extends SimState implements Constants {
 			// if anything is empty, we return it.
 			// if this fails, we move once cell north and repeat process..
 
-			if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX), agentGrid.sty(pY - 1))) {
+			if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX), agentGrid.sty(pY - 1))) {
 
 				// N
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX - 1), agentGrid.sty(pY - 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY - 1))) {
 				// NW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX - 1), agentGrid.sty(pY))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY))) {
 				// W
 				randomX = agentGrid.stx(pX - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX - 1), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY + 1))) {
 				// SW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX), agentGrid.sty(pY + 1))) {
 				// S
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX + 1), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY + 1))) {
 				// SE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY + 1);
-			} else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX + 1), agentGrid.sty(pY))) {
+			} else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY))) {
 				// E
 				randomX = agentGrid.stx(pX + 1);
 
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid,
-					agentGrid.stx(pX + 1), agentGrid.sty(pY - 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY - 1))) {
 				// NE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY - 1);
@@ -643,8 +620,7 @@ public abstract class Simulation extends SimState implements Constants {
 			} else {
 				// all of these failed...move north and repeat process by moving
 				// north
-				Int2D secondTry = getClusterLocation(agentNum, pX,
-						agentGrid.sty(pY - 1));
+				Int2D secondTry = getClusterLocation(agentNum, pX, agentGrid.sty(pY - 1));
 				randomX = secondTry.x;
 				randomY = secondTry.y;
 			}
@@ -722,19 +698,16 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void startSimulation() {
 
-		logger.info("EXPERIMENT STARTS: expected maxium simulations ="
-				+ simulationsPerExperiment + " stepsPerSimulation="
-				+ stepsPerSimulation);
+		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();
 		saveEnvironmentForBenchmark();
 		initAgents();
 
-		logger.info("---- starting simulation (" + simulationCounter
-				+ ") with: world=" + (gridHeight * gridWidth) + " obstacles="
-				+ numberOfObstacles + " sites=" + numberOfCollectionSites
-				+ " resources=" + numberOfResources + " agents="
-				+ agents.size());
+		logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+				+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+				+ numberOfResources + " agents=" + agents.size());
 
 		setStartDate();
 
@@ -746,8 +719,8 @@ public abstract class Simulation extends SimState implements Constants {
 		// this is run at the end of each step
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			/**
-	     * 
-	     */
+			* 
+			*/
 			private static final long serialVersionUID = -935999426847054013L;
 
 			public void step(SimState state) {
@@ -762,8 +735,7 @@ public abstract class Simulation extends SimState implements Constants {
 					fadeRewardGrids();
 				}
 
-				if (interactionMechanisms
-						.contains(InteractionMechanism.BROADCAST)) {
+				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 					ageBroadcasts();
 				}
 
@@ -779,8 +751,7 @@ public abstract class Simulation extends SimState implements Constants {
 					simulationCounter++;
 					simsRunForThisGeneration++;
 
-					if (!collectedAllResources()
-							&& simulationCounter < simulationsPerExperiment) {
+					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 							evolver.evolve();
@@ -818,14 +789,23 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void startNextSimulation() {
-		logger.info("+");
+		// logger.info("+");
+
+		if (!updateViewModel) {
+			logger.info("will render simulation:"+this.simulationCounter);
+			updateViewModel = true;
+			lastGenerationViewed = settings.generationCounter;
+		} else {
+			if (settings.generationCounter != lastGenerationViewed) {
+				updateViewModel = false;
+			}
+		}
 
 		intervalStats.resetLastSteps();
 		simEventStats.clear();
 		resetEnvironment();
 
-		if (settings.generationCounter != 0
-				&& (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
+		if (settings.generationCounter != 0 && (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
 			// every BENCHMARK_GENERATION use benchmark environment...
 			initEnvironmentWithBenchmark();
 		} else {
@@ -867,19 +847,17 @@ public abstract class Simulation extends SimState implements Constants {
 		startSimulation();
 	}
 
-	public void recordEvent(Agent agent, Event event, long source,
-			long destination) {
+	public void recordEvent(Agent agent, Event event, long source, long destination) {
 
 		agent.eventStats.recordValue(event);
 
-		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+" Step:"+simStepCounter+" EVENT: "+event);
+		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+"
+		// Step:"+simStepCounter+" EVENT: "+event);
 		intervalStats.recordValue(event, agent.getSpecies(), simStepCounter);
 
 		if (isReportEvents()) {
-			experimentReporter.reportEvent(simulationCounter,
-					agent.getGeneration(), agent.getSpecies(),
-					agent.getAgentId(), simStepCounter, agent.getX(),
-					agent.getY(), event, source, destination);
+			experimentReporter.reportEvent(simulationCounter, agent.getGeneration(), agent.getSpecies(),
+					agent.getAgentId(), simStepCounter, agent.getX(), agent.getY(), event, source, destination);
 		}
 
 	}
@@ -920,13 +898,9 @@ public abstract class Simulation extends SimState implements Constants {
 		if (eventFileName != null) {
 
 			if (eventFileName.indexOf(".") != -1) {
-				String prePart = eventFileName.substring(0,
-						eventFileName.lastIndexOf('.'));
-				String postPart = eventFileName.substring(eventFileName
-						.lastIndexOf('.'));
-				eventFileName = prePart + "_"
-						+ DateUtils.getFileNameDateStamp() + "_" + this.job()
-						+ postPart;
+				String prePart = eventFileName.substring(0, eventFileName.lastIndexOf('.'));
+				String postPart = eventFileName.substring(eventFileName.lastIndexOf('.'));
+				eventFileName = prePart + "_" + DateUtils.getFileNameDateStamp() + "_" + this.job() + postPart;
 
 			} else {
 				eventFileName += "_" + batchId + "_" + this.job();
@@ -937,8 +911,7 @@ public abstract class Simulation extends SimState implements Constants {
 		return eventFileName;
 	}
 
-	public void addInteractionMechanism(
-			InteractionMechanism interactionMechanism) {
+	public void addInteractionMechanism(InteractionMechanism interactionMechanism) {
 		this.interactionMechanisms.add(interactionMechanism);
 	}
 
@@ -1090,8 +1063,7 @@ public abstract class Simulation extends SimState implements Constants {
 		return interactionMechanisms;
 	}
 
-	public void setInteractionMechanisms(
-			EnumSet<InteractionMechanism> interactionMechanisms) {
+	public void setInteractionMechanisms(EnumSet<InteractionMechanism> interactionMechanisms) {
 		this.interactionMechanisms = interactionMechanisms;
 	}
 
