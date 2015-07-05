@@ -38,7 +38,7 @@ public class Settings implements Constants {
 
 	public int BENCHMARK_GENERATION = 100;
 
-	public int CLONES_PER_SPECIES = 1;
+	public int CLONES_PER_SPECIES = 4;
 
 	public int GENE_POOL_SIZE = 512;
 
@@ -59,9 +59,9 @@ public class Settings implements Constants {
 
 	public String MODEL_INTERACTIONS = "none";
 
-	public int WORLD_WIDTH = 32;
+	public int WORLD_WIDTH = 16;
 
-	public int WORLD_HEIGHT = 32;
+	public int WORLD_HEIGHT = 16;
 
 	public double OBSTACLE_DENSITY = 0.125;
 
@@ -123,6 +123,8 @@ public class Settings implements Constants {
 	public String statusCache = EMPTY_STRING;
 
 	public int generationCounter = 0;
+	
+	public String[] originalArgs = null;
 
 	private Settings() {
 
