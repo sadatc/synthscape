@@ -33,8 +33,8 @@ public class Main {
 				} else {
 					// this simply starts the thread that runs the console
 					// simulator
-					Thread t = new Thread(new PopulationIslandSimulation.PopulationIslandSimulationThread(),
-							"PopulationIslandSimulationThread");
+					Thread t = new Thread(new PopulationIslandSimulation.CoreSimThread(),
+							"CoreSimThread");
 					t.start();
 				}
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {

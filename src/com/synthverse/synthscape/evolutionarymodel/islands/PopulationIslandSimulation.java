@@ -43,10 +43,10 @@ public class PopulationIslandSimulation extends Simulation {
 	 * @author sadat
 	 *
 	 */
-	public static class PopulationIslandSimulationThread implements Runnable {
+	public static class CoreSimThread implements Runnable {
 		String[] args;
 
-		public PopulationIslandSimulationThread() {
+		public CoreSimThread() {
 			this.args = Main.settings.originalArgs;
 		}
 

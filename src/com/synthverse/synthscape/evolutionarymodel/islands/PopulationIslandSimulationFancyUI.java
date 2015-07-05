@@ -25,8 +25,8 @@ public class PopulationIslandSimulationFancyUI extends FancySimulationUI {
 
 	public PopulationIslandSimulationFancyUI() throws Exception {
 		super(new PopulationIslandViewModel(Constants.UI_SIMULATION_RNG_SEED));
-		Thread t = new Thread(new PopulationIslandSimulation.PopulationIslandSimulationThread(),
-				"PopulationIslandSimulationThread");
+		Thread t = new Thread(new PopulationIslandSimulation.CoreSimThread(),
+				"CoreSimThread");
 		t.start();
 
 	}
