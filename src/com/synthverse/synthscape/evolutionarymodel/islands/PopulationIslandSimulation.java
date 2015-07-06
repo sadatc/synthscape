@@ -498,24 +498,24 @@ public class PopulationIslandSimulation extends Simulation {
 		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
 		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
 		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
-
 	}
 
 	@Override
 	protected void doEndOfStepTasks() {
 		if (Main.settings.__guiStarted && this.updateViewModel) {
-			D.p("cloning");
-
 			cloneGrids();
-			Main.settings.__renderLock = 1;
+			Main.settings.__renderStageLock = 1;
 
-			while (Main.settings.__renderLock != 2) {
+			while (Main.settings.__renderStageLock != 2) {
+				Thread.yield();
+				/*
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				*/
 			}
 		}
 

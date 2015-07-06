@@ -153,7 +153,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public ResourceCaptureStats resourceCaptureStats = new ResourceCaptureStats();
 
-	public boolean hasBridgeSimulation = false;
+	public boolean showGraphics = false;
 	public boolean updateViewModel = false;
 	public long lastGenerationRendered = Long.MIN_VALUE;
 	public long lastSimulationRendered = Long.MIN_VALUE;
@@ -163,7 +163,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void init() throws Exception {
-		this.hasBridgeSimulation = settings.useBridgeSimulation;
+		this.showGraphics = settings.__showGraphics;
 
 		settings.experimentNumber++;
 
@@ -792,7 +792,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	public final void lockForAnyBridgeSimulation() {
-		if (hasBridgeSimulation) {
+		if (showGraphics) {
 
 			if (this.simulationCounter != lastSimulationRendered
 					&& settings.generationCounter != this.lastGenerationRendered) {

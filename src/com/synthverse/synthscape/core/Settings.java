@@ -126,13 +126,12 @@ public class Settings implements Constants {
 	
 	public String[] originalArgs = null;
 	
-	public boolean useBridgeSimulation = false;
-	
-	
+	public boolean __showGraphics = false;
 	public boolean __guiStarted = false;
-	public boolean __modelUpdated = false;
-	public boolean __viewUpdated = false;
-	public Integer __renderLock = new Integer(0);
+	// __renderStageLock = 0 (initial value) 
+	// __renderStageLock = 1 (grids copied over, ready to render)
+	// __renderStageLock = 2 (rendering completed, ready to update grid)
+	public Integer __renderStageLock = new Integer(0);
 	public BridgeState __bridgeState = null;
 	
 
