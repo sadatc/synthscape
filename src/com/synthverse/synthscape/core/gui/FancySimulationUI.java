@@ -71,11 +71,8 @@ public class FancySimulationUI extends SimulationUI {
 
 	}
 
-	public void initPortrayals() {
-		
-	}
 	
-	public void initPortrayals1() {
+	public void initPortrayals() {
 		BridgeState theState = (BridgeState) state;
 
 		// collection sites
