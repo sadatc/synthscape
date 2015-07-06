@@ -153,6 +153,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public ResourceCaptureStats resourceCaptureStats = new ResourceCaptureStats();
 
+	public boolean updateBridgeSimulation = false;
 	public boolean updateViewModel = false;
 	public int lastGenerationViewed = 0;
 
@@ -788,18 +789,23 @@ public abstract class Simulation extends SimState implements Constants {
 
 	}
 
-	protected void startNextSimulation() {
-		// logger.info("+");
-
-		if (!updateViewModel) {
-			logger.info("will render simulation:"+this.simulationCounter);
-			updateViewModel = true;
-			lastGenerationViewed = settings.generationCounter;
-		} else {
-			if (settings.generationCounter != lastGenerationViewed) {
-				updateViewModel = false;
+	public final void lockForAnyBridgeSimulation() {
+		if (updateBridgeSimulation) {
+			if (!updateViewModel) {
+				logger.info("will render simulation:" + this.simulationCounter);
+				updateViewModel = true;
+				lastGenerationViewed = settings.generationCounter;
+			} else {
+				if (settings.generationCounter != lastGenerationViewed) {
+					updateViewModel = false;
+				}
 			}
 		}
+	}
+
+	protected void startNextSimulation() {
+		// logger.info("+");
+		lockForAnyBridgeSimulation();
 
 		intervalStats.resetLastSteps();
 		simEventStats.clear();

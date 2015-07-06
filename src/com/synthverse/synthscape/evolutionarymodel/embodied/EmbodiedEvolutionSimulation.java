@@ -396,7 +396,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startNextSimulation() {
-
+		lockForAnyBridgeSimulation();
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
