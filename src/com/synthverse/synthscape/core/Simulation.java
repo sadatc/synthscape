@@ -162,6 +162,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void init() throws Exception {
+		this.hasBridgeSimulation = settings.useBridgeSimulation;
 
 		settings.experimentNumber++;
 

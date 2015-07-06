@@ -137,6 +137,7 @@ public class FancySimulationUI extends SimulationUI {
 
 	public static void main(Thread coreSimThread, String[] args) {
 		BridgeSimulation bridgeSimulation = new BridgeSimulation(1);
+		Main.settings.useBridgeSimulation = true;
 		FancySimulationUI simUI = new FancySimulationUI(bridgeSimulation);
 
 		simUI.createController();

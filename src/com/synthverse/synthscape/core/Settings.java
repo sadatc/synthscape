@@ -125,6 +125,9 @@ public class Settings implements Constants {
 	public int generationCounter = 0;
 	
 	public String[] originalArgs = null;
+	
+	public boolean useBridgeSimulation = false;
+	
 
 	private Settings() {
 
