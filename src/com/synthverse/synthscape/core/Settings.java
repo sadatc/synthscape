@@ -16,7 +16,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import sim.engine.SimState;
+import com.synthverse.synthscape.core.gui.BridgeState;
 
 public class Settings implements Constants {
 
@@ -127,6 +127,13 @@ public class Settings implements Constants {
 	public String[] originalArgs = null;
 	
 	public boolean useBridgeSimulation = false;
+	
+	
+	public boolean __guiStarted = false;
+	public boolean __modelUpdated = false;
+	public boolean __viewUpdated = false;
+	public Integer __renderLock = new Integer(0);
+	public BridgeState __bridgeState = null;
 	
 
 	private Settings() {

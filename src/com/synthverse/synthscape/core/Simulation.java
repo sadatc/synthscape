@@ -155,7 +155,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public boolean hasBridgeSimulation = false;
 	public boolean updateViewModel = false;
-	public int lastGenerationViewed = 0;
+	public long lastGenerationRendered = Long.MIN_VALUE;
+	public long lastSimulationRendered = Long.MIN_VALUE;
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -792,16 +793,22 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public final void lockForAnyBridgeSimulation() {
 		if (hasBridgeSimulation) {
-			if (!updateViewModel) {
+
+			if (this.simulationCounter != lastSimulationRendered
+					&& settings.generationCounter != this.lastGenerationRendered) {
+
 				logger.info("will render simulation:" + this.simulationCounter);
 				updateViewModel = true;
-				lastGenerationViewed = settings.generationCounter;
+				lastGenerationRendered = settings.generationCounter;
+				lastSimulationRendered = this.simulationCounter;
+
 			} else {
-				if (settings.generationCounter != lastGenerationViewed) {
-					updateViewModel = false;
-				}
+				updateViewModel = false;
+				//logger.info("will NOT render simulation:" + this.simulationCounter);
 			}
+
 		}
+
 	}
 
 	protected void startNextSimulation() {

@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.jfree.util.Log;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -491,8 +492,32 @@ public class PopulationIslandSimulation extends Simulation {
 		return null;
 	}
 
+	protected void cloneGrids() {
+		Main.settings.__bridgeState.agentGrid = this.agentGrid;
+		Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
+		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
+		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
+		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
+
+	}
+
 	@Override
 	protected void doEndOfStepTasks() {
+		if (Main.settings.__guiStarted && this.updateViewModel) {
+			D.p("cloning");
+
+			cloneGrids();
+			Main.settings.__renderLock = 1;
+
+			while (Main.settings.__renderLock != 2) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 
 	}
 

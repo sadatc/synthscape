@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.core.gui;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.D;
 
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -10,33 +11,40 @@ import sim.field.grid.SparseGrid2D;
 @SuppressWarnings("serial")
 public class BridgeState extends SimState {
 
-	public SparseGrid2D agentGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-	public SparseGrid2D obstacleGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-	public SparseGrid2D benchmarkObstacleGrid =new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
+	long stepCounter = 0;
 
-	public SparseGrid2D collectionSiteGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-	public SparseGrid2D benchmarkCollectionSiteGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-
-	protected SparseGrid2D initCollisionGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-	protected SparseGrid2D benchmarkInitCollisionGrid =new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-
-	public SparseGrid2D resourceGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
-	
-	public SparseGrid2D trailGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH,Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D agentGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D obstacleGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D collectionSiteGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D resourceGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D trailGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
 
 	public BridgeState(long seed) {
 		super(seed);
+		Main.settings.__bridgeState = this;
 	}
 
 	@Override
 	public void start() {
 		super.start();
+		Main.settings.__guiStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 
 			@Override
 			public void step(SimState state) {
-				System.out.println("I am here");
+				while (Main.settings.__renderLock != 1) {
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 
+				stepCounter++;
+				Main.settings.__renderLock = 2;
+				D.p("rendered step:"+stepCounter);
+				
 			}
 
 		});
