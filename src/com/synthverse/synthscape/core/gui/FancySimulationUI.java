@@ -7,11 +7,10 @@ import java.awt.Color;
 
 import javax.swing.ImageIcon;
 
-import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.Main;
 
 import sim.display.Controller;
 import sim.display.Display2D;
-import sim.engine.SimState;
 import sim.field.grid.IntGrid2D;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
@@ -24,11 +23,20 @@ public class FancySimulationUI extends SimulationUI {
 
 	public FancySimulationUI() {
 		super();
+
 	}
 
-	public FancySimulationUI(SimState state) {
+	public FancySimulationUI(BridgeSimulation state) {
 		super(state);
+
 	}
+
+	BridgeSimulation theState;
+	SparseGridPortrayal2D collectionSitePortrayal;
+	SparseGridPortrayal2D resourcePortrayal;
+	SparseGridPortrayal2D obstaclesPortrayal;
+	SparseGridPortrayal2D trailPortrayal;
+	SparseGridPortrayal2D agentPortrayal;
 
 	protected ValueGridPortrayal2D worldPortrayal;
 
@@ -65,7 +73,7 @@ public class FancySimulationUI extends SimulationUI {
 	}
 
 	public void initPortrayals() {
-		Simulation theState = (Simulation) state;
+		BridgeSimulation theState = (BridgeSimulation) state;
 
 		// collection sites
 		collectionSitePortrayal.setField(theState.collectionSiteGrid);
@@ -89,7 +97,7 @@ public class FancySimulationUI extends SimulationUI {
 		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.BLACK, true));
 
 		// trails
-		trailPortrayal.setField(theState.trailGridWrapper.strengthGrid);
+		trailPortrayal.setField(theState.trailGrid);
 		trailPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.YELLOW, true));
 
 		/*
@@ -119,7 +127,7 @@ public class FancySimulationUI extends SimulationUI {
 		}));
 
 		// this draws the grid lines
-		IntGrid2D worldGrid = new IntGrid2D(theState.gridWidth, theState.gridHeight, 1);
+		IntGrid2D worldGrid = new IntGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT, 1);
 		worldPortrayal.setField(worldGrid);
 		worldPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.LIGHT_GRAY, 0.99, false));
 
@@ -127,8 +135,12 @@ public class FancySimulationUI extends SimulationUI {
 		display.repaint();
 	}
 
-	public static void main(String[] args) {
-		new FancySimulationUI().createController();
+	public static void main(Thread coreSimThread, String[] args) {
+		BridgeSimulation bridgeSimulation = new BridgeSimulation(1);
+		FancySimulationUI simUI = new FancySimulationUI(bridgeSimulation);
+
+		simUI.createController();
+		coreSimThread.start();
 	}
 
 }

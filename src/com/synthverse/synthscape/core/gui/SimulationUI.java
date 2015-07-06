@@ -14,29 +14,14 @@ import sim.portrayal.grid.SparseGridPortrayal2D;
 
 public abstract class SimulationUI extends GUIState implements Constants {
 
-	public long __counter = 0;
-
-	protected Simulation sim;
+	
 	protected Display2D display;
 	protected JFrame displayFrame;
 
-	protected SparseGridPortrayal2D collectionSitePortrayal;
-	protected SparseGridPortrayal2D resourcePortrayal;
-	protected SparseGridPortrayal2D obstaclesPortrayal;
-	protected SparseGridPortrayal2D trailPortrayal;
-	protected SparseGridPortrayal2D agentPortrayal;
-
+	
 	protected abstract void initStructures();
 
-	public Simulation getSim() {
-		return sim;
-	}
-
-	public void setSim(Simulation sim) {
-		this.sim = sim;
-		sim.setUiObject(this);
-	}
-
+	
 	public Object getSimulationInspectedObject() {
 		return state;
 	}
@@ -68,7 +53,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 
 	public void load(SimState state) {
 		super.load(state);
-		setSim((Simulation) state);
+
 		initPortrayals();
 	}
 
@@ -80,17 +65,12 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	public SimulationUI(SimState state) {
 		super(state);
 		initStructures();
-		if (state instanceof Simulation) {
-			setSim((Simulation) state);
-		}
+
 	}
 
 	public static String getName() {
 		return "Synthscape Simulation";
 	}
 
-	public static void main(String[] args) {
-		new SimpleSimulationUI().createController();
-	}
-
+	
 }
