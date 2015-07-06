@@ -26,12 +26,11 @@ public class FancySimulationUI extends SimulationUI {
 
 	}
 
-	public FancySimulationUI(BridgeSimulation state) {
+	public FancySimulationUI(BridgeState state) {
 		super(state);
-
 	}
 
-	BridgeSimulation theState;
+	BridgeState theState;
 	SparseGridPortrayal2D collectionSitePortrayal;
 	SparseGridPortrayal2D resourcePortrayal;
 	SparseGridPortrayal2D obstaclesPortrayal;
@@ -73,7 +72,11 @@ public class FancySimulationUI extends SimulationUI {
 	}
 
 	public void initPortrayals() {
-		BridgeSimulation theState = (BridgeSimulation) state;
+		
+	}
+	
+	public void initPortrayals1() {
+		BridgeState theState = (BridgeState) state;
 
 		// collection sites
 		collectionSitePortrayal.setField(theState.collectionSiteGrid);
@@ -136,9 +139,9 @@ public class FancySimulationUI extends SimulationUI {
 	}
 
 	public static void main(Thread coreSimThread, String[] args) {
-		BridgeSimulation bridgeSimulation = new BridgeSimulation(1);
+		BridgeState bridgeState = new BridgeState(1);
 		Main.settings.useBridgeSimulation = true;
-		FancySimulationUI simUI = new FancySimulationUI(bridgeSimulation);
+		FancySimulationUI simUI = new FancySimulationUI(bridgeState);
 
 		simUI.createController();
 		coreSimThread.start();
