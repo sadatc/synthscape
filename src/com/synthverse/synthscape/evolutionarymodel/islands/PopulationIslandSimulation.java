@@ -472,7 +472,6 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	public Evolver configEvolver() {
-
 		return new ArchipelagoEvolver(this, getAgentFactory());
 	}
 
@@ -492,30 +491,13 @@ public class PopulationIslandSimulation extends Simulation {
 		return null;
 	}
 
-	protected void cloneGrids() {
-		Main.settings.__bridgeState.agentGrid = this.agentGrid;
-		Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
-		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
-		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
-		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
-	}
-
 	@Override
 	protected void doEndOfStepTasks() {
 		if (Main.settings.__guiStarted && this.updateViewModel) {
-			cloneGrids();
 			Main.settings.__renderStageLock = 1;
 
 			while (Main.settings.__renderStageLock != 2) {
 				Thread.yield();
-				/*
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				*/
 			}
 		}
 

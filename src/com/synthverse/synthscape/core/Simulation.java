@@ -275,9 +275,23 @@ public abstract class Simulation extends SimState implements Constants {
 				benchmarkResourceStatusArray[x][y] = new ResourceStatus();
 			}
 		}
+		
+		
+		if(showGraphics) {
+			cloneGrids();
+		}
 
 	}
 
+	
+	protected void cloneGrids() {
+		Main.settings.__bridgeState.agentGrid = this.agentGrid;
+		Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
+		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
+		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
+		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
+	}
+	
 	protected void resetEnvironment() {
 
 		// TODO: try making this obstacleGrid = new SparseGrid2D() as suggested

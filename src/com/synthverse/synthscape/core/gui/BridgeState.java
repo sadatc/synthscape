@@ -34,14 +34,6 @@ public class BridgeState extends SimState {
 			public void step(SimState state) {
 				while (Main.settings.__renderStageLock != 1) {
 					Thread.yield();
-					/*
-					try {
-						Thread.sleep(1);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					*/
 				}
 
 				stepCounter++;
