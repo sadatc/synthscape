@@ -7,17 +7,36 @@ import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
+import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulation;
 import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
 @SuppressWarnings("serial")
 public class ALifeEvolutionSimulation extends EmbodiedEvolutionSimulation {
 
-	private static Logger logger = Logger
-			.getLogger(ALifeEvolutionSimulation.class.getName());
+	private static Logger logger = Logger.getLogger(ALifeEvolutionSimulation.class.getName());
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+	}
+
+	/**
+	 * Thread just runs the Population Island Simulator
+	 * 
+	 * @author sadat
+	 *
+	 */
+	public static class CoreSimThread implements Runnable {
+		String[] args;
+
+		public CoreSimThread() {
+			this.args = Main.settings.originalArgs;
+		}
+
+		@Override
+		public void run() {
+			ALifeEvolutionSimulation.main(args);
+		}
 	}
 
 	public ALifeEvolutionSimulation(long seed) throws Exception {
@@ -27,11 +46,9 @@ public class ALifeEvolutionSimulation extends EmbodiedEvolutionSimulation {
 	}
 
 	public static void main(String[] arg) {
-		String[] manualArgs = StringUtils.parseArguments("-repeat "
-				+ settings.REPEAT + " -seed " + settings.SEED);
+		String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 		doLoop(ALifeEvolutionSimulation.class, manualArgs);
-		logger.info("Diagnosis: total # of agents created: "
-				+ Agent.get_optimazationTotalAgentsCounters());
+		logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 		logger.info("Diagnosis: total # of islander agents created: "
 				+ IslanderAgent.get_optimizationIslanderAgentCounter());
 		logger.info("Diagnosis: total # of embodied agents created: "

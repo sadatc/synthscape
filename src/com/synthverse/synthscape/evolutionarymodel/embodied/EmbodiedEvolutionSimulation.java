@@ -28,6 +28,7 @@ import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
+import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.GridUtils;
@@ -39,6 +40,25 @@ import ec.util.MersenneTwisterFast;
 @SuppressWarnings("serial")
 public class EmbodiedEvolutionSimulation extends Simulation {
 
+	/**
+	 * Thread just runs the Population Island Simulator
+	 * 
+	 * @author sadat
+	 *
+	 */
+	public static class CoreSimThread implements Runnable {
+		String[] args;
+
+		public CoreSimThread() {
+			this.args = Main.settings.originalArgs;
+		}
+
+		@Override
+		public void run() {
+			EmbodiedEvolutionSimulation.main(args);
+		}
+	}
+
 	private Team team = new Team();
 
 	/**
@@ -48,13 +68,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	public static Settings settings = Settings.getInstance();
 
-	private static Logger logger = Logger
-			.getLogger(EmbodiedEvolutionSimulation.class.getName());
+	private static Logger logger = Logger.getLogger(EmbodiedEvolutionSimulation.class.getName());
 
 	private static SummaryStatistics populationFitnessStats = new SummaryStatistics();
 
-	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(
-			Species.class);
+	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
 
 	int generation = 0;
 
@@ -72,11 +90,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	public static void main(String[] arg) {
-		String[] manualArgs = StringUtils.parseArguments("-repeat "
-				+ settings.REPEAT + " -seed " + settings.SEED);
+		String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 		doLoop(EmbodiedEvolutionSimulation.class, manualArgs);
-		logger.info("Diagnosis: total # of agents created: "
-				+ Agent.get_optimazationTotalAgentsCounters());
+		logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 		logger.info("Diagnosis: total # of islander agents created: "
 				+ IslanderAgent.get_optimizationIslanderAgentCounter());
 		logger.info("Diagnosis: total # of embodied agents created: "
@@ -167,8 +183,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		numberOfCollectedResources = 0;
 
-		experimentReporter = new ExperimentReporter(this,
-				DEFAULT_FLUSH_ALWAYS_FLAG);
+		experimentReporter = new ExperimentReporter(this, DEFAULT_FLUSH_ALWAYS_FLAG);
 
 		isToroidalWorld = TOROIDAL_FLAG;
 
@@ -193,28 +208,25 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {					
+					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
 				}
 
 				if (settings.CLUSTERED) {
-					Int2D clusterLocation = getClusterLocation(i, previousX,
-							previousY);
+					Int2D clusterLocation = getClusterLocation(i, previousX, previousY);
 					randomX = clusterLocation.x;
 					randomY = clusterLocation.y;
 
 				}
-				GridUtils.set(initCollisionGrid, randomX, randomY, true);				
+				GridUtils.set(initCollisionGrid, randomX, randomY, true);
 				previousX = randomX;
 				previousY = randomY;
 
-				EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory
-						.getNewFactoryAgent(species);
+				EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
 				embodiedAgent.setLocation(randomX, randomY);
-				agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX,
-						randomY));
+				agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 				embodiedAgent.synchronizeLocationToActiveAgent();
 
 				team.addMember(embodiedAgent);
@@ -251,15 +263,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
-			
+
 			GridUtils.set(initCollisionGrid, randomX, randomY, true);
-			
 
 			embodiedAgent.setNextActiveAgent(randomX, randomY);
 
 			embodiedAgent.setLocation(randomX, randomY);
-			agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX,
-					randomY));
+			agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 			embodiedAgent.synchronizeLocationToActiveAgent();
 			embodiedAgent.setStepCounter(0);
 
@@ -287,8 +297,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 
 			// accumulate event counts for agents...
-			embodiedAgent.poolGenerationEventStats
-					.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
+			embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
 
 			// evolve the agents...
 			if (embodiedAgent.evolve() != generation) {
@@ -303,41 +312,31 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			// this part computes the genetic distance between the current and
 			// previous alpha
 
-			double alphaGeneticDistance = Program.comparePrograms(
-					embodiedAgent.evolver.evolutionEngine.alphaProgram,
+			double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.evolver.evolutionEngine.alphaProgram,
 					embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
 
 			if (alphaGeneticDistance != Double.NaN) {
 				embodiedAgent.computedAlphaDistance = alphaGeneticDistance;
 			}
 
-			experimentReporter.reportAlphaProgram(generation,
-					embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
+			experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
 					embodiedAgent.evolver.evolutionEngine.alphaProgram);
 
 		}
 
 		// resourceCaptureStats.printStats();
-		
-		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime
-				.getRuntime().freeMemory()) / (1024 * 1024);
+
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - reportTime;
 
-		
-		experimentReporter.reportPerformanceEmbodiedModel(generation,
-				intervalStats, generationEventStats, speciesEventStatsMap,
-				agents, captureStats, populationFitnessStats,
-				simsRunForThisGeneration, resourceCaptureStats,
-				this.simulationCounter, deltaTime,
-				allocatedMemory);
+		experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
+				speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
+				resourceCaptureStats, this.simulationCounter, deltaTime, allocatedMemory);
 
-		
-		logger.info("gen: " + generation + "; sims: " + this.simulationCounter
-				+ "; fitness: " + populationFitnessStats.getMean()
-				+ "; best_capture: " + captureStats.getMax() + " ["
-				+ settings.statusCache + "] time_delta_ms=" + deltaTime
-				+ " allocMB=" + allocatedMemory);
+		logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+				+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
+				+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
 		reportTime = currentTime;
 
 		// clear pool generation event stats for next generation...
@@ -367,15 +366,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-			embodiedAgent.activeAgent.eventStats
-					.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
-			embodiedAgent.activeAgent.eventStats
-					.aggregateStatsTo(generationEventStats);
+			embodiedAgent.activeAgent.eventStats.aggregateStatsTo(embodiedAgent.poolGenerationEventStats);
+			embodiedAgent.activeAgent.eventStats.aggregateStatsTo(generationEventStats);
 
-			EventStats speciesEventStats = speciesEventStatsMap
-					.get(embodiedAgent.getSpecies());
-			embodiedAgent.activeAgent.eventStats
-					.aggregateStatsTo(speciesEventStats);
+			EventStats speciesEventStats = speciesEventStatsMap.get(embodiedAgent.getSpecies());
+			embodiedAgent.activeAgent.eventStats.aggregateStatsTo(speciesEventStats);
 
 			embodiedAgent.evaluateLocalFitness();
 			// now reclaim the internal agents...
@@ -400,8 +395,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
-		if (settings.generationCounter != 0
-				&& (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
+		if (settings.generationCounter != 0 && (settings.generationCounter % settings.BENCHMARK_GENERATION) == 0) {
 			// every BENCHMARK_GENERATION use benchmark environment...
 			initEnvironmentWithBenchmark();
 		} else {
@@ -424,23 +418,20 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	@Override
 	protected void startSimulation() {
 
-		logger.info("EXPERIMENT STARTS: expected maxium simulations ="
-				+ simulationsPerExperiment + " stepsPerSimulation="
-				+ stepsPerSimulation);
+		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();
 		saveEnvironmentForBenchmark();
 
 		initAgents();
 
-		logger.info("---- starting simulation (" + simulationCounter
-				+ ") with: world=" + (gridHeight * gridWidth) + " obstacles="
-				+ numberOfObstacles + " sites=" + numberOfCollectionSites
-				+ " resources=" + numberOfResources + " agents="
-				+ agents.size());
+		logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
+				+ " obstacles=" + numberOfObstacles + " sites=" + numberOfCollectionSites + " resources="
+				+ numberOfResources + " agents=" + agents.size());
 
 		setStartDate();
-		
+
 		// this synchronizes the seed value for repeated experiments
 		settings.SEED = (int) this.seed();
 		experimentReporter.initReporter();
@@ -461,8 +452,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					fadeRewardGrids();
 				}
 
-				if (interactionMechanisms
-						.contains(InteractionMechanism.BROADCAST)) {
+				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 					ageBroadcasts();
 				}
 
@@ -480,8 +470,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					simulationCounter++;
 					simsRunForThisGeneration++;
 
-					if (!collectedAllResources()
-							&& simulationCounter < simulationsPerExperiment) {
+					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
 							evolveEmbodiedAgents();
@@ -508,7 +497,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
-						//settings.resetRandomSeedIfNeeded(state);
+						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}
 			}
@@ -567,8 +556,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	public EnumSet<InteractionMechanism> configInteractionMechanisms() {
-		EnumSet<InteractionMechanism> mechanisms = EnumSet
-				.noneOf(InteractionMechanism.class);
+		EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 		if (settings.MODEL_INTERACTIONS.contains("none")) {
 			logger.info("Agents will not use any interaction instructions");
