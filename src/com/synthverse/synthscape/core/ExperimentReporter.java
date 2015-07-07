@@ -713,7 +713,7 @@ public class ExperimentReporter implements Constants {
 					long sentUnicastClosestC = 0;
 					long receivedUnicastClosestC = 0;
 
-					// TODO: this should be the top loop
+		
 					for (Agent agent : agents) {
 						EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
 						if (agent.getSpecies() == species) {
