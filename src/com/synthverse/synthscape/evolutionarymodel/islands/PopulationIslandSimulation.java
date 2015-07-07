@@ -493,7 +493,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	protected void doEndOfStepTasks() {
-		if (Main.settings.__guiStarted && this.updateViewModel) {
+		if (Main.settings.__guiStarted && this.renderStep) {
 			Main.settings.__renderStageLock = 1;
 
 			while (Main.settings.__renderStageLock != 2) {

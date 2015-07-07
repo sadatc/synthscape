@@ -154,7 +154,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public ResourceCaptureStats resourceCaptureStats = new ResourceCaptureStats();
 
 	public boolean showGraphics = false;
-	public boolean updateViewModel = false;
+	public boolean renderStep = false;
 	public long lastGenerationRendered = Long.MIN_VALUE;
 	public long lastSimulationRendered = Long.MIN_VALUE;
 
@@ -812,12 +812,12 @@ public abstract class Simulation extends SimState implements Constants {
 					&& settings.generationCounter != this.lastGenerationRendered) {
 
 				logger.info("will render simulation:" + this.simulationCounter);
-				updateViewModel = true;
+				renderStep = true;
 				lastGenerationRendered = settings.generationCounter;
 				lastSimulationRendered = this.simulationCounter;
 
 			} else {
-				updateViewModel = false;
+				renderStep = false;
 				//logger.info("will NOT render simulation:" + this.simulationCounter);
 			}
 

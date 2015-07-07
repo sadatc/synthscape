@@ -8,6 +8,13 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.field.grid.SparseGrid2D;
 
+/**
+ * Class that is used by the renderer. The state is updated by the core
+ * simulator
+ * 
+ * @author sadat
+ *
+ */
 @SuppressWarnings("serial")
 public class BridgeState extends SimState {
 
@@ -38,8 +45,7 @@ public class BridgeState extends SimState {
 
 				stepCounter++;
 				Main.settings.__renderStageLock = 2;
-				
-				
+
 			}
 
 		});
