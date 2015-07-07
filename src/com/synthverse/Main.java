@@ -22,46 +22,33 @@ public class Main {
 			settings.originalArgs = args;
 			settings.processCommandLineInput(args);
 
+			Thread coreEvolutionThread = null;
+
 			if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
 				// island model
-				
-				
-				Thread t = new Thread(new PopulationIslandSimulation.CoreSimThread(), "CoreSimThread");
+				coreEvolutionThread = new Thread(new PopulationIslandSimulation.CoreSimThread(), "IslandCoreSimThread");
 
-				if (settings.SHOW_GRAPHICS) {
-					// the console simulator will be instantiated in a thread
-					// within
-					// PopulationIslandSimulationFancyUI.main(args);
-					FancySimulationUI.main(t, args);
-				} else {
-					// this simply starts the thread that runs the console
-					// simulator
-					
-					t.start();
-				}
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
 				// embodied model
-				if (settings.SHOW_GRAPHICS) {
-
-					throw new RuntimeException("Graphics mode for Embodied model has not been implemented");
-
-				} else {
-					EmbodiedEvolutionSimulation.main(args);
-				}
+				coreEvolutionThread = new Thread(new EmbodiedEvolutionSimulation.CoreSimThread(),
+						"EmbodiedCoreSimThread");
 
 			} else if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL) {
 				// alife model
-
-				if (settings.SHOW_GRAPHICS) {
-					//ALifeEvolutionSimulationFancyUI.main(args);
-
-				} else {
-					ALifeEvolutionSimulation.main(args);
-
-				}
-
+				coreEvolutionThread = new Thread(new ALifeEvolutionSimulation.CoreSimThread(), "ALifeCoreSimThread");
 			} else {
 				logger.severe("UNKNOWN MODEL REQUESTED!");
+				System.exit(1);
+			}
+
+			if (coreEvolutionThread != null) {
+				if (settings.SHOW_GRAPHICS) {
+					// this starts two threads: one for graphics and another for
+					// the core evolution
+					FancySimulationUI.main(coreEvolutionThread, args);
+				} else {
+					coreEvolutionThread.start();
+				}
 			}
 
 		} catch (Exception e) {
