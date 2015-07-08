@@ -98,7 +98,7 @@ public class FancySimulationUI extends SimulationUI {
 
 		// trails
 		trailPortrayal.setField(theState.trailGrid);
-		trailPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.YELLOW, true));
+		trailPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.YELLOW, 0.65, true));
 
 		/*
 		 * trailPortrayal.setMap(new
