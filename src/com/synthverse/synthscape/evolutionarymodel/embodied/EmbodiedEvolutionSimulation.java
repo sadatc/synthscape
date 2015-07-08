@@ -208,7 +208,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+					while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -220,7 +220,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					randomY = clusterLocation.y;
 
 				}
-				GridUtils.set(initCollisionGrid, randomX, randomY, true);
+				GridUtils.set(collisionGrid, randomX, randomY, true);
 				previousX = randomX;
 				previousY = randomY;
 
@@ -259,12 +259,12 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 
-			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+			while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
 
-			GridUtils.set(initCollisionGrid, randomX, randomY, true);
+			GridUtils.set(collisionGrid, randomX, randomY, true);
 
 			embodiedAgent.setNextActiveAgent(randomX, randomY);
 

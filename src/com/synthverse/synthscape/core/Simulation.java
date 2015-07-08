@@ -69,7 +69,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected ArrayList<Int2D> collectionSiteList;
 	protected ArrayList<Int2D> benchmarkCollectionSiteList;
 
-	protected SparseGrid2D initCollisionGrid;
+	protected SparseGrid2D collisionGrid;
 	protected SparseGrid2D benchmarkInitCollisionGrid;
 
 	public SparseGrid2D resourceGrid;
@@ -252,7 +252,7 @@ public abstract class Simulation extends SimState implements Constants {
 		collectionSiteList = new ArrayList<Int2D>();
 		benchmarkCollectionSiteList = new ArrayList<Int2D>();
 
-		initCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
+		collisionGrid = new SparseGrid2D(gridWidth, gridHeight);
 		benchmarkInitCollisionGrid = new SparseGrid2D(gridWidth, gridHeight);
 
 		resourceGrid = new SparseGrid2D(gridWidth, gridHeight);
@@ -295,7 +295,7 @@ public abstract class Simulation extends SimState implements Constants {
 		obstacleGrid.clear();
 		collectionSiteGrid.clear();
 		collectionSiteList.clear();
-		initCollisionGrid.clear();
+		collisionGrid.clear();
 
 		resourceGrid.clear();
 		clearResourceStatusArray();
@@ -383,7 +383,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected void initPrimaryCollectionSite() {
 		// set the primary collection site
 		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
-		GridUtils.set(initCollisionGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
+		GridUtils.set(collisionGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
 
 		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
 	}
@@ -401,7 +401,7 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 			GridUtils.set(collectionSiteGrid, randomX, randomY, true);
 
-			GridUtils.set(initCollisionGrid, randomX, randomY, true);
+			GridUtils.set(collisionGrid, randomX, randomY, true);
 
 			collectionSiteList.add(new Int2D(randomX, randomY));
 
@@ -417,11 +417,11 @@ public abstract class Simulation extends SimState implements Constants {
 			int randomX = randomPrime.nextInt(gridWidth);
 			int randomY = randomPrime.nextInt(gridHeight);
 			// make sure there isn't an obstacle there already...
-			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+			while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
-			GridUtils.set(initCollisionGrid, randomX, randomY, true);
+			GridUtils.set(collisionGrid, randomX, randomY, true);
 			GridUtils.set(obstacleGrid, randomX, randomY, true);
 
 		}
@@ -442,14 +442,14 @@ public abstract class Simulation extends SimState implements Constants {
 			do {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
-			} while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY));
+			} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY));
 			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
 			resourceStatusArray[randomX][randomY].x = randomX;
 			resourceStatusArray[randomX][randomY].y = randomY;
 
-			GridUtils.set(initCollisionGrid, randomX, randomY, true);
+			GridUtils.set(collisionGrid, randomX, randomY, true);
 
 		}
 
@@ -481,7 +481,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		benchmarkObstacleGrid = GridUtils.cloneBooleanGrid(obstacleGrid);
 		benchmarkCollectionSiteGrid = GridUtils.cloneBooleanGrid(collectionSiteGrid);
-		benchmarkInitCollisionGrid = GridUtils.cloneBooleanGrid(initCollisionGrid);
+		benchmarkInitCollisionGrid = GridUtils.cloneBooleanGrid(collisionGrid);
 		benchmarkResourceGrid = GridUtils.cloneResourceGrid(resourceGrid);
 
 		benchmarkResourceStatusArray = copyResourceStatusArray(resourceStatusArray);
@@ -496,7 +496,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 		obstacleGrid = GridUtils.cloneBooleanGrid(benchmarkObstacleGrid);
 		collectionSiteGrid = GridUtils.cloneBooleanGrid(benchmarkCollectionSiteGrid);
-		initCollisionGrid = GridUtils.cloneBooleanGrid(benchmarkInitCollisionGrid);
+		collisionGrid = GridUtils.cloneBooleanGrid(benchmarkInitCollisionGrid);
 		resourceGrid = GridUtils.cloneResourceGrid(benchmarkResourceGrid);
 
 		resourceStatusArray = copyResourceStatusArray(benchmarkResourceStatusArray);
@@ -529,7 +529,7 @@ public abstract class Simulation extends SimState implements Constants {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+					while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -542,7 +542,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 				}
 
-				GridUtils.set(initCollisionGrid, randomX, randomY, true);
+				GridUtils.set(collisionGrid, randomX, randomY, true);
 
 				previousX = randomX;
 				previousY = randomY;
@@ -578,7 +578,7 @@ public abstract class Simulation extends SimState implements Constants {
 			randomX = randomPrime.nextInt(gridWidth);
 			randomY = randomPrime.nextInt(gridHeight);
 
-			while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+			while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			}
@@ -588,45 +588,45 @@ public abstract class Simulation extends SimState implements Constants {
 			// if anything is empty, we return it.
 			// if this fails, we move once cell north and repeat process..
 
-			if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX), agentGrid.sty(pY - 1))) {
+			if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX), agentGrid.sty(pY - 1))) {
 
 				// N
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY - 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY - 1))) {
 				// NW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY))) {
 				// W
 				randomX = agentGrid.stx(pX - 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX - 1), agentGrid.sty(pY + 1))) {
 				// SW
 				randomX = agentGrid.stx(pX - 1);
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX), agentGrid.sty(pY + 1))) {
 				// S
 				randomY = agentGrid.sty(pY + 1);
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY + 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY + 1))) {
 				// SE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY + 1);
-			} else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY))) {
+			} else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY))) {
 				// E
 				randomX = agentGrid.stx(pX + 1);
 
 			}
 
-			else if (!GridUtils.gridHasAnObjectAt(initCollisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY - 1))) {
+			else if (!GridUtils.gridHasAnObjectAt(collisionGrid, agentGrid.stx(pX + 1), agentGrid.sty(pY - 1))) {
 				// NE
 				randomX = agentGrid.stx(pX + 1);
 				randomY = agentGrid.sty(pY - 1);

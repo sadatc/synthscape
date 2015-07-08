@@ -135,7 +135,7 @@ public class PopulationIslandSimulation extends Simulation {
 				int randomY = randomPrime.nextInt(gridHeight);
 
 				if (!settings.CLUSTERED) {
-					while (GridUtils.gridHasAnObjectAt(initCollisionGrid, randomX, randomY)) {
+					while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 						randomX = randomPrime.nextInt(gridWidth);
 						randomY = randomPrime.nextInt(gridHeight);
 					}
@@ -148,7 +148,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 				}
 
-				GridUtils.set(initCollisionGrid, randomX, randomY, true);
+				GridUtils.set(collisionGrid, randomX, randomY, true);
 
 				previousX = randomX;
 				previousY = randomY;
