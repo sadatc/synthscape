@@ -18,12 +18,7 @@ import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
-public abstract class Agent
-		implements
-			Constants,
-			Steppable,
-			Valuable,
-			Comparable<Agent> {
+public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
 
 	protected static final long serialVersionUID = -5129827193602692370L;
 	protected static Logger logger = Logger.getLogger(Agent.class.getName());
@@ -50,8 +45,7 @@ public abstract class Agent
 
 	public int y;
 
-	protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet
-			.noneOf(InteractionMechanism.class);
+	protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 	protected Species species;
 
@@ -118,8 +112,7 @@ public abstract class Agent
 
 	protected void initGenotype() {
 		this.program = Program.Factory.createRandom(sim.random);
-		VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this,
-				sim.random);
+		VirtualMachine vm = VirtualMachine.Factory.createDefault(sim, this, sim.random);
 		vm.overwriteGenotypeWithProgram(this.program);
 		vm.setCpuCycles(sim.getMaxStepsPerAgent());
 		this.setVirtualMachine(vm);
@@ -144,8 +137,8 @@ public abstract class Agent
 		initGenotype();
 	}
 
-	protected Agent(Simulation simulation, Species species,
-			int generationNumber, int maxSteps, int startX, int startY) {
+	protected Agent(Simulation simulation, Species species, int generationNumber, int maxSteps, int startX,
+			int startY) {
 		initId();
 		initGenotype();
 		setSim(simulation);
@@ -159,7 +152,16 @@ public abstract class Agent
 	}
 
 	public final boolean locationHasObstacle(int x, int y) {
-		return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
+		// TODO: is another agent in the same location considered to be a an
+		// obstacle?
+		// return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
+		return locationHasObstacleOrAgent(x,y);
+	}
+
+	public final boolean locationHasObstacleOrAgent(int x, int y) {
+
+		return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y)
+				|| GridUtils.gridHasAnObjectAt(sim.agentGrid, x, y));
 	}
 
 	/*
@@ -225,10 +227,8 @@ public abstract class Agent
 			int xMod = sim.agentGrid.stx(x + xDelta);
 			int yMod = sim.agentGrid.sty(y + yDelta);
 
-			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0
-					&& xMod < sim.getGridWidth() && yMod >= 0
-					&& yMod < sim.getGridHeight()
-					&& (!locationHasObstacle(xMod, yMod))) {
+			if (!(xDelta == 0 && yDelta == 0) && xMod >= 0 && xMod < sim.getGridWidth() && yMod >= 0
+					&& yMod < sim.getGridHeight() && (!locationHasObstacle(xMod, yMod))) {
 				newX = xMod;
 				newY = yMod;
 				foundNewUblockedLocation = true;
@@ -292,8 +292,7 @@ public abstract class Agent
 
 	}
 
-	public void _operationLeaveRewards(MutableDouble rewardHolder,
-			Event rewardEvent) {
+	public void _operationLeaveRewards(MutableDouble rewardHolder, Event rewardEvent) {
 		if (Main.settings.PEER_REWARDS) {
 
 			rewardHolder.val = Constants.REWARD_LEVEL_MAX;
@@ -303,13 +302,11 @@ public abstract class Agent
 		}
 
 	}
-	public final boolean _operationPerformResourceAction(Task action,
-			SparseGrid2D resourceGrid) {
+	public final boolean _operationPerformResourceAction(Task action, SparseGrid2D resourceGrid) {
 
 		boolean actionPerformed = false;
 
-		ResourceState resourceState = GridUtils.getResourceState(resourceGrid,
-				x, y);
+		ResourceState resourceState = GridUtils.getResourceState(resourceGrid, x, y);
 
 		switch (action) {
 			case EXTRACTION :
@@ -342,7 +339,8 @@ public abstract class Agent
 	public void operationFollowBroadcast(SignalType signalType) {
 		sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 				if (broadcast != null) {
@@ -357,14 +355,13 @@ public abstract class Agent
 						if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
 							// 3 task problem
 
-							if (species.getTraits().contains(Trait.EXTRACTION)
-									&& signalType == SignalType.SIGNAL_A) {
+							if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_A) {
 
 								event = Event.RECEIVED_BROADCAST_A;
 
-							} else if (species.getTraits().contains(
-									Trait.TRANSPORTATION)
-									&& signalType == SignalType.SIGNAL_B) {
+							} else
+								if (species.getTraits().contains(Trait.TRANSPORTATION)
+										&& signalType == SignalType.SIGNAL_B) {
 
 								event = Event.RECEIVED_BROADCAST_B;
 							} else {
@@ -374,18 +371,17 @@ public abstract class Agent
 
 						} else {
 							// 4 task problem
-							if (species.getTraits().contains(Trait.EXTRACTION)
-									&& signalType == SignalType.SIGNAL_A) {
+							if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_A) {
 
 								event = Event.RECEIVED_BROADCAST_A;
-							} else if (species.getTraits().contains(
-									Trait.PROCESSING)
-									&& signalType == SignalType.SIGNAL_B) {
+							} else
+								if (species.getTraits().contains(Trait.PROCESSING)
+										&& signalType == SignalType.SIGNAL_B) {
 
 								event = Event.RECEIVED_BROADCAST_B;
-							} else if (species.getTraits().contains(
-									Trait.TRANSPORTATION)
-									&& signalType == SignalType.SIGNAL_C) {
+							} else
+									if (species.getTraits().contains(Trait.TRANSPORTATION)
+											&& signalType == SignalType.SIGNAL_C) {
 
 								event = Event.RECEIVED_BROADCAST_C;
 							} else {
@@ -409,8 +405,7 @@ public abstract class Agent
 								detectorAgent.detectedBroadcastC = true;
 							}
 
-							_operationMoveAbsolute(broadcast.getX(),
-									broadcast.getY());
+							_operationMoveAbsolute(broadcast.getX(), broadcast.getY());
 							broadcast.markReceived();
 						}
 
@@ -418,18 +413,14 @@ public abstract class Agent
 
 						// unconstrained version
 						if (signalType == SignalType.SIGNAL_A) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_B) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_C) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA, this.agentId);
 						}
 
-						_operationMoveAbsolute(broadcast.getX(),
-								broadcast.getY());
+						_operationMoveAbsolute(broadcast.getX(), broadcast.getY());
 						broadcast.markReceived();
 
 					}
@@ -442,7 +433,8 @@ public abstract class Agent
 	public void operationBroadcast(SignalType signalType) {
 		sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 				if (Main.settings.CONSTRAINED_INTERACTIONS) {
@@ -452,25 +444,21 @@ public abstract class Agent
 					// processors can send signal C only
 					SignalType finalSignalType = null;
 					Event event = null;
-					if (species.getTraits().contains(Trait.DETECTION)
-							&& signalType == SignalType.SIGNAL_A) {
+					if (species.getTraits().contains(Trait.DETECTION) && signalType == SignalType.SIGNAL_A) {
 						finalSignalType = SignalType.SIGNAL_A;
 						event = Event.SENT_BROADCAST_A;
 					}
-					if (species.getTraits().contains(Trait.EXTRACTION)
-							&& signalType == SignalType.SIGNAL_B) {
+					if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_B) {
 						finalSignalType = SignalType.SIGNAL_B;
 						event = Event.SENT_BROADCAST_B;
 					}
 
-					if (species.getTraits().contains(Trait.EXTRACTION)
-							&& signalType == SignalType.SIGNAL_C) {
+					if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_C) {
 						finalSignalType = SignalType.SIGNAL_C;
 						event = Event.SENT_BROADCAST_C;
 					}
 					if (finalSignalType != null && event != null) {
-						Broadcast broadcast = new Broadcast(this,
-								finalSignalType, this.x, this.y, 0);
+						Broadcast broadcast = new Broadcast(this, finalSignalType, this.x, this.y, 0);
 						sim.registerBroadcast(broadcast);
 						sim.recordEvent(this, event, this.agentId, NA);
 					}
@@ -478,19 +466,15 @@ public abstract class Agent
 				} else {
 
 					// unconstrained version
-					Broadcast broadcast = new Broadcast(this, signalType,
-							this.x, this.y, 0);
+					Broadcast broadcast = new Broadcast(this, signalType, this.x, this.y, 0);
 					sim.registerBroadcast(broadcast);
 
 					if (signalType == SignalType.SIGNAL_A) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_A,
-								this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_A, this.agentId, NA);
 					} else if (signalType == SignalType.SIGNAL_B) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_B,
-								this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_B, this.agentId, NA);
 					} else if (signalType == SignalType.SIGNAL_C) {
-						sim.recordEvent(this, Event.SENT_BROADCAST_C,
-								this.agentId, NA);
+						sim.recordEvent(this, Event.SENT_BROADCAST_C, this.agentId, NA);
 					}
 				}
 
@@ -503,7 +487,8 @@ public abstract class Agent
 		boolean result = false;
 
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				Broadcast broadcast = sim.getRegisteredBroadcast(signalType);
 
@@ -520,14 +505,12 @@ public abstract class Agent
 						if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
 							// 3 task problem
 
-							if (species.getTraits().contains(Trait.EXTRACTION)
-									&& signalType == SignalType.SIGNAL_A) {
+							if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_A) {
 								finalSignalType = SignalType.SIGNAL_A;
 								event = Event.RECEIVED_BROADCAST_A;
 							}
 
-							if (species.getTraits().contains(
-									Trait.TRANSPORTATION)
+							if (species.getTraits().contains(Trait.TRANSPORTATION)
 									&& signalType == SignalType.SIGNAL_B) {
 								finalSignalType = SignalType.SIGNAL_B;
 								event = Event.RECEIVED_BROADCAST_B;
@@ -535,18 +518,15 @@ public abstract class Agent
 
 						} else {
 							// 4 task problem
-							if (species.getTraits().contains(Trait.EXTRACTION)
-									&& signalType == SignalType.SIGNAL_A) {
+							if (species.getTraits().contains(Trait.EXTRACTION) && signalType == SignalType.SIGNAL_A) {
 								finalSignalType = SignalType.SIGNAL_A;
 								event = Event.RECEIVED_BROADCAST_A;
 							}
-							if (species.getTraits().contains(Trait.PROCESSING)
-									&& signalType == SignalType.SIGNAL_B) {
+							if (species.getTraits().contains(Trait.PROCESSING) && signalType == SignalType.SIGNAL_B) {
 								finalSignalType = SignalType.SIGNAL_B;
 								event = Event.RECEIVED_BROADCAST_B;
 							}
-							if (species.getTraits().contains(
-									Trait.TRANSPORTATION)
+							if (species.getTraits().contains(Trait.TRANSPORTATION)
 									&& signalType == SignalType.SIGNAL_C) {
 								finalSignalType = SignalType.SIGNAL_C;
 								event = Event.RECEIVED_BROADCAST_C;
@@ -577,14 +557,11 @@ public abstract class Agent
 
 						// unconstrained
 						if (signalType == SignalType.SIGNAL_A) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_A, NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_B) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_B, NA, this.agentId);
 						} else if (signalType == SignalType.SIGNAL_C) {
-							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C,
-									NA, this.agentId);
+							sim.recordEvent(this, Event.RECEIVED_BROADCAST_C, NA, this.agentId);
 						}
 						broadcast.markReceived();
 
@@ -596,8 +573,7 @@ public abstract class Agent
 		return result;
 	}
 
-	public final void operationUnicastClosest_Unconstrained(
-			SignalType signalType) {
+	public final void operationUnicastClosest_Unconstrained(SignalType signalType) {
 
 		//
 		// -- UNCONSTRAINED VERSION ---
@@ -622,20 +598,17 @@ public abstract class Agent
 				closestAgent.receivedUnicastA = new Unicast(SignalType.SIGNAL_A);
 				targetUnicast = closestAgent.receivedUnicastA;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST,
-						senderAgent.agentId, closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_B) {
 				closestAgent.receivedUnicastB = new Unicast(SignalType.SIGNAL_B);
 				targetUnicast = closestAgent.receivedUnicastB;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST,
-						senderAgent.agentId, closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 			} else if (signalType == SignalType.SIGNAL_C) {
 				closestAgent.receivedUnicastC = new Unicast(SignalType.SIGNAL_C);
 				targetUnicast = closestAgent.receivedUnicastC;
 
-				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST,
-						senderAgent.agentId, closestAgent.agentId);
+				sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 			}
 
 			if (targetUnicast != null) {
@@ -645,8 +618,7 @@ public abstract class Agent
 					doUnicast = true;
 				} else {
 					InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
-					if (sim.random.nextDouble() <= interactionQualitySetting
-							.getLevel()) {
+					if (sim.random.nextDouble() <= interactionQualitySetting.getLevel()) {
 						doUnicast = true;
 					}
 				}
@@ -681,8 +653,7 @@ public abstract class Agent
 
 		// determine if this singalType is allowed by the species designation
 
-		if (species.getTraits().contains(Trait.DETECTION)
-				&& signalType == SignalType.SIGNAL_A) {
+		if (species.getTraits().contains(Trait.DETECTION) && signalType == SignalType.SIGNAL_A) {
 			finalSignlalType = SignalType.SIGNAL_A;
 			event = Event.SENT_UNICAST_A_CLOSEST;
 			targetTrait = Trait.EXTRACTION;
@@ -715,8 +686,7 @@ public abstract class Agent
 
 			// FIXME: code here
 
-			Agent closestAgent = findClosestAgent(this.x, this.y, 1,
-					targetTrait);
+			Agent closestAgent = findClosestAgent(this.x, this.y, 1, targetTrait);
 
 			if (closestAgent != null) {
 
@@ -732,26 +702,20 @@ public abstract class Agent
 				}
 
 				if (signalType == SignalType.SIGNAL_A) {
-					closestAgent.receivedUnicastA = new Unicast(
-							SignalType.SIGNAL_A);
+					closestAgent.receivedUnicastA = new Unicast(SignalType.SIGNAL_A);
 					targetUnicast = closestAgent.receivedUnicastA;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST,
-							senderAgent.agentId, closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_A_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_B) {
-					closestAgent.receivedUnicastB = new Unicast(
-							SignalType.SIGNAL_B);
+					closestAgent.receivedUnicastB = new Unicast(SignalType.SIGNAL_B);
 					targetUnicast = closestAgent.receivedUnicastB;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST,
-							senderAgent.agentId, closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_B_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 				} else if (signalType == SignalType.SIGNAL_C) {
-					closestAgent.receivedUnicastC = new Unicast(
-							SignalType.SIGNAL_C);
+					closestAgent.receivedUnicastC = new Unicast(SignalType.SIGNAL_C);
 					targetUnicast = closestAgent.receivedUnicastC;
 
-					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST,
-							senderAgent.agentId, closestAgent.agentId);
+					sim.recordEvent(this, Event.SENT_UNICAST_C_CLOSEST, senderAgent.agentId, closestAgent.agentId);
 				}
 
 				if (targetUnicast != null) {
@@ -761,8 +725,7 @@ public abstract class Agent
 						doUnicast = true;
 					} else {
 						InteractionQuality interactionQualitySetting = Main.settings.INTERACTION_QUALITY;
-						if (sim.random.nextDouble() <= interactionQualitySetting
-								.getLevel()) {
+						if (sim.random.nextDouble() <= interactionQualitySetting.getLevel()) {
 							doUnicast = true;
 						}
 					}
@@ -781,9 +744,9 @@ public abstract class Agent
 
 	public void operationUnicastClosest(SignalType signalType) {
 		sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
-		if (interactionMechanisms
-				.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+		if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 				if (Main.settings.CONSTRAINED_INTERACTIONS) {
@@ -802,10 +765,10 @@ public abstract class Agent
 
 	public void operationFollowUnicastClosest(SignalType signalType) {
 		sim.recordEvent(this, Event.ATTEMPT_COMMUNICATE, NA, NA);
-		if (interactionMechanisms
-				.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+		if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
 
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 				Unicast targetUnicast = null;
@@ -823,51 +786,42 @@ public abstract class Agent
 					// thats fit to the trait
 
 					if (signalType == SignalType.SIGNAL_A
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.EXTRACTION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.EXTRACTION)) {
 
 						targetUnicast = receivingAgent.receivedUnicastA;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_A_CLOSEST;
 						}
 					}
 
 					if (signalType == SignalType.SIGNAL_B
 							&& this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.TRANSPORTATION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.TRANSPORTATION)) {
 
 						targetUnicast = receivingAgent.receivedUnicastB;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_B_CLOSEST;
 						}
 					}
 
 					if (signalType == SignalType.SIGNAL_C
 							&& this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.TRANSPORTATION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.TRANSPORTATION)) {
 
 						targetUnicast = receivingAgent.receivedUnicastC;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_C_CLOSEST;
 						}
 					}
 
-					if (event != null && targetUnicast != null
-							&& targetUnicast.getSenderAgent() != null) {
-						_operationMoveAbsolute(targetUnicast.getSenderX(),
-								targetUnicast.getSenderY());
+					if (event != null && targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+						_operationMoveAbsolute(targetUnicast.getSenderX(), targetUnicast.getSenderY());
 
-						sim.recordEvent(this, event, targetUnicast
-								.getSenderAgent().getId(), targetUnicast
-								.getReceiverAgent().getId());
+						sim.recordEvent(this, event, targetUnicast.getSenderAgent().getId(),
+								targetUnicast.getReceiverAgent().getId());
 						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
@@ -895,12 +849,9 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastA;
 						}
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_A_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
 						if (this.isHosted()) {
@@ -909,12 +860,9 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastB;
 						}
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_B_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
 						if (this.isHosted()) {
@@ -923,19 +871,14 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastC;
 						}
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_C_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 						}
 					}
 
-					if (targetUnicast != null
-							&& targetUnicast.getSenderAgent() != null) {
-						_operationMoveAbsolute(targetUnicast.getSenderX(),
-								targetUnicast.getSenderY());
+					if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+						_operationMoveAbsolute(targetUnicast.getSenderX(), targetUnicast.getSenderY());
 					}
 					// end of unconstrained
 
@@ -947,9 +890,9 @@ public abstract class Agent
 
 	public boolean operationDetectUnicastClosest(SignalType signalType) {
 		boolean result = false;
-		if (interactionMechanisms
-				.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS && signalType != SignalType.SIGNAL_C)
+		if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+			if ((this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+					&& signalType != SignalType.SIGNAL_C)
 					|| this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
 				Unicast targetUnicast = null;
@@ -967,49 +910,41 @@ public abstract class Agent
 					// thats fit to the trait
 
 					if (signalType == SignalType.SIGNAL_A
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.EXTRACTION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.EXTRACTION)) {
 
 						targetUnicast = this.receivedUnicastA;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_A_CLOSEST;
 						}
 					}
 
 					if (signalType == SignalType.SIGNAL_B
 							&& this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.TRANSPORTATION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.TRANSPORTATION)) {
 
 						targetUnicast = this.receivedUnicastB;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_B_CLOSEST;
 						}
 					}
 
 					if (signalType == SignalType.SIGNAL_C
 							&& this.sim.problemComplexity == ProblemComplexity.FOUR_SEQUENTIAL_TASKS
-							&& receivingAgent.getSpecies().getTraits()
-									.contains(Trait.TRANSPORTATION)) {
+							&& receivingAgent.getSpecies().getTraits().contains(Trait.TRANSPORTATION)) {
 
 						targetUnicast = this.receivedUnicastC;
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 							event = Event.RECEIVED_UNICAST_C_CLOSEST;
 						}
 					}
 
-					if (event != null && targetUnicast != null
-							&& targetUnicast.getSenderAgent() != null) {
+					if (event != null && targetUnicast != null && targetUnicast.getSenderAgent() != null) {
 
-						sim.recordEvent(this, event, targetUnicast
-								.getSenderAgent().getId(), targetUnicast
-								.getReceiverAgent().getId());
+						sim.recordEvent(this, event, targetUnicast.getSenderAgent().getId(),
+								targetUnicast.getReceiverAgent().getId());
 						result = true;
 						targetUnicast.markReceived();
 
@@ -1038,12 +973,9 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastA;
 						}
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_A_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_A_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
@@ -1053,12 +985,9 @@ public abstract class Agent
 							targetUnicast = this.receivedUnicastB;
 						}
 
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_B_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_B_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
@@ -1067,12 +996,9 @@ public abstract class Agent
 						} else {
 							targetUnicast = this.receivedUnicastC;
 						}
-						if (targetUnicast != null
-								&& targetUnicast.getSenderAgent() != null) {
-							sim.recordEvent(this,
-									Event.RECEIVED_UNICAST_C_CLOSEST,
-									targetUnicast.getSenderAgent().getId(),
-									targetUnicast.getReceiverAgent().getId());
+						if (targetUnicast != null && targetUnicast.getSenderAgent() != null) {
+							sim.recordEvent(this, Event.RECEIVED_UNICAST_C_CLOSEST,
+									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 							result = true;
 						}
 					}
@@ -1096,13 +1022,10 @@ public abstract class Agent
 			for (int deltaY = -1; deltaY <= 1; deltaY++) {
 				// except for the center...
 				if (deltaX != 0 && deltaY != 0) {
-					int scanX = trailGridWrapper.strengthGrid.stx(this.x
-							+ deltaX);
-					int scanY = trailGridWrapper.strengthGrid.sty(this.y
-							+ deltaY);
+					int scanX = trailGridWrapper.strengthGrid.stx(this.x + deltaX);
+					int scanY = trailGridWrapper.strengthGrid.sty(this.y + deltaY);
 
-					double trailAmount = trailGridWrapper.getTrailStrengthAt(
-							scanX, scanY);
+					double trailAmount = trailGridWrapper.getTrailStrengthAt(scanX, scanY);
 					if (trailAmount > maxTrail) {
 						maxTrail = (int) trailAmount;
 						maxX = scanX;
@@ -1197,8 +1120,7 @@ public abstract class Agent
 	}
 
 	public final void operationMoveToPrimaryCollectionSite() {
-		_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X,
-				sim.settings.PRIMARY_COLLECTION_SITE_Y);
+		_operationMoveToLocationAt(sim.settings.PRIMARY_COLLECTION_SITE_X, sim.settings.PRIMARY_COLLECTION_SITE_Y);
 		sim.recordEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
 	}
@@ -1217,15 +1139,13 @@ public abstract class Agent
 			}
 		}
 
-		_operationMoveToLocationAt(closestCollectionSite.x,
-				closestCollectionSite.y);
+		_operationMoveToLocationAt(closestCollectionSite.x, closestCollectionSite.y);
 		sim.recordEvent(this, Event.MOVE_TO_CLOSEST_COLLECTION_SITE, NA, NA);
 
 	}
 
 	/** This function is being "borrowed" from Int2D.java */
-	public final double distance(final double x1, final double y1,
-			final double x2, final double y2) {
+	public final double distance(final double x1, final double y1, final double x2, final double y2) {
 		final double dx = x1 - x2;
 		final double dy = y1 - y2;
 		return Math.sqrt(dx * dx + dy * dy);
@@ -1238,8 +1158,7 @@ public abstract class Agent
 	 * @param y
 	 * @return
 	 */
-	public final Agent findClosestAgent(int x, int y, int minimumDistance,
-			Trait agentTrait) {
+	public final Agent findClosestAgent(int x, int y, int minimumDistance, Trait agentTrait) {
 		// TODO: find out why some agents can be in the same location
 		// (minimumDistance=0) -- this maybe valid
 
@@ -1423,21 +1342,16 @@ public abstract class Agent
 				boolean canExtract = false;
 
 				if (this.isHosted()) {
-					canExtract = this.getHostAgent().detectedBroadcastA
-							|| this.getHostAgent().detectedUnicastA;
+					canExtract = this.getHostAgent().detectedBroadcastA || this.getHostAgent().detectedUnicastA;
 				} else {
-					canExtract = this.detectedBroadcastA
-							|| this.detectedUnicastA;
+					canExtract = this.detectedBroadcastA || this.detectedUnicastA;
 				}
 
 				// only extract if allowed
-				if (canExtract
-						&& _operationPerformResourceAction(Task.EXTRACTION,
-								this.sim.resourceGrid)) {
+				if (canExtract && _operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorPeerReward,
-							Event.DROPPED_DETECTOR_REWARDS);
+					_operationLeaveRewards(sim.detectorPeerReward, Event.DROPPED_DETECTOR_REWARDS);
 
 					// now reset the detected signal...
 					if (this.isHosted()) {
@@ -1467,12 +1381,10 @@ public abstract class Agent
 			sim.recordEvent(this, Event.ATTEMPT_EXTRACT, NA, NA);
 			if (species.getTraits().contains(Trait.EXTRACTION)) {
 
-				if (_operationPerformResourceAction(Task.EXTRACTION,
-						this.sim.resourceGrid)) {
+				if (_operationPerformResourceAction(Task.EXTRACTION, this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceExtracts++;
 					sim.recordEvent(this, Event.EXTRACTED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.detectorPeerReward,
-							Event.DROPPED_DETECTOR_REWARDS);
+					_operationLeaveRewards(sim.detectorPeerReward, Event.DROPPED_DETECTOR_REWARDS);
 
 				}
 
@@ -1491,20 +1403,15 @@ public abstract class Agent
 				boolean canProcess = false;
 
 				if (this.isHosted()) {
-					canProcess = this.getHostAgent().detectedBroadcastB
-							|| this.getHostAgent().detectedUnicastB;
+					canProcess = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 				} else {
-					canProcess = this.detectedBroadcastB
-							|| this.detectedUnicastB;
+					canProcess = this.detectedBroadcastB || this.detectedUnicastB;
 				}
 
-				if (canProcess
-						&& _operationPerformResourceAction(Task.PROCESSING,
-								this.sim.resourceGrid)) {
+				if (canProcess && _operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorPeerReward,
-							Event.DROPPED_EXTRACTOR_REWARDS);
+					_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 					// now reset the detected signal...
 					if (this.isHosted()) {
@@ -1534,12 +1441,10 @@ public abstract class Agent
 			sim.recordEvent(this, Event.ATTEMPT_PROCESS, NA, NA);
 			if (species.getTraits().contains(Trait.PROCESSING)) {
 
-				if (_operationPerformResourceAction(Task.PROCESSING,
-						this.sim.resourceGrid)) {
+				if (_operationPerformResourceAction(Task.PROCESSING, this.sim.resourceGrid)) {
 					// sim.statistics.stepData.resourceProcesses++;
 					sim.recordEvent(this, Event.PROCESSED_RESOURCE, NA, NA);
-					_operationLeaveRewards(sim.extractorPeerReward,
-							Event.DROPPED_EXTRACTOR_REWARDS);
+					_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 				}
 
 				updateLocationStatus(this.x, this.y);
@@ -1562,41 +1467,31 @@ public abstract class Agent
 
 				if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
 					if (this.isHosted()) {
-						canTransport = this.getHostAgent().detectedBroadcastB
-								|| this.getHostAgent().detectedUnicastB;
+						canTransport = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 					} else {
-						canTransport = this.detectedBroadcastB
-								|| this.detectedUnicastB;
+						canTransport = this.detectedBroadcastB || this.detectedUnicastB;
 					}
 				} else {
 					if (this.isHosted()) {
-						canTransport = this.getHostAgent().detectedBroadcastC
-								|| this.getHostAgent().detectedUnicastC;
+						canTransport = this.getHostAgent().detectedBroadcastC || this.getHostAgent().detectedUnicastC;
 					} else {
-						canTransport = this.detectedBroadcastC
-								|| this.detectedUnicastC;
+						canTransport = this.detectedBroadcastC || this.detectedUnicastC;
 					}
 				}
 
 				if (canTransport) {
-					if (locationHasExtractedResource
-							|| locationHasProcessedResource
-							|| locationHasRawResource) {
+					if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 						if (!isCarryingResource) {
 							isCarryingResource = true;
 
-							stateOfCarriedResource = GridUtils
-									.getResourceState(this.sim.resourceGrid, x,
-											y);
+							stateOfCarriedResource = GridUtils.getResourceState(this.sim.resourceGrid, x, y);
 
-							GridUtils.removeAllObjectsAt(this.sim.resourceGrid,
-									x, y);
+							GridUtils.removeAllObjectsAt(this.sim.resourceGrid, x, y);
 							// this.sim.resourceGrid.removeObjectsAtLocation(x,
 							// y);
 
 							// copy over the state of the resource
-							sim.resourceStatusArray[x][y]
-									.cloneTo(statusOfCarriedResource);
+							sim.resourceStatusArray[x][y].cloneTo(statusOfCarriedResource);
 
 							statusOfCarriedResource.numTimesLoaded++;
 
@@ -1605,8 +1500,7 @@ public abstract class Agent
 							sim.resourceStatusArray[x][y].state = ResourceState.NULL;
 
 							// need to keep track of this resource...
-							sim.touchedResources
-									.remove(sim.resourceStatusArray[x][y]);
+							sim.touchedResources.remove(sim.resourceStatusArray[x][y]);
 							sim.touchedResources.add(statusOfCarriedResource);
 
 							updateLocationStatus(this.x, this.y);
@@ -1623,21 +1517,16 @@ public abstract class Agent
 			sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 			if (species.getTraits().contains(Trait.TRANSPORTATION)) {
 				updateLocationStatus(this.x, this.y);
-				if (locationHasExtractedResource
-						|| locationHasProcessedResource
-						|| locationHasRawResource) {
+				if (locationHasExtractedResource || locationHasProcessedResource || locationHasRawResource) {
 					if (!isCarryingResource) {
 						isCarryingResource = true;
 
-						stateOfCarriedResource = GridUtils.getResourceState(
-								this.sim.resourceGrid, x, y);
+						stateOfCarriedResource = GridUtils.getResourceState(this.sim.resourceGrid, x, y);
 
-						GridUtils.removeAllObjectsAt(this.sim.resourceGrid, x,
-								y);
+						GridUtils.removeAllObjectsAt(this.sim.resourceGrid, x, y);
 
 						// copy over the state of the resource
-						sim.resourceStatusArray[x][y]
-								.cloneTo(statusOfCarriedResource);
+						sim.resourceStatusArray[x][y].cloneTo(statusOfCarriedResource);
 
 						statusOfCarriedResource.numTimesLoaded++;
 
@@ -1646,8 +1535,7 @@ public abstract class Agent
 						sim.resourceStatusArray[x][y].state = ResourceState.NULL;
 
 						// need to keep track of this resource...
-						sim.touchedResources
-								.remove(sim.resourceStatusArray[x][y]);
+						sim.touchedResources.remove(sim.resourceStatusArray[x][y]);
 						sim.touchedResources.add(statusOfCarriedResource);
 
 						updateLocationStatus(this.x, this.y);
@@ -1670,11 +1558,9 @@ public abstract class Agent
 
 	public final void operationUnLoadResource_Unconstrained() {
 		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
-		if (species.getTraits().contains(Trait.TRANSPORTATION)
-				&& isCarryingResource) {
+		if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
 			updateLocationStatus(x, y);
-			if (!locationHasExtractedResource && !locationHasProcessedResource
-					&& !locationHasRawResource) {
+			if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 				isCarryingResource = false;
 
@@ -1691,45 +1577,34 @@ public abstract class Agent
 						if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 							dropResource = false;
 							this.sim.numberOfCollectedResources++;
-							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA,
-									NA);
-							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
-									NA);
-							_operationLeaveRewards(sim.extractorPeerReward,
-									Event.DROPPED_EXTRACTOR_REWARDS);
+							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+							_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 							// save over this status
 							ResourceStatus collectedResourceStatus = new ResourceStatus();
-							statusOfCarriedResource
-									.cloneTo(collectedResourceStatus);
+							statusOfCarriedResource.cloneTo(collectedResourceStatus);
 							collectedResourceStatus.captureStep = sim.simStepCounter;
-							sim.touchedResources
-									.remove(statusOfCarriedResource);
+							sim.touchedResources.remove(statusOfCarriedResource);
 							statusOfCarriedResource.clear();
 							sim.touchedResources.add(collectedResourceStatus);
 
 							// logger.info("CAPTURE!! 3 complex");
 						}
 
-					} else if (this.sim.problemComplexity
-							.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+					} else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 						if (stateOfCarriedResource == ResourceState.PROCESSED) {
 							dropResource = false;
 							this.sim.numberOfCollectedResources++;
-							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA,
-									NA);
-							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA,
-									NA);
-							_operationLeaveRewards(sim.processorPeerReward,
-									Event.DROPPED_PROCESSOR_REWARDS);
+							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+							_operationLeaveRewards(sim.processorPeerReward, Event.DROPPED_PROCESSOR_REWARDS);
 
 							// save over this status
 							ResourceStatus collectedResourceStatus = new ResourceStatus();
-							statusOfCarriedResource
-									.cloneTo(collectedResourceStatus);
+							statusOfCarriedResource.cloneTo(collectedResourceStatus);
 							collectedResourceStatus.captureStep = sim.simStepCounter;
-							sim.touchedResources
-									.remove(statusOfCarriedResource);
+							sim.touchedResources.remove(statusOfCarriedResource);
 							statusOfCarriedResource.clear();
 							sim.touchedResources.add(collectedResourceStatus);
 
@@ -1746,21 +1621,18 @@ public abstract class Agent
 
 				if (dropResource) {
 
-					GridUtils.set(this.sim.resourceGrid, x, y,
-							stateOfCarriedResource);
+					GridUtils.set(this.sim.resourceGrid, x, y, stateOfCarriedResource);
 
 					// this is a resource drop...place the resource back in the
 					// grid
-					statusOfCarriedResource
-							.cloneTo(this.sim.resourceStatusArray[x][y]);
+					statusOfCarriedResource.cloneTo(this.sim.resourceStatusArray[x][y]);
 					this.sim.resourceStatusArray[x][y].x = x;
 					this.sim.resourceStatusArray[x][y].y = y;
 					this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
 
 					// need to keep track of this resource...
 					sim.touchedResources.remove(statusOfCarriedResource);
-					sim.touchedResources
-							.add(this.sim.resourceStatusArray[x][y]);
+					sim.touchedResources.add(this.sim.resourceStatusArray[x][y]);
 
 					statusOfCarriedResource.clear();
 
@@ -1777,34 +1649,27 @@ public abstract class Agent
 
 	public final void operationUnLoadResource_Constrained() {
 		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
-		if (species.getTraits().contains(Trait.TRANSPORTATION)
-				&& isCarryingResource) {
+		if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
 			updateLocationStatus(x, y);
 
 			boolean canTransport = false;
 			if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
 				if (this.isHosted()) {
-					canTransport = this.getHostAgent().detectedBroadcastB
-							|| this.getHostAgent().detectedUnicastB;
+					canTransport = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 				} else {
-					canTransport = this.detectedBroadcastB
-							|| this.detectedUnicastB;
+					canTransport = this.detectedBroadcastB || this.detectedUnicastB;
 				}
 			} else {
 				if (this.isHosted()) {
-					canTransport = this.getHostAgent().detectedBroadcastC
-							|| this.getHostAgent().detectedUnicastC;
+					canTransport = this.getHostAgent().detectedBroadcastC || this.getHostAgent().detectedUnicastC;
 				} else {
-					canTransport = this.detectedBroadcastC
-							|| this.detectedUnicastC;
+					canTransport = this.detectedBroadcastC || this.detectedUnicastC;
 				}
 			}
 
 			if (canTransport) {
 
-				if (!locationHasExtractedResource
-						&& !locationHasProcessedResource
-						&& !locationHasRawResource) {
+				if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
 					isCarryingResource = false;
 
@@ -1821,12 +1686,9 @@ public abstract class Agent
 							if (stateOfCarriedResource == ResourceState.EXTRACTED) {
 								dropResource = false;
 								this.sim.numberOfCollectedResources++;
-								sim.recordEvent(this, Event.UNLOADED_RESOURCE,
-										NA, NA);
-								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
-										NA, NA);
-								_operationLeaveRewards(sim.extractorPeerReward,
-										Event.DROPPED_EXTRACTOR_REWARDS);
+								sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+								sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+								_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 								// resource has been collected, now we need to
 								// reset the receive signal flag
@@ -1850,29 +1712,22 @@ public abstract class Agent
 
 								// save over this status
 								ResourceStatus collectedResourceStatus = new ResourceStatus();
-								statusOfCarriedResource
-										.cloneTo(collectedResourceStatus);
+								statusOfCarriedResource.cloneTo(collectedResourceStatus);
 								collectedResourceStatus.captureStep = sim.simStepCounter;
-								sim.touchedResources
-										.remove(statusOfCarriedResource);
+								sim.touchedResources.remove(statusOfCarriedResource);
 								statusOfCarriedResource.clear();
-								sim.touchedResources
-										.add(collectedResourceStatus);
+								sim.touchedResources.add(collectedResourceStatus);
 
 								// logger.info("CAPTURE!! 3 complex");
 							}
 
-						} else if (this.sim.problemComplexity
-								.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
+						} else if (this.sim.problemComplexity.equals(ProblemComplexity.FOUR_SEQUENTIAL_TASKS)) {
 							if (stateOfCarriedResource == ResourceState.PROCESSED) {
 								dropResource = false;
 								this.sim.numberOfCollectedResources++;
-								sim.recordEvent(this, Event.UNLOADED_RESOURCE,
-										NA, NA);
-								sim.recordEvent(this, Event.COLLECTED_RESOURCE,
-										NA, NA);
-								_operationLeaveRewards(sim.processorPeerReward,
-										Event.DROPPED_PROCESSOR_REWARDS);
+								sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
+								sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+								_operationLeaveRewards(sim.processorPeerReward, Event.DROPPED_PROCESSOR_REWARDS);
 
 								// now reset the detected signal...
 								if (this.isHosted()) {
@@ -1893,14 +1748,11 @@ public abstract class Agent
 
 								// save over this status
 								ResourceStatus collectedResourceStatus = new ResourceStatus();
-								statusOfCarriedResource
-										.cloneTo(collectedResourceStatus);
+								statusOfCarriedResource.cloneTo(collectedResourceStatus);
 								collectedResourceStatus.captureStep = sim.simStepCounter;
-								sim.touchedResources
-										.remove(statusOfCarriedResource);
+								sim.touchedResources.remove(statusOfCarriedResource);
 								statusOfCarriedResource.clear();
-								sim.touchedResources
-										.add(collectedResourceStatus);
+								sim.touchedResources.add(collectedResourceStatus);
 
 								// logger.info("CAPTURE!! 4 complex");
 
@@ -1914,22 +1766,19 @@ public abstract class Agent
 					}
 
 					if (dropResource) {
-						GridUtils.set(this.sim.resourceGrid, x, y,
-								stateOfCarriedResource);
+						GridUtils.set(this.sim.resourceGrid, x, y, stateOfCarriedResource);
 
 						// this is a resource drop...place the resource back in
 						// the
 						// grid
-						statusOfCarriedResource
-								.cloneTo(this.sim.resourceStatusArray[x][y]);
+						statusOfCarriedResource.cloneTo(this.sim.resourceStatusArray[x][y]);
 						this.sim.resourceStatusArray[x][y].x = x;
 						this.sim.resourceStatusArray[x][y].y = y;
 						this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
 
 						// need to keep track of this resource...
 						sim.touchedResources.remove(statusOfCarriedResource);
-						sim.touchedResources
-								.add(this.sim.resourceStatusArray[x][y]);
+						sim.touchedResources.add(this.sim.resourceStatusArray[x][y]);
 
 						statusOfCarriedResource.clear();
 
@@ -1978,24 +1827,21 @@ public abstract class Agent
 		if (sim.extractorPeerReward.val >= 1.0) {
 			this.locationHasExtractorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA,
-						this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_EXTRACTOR_REWARDS, NA, this.agentId);
 			}
 		}
 
 		if (sim.detectorPeerReward.val >= 1.0) {
 			this.locationHasDetectorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA,
-						this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_DETECTOR_REWARDS, NA, this.agentId);
 			}
 		}
 
 		if (sim.processorPeerReward.val >= 1.0) {
 			this.locationHasProcessorReward = true;
 			if (Main.settings.PEER_REWARDS) {
-				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA,
-						this.agentId);
+				sim.recordEvent(this, Event.RECEIVED_PROCESSOR_REWARDS, NA, this.agentId);
 			}
 		}
 
@@ -2143,8 +1989,7 @@ public abstract class Agent
 		this.sim = sim;
 	}
 
-	protected static Agent generateAgent(long generation, long agentId, int x,
-			int y) {
+	protected static Agent generateAgent(long generation, long agentId, int x, int y) {
 		return null;
 	}
 
@@ -2160,8 +2005,7 @@ public abstract class Agent
 		this.species = species;
 	}
 
-	public void setInteractionMechanisms(
-			EnumSet<InteractionMechanism> interactionMechanisms) {
+	public void setInteractionMechanisms(EnumSet<InteractionMechanism> interactionMechanisms) {
 		this.interactionMechanisms = interactionMechanisms;
 	}
 
@@ -2194,8 +2038,7 @@ public abstract class Agent
 	public void cloneAndLinkGeneArcheType(Agent archetype) {
 		this.program = new Program(archetype.getProgram());
 		this.getVirtualMachine().overwriteGenotypeWithProgram(this.program);
-		this.getVirtualMachine().setCpuCycles(
-				archetype.getVirtualMachine().getCpuCycles());
+		this.getVirtualMachine().setCpuCycles(archetype.getVirtualMachine().getCpuCycles());
 		archetypeReference = archetype;
 	}
 
@@ -2225,25 +2068,17 @@ public abstract class Agent
 
 	@Override
 	public String toString() {
-		return "Agent [agentId=" + agentId + ", teamId="
-				+ ((team != null) ? team.getTeamId() : -1)
-				+ ", agentStepCounter=" + agentStepCounter + ", maxSteps="
-				+ maxSteps + ", x=" + x + ", y=" + y
-				+ ", interactionMechanisms=" + interactionMechanisms
-				+ ", species=" + species + ", isCarryingResource="
-				+ isCarryingResource + ", generation=" + generation
-				+ ", program=" + program + "]";
+		return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
+				+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
+				+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
+				+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
 	}
 
 	public String toString2() {
-		return "Agent [agentId=" + agentId + ", teamId="
-				+ ((team != null) ? team.getTeamId() : -1)
-				+ ", agentStepCounter=" + agentStepCounter + ", maxSteps="
-				+ maxSteps + ", x=" + x + ", y=" + y
-				+ ", interactionMechanisms=" + interactionMechanisms
-				+ ", species=" + species + ", isCarryingResource="
-				+ isCarryingResource + ", generation=" + generation
-				+ ", program=" + program.getSignature() + "]";
+		return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
+				+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
+				+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
+				+ isCarryingResource + ", generation=" + generation + ", program=" + program.getSignature() + "]";
 	}
 
 	public Team getTeam() {
