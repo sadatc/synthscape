@@ -4,6 +4,7 @@
 package com.synthverse.synthscape.core.gui;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 
 import javax.swing.ImageIcon;
 
@@ -12,12 +13,15 @@ import com.synthverse.Main;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.field.grid.IntGrid2D;
+import sim.portrayal.DrawInfo2D;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.grid.ValueGridPortrayal2D;
 import sim.portrayal.simple.FacetedPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.RectanglePortrayal2D;
+import sim.util.MutableDouble;
+import sim.util.gui.SimpleColorMap;
 
 public class FancySimulationUI extends SimulationUI {
 
@@ -71,7 +75,6 @@ public class FancySimulationUI extends SimulationUI {
 
 	}
 
-	
 	public void initPortrayals() {
 		BridgeState theState = (BridgeState) state;
 
@@ -98,7 +101,22 @@ public class FancySimulationUI extends SimulationUI {
 
 		// trails
 		trailPortrayal.setField(theState.trailGrid);
-		trailPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.YELLOW, 0.65, true));
+		// trailPortrayal.setPortrayalForAll(new
+		// RectanglePortrayal2D(Color.YELLOW, 0.65, true));
+
+		trailPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
+				MutableDouble strength = (MutableDouble) object;
+				SimpleColorMap colorMap = new SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX,
+						new Color(255, 255, 255, 0), Color.YELLOW) {
+					public double filterLevel(double level) {
+						return Math.sqrt(Math.sqrt(level));
+					}
+				};
+				new RectanglePortrayal2D(colorMap.getColor(strength.val), 0.65, true).draw(object, graphics, info);
+			}
+
+		});
 
 		/*
 		 * trailPortrayal.setMap(new
