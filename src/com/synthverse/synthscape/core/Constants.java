@@ -44,11 +44,11 @@ public interface Constants {
 
 	public static final int SIGNAL_LEVEL_MAX = 100;
 
-	public static final int TRAIL_LEVEL_MIN = 0;
+	public static final int TRAIL_LEVEL_MIN = 1;
 
 	public static final boolean TOROIDAL_FLAG = true;
 
-	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.60;
+	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.75;
 
 	public static final double DEFAULT_REWARD_EVAPORATION_CONSTANT = 0.50;
 

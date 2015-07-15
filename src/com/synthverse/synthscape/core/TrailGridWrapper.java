@@ -45,14 +45,13 @@ public class TrailGridWrapper {
 		return GridUtils.getDouble(strengthGrid, x, y);
 	}
 
-	final public void sparseGrid2DMultiply(
-			SparseGrid2D mutableDoubleSparseGrid, double multiplier) {
+	final public void sparseGrid2DMultiply(SparseGrid2D mutableDoubleSparseGrid, double multiplier) {
 		Bag objects = mutableDoubleSparseGrid.getAllObjects();
 		int size = objects.size();
 		for (int i = 0; i < size; i++) {
 			MutableDouble d = (MutableDouble) (objects.get(i));
 			d.val *= multiplier;
-			if (d.val < 0.0) {
+			if (d.val < 1.0) {
 				d.val = 0.0;
 			}
 		}
@@ -74,10 +73,43 @@ public class TrailGridWrapper {
 		}
 	}
 
+	final public void cleanupNearZeros(SparseGrid2D mutableDoubleSparseGrid) {
+		Bag objects = mutableDoubleSparseGrid.getAllObjects();
+		Bag removableObjects = new Bag();
+
+		for (int i = 0; i < objects.size(); i++) {
+			MutableDouble d = (MutableDouble) (objects.get(i));
+			if (d.val <= Constants.TRAIL_LEVEL_MIN) {
+				removableObjects.add(d);
+			}
+		}
+
+		for (int i = 0; i < removableObjects.size(); i++) {
+			mutableDoubleSparseGrid.remove(removableObjects.get(i));
+		}
+	}
+
+	final public String debug() {
+		String result = null;
+		Bag objects = strengthGrid.getAllObjects();
+
+		String s = "[";
+		for (int i = 0; i < objects.size(); i++) {
+			MutableDouble d = (MutableDouble) (objects.get(i));
+			s += d.val + " ";
+		}
+		s += "]";
+		if (objects.size() > 0) {
+			result = s;
+		}
+
+		return result;
+
+	}
+
 	final public void fadeTrails() {
-		sparseGrid2DMultiply(strengthGrid,
-				Constants.DEFAULT_TRAIL_EVAPORATION_CONSTANT);
-		cleanupZeros(strengthGrid);
+		sparseGrid2DMultiply(strengthGrid, Constants.DEFAULT_TRAIL_EVAPORATION_CONSTANT);
+		cleanupNearZeros(strengthGrid);
 		// FIXME: remove values that are 0s
 	}
 

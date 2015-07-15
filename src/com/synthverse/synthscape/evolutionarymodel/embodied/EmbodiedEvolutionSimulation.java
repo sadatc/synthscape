@@ -352,10 +352,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	@Override
-	protected void doEndOfStepTasks() {
-
-	}
+	
 
 	@Override
 	protected void doEndOfSimulationTasks() {

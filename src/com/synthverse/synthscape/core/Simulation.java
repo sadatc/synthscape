@@ -854,7 +854,20 @@ public abstract class Simulation extends SimState implements Constants {
 		return result;
 	}
 
-	abstract protected void doEndOfStepTasks();
+	protected void doEndOfStepTasks() {
+		if (Main.settings.__guiStarted && this.renderStep) {
+			Main.settings.__renderStageLock = 1;
+			//
+			String trailString = this.trailGridWrapper.debug();
+			if(trailString!=null) {
+				D.p("trails in step:"+this.simStepCounter+": "+trailString);
+			}
+
+			while (Main.settings.__renderStageLock != 2) {
+				Thread.yield();
+			}
+		}
+	}
 
 	protected void reclaimAgents() {
 		for (Agent agent : agents) {

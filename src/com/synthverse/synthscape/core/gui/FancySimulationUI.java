@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 
 import sim.display.Controller;
 import sim.display.Display2D;
@@ -56,7 +58,7 @@ public class FancySimulationUI extends SimulationUI {
 
 		super.init(controller);
 
-		display = new Display2D(600, 600, this);
+		display = new Display2D(400, 400, this);
 		display.setScale(1.0);
 		display.setClipping(false);
 
@@ -97,43 +99,11 @@ public class FancySimulationUI extends SimulationUI {
 
 		// obstacles sites
 		obstaclesPortrayal.setField(theState.obstacleGrid);
-		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.BLACK, true));
+		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.GRAY, true));
 
-		// trails
-		trailPortrayal.setField(theState.trailGrid);
-		// trailPortrayal.setPortrayalForAll(new
-		// RectanglePortrayal2D(Color.YELLOW, 0.65, true));
+		
+				 
 
-		trailPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
-			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
-				MutableDouble strength = (MutableDouble) object;
-				SimpleColorMap colorMap = new SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX,
-						new Color(255, 255, 255, 0), Color.YELLOW) {
-					public double filterLevel(double level) {
-						return Math.sqrt(Math.sqrt(level));
-					}
-				};
-				new RectanglePortrayal2D(colorMap.getColor(strength.val), 0.65, true).draw(object, graphics, info);
-			}
-
-		});
-
-		/*
-		 * trailPortrayal.setMap(new
-		 * sim.util.gui.SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX, new
-		 * Color(255, 255, 255, 0), Color.YELLOW) { public double
-		 * filterLevel(double level) { return Math.sqrt(Math.sqrt(level)); } });
-		 */
-
-		/*
-		 * initPortrayal(obstaclesPortrayal, theState.obstacleGrid, new
-		 * sim.util.gui.SimpleColorMap(ABSENT, PRESENT, new Color(0, 0, 0, 0),
-		 * Color.BLACK));
-		 * 
-		 * initPortrayal(trailPortrayal, theState.trailGridWrapper.grid, }
-		 * 
-		 * });
-		 */
 		agentPortrayal.setField(theState.agentGrid);
 
 		agentPortrayal
@@ -148,6 +118,36 @@ public class FancySimulationUI extends SimulationUI {
 		IntGrid2D worldGrid = new IntGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT, 1);
 		worldPortrayal.setField(worldGrid);
 		worldPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.LIGHT_GRAY, 0.99, false));
+
+		// trails
+		trailPortrayal.setField(theState.trailGrid);
+		trailPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
+				MutableDouble strength = (MutableDouble) object;
+				//D.p("drawing...");
+				if (strength.val >= Constants.TRAIL_LEVEL_MIN) {
+					
+					SimpleColorMap colorMap = new SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX,
+							new Color(255, 255, 255, 0), Color.ORANGE) {
+						public double filterLevel(double level) {
+							return Math.sqrt(Math.sqrt(level));
+						}
+					};
+					new RectanglePortrayal2D(Color.YELLOW, 0.85, true).draw(object, graphics, info);
+					// new RectanglePortrayal2D(colorMap.getColor(strength.val),
+					// 0.65, true).draw(object, graphics, info);
+					//D.p("drawing trail with strength=" + strength.val);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+
+		});
+
 
 		display.reset();
 		display.repaint();

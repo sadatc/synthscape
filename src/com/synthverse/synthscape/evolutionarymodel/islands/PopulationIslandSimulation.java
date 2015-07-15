@@ -491,16 +491,6 @@ public class PopulationIslandSimulation extends Simulation {
 		return null;
 	}
 
-	@Override
-	protected void doEndOfStepTasks() {
-		if (Main.settings.__guiStarted && this.renderStep) {
-			Main.settings.__renderStageLock = 1;
-
-			while (Main.settings.__renderStageLock != 2) {
-				Thread.yield();
-			}
-		}
-
-	}
+	
 
 }
