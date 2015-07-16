@@ -58,7 +58,7 @@ public class FancySimulationUI extends SimulationUI {
 
 		super.init(controller);
 
-		display = new Display2D(400, 400, this);
+		display = new Display2D(500, 500, this);
 		display.setScale(1.0);
 		display.setClipping(false);
 
@@ -101,9 +101,6 @@ public class FancySimulationUI extends SimulationUI {
 		obstaclesPortrayal.setField(theState.obstacleGrid);
 		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.GRAY, true));
 
-		
-				 
-
 		agentPortrayal.setField(theState.agentGrid);
 
 		agentPortrayal
@@ -120,34 +117,28 @@ public class FancySimulationUI extends SimulationUI {
 		worldPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.LIGHT_GRAY, 0.99, false));
 
 		// trails
+
 		trailPortrayal.setField(theState.trailGrid);
 		trailPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
+
+			SimpleColorMap colorMap = new SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX, new Color(255, 255, 255, 0),
+					Color.YELLOW) {
+				public double filterLevel(double level) {
+					// this silly function grows very very slowly.
+					return Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(level/2))));
+				}
+			};
+
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
 				MutableDouble strength = (MutableDouble) object;
-				//D.p("drawing...");
+				// D.p("drawing...");
 				if (strength.val >= Constants.TRAIL_LEVEL_MIN) {
-					
-					SimpleColorMap colorMap = new SimpleColorMap(TRAIL_LEVEL_MIN, TRAIL_LEVEL_MAX,
-							new Color(255, 255, 255, 0), Color.ORANGE) {
-						public double filterLevel(double level) {
-							return Math.sqrt(Math.sqrt(level));
-						}
-					};
-					new RectanglePortrayal2D(Color.YELLOW, 0.85, true).draw(object, graphics, info);
-					// new RectanglePortrayal2D(colorMap.getColor(strength.val),
-					// 0.65, true).draw(object, graphics, info);
-					//D.p("drawing trail with strength=" + strength.val);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					new RectanglePortrayal2D(colorMap.getColor(strength.val), 0.97, true).draw(object, graphics, info);
+
 				}
 			}
 
 		});
-
 
 		display.reset();
 		display.repaint();
