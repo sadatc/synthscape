@@ -860,10 +860,11 @@ public abstract class Simulation extends SimState implements Constants {
 			Main.settings.__renderStageLock = 1;
 			//
 
-			String trailString = this.trailGridWrapper.debug();
-			if (trailString != null) {
-				D.p("trails in step:" + this.simStepCounter + ": " + trailString);
-			}
+			// String trailString = this.trailGridWrapper.debug();
+			// if (trailString != null) {
+			// D.p("trails in step:" + this.simStepCounter + ": " +
+			// trailString);
+			// }
 
 			while (Main.settings.__renderStageLock != 2) {
 				Thread.yield();
@@ -991,24 +992,22 @@ public abstract class Simulation extends SimState implements Constants {
 			speciesSet.add(Species.DE);
 			logger.info("adding DE agents...");
 		}
-		
+
 		if (settings.MODEL_SPECIES.contains("^dt")) {
 			speciesSet.add(Species.DT);
 			logger.info("adding DT agents...");
 		}
-		
+
 		if (settings.MODEL_SPECIES.contains("^et")) {
 			speciesSet.add(Species.ET);
 			logger.info("adding ET agents...");
 		}
-		
+
 		if (settings.MODEL_SPECIES.contains("*det")) {
 			speciesSet.add(Species.DET);
 			logger.info("adding DET agents...");
 		}
 
-		
-		
 		if (settings.MODEL_SPECIES.contains("detector")) {
 			speciesSet.add(Species.DETECTOR);
 			logger.info("adding DETECTORs...");
