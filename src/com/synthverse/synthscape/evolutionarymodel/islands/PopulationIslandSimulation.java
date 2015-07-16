@@ -202,6 +202,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
+		
 
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);

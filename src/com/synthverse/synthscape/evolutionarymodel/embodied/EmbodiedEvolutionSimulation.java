@@ -124,6 +124,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	protected void init() throws Exception {
+		this.showGraphics = settings.__showGraphics;
+		
 		// we can compute the server name and batch ID right away
 		settings.experimentNumber++;
 		try {

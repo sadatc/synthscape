@@ -48,7 +48,8 @@ public interface Constants {
 
 	public static final boolean TOROIDAL_FLAG = true;
 
-	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.75;
+	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.913;
+	// 0.60 => trail stays for 10 steps, 0.79=20 steps, 0.795=> 21 steps 0.913=>51
 
 	public static final double DEFAULT_REWARD_EVAPORATION_CONSTANT = 0.50;
 

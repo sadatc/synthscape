@@ -154,8 +154,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	public final boolean locationHasObstacle(int x, int y) {
 		// TODO: is another agent in the same location considered to be a an
 		// obstacle?
-		// return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
-		return locationHasObstacleOrAgent(x,y);
+		return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
+		//return locationHasObstacleOrAgent(x,y);
 	}
 
 	public final boolean locationHasObstacleOrAgent(int x, int y) {

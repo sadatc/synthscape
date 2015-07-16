@@ -825,6 +825,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void startNextSimulation() {
 		// logger.info("+");
+		// D.p("+" + this.simsRunForThisGeneration);
 		lockForAnyBridgeSimulation();
 
 		intervalStats.resetLastSteps();
@@ -855,12 +856,13 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void doEndOfStepTasks() {
-		if (Main.settings.__guiStarted && this.renderStep) {
+		if (Main.settings.__showGraphics && Main.settings.__guiStarted && this.renderStep) {
 			Main.settings.__renderStageLock = 1;
 			//
+
 			String trailString = this.trailGridWrapper.debug();
-			if(trailString!=null) {
-				D.p("trails in step:"+this.simStepCounter+": "+trailString);
+			if (trailString != null) {
+				D.p("trails in step:" + this.simStepCounter + ": " + trailString);
 			}
 
 			while (Main.settings.__renderStageLock != 2) {
