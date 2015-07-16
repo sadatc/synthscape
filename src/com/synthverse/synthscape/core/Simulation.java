@@ -968,7 +968,70 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public abstract double configResourceDensity();
 
-	public abstract Set<Species> configSpeciesComposition();
+	protected Set<Species> configSpeciesComposition() {
+
+		Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
+
+		if (settings.MODEL_SPECIES.contains("+d")) {
+			speciesSet.add(Species.D);
+			logger.info("adding Ds...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("+e")) {
+			speciesSet.add(Species.E);
+			logger.info("adding Es...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("+t")) {
+			speciesSet.add(Species.T);
+			logger.info("adding Ts...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("^de")) {
+			speciesSet.add(Species.DE);
+			logger.info("adding DE agents...");
+		}
+		
+		if (settings.MODEL_SPECIES.contains("^dt")) {
+			speciesSet.add(Species.DT);
+			logger.info("adding DT agents...");
+		}
+		
+		if (settings.MODEL_SPECIES.contains("^et")) {
+			speciesSet.add(Species.ET);
+			logger.info("adding ET agents...");
+		}
+		
+		if (settings.MODEL_SPECIES.contains("*det")) {
+			speciesSet.add(Species.DET);
+			logger.info("adding DET agents...");
+		}
+
+		
+		
+		if (settings.MODEL_SPECIES.contains("detector")) {
+			speciesSet.add(Species.DETECTOR);
+			logger.info("adding DETECTORs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("extractor")) {
+			speciesSet.add(Species.EXTRACTOR);
+			logger.info("adding EXTRACTORs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("transporter")) {
+			speciesSet.add(Species.TRANSPORTER);
+			logger.info("adding TRANSPORTERs...");
+		}
+
+		if (settings.MODEL_SPECIES.contains("homogenous")) {
+			speciesSet.add(Species.HOMOGENOUS);
+			logger.info("adding HOMOGENOUS agents...");
+		}
+
+		return speciesSet;
+
+	}
 
 	public abstract EnumSet<InteractionMechanism> configInteractionMechanisms();
 

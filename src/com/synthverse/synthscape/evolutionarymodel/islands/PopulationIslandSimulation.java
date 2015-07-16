@@ -362,33 +362,7 @@ public class PopulationIslandSimulation extends Simulation {
 		return settings.RESOURCE_DENSITY;
 	}
 
-	@Override
-	public Set<Species> configSpeciesComposition() {
-
-		Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
-
-		if (settings.MODEL_SPECIES.contains("detector")) {
-			speciesSet.add(Species.DETECTOR);
-			logger.info("adding DETECTORs...");
-		}
-
-		if (settings.MODEL_SPECIES.contains("extractor")) {
-			speciesSet.add(Species.EXTRACTOR);
-			logger.info("adding EXTRACTORs...");
-		}
-
-		if (settings.MODEL_SPECIES.contains("transporter")) {
-			speciesSet.add(Species.TRANSPORTER);
-			logger.info("adding TRANSPORTERs...");
-		}
-
-		if (settings.MODEL_SPECIES.contains("homogenous")) {
-			speciesSet.add(Species.HOMOGENOUS);
-			logger.info("adding HOMOGENOUS agents...");
-		}
-
-		return speciesSet;
-	}
+	
 
 	@Override
 	public EnumSet<InteractionMechanism> configInteractionMechanisms() {

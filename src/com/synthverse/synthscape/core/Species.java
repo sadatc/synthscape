@@ -7,7 +7,7 @@ import com.synthverse.Main;
 
 public enum Species {
 
-	DETECTOR(0, "detector", new TraitsDefiner() {
+	D(0, "d", new TraitsDefiner() {
 
 		public LinkedHashSet<Trait> define() {
 			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
@@ -18,7 +18,18 @@ public enum Species {
 
 	}),
 
-	EXTRACTOR(1, "extractor", new TraitsDefiner() {
+	DETECTOR(1, "detector", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.DETECTION);
+
+			return traits;
+		}
+
+	}),
+
+	EXTRACTOR(2, "extractor", new TraitsDefiner() {
 
 		public LinkedHashSet<Trait> define() {
 			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
@@ -27,7 +38,20 @@ public enum Species {
 			return traits;
 		}
 
-	}), PROCESSOR(2, "processor", new TraitsDefiner() {
+	}),
+
+	E(3, "e", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.EXTRACTION);
+
+			return traits;
+		}
+
+	}),
+
+	PROCESSOR(4, "processor", new TraitsDefiner() {
 
 		public LinkedHashSet<Trait> define() {
 			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
@@ -36,7 +60,20 @@ public enum Species {
 			return traits;
 		}
 
-	}), TRANSPORTER(3, "transporter", new TraitsDefiner() {
+	}),
+
+	P(5, "p", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.PROCESSING);
+
+			return traits;
+		}
+
+	}),
+
+	TRANSPORTER(6, "transporter", new TraitsDefiner() {
 
 		public LinkedHashSet<Trait> define() {
 			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
@@ -46,7 +83,21 @@ public enum Species {
 			return traits;
 		}
 
-	}), HOMOGENOUS(4, "homogenous", new TraitsDefiner() {
+	}),
+
+	T(7, "t", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.TRANSPORTATION);
+
+			return traits;
+		}
+
+	}),
+
+	HOMOGENOUS(8, "homogenous", new TraitsDefiner() {
 
 		@Override
 		public LinkedHashSet<Trait> define() {
@@ -57,6 +108,120 @@ public enum Species {
 			traits.add(Trait.TRANSPORTATION);
 			traits.add(Trait.MULTICAPABLE);
 
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+
+			return traits;
+		}
+
+	}),
+
+	DET(9, "det", new TraitsDefiner() {
+
+		@Override
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.DETECTION);
+			traits.add(Trait.EXTRACTION);
+			traits.add(Trait.TRANSPORTATION);
+			traits.add(Trait.MULTICAPABLE);
+
+			return traits;
+		}
+
+	}),
+
+	DEPT(10, "dept", new TraitsDefiner() {
+
+		@Override
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.DETECTION);
+			traits.add(Trait.EXTRACTION);
+			traits.add(Trait.TRANSPORTATION);
+			traits.add(Trait.MULTICAPABLE);
+
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+
+			return traits;
+		}
+
+	}),
+
+	DE(11, "de", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.DETECTION);
+			traits.add(Trait.EXTRACTION);
+
+			return traits;
+		}
+
+	}),
+
+	DP(12, "dp", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.DETECTION);
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+
+			return traits;
+		}
+
+	}),
+
+	DT(13, "dt", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.DETECTION);
+			traits.add(Trait.TRANSPORTATION);
+
+			return traits;
+		}
+
+	}),
+
+	ET(14, "et", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.EXTRACTION);
+			traits.add(Trait.TRANSPORTATION);
+
+			return traits;
+		}
+
+	}),
+
+	EP(15, "ep", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.EXTRACTION);
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+
+			return traits;
+		}
+
+	}),
+
+	PT(16, "pt", new TraitsDefiner() {
+
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+			traits.add(Trait.TRANSPORTATION);
 			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				traits.add(Trait.PROCESSING);
 			}

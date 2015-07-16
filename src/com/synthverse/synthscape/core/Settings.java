@@ -123,17 +123,16 @@ public class Settings implements Constants {
 	public String statusCache = EMPTY_STRING;
 
 	public int generationCounter = 0;
-	
+
 	public String[] originalArgs = null;
-	
+
 	public boolean __showGraphics = false;
 	public boolean __guiStarted = false;
-	// __renderStageLock = 0 (initial value) 
+	// __renderStageLock = 0 (initial value)
 	// __renderStageLock = 1 (grids copied over, ready to render)
 	// __renderStageLock = 2 (rendering completed, ready to update grid)
 	public Integer __renderStageLock = new Integer(0);
 	public BridgeState __bridgeState = null;
-	
 
 	private Settings() {
 
@@ -151,160 +150,93 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("help", "print this message"));
 
-		options.addOption(new Option("no_randomization",
-				"do not randomize each sim [default: randomize]"));
+		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
-		options.addOption(new Option("show_graphics",
-				"show graphics [default: don't show graphics]"));
+		options.addOption(new Option("show_graphics", "show graphics [default: don't show graphics]"));
 
-		options.addOption(new Option("clustered",
-				"start agent clustered [default: distributed]"));
+		options.addOption(new Option("clustered", "start agent clustered [default: distributed]"));
 
-		options.addOption(new Option("peer_rewards",
-				"peer rewards [default: no peer rewards]"));
+		options.addOption(new Option("peer_rewards", "peer rewards [default: no peer rewards]"));
 
-		options.addOption(new Option("use_4_tasks",
-				"use 4 tasks, instead of the default 3"));
+		options.addOption(new Option("use_4_tasks", "use 4 tasks, instead of the default 3"));
 
-		options.addOption(OptionBuilder.withArgName("log").hasArg()
-				.withDescription("(off,all,info) [all]").create("log"));
+		options.addOption(
+				OptionBuilder.withArgName("log").hasArg().withDescription("(off,all,info) [all]").create("log"));
 
-		options.addOption(OptionBuilder.withArgName("model").isRequired()
-				.hasArg().withDescription("island, embodied, alife")
-				.create("model"));
+		options.addOption(OptionBuilder.withArgName("model").isRequired().hasArg()
+				.withDescription("island, embodied, alife").create("model"));
 
-		options.addOption(OptionBuilder
-				.withArgName("species")
-				.isRequired()
-				.hasArg()
+		options.addOption(OptionBuilder.withArgName("species").isRequired().hasArg()
 				.withDescription(
 						"species names [detector, extractor, transporter OR homogenous] e.g. detector,transporter")
 				.create("species"));
 
-		options.addOption(OptionBuilder
-				.withArgName("int")
-				.isRequired()
-				.hasArg()
-				.withDescription(
-						"interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
+		options.addOption(OptionBuilder.withArgName("int").isRequired().hasArg()
+				.withDescription("interactions names [none OR trail, broadcast, unicast_n] e.g. trail,broadcast")
 				.create("int"));
 
-		options.addOption(new Option(("unconstrained"),
-				"use unconstrainted interactions [default: constrained]"));
+		options.addOption(new Option(("unconstrained"), "use unconstrainted interactions [default: constrained]"));
 
-		options.addOption(OptionBuilder
-				.withArgName("iquality")
-				.hasArg()
-				.withDescription(
-						"interaction quality (highest, high, medium, low/poor) [highest]")
-				.create("iquality"));
+		options.addOption(OptionBuilder.withArgName("iquality").hasArg()
+				.withDescription("interaction quality (highest, high, medium, low/poor) [highest]").create("iquality"));
 
-		options.addOption(OptionBuilder.withArgName("gen").hasArg()
-				.withType(Integer.class)
-				.withDescription("maximum generations [" + GENERATIONS + "]")
-				.create("gen"));
+		options.addOption(OptionBuilder.withArgName("gen").hasArg().withType(Integer.class)
+				.withDescription("maximum generations [" + GENERATIONS + "]").create("gen"));
 
-		options.addOption(OptionBuilder
-				.withArgName("clones")
-				.hasArg()
-				.withType(Integer.class)
-				.withDescription(
-						"clones per species [" + CLONES_PER_SPECIES + "]")
-				.create("clones"));
+		options.addOption(OptionBuilder.withArgName("clones").hasArg().withType(Integer.class)
+				.withDescription("clones per species [" + CLONES_PER_SPECIES + "]").create("clones"));
 
-		options.addOption(OptionBuilder.withArgName("psize").hasArg()
-				.withType(Integer.class)
-				.withDescription("gene pool size [" + GENE_POOL_SIZE + "]")
-				.create("psize"));
+		options.addOption(OptionBuilder.withArgName("psize").hasArg().withType(Integer.class)
+				.withDescription("gene pool size [" + GENE_POOL_SIZE + "]").create("psize"));
 
-		options.addOption(OptionBuilder.withArgName("cdensity").hasArg()
-				.withType(Integer.class)
-				.withDescription("cdensity [" + COLLECTION_SITE_DENSITY + "]")
-				.create("cdensity"));
+		options.addOption(OptionBuilder.withArgName("cdensity").hasArg().withType(Integer.class)
+				.withDescription("cdensity [" + COLLECTION_SITE_DENSITY + "]").create("cdensity"));
 
-		options.addOption(OptionBuilder.withArgName("width").hasArg()
-				.withType(Integer.class)
-				.withDescription("world width [" + WORLD_WIDTH + "]")
-				.create("width"));
+		options.addOption(OptionBuilder.withArgName("width").hasArg().withType(Integer.class)
+				.withDescription("world width [" + WORLD_WIDTH + "]").create("width"));
 
-		options.addOption(OptionBuilder.withArgName("height").hasArg()
-				.withType(Integer.class)
-				.withDescription("world height [" + WORLD_HEIGHT + "]")
-				.create("height"));
+		options.addOption(OptionBuilder.withArgName("height").hasArg().withType(Integer.class)
+				.withDescription("world height [" + WORLD_HEIGHT + "]").create("height"));
 
-		options.addOption(OptionBuilder.withArgName("bench").hasArg()
-				.withType(Integer.class)
-				.withDescription("max steps [" + BENCHMARK_GENERATION + "]")
-				.create("bench"));
+		options.addOption(OptionBuilder.withArgName("bench").hasArg().withType(Integer.class)
+				.withDescription("max steps [" + BENCHMARK_GENERATION + "]").create("bench"));
 
-		options.addOption(OptionBuilder.withArgName("msteps").hasArg()
-				.withType(Integer.class)
-				.withDescription("max steps [" + MAX_STEPS_PER_AGENT + "]")
-				.create("msteps"));
+		options.addOption(OptionBuilder.withArgName("msteps").hasArg().withType(Integer.class)
+				.withDescription("max steps [" + MAX_STEPS_PER_AGENT + "]").create("msteps"));
 
-		options.addOption(OptionBuilder.withArgName("odensity").hasArg()
-				.withType(Double.class)
-				.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]")
-				.create("odensity"));
+		options.addOption(OptionBuilder.withArgName("odensity").hasArg().withType(Double.class)
+				.withDescription("obstacle density [" + OBSTACLE_DENSITY + "]").create("odensity"));
 
-		options.addOption(OptionBuilder.withArgName("rdensity").hasArg()
-				.withType(Double.class)
-				.withDescription("resource density [" + RESOURCE_DENSITY + "]")
-				.create("rdensity"));
+		options.addOption(OptionBuilder.withArgName("rdensity").hasArg().withType(Double.class)
+				.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("rdensity"));
 
-		options.addOption(OptionBuilder
-				.withArgName("goal")
-				.hasArg()
-				.withType(Double.class)
-				.withDescription(
-						"%resource capture goal [" + PERC_RESOURCE_CAPTURE_GOAL
-								+ "; 0 means no goal]").create("goal"));
+		options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
+				.withDescription("%resource capture goal [" + PERC_RESOURCE_CAPTURE_GOAL + "; 0 means no goal]")
+				.create("goal"));
 
-		options.addOption(OptionBuilder.withArgName("repeat").hasArg()
-				.withType(Integer.class)
-				.withDescription("repeat experiment [" + REPEAT + "]")
-				.create("repeat"));
+		options.addOption(OptionBuilder.withArgName("repeat").hasArg().withType(Integer.class)
+				.withDescription("repeat experiment [" + REPEAT + "]").create("repeat"));
 
-		options.addOption(OptionBuilder.withArgName("ddir").hasArg()
-				.withDescription("data dir [" + DATA_DIR + "]").create("ddir"));
+		options.addOption(OptionBuilder.withArgName("ddir").hasArg().withDescription("data dir [" + DATA_DIR + "]")
+				.create("ddir"));
 
-		options.addOption(OptionBuilder.withArgName("job_name").hasArg()
-				.withDescription("job name [" + JOB_NAME + "]")
+		options.addOption(OptionBuilder.withArgName("job_name").hasArg().withDescription("job name [" + JOB_NAME + "]")
 				.create("job_name"));
 
 		options.addOption(OptionBuilder.withArgName("preset").hasArg()
-				.withDescription("(noops, actions, random) [random]")
-				.create("preset"));
+				.withDescription("(noops, actions, random) [random]").create("preset"));
 
-		options.addOption(OptionBuilder
-				.withArgName("ms")
-				.hasArg()
-				.withType(Double.class)
-				.withDescription(
-						"mating success rate [" + MATING_SUCCESS_RATE + "]")
-				.create("ms"));
+		options.addOption(OptionBuilder.withArgName("ms").hasArg().withType(Double.class)
+				.withDescription("mating success rate [" + MATING_SUCCESS_RATE + "]").create("ms"));
 
-		options.addOption(OptionBuilder
-				.withArgName("mpr")
-				.hasArg()
-				.withType(Integer.class)
-				.withDescription(
-						"mating proximity radius [" + MATING_PROXIMITY_RADIUS
-								+ "]").create("mpr"));
+		options.addOption(OptionBuilder.withArgName("mpr").hasArg().withType(Integer.class)
+				.withDescription("mating proximity radius [" + MATING_PROXIMITY_RADIUS + "]").create("mpr"));
 
-		options.addOption(OptionBuilder
-				.withArgName("mgf")
-				.hasArg()
-				.withType(Integer.class)
-				.withDescription(
-						"mating generation frequency ["
-								+ MATING_GENERATION_FREQUENCY + "]")
-				.create("mgf"));
+		options.addOption(OptionBuilder.withArgName("mgf").hasArg().withType(Integer.class)
+				.withDescription("mating generation frequency [" + MATING_GENERATION_FREQUENCY + "]").create("mgf"));
 
-		options.addOption(OptionBuilder.withArgName("seed").hasArg()
-				.withType(Long.class)
-				.withDescription("seed for randomizer [" + SEED + "]")
-				.create("seed"));
+		options.addOption(OptionBuilder.withArgName("seed").hasArg().withType(Long.class)
+				.withDescription("seed for randomizer [" + SEED + "]").create("seed"));
 
 		HelpFormatter formatter = new HelpFormatter();
 
@@ -334,8 +266,7 @@ public class Settings implements Constants {
 						D.p("** NOTE: in this decentralized models PEER_REWARDS is being set to true!! Use peer_rewards option to override");
 					}
 				} else {
-					throw new ParseException("model name: " + modelName
-							+ " was not recognized");
+					throw new ParseException("model name: " + modelName + " was not recognized");
 				}
 			}
 			printAndStore("EVOLUTIONARY_MODEL = " + EVOLUTIONARY_MODEL);
@@ -375,47 +306,38 @@ public class Settings implements Constants {
 			printAndStore("PROBLEM_COMPLEXITY = " + PROBLEM_COMPLEXITY);
 
 			if (line.hasOption("goal")) {
-				PERC_RESOURCE_CAPTURE_GOAL = new Double(
-						line.getOptionValue("goal")).doubleValue();
+				PERC_RESOURCE_CAPTURE_GOAL = new Double(line.getOptionValue("goal")).doubleValue();
 			}
 
-			printAndStore("PERC_RESOURCE_CAPTURE_GOAL = "
-					+ PERC_RESOURCE_CAPTURE_GOAL);
+			printAndStore("PERC_RESOURCE_CAPTURE_GOAL = " + PERC_RESOURCE_CAPTURE_GOAL);
 
 			if (line.hasOption("odensity")) {
-				OBSTACLE_DENSITY = new Double(line.getOptionValue("odensity"))
-						.doubleValue();
+				OBSTACLE_DENSITY = new Double(line.getOptionValue("odensity")).doubleValue();
 			}
 
 			printAndStore("OBSTACLE_DENSITY = " + OBSTACLE_DENSITY);
 
 			if (line.hasOption("rdensity")) {
-				RESOURCE_DENSITY = new Double(line.getOptionValue("rdensity"))
-						.doubleValue();
+				RESOURCE_DENSITY = new Double(line.getOptionValue("rdensity")).doubleValue();
 			}
 			printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
 			if (line.hasOption("ms")) {
-				MATING_SUCCESS_RATE = new Double(line.getOptionValue("ms"))
-						.doubleValue();
+				MATING_SUCCESS_RATE = new Double(line.getOptionValue("ms")).doubleValue();
 			}
 			printAndStore("MATING_FREQUENCY = " + MATING_SUCCESS_RATE);
 
 			if (line.hasOption("mpr")) {
-				MATING_PROXIMITY_RADIUS = new Integer(
-						line.getOptionValue("mpr")).intValue();
+				MATING_PROXIMITY_RADIUS = new Integer(line.getOptionValue("mpr")).intValue();
 
 			}
-			printAndStore("MATING_PROXIMITY_RADIUS = "
-					+ MATING_PROXIMITY_RADIUS);
+			printAndStore("MATING_PROXIMITY_RADIUS = " + MATING_PROXIMITY_RADIUS);
 
 			if (line.hasOption("mgf")) {
-				MATING_GENERATION_FREQUENCY = new Integer(
-						line.getOptionValue("mgf")).intValue();
+				MATING_GENERATION_FREQUENCY = new Integer(line.getOptionValue("mgf")).intValue();
 
 			}
-			printAndStore("MATING_GENERATION_FREQUENCY = "
-					+ MATING_GENERATION_FREQUENCY);
+			printAndStore("MATING_GENERATION_FREQUENCY = " + MATING_GENERATION_FREQUENCY);
 
 			if (line.hasOption("seed")) {
 				SEED = new Integer(line.getOptionValue("seed")).intValue();
@@ -434,8 +356,7 @@ public class Settings implements Constants {
 				else if (logLevel.equalsIgnoreCase("info")) {
 					REQUESTED_LOG_LEVEL = Level.INFO;
 				} else {
-					throw new ParseException("log level: " + logLevel
-							+ " was not recognized");
+					throw new ParseException("log level: " + logLevel + " was not recognized");
 				}
 
 			}
@@ -444,14 +365,13 @@ public class Settings implements Constants {
 
 			if (line.hasOption("species")) {
 
-				String speciesNames = line.getOptionValue("species")
-						.toLowerCase();
-				if (!(speciesNames.contains("homogenous")
-						|| speciesNames.contains("extractor")
-						|| speciesNames.contains("detector") || speciesNames
-							.contains("transporter"))) {
-					throw new ParseException("species: " + speciesNames
-							+ " was not recognized");
+				String speciesNames = line.getOptionValue("species").toLowerCase();
+				if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
+						|| speciesNames.contains("detector") || speciesNames.contains("transporter")
+						|| speciesNames.contains("+d") || speciesNames.contains("+e") || speciesNames.contains("+t")
+						|| speciesNames.contains("^de") || speciesNames.contains("^dt") || speciesNames.contains("^et")
+						|| speciesNames.contains("*det"))) {
+					throw new ParseException("species: " + speciesNames + " was not recognized");
 				}
 				MODEL_SPECIES = speciesNames;
 
@@ -460,12 +380,9 @@ public class Settings implements Constants {
 
 			if (line.hasOption("int")) {
 				String interactions = line.getOptionValue("int").toLowerCase();
-				if (!(interactions.contains("none")
-						|| interactions.contains("trail")
-						|| interactions.contains("broadcast") || interactions
-							.contains("unicast_n"))) {
-					throw new ParseException("interactions: " + interactions
-							+ " was not recognized");
+				if (!(interactions.contains("none") || interactions.contains("trail")
+						|| interactions.contains("broadcast") || interactions.contains("unicast_n"))) {
+					throw new ParseException("interactions: " + interactions + " was not recognized");
 				}
 				MODEL_INTERACTIONS = interactions;
 
@@ -483,8 +400,7 @@ public class Settings implements Constants {
 				} else if (quality.contains("high")) {
 					INTERACTION_QUALITY = InteractionQuality.HIGH;
 				} else {
-					throw new ParseException("iquality: " + quality
-							+ " was not recognized");
+					throw new ParseException("iquality: " + quality + " was not recognized");
 				}
 
 			}
@@ -502,12 +418,10 @@ public class Settings implements Constants {
 				D.p("Warning! With trail interaction, constrained interactions are not allowed, setting to false..");
 			}
 
-			printAndStore("CONSTRAINED_INTERACTIONS = "
-					+ CONSTRAINED_INTERACTIONS);
+			printAndStore("CONSTRAINED_INTERACTIONS = " + CONSTRAINED_INTERACTIONS);
 
 			if (line.hasOption("gen")) {
-				GENERATIONS = new Integer(line.getOptionValue("gen"))
-						.intValue();
+				GENERATIONS = new Integer(line.getOptionValue("gen")).intValue();
 
 			}
 			printAndStore("GENERATIONS = " + GENERATIONS);
@@ -524,50 +438,41 @@ public class Settings implements Constants {
 					SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.NOOPS;
 
 				} else {
-					throw new ParseException("preset: " + seedPreset
-							+ " was not recognized");
+					throw new ParseException("preset: " + seedPreset + " was not recognized");
 				}
 
 			}
 
-			printAndStore("PRESET.GENOTYPE = "
-					+ SEED_GENOTYPE_PRESET_INSTRUCTIONS);
+			printAndStore("PRESET.GENOTYPE = " + SEED_GENOTYPE_PRESET_INSTRUCTIONS);
 
 			if (line.hasOption("clones")) {
-				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones"))
-						.intValue();
+				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
 
 			}
 			printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
 			if (line.hasOption("psize")) {
-				GENE_POOL_SIZE = new Integer(line.getOptionValue("psize"))
-						.intValue();
+				GENE_POOL_SIZE = new Integer(line.getOptionValue("psize")).intValue();
 				EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
 
 			}
 			printAndStore("GENE_POOL_SIZE = " + GENE_POOL_SIZE);
-			printAndStore("EMBODIED_AGENT_POOL_SIZE = "
-					+ EMBODIED_AGENT_POOL_SIZE);
+			printAndStore("EMBODIED_AGENT_POOL_SIZE = " + EMBODIED_AGENT_POOL_SIZE);
 
 			if (line.hasOption("cdensity")) {
-				COLLECTION_SITE_DENSITY = new Double(
-						line.getOptionValue("cdensity")).intValue();
+				COLLECTION_SITE_DENSITY = new Double(line.getOptionValue("cdensity")).intValue();
 
 			}
-			printAndStore("COLLECTION_SITE_DENSITY = "
-					+ COLLECTION_SITE_DENSITY);
+			printAndStore("COLLECTION_SITE_DENSITY = " + COLLECTION_SITE_DENSITY);
 
 			if (line.hasOption("width")) {
-				WORLD_WIDTH = new Integer(line.getOptionValue("width"))
-						.intValue();
+				WORLD_WIDTH = new Integer(line.getOptionValue("width")).intValue();
 
 			}
 
 			printAndStore("WORLD_WIDTH = " + WORLD_WIDTH);
 			if (line.hasOption("height")) {
-				WORLD_HEIGHT = new Integer(line.getOptionValue("height"))
-						.intValue();
+				WORLD_HEIGHT = new Integer(line.getOptionValue("height")).intValue();
 
 			}
 			printAndStore("WORLD_HEIGHT = " + WORLD_HEIGHT);
@@ -575,15 +480,13 @@ public class Settings implements Constants {
 			MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
 
 			if (line.hasOption("msteps")) {
-				MAX_STEPS_PER_AGENT = new Integer(line.getOptionValue("msteps"))
-						.intValue();
+				MAX_STEPS_PER_AGENT = new Integer(line.getOptionValue("msteps")).intValue();
 
 			}
 			printAndStore("MAX_STEPS_PER_AGENT = " + MAX_STEPS_PER_AGENT);
 
 			if (line.hasOption("bench")) {
-				BENCHMARK_GENERATION = new Integer(line.getOptionValue("bench"))
-						.intValue();
+				BENCHMARK_GENERATION = new Integer(line.getOptionValue("bench")).intValue();
 
 			}
 			printAndStore("BENCHMARK_GENERATION = " + BENCHMARK_GENERATION);
@@ -608,12 +511,11 @@ public class Settings implements Constants {
 					// D.p(EVENT_DATA_DIR +
 					// " already exists; contents might be replaced");
 				} else if (dir.exists() && !dir.isDirectory()) {
-					throw new ParseException("A file by the name: " + DATA_DIR
-							+ " exists and needs to be removed first");
+					throw new ParseException(
+							"A file by the name: " + DATA_DIR + " exists and needs to be removed first");
 				} else {
 					if (!dir.mkdir()) {
-						throw new ParseException("Unable to create: "
-								+ DATA_DIR + "directory; check permissions");
+						throw new ParseException("Unable to create: " + DATA_DIR + "directory; check permissions");
 					} else {
 						// D.p(EVENT_DATA_DIR + " created.");
 					}
@@ -629,8 +531,7 @@ public class Settings implements Constants {
 				}
 
 				else {
-					throw new ParseException("job_name: [" + jobName
-							+ "] was not recognized");
+					throw new ParseException("job_name: [" + jobName + "] was not recognized");
 				}
 
 			}
@@ -641,10 +542,8 @@ public class Settings implements Constants {
 			PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
 			SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
-			printAndStore("PRIMARY_COLLECTION_SITE_X = "
-					+ PRIMARY_COLLECTION_SITE_X);
-			printAndStore("PRIMARY_COLLECTION_SITE_Y = "
-					+ PRIMARY_COLLECTION_SITE_Y);
+			printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);
+			printAndStore("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
 			printAndStore("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
 
 			double gridArea = WORLD_WIDTH * WORLD_HEIGHT;
@@ -662,10 +561,8 @@ public class Settings implements Constants {
 			printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 			printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
 
-			printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = "
-					+ resourceCaptureGoal);
-			printAndStore("ACTUAL COLLECTION_SITES = "
-					+ NUMBER_OF_COLLECTION_SITES);
+			printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
+			printAndStore("ACTUAL COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
 
 			D.p("=================================================");
 
@@ -676,8 +573,7 @@ public class Settings implements Constants {
 				formatter.printHelp("com.synthverse.Main", options);
 				System.exit(0);
 			} else {
-				System.err.println("Parsing failed.  Reason: "
-						+ exp.getMessage());
+				System.err.println("Parsing failed.  Reason: " + exp.getMessage());
 				// formatter.printHelp("com.synthverse.Main", options);
 				System.exit(1);
 			}
