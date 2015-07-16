@@ -42,7 +42,6 @@ case $key in
     SIMS="$2"
     shift 
     ;;
-    ;;
     *)
 	    echo "program needs -server (andy|penzias) -experiments (1,2,...) -sims (1,2,3,...)"
     	exit 0
@@ -53,11 +52,11 @@ done
 
 # check if server is present
 if [ -z "${SERVER}" ]; then
-    echo "server is missing: program needs -server (andy|penzias) -batches (1,2,...)"
+    echo "server is missing: program needs -server (andy|penzias) -experiments (1,2,...) -sims (1,2,3,...)"
     exit 0
 else 
 	if [ ${SERVER} != "andy" -a ${SERVER} != "penzias" ] ; then
-		echo "andy or penzias? program needs -server (andy|penzias) -batches (1,2,...)"
+		echo "andy or penzias? program needs -server (andy|penzias) -experiments (1,2,...) -sims (1,2,3,...)"
 	    exit 0
 	fi
 fi
@@ -98,22 +97,22 @@ while [  $COUNTER -le ${EXPERIMENTS} ]; do
 	# actual qsub jobs
 	echo "scheduling batch : ${COUNTER}"
 	echo "scheduling trail experiments"
-	qsub -N rich_trail_mo -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int trail  -species '+d,+e,+t' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_trail_bi -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int trail  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 " qsub_script.sh
-	qsub -N rich_trail_tri -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int trail  -species '*det' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_trail_po -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 " qsub_script.sh
+	qsub -N rich_trail_mo -v SERVER=${SERVER},SIM_PARAMS="-model alife -int trail  -species '+d,+e,+t' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_trail_bi -v SERVER=${SERVER},SIM_PARAMS="-model alife -int trail  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_trail_tri -v SERVER=${SERVER},SIM_PARAMS="-model alife -int trail  -species '*det' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_trail_po -v SERVER=${SERVER},SIM_PARAMS="-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 -repeat ${SIMS}" qsub_script.sh
 
 	echo "scheduling broadcast experiments"
-	qsub -N rich_broad_mo -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int broadcast  -species '+d,+e,+t' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_broad_bi -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int broadcast  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 " qsub_script.sh
-	qsub -N rich_broad_tri -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int broadcast  -species '*det' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_broad_po -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 " qsub_script.sh
+	qsub -N rich_broad_mo -v SERVER=${SERVER},SIM_PARAMS="-model alife -int broadcast  -species '+d,+e,+t' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_broad_bi -v SERVER=${SERVER},SIM_PARAMS="-model alife -int broadcast  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_broad_tri -v SERVER=${SERVER},SIM_PARAMS="-model alife -int broadcast  -species '*det' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_broad_po -v SERVER=${SERVER},SIM_PARAMS="-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 -repeat ${SIMS}" qsub_script.sh
 
 	echo "scheduling unicast experiments"
-	qsub -N rich_uni_mo -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int unicast_n  -species '+d,+e,+t' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_uni_bi -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int unicast_n  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 " qsub_script.sh
-	qsub -N rich_uni_tri -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int unicast_n  -species '*det' -width 16 -height 16 -clones 8 " qsub_script.sh
-	qsub -N rich_uni_po -v SERVER=${SERVER},SIMS=${SIMS},SIM_PARAMS="-model alife -int unicast_n  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 " qsub_script.sh
+	qsub -N rich_uni_mo -v SERVER=${SERVER},SIM_PARAMS="-model alife -int unicast_n  -species '+d,+e,+t' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_uni_bi -v SERVER=${SERVER},SIM_PARAMS="-model alife -int unicast_n  -species '^de,^dt,^et' -width 16 -height 16 -clones 4 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_uni_tri -v SERVER=${SERVER},SIM_PARAMS="-model alife -int unicast_n  -species '*det' -width 16 -height 16 -clones 8 -repeat ${SIMS}" qsub_script.sh
+	qsub -N rich_uni_po -v SERVER=${SERVER},SIM_PARAMS="-model alife -int unicast_n  -species '+d,+e,+t,^de,^dt,^et,*det' -width 16 -height 16 -clones 2 -repeat ${SIMS}" qsub_script.sh
 
 
 
