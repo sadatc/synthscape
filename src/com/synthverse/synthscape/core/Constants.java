@@ -88,5 +88,7 @@ public interface Constants {
 	public static final String CSV_DOUBLE_FORMAT = "%.4f";
 	
 	public static final String EMPTY_STRING = "";
+	
+	public static final int MAX_TRIES_TO_FIND_EMPTY_MOVE_LOCATION = 1000;
 
 }

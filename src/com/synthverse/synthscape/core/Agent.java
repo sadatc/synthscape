@@ -155,7 +155,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		// TODO: is another agent in the same location considered to be a an
 		// obstacle?
 		return (GridUtils.gridHasAnObjectAt(sim.obstacleGrid, x, y));
-		//return locationHasObstacleOrAgent(x,y);
+		// return locationHasObstacleOrAgent(x, y);
 	}
 
 	public final boolean locationHasObstacleOrAgent(int x, int y) {
@@ -220,8 +220,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		int newY = y;
 
 		boolean foundNewUblockedLocation = false;
+		long searchCount = 0;
 		do {
-
+			searchCount++;
 			int xDelta = (sim.random.nextInt(3) - 1);
 			int yDelta = (sim.random.nextInt(3) - 1);
 			int xMod = sim.agentGrid.stx(x + xDelta);
@@ -233,9 +234,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 				newY = yMod;
 				foundNewUblockedLocation = true;
 			}
+			if (searchCount > Constants.MAX_TRIES_TO_FIND_EMPTY_MOVE_LOCATION) {
+				// can't find new location, give up.
+				break;
+			}
 		} while (!foundNewUblockedLocation);
 
-		_operationMoveAbsolute(newX, newY);
+		if (foundNewUblockedLocation) {
+			_operationMoveAbsolute(newX, newY);
+		}
 	}
 
 	public final void _operationMoveToLocationAt(int newX, int newY) {
