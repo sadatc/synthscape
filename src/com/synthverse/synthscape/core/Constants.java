@@ -70,6 +70,8 @@ public interface Constants {
 	public static final String GRID_ICON_EXTRACTED_RESOURCE = "images/extracted_resource.png";
 
 	public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
+	
+	public static final String GRID_ICON_COLLECTED_RESOURCE = "images/collected_resource.png";
 
 	public static final int FILE_IO_BUFFER_SIZE = 8192;
 
