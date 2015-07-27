@@ -450,8 +450,8 @@ public abstract class Simulation extends SimState implements Constants {
 			resourceStatusArray[randomX][randomY].originX = randomX;
 			resourceStatusArray[randomX][randomY].originY = randomY;
 			
-			resourceStatusArray[randomX][randomY].x = randomX;
-			resourceStatusArray[randomX][randomY].y = randomY;
+			resourceStatusArray[randomX][randomY].currentX = randomX;
+			resourceStatusArray[randomX][randomY].currentY = randomY;
 
 			GridUtils.set(collisionGrid, randomX, randomY, true);
 

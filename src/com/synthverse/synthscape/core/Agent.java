@@ -1633,8 +1633,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					// this is a resource drop...place the resource back in the
 					// grid
 					statusOfCarriedResource.cloneTo(this.sim.resourceStatusArray[x][y]);
-					this.sim.resourceStatusArray[x][y].x = x;
-					this.sim.resourceStatusArray[x][y].y = y;
+					this.sim.resourceStatusArray[x][y].currentX = x;
+					this.sim.resourceStatusArray[x][y].currentY = y;
 					this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
 
 					// need to keep track of this resource...
@@ -1779,8 +1779,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 						// the
 						// grid
 						statusOfCarriedResource.cloneTo(this.sim.resourceStatusArray[x][y]);
-						this.sim.resourceStatusArray[x][y].x = x;
-						this.sim.resourceStatusArray[x][y].y = y;
+						this.sim.resourceStatusArray[x][y].currentX = x;
+						this.sim.resourceStatusArray[x][y].currentY = y;
 						this.sim.resourceStatusArray[x][y].numTimesUnloaded++;
 
 						// need to keep track of this resource...

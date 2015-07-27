@@ -3,8 +3,8 @@ package com.synthverse.synthscape.core;
 final public class ResourceStatus implements Constants, Cloneable {
 
 	// these are where the resource is NOW (because it can be moved around)
-	public int x;
-	public int y;
+	public int currentX;
+	public int currentY;
 
 	// these are where the resource was ORIGINALLY seeded
 	public int originX;
@@ -26,8 +26,8 @@ final public class ResourceStatus implements Constants, Cloneable {
 
 	final public void clear() {
 		this.state = ResourceState.NULL;
-		this.x = INVALID;
-		this.y = INVALID;
+		this.currentX = INVALID;
+		this.currentY = INVALID;
 		this.originX = INVALID;
 		this.originY = INVALID;
 		this.detectionStep = INVALID;
@@ -42,8 +42,8 @@ final public class ResourceStatus implements Constants, Cloneable {
 	public ResourceStatus clone() throws CloneNotSupportedException {
 		ResourceStatus cloned = (ResourceStatus) super.clone();
 		cloned.state = this.state;
-		cloned.x = this.x;
-		cloned.y = this.y;
+		cloned.currentX = this.currentX;
+		cloned.currentY = this.currentY;
 		cloned.originX = this.originX;
 		cloned.originY = this.originY;
 		cloned.detectionStep = this.detectionStep;
@@ -58,8 +58,8 @@ final public class ResourceStatus implements Constants, Cloneable {
 
 	final public void cloneTo(ResourceStatus status) {
 		status.state = this.state;
-		status.x = this.x;
-		status.y = this.y;
+		status.currentX = this.currentX;
+		status.currentY = this.currentY;
 		status.originX = this.originX;
 		status.originY = this.originY;
 		status.detectionStep = this.detectionStep;
@@ -74,10 +74,11 @@ final public class ResourceStatus implements Constants, Cloneable {
 
 	@Override
 	public String toString() {
-		return "ResourceStatus [o.x=" + originX + ", o.y=" + originY + ", x=" + x + ", y=" + y + ", detectionStep="
-				+ detectionStep + ", extractionStep=" + extractionStep + ", processingStep=" + processingStep
-				+ ", captureStep=" + captureStep + ", numTimesDetected=" + numTimesDetected + ", numTimesLoaded="
-				+ numTimesLoaded + ", numTimesUnloaded=" + numTimesUnloaded + ", state=" + state + "]";
+		return "ResourceStatus [o.x=" + originX + ", o.y=" + originY + ", x=" + currentX + ", y=" + currentY
+				+ ", detectionStep=" + detectionStep + ", extractionStep=" + extractionStep + ", processingStep="
+				+ processingStep + ", captureStep=" + captureStep + ", numTimesDetected=" + numTimesDetected
+				+ ", numTimesLoaded=" + numTimesLoaded + ", numTimesUnloaded=" + numTimesUnloaded + ", state=" + state
+				+ "]";
 	}
 
 }
