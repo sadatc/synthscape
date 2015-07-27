@@ -446,6 +446,10 @@ public abstract class Simulation extends SimState implements Constants {
 			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
+			
+			resourceStatusArray[randomX][randomY].originX = randomX;
+			resourceStatusArray[randomX][randomY].originY = randomY;
+			
 			resourceStatusArray[randomX][randomY].x = randomX;
 			resourceStatusArray[randomX][randomY].y = randomY;
 
