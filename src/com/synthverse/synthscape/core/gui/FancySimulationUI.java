@@ -58,7 +58,7 @@ public class FancySimulationUI extends SimulationUI {
 
 		super.init(controller);
 
-		display = new Display2D(500, 500, this);
+		display = new Display2D(800, 650, this);
 		display.setScale(1.0);
 		display.setClipping(false);
 
@@ -91,7 +91,8 @@ public class FancySimulationUI extends SimulationUI {
 				new FacetedPortrayal2D(new SimplePortrayal2D[]{new RectanglePortrayal2D(Color.TRANSLUCENT, true),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_RAW_RESOURCE), GRID_ICON_SCALE_FACTOR),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_EXTRACTED_RESOURCE), GRID_ICON_SCALE_FACTOR),
-						new ImagePortrayal2D(new ImageIcon(GRID_ICON_PROCESSED_RESOURCE), GRID_ICON_SCALE_FACTOR)
+						new ImagePortrayal2D(new ImageIcon(GRID_ICON_PROCESSED_RESOURCE), GRID_ICON_SCALE_FACTOR),
+						new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR)
 
 		}
 
