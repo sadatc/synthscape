@@ -84,7 +84,7 @@ public class Settings implements Constants {
 	public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
 	// TODO: separate this, if needed
 
-	public int MAX_STEPS_PER_AGENT = WORLD_WIDTH * WORLD_HEIGHT * 4;
+	public int MAX_STEPS_PER_AGENT = 1024;
 
 	public int REPEAT = 1;
 
