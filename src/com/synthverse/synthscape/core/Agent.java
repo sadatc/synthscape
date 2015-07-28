@@ -1586,6 +1586,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							this.sim.numberOfCollectedResources++;
 							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+							GridUtils.set(sim.collectedResourceLocationGrid, statusOfCarriedResource.originX,
+									statusOfCarriedResource.originY, true);
 							_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 							// save over this status
@@ -1605,6 +1607,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							this.sim.numberOfCollectedResources++;
 							sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 							sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+
+							GridUtils.set(sim.collectedResourceLocationGrid, statusOfCarriedResource.originX,
+									statusOfCarriedResource.originY, true);
 							_operationLeaveRewards(sim.processorPeerReward, Event.DROPPED_PROCESSOR_REWARDS);
 
 							// save over this status
@@ -1695,6 +1700,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 								this.sim.numberOfCollectedResources++;
 								sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+								GridUtils.set(sim.collectedResourceLocationGrid, statusOfCarriedResource.originX,
+										statusOfCarriedResource.originY, true);
 								_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 								// resource has been collected, now we need to
@@ -1734,6 +1741,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 								this.sim.numberOfCollectedResources++;
 								sim.recordEvent(this, Event.UNLOADED_RESOURCE, NA, NA);
 								sim.recordEvent(this, Event.COLLECTED_RESOURCE, NA, NA);
+								GridUtils.set(sim.collectedResourceLocationGrid, statusOfCarriedResource.originX,
+										statusOfCarriedResource.originY, true);
 								_operationLeaveRewards(sim.processorPeerReward, Event.DROPPED_PROCESSOR_REWARDS);
 
 								// now reset the detected signal...

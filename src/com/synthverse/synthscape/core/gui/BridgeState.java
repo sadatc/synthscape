@@ -25,6 +25,7 @@ public class BridgeState extends SimState {
 	public SparseGrid2D collectionSiteGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
 	public SparseGrid2D resourceGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
 	public SparseGrid2D trailGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
+	public SparseGrid2D collectedResourceLocationGrid = new SparseGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT);
 
 	public BridgeState(long seed) {
 		super(seed);

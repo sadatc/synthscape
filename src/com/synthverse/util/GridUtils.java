@@ -94,7 +94,7 @@ public class GridUtils {
 		}
 	}
 
-	static class MutableResourceState implements Cloneable, Valuable {
+	public static class MutableResourceState implements Cloneable, Valuable {
 		private static final long serialVersionUID = 1;
 
 		public ResourceState val = ResourceState.NULL;

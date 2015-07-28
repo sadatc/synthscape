@@ -78,6 +78,8 @@ public abstract class Simulation extends SimState implements Constants {
 	public ResourceStatus[][] resourceStatusArray;
 	public ResourceStatus[][] benchmarkResourceStatusArray;
 
+	public SparseGrid2D collectedResourceLocationGrid;
+
 	public HashSet<ResourceStatus> touchedResources = new HashSet<ResourceStatus>();
 
 	public TrailGridWrapper trailGridWrapper = new TrailGridWrapper();
@@ -259,6 +261,7 @@ public abstract class Simulation extends SimState implements Constants {
 		benchmarkResourceGrid = new SparseGrid2D(gridWidth, gridHeight);
 
 		trailGridWrapper.createNew(gridWidth, gridHeight);
+		collectedResourceLocationGrid = new SparseGrid2D(gridWidth, gridHeight);
 
 		extractorPeerReward = new MutableDouble();
 		detectorPeerReward = new MutableDouble();
@@ -288,6 +291,7 @@ public abstract class Simulation extends SimState implements Constants {
 		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
 		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
 		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
+		Main.settings.__bridgeState.collectedResourceLocationGrid = this.collectedResourceLocationGrid;
 	}
 
 	protected void resetEnvironment() {
@@ -298,6 +302,7 @@ public abstract class Simulation extends SimState implements Constants {
 		collisionGrid.clear();
 
 		resourceGrid.clear();
+		collectedResourceLocationGrid.clear();
 		clearResourceStatusArray();
 
 		trailGridWrapper.clear();
@@ -446,10 +451,10 @@ public abstract class Simulation extends SimState implements Constants {
 			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
 
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
-			
+
 			resourceStatusArray[randomX][randomY].originX = randomX;
 			resourceStatusArray[randomX][randomY].originY = randomY;
-			
+
 			resourceStatusArray[randomX][randomY].currentX = randomX;
 			resourceStatusArray[randomX][randomY].currentY = randomY;
 

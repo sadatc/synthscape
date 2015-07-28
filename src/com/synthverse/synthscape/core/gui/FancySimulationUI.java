@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.D;
+import com.synthverse.util.GridUtils;
 
 import sim.display.Controller;
 import sim.display.Display2D;
@@ -42,6 +42,7 @@ public class FancySimulationUI extends SimulationUI {
 	SparseGridPortrayal2D obstaclesPortrayal;
 	SparseGridPortrayal2D trailPortrayal;
 	SparseGridPortrayal2D agentPortrayal;
+	SparseGridPortrayal2D collectedResourcesPortrayal;
 
 	protected ValueGridPortrayal2D worldPortrayal;
 
@@ -52,6 +53,7 @@ public class FancySimulationUI extends SimulationUI {
 		agentPortrayal = new SparseGridPortrayal2D();
 		trailPortrayal = new SparseGridPortrayal2D();
 		worldPortrayal = new ValueGridPortrayal2D();
+		collectedResourcesPortrayal = new SparseGridPortrayal2D();
 	}
 
 	public void init(Controller controller) {
@@ -74,12 +76,19 @@ public class FancySimulationUI extends SimulationUI {
 		display.attach(resourcePortrayal, "Resources");
 		display.attach(trailPortrayal, "Trails");
 		display.attach(agentPortrayal, "Agents");
+		display.attach(collectedResourcesPortrayal, "Collected Resources");
 
 	}
 
 	public void initPortrayals() {
 		BridgeState theState = (BridgeState) state;
 
+		
+		collectedResourcesPortrayal.setField(theState.collectedResourceLocationGrid);
+		collectedResourcesPortrayal.setPortrayalForAll(
+				new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR));
+
+		
 		// collection sites
 		collectionSitePortrayal.setField(theState.collectionSiteGrid);
 		collectionSitePortrayal.setPortrayalForAll(
@@ -87,17 +96,19 @@ public class FancySimulationUI extends SimulationUI {
 
 		// resources -- they can be in different states
 		resourcePortrayal.setField(theState.resourceGrid);
+		
 		resourcePortrayal.setPortrayalForAll(
 				new FacetedPortrayal2D(new SimplePortrayal2D[]{new RectanglePortrayal2D(Color.TRANSLUCENT, true),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_RAW_RESOURCE), GRID_ICON_SCALE_FACTOR),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_EXTRACTED_RESOURCE), GRID_ICON_SCALE_FACTOR),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_PROCESSED_RESOURCE), GRID_ICON_SCALE_FACTOR),
-						new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR)
+						//new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR)
 
 		}
 
 		));
-
+		
+		
 		// obstacles sites
 		obstaclesPortrayal.setField(theState.obstacleGrid);
 		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.GRAY, true));
