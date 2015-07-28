@@ -19,7 +19,8 @@ import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
-
+	
+	public InteractionMode interactionMode = InteractionMode.NONE;
 	protected static final long serialVersionUID = -5129827193602692370L;
 	protected static Logger logger = Logger.getLogger(Agent.class.getName());
 	protected static long _optimazationTotalAgentsCounters = 0;
@@ -2023,6 +2024,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	public void setInteractionMechanisms(EnumSet<InteractionMechanism> interactionMechanisms) {
 		this.interactionMechanisms = interactionMechanisms;
+		interactionMode = InteractionMode.NONE;
 	}
 
 	public EnumSet<InteractionMechanism> getInteractionMechanisms() {
