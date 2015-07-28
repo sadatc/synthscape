@@ -901,6 +901,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public void recordEvent(Agent agent, Event event, long source, long destination) {
 
 		agent.eventStats.recordValue(event);
+		agent.setInteractionMode(event);
 
 		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+"
 		// Step:"+simStepCounter+" EVENT: "+event);

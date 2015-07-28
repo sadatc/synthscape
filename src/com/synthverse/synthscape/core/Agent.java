@@ -19,7 +19,7 @@ import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 public abstract class Agent implements Constants, Steppable, Valuable, Comparable<Agent> {
-	
+
 	public InteractionMode interactionMode = InteractionMode.NONE;
 	protected static final long serialVersionUID = -5129827193602692370L;
 	protected static Logger logger = Logger.getLogger(Agent.class.getName());
@@ -117,6 +117,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		vm.overwriteGenotypeWithProgram(this.program);
 		vm.setCpuCycles(sim.getMaxStepsPerAgent());
 		this.setVirtualMachine(vm);
+		// also reset the interaction mode
+		interactionMode = InteractionMode.NONE;
 	}
 
 	private void initId() {
@@ -2134,6 +2136,45 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	public void setHostAgent(Agent hostAgent) {
 		this.hostAgent = hostAgent;
+	}
+
+	/**
+	 * Set interaction mode based on event type
+	 * 
+	 * @param event
+	 */
+	public void setInteractionMode(Event event) {
+		switch (event) {
+			case SENT_TRAIL :
+				interactionMode = InteractionMode.SENDING_TRAIL;
+				break;
+			case RECEIVED_TRAIL:
+				interactionMode = InteractionMode.RECEIVING_TRAIL;
+				break;
+			case SENT_BROADCAST_A:
+			case SENT_BROADCAST_B:
+			case SENT_BROADCAST_C:
+				interactionMode = InteractionMode.SENDING_BROADCAST;
+				break;
+			case RECEIVED_BROADCAST_A:
+			case RECEIVED_BROADCAST_B:
+			case RECEIVED_BROADCAST_C:
+				interactionMode = InteractionMode.RECEIVING_BROADCAST;
+				break;
+			case SENT_UNICAST_A_CLOSEST:
+			case SENT_UNICAST_B_CLOSEST:
+			case SENT_UNICAST_C_CLOSEST:
+				interactionMode = InteractionMode.SENDING_UNICAST;
+				break;
+			case RECEIVED_UNICAST_A_CLOSEST:
+			case RECEIVED_UNICAST_B_CLOSEST:
+			case RECEIVED_UNICAST_C_CLOSEST:
+				interactionMode = InteractionMode.RECEIVING_UNICAST;
+				break;				
+				
+			default :
+		}
+
 	}
 
 }
