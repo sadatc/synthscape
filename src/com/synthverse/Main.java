@@ -2,10 +2,6 @@ package com.synthverse;
 
 import java.util.logging.Logger;
 
-import org.jfugue.player.Player;
-import org.jfugue.rhythm.Rhythm;
-import org.jfugue.theory.ChordProgression;
-
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.gui.FancySimulationUI;
@@ -13,7 +9,7 @@ import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulatio
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.PopulationIslandSimulation;
 import com.synthverse.util.LogUtils;
-import com.synthverse.util.SoundUtils;
+import com.synthverse.util.SoundEffect;
 
 public class Main {
 	public static Settings settings = Settings.getInstance();
@@ -25,7 +21,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 
-			SoundUtils.playTest();
+			//SoundEffect.testSound();
 
 			settings.originalArgs = args;
 			settings.processCommandLineInput(args);

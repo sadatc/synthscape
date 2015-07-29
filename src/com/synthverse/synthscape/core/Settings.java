@@ -127,6 +127,7 @@ public class Settings implements Constants {
 	public String[] originalArgs = null;
 
 	public boolean __showGraphics = false;
+	public boolean __useSoundEffects = false;
 	public boolean __guiStarted = false;
 	// __renderStageLock = 0 (initial value)
 	// __renderStageLock = 1 (grids copied over, ready to render)

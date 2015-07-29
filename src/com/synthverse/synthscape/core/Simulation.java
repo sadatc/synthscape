@@ -902,6 +902,11 @@ public abstract class Simulation extends SimState implements Constants {
 
 		agent.eventStats.recordValue(event);
 		agent.setInteractionMode(event);
+		
+		// also record if agent caught a resource;
+		if(event==Event.COLLECTED_RESOURCE) {
+			agent.__capturedResource = true;
+		}
 
 		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+"
 		// Step:"+simStepCounter+" EVENT: "+event);

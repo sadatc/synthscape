@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.InteractionMode;
+import com.synthverse.util.SoundEffect;
 
 import sim.display.Controller;
 import sim.display.Display2D;
@@ -29,6 +31,7 @@ public class FancySimulationUI extends SimulationUI {
 
 	public FancySimulationUI() {
 		super();
+		SoundEffect.init();
 
 	}
 
@@ -131,6 +134,28 @@ public class FancySimulationUI extends SimulationUI {
 		agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
 				Agent agent = (Agent) object;
+
+				if (agent.__capturedResource) {
+					agent.__capturedResource = false;
+					SoundEffect.CAPTURE.play();
+				}
+				if (agent.interactionMode == InteractionMode.SENDING_TRAIL) {
+					agent.interactionMode = InteractionMode.NONE;
+					SoundEffect.SEND.play();
+				}
+				if (agent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
+					agent.interactionMode = InteractionMode.NONE;
+					new RectanglePortrayal2D(Color.PINK, 0.97, true).draw(object, graphics, info);
+
+					SoundEffect.RECEIVE.play();
+					try {
+						Thread.sleep(2000);
+					} catch(Exception e) {
+						
+					}
+					return;
+				}
+
 				if (agent.isCarryingResource()) {
 					new ImagePortrayal2D(new ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR).draw(object,
 							graphics, info);;
@@ -178,6 +203,7 @@ public class FancySimulationUI extends SimulationUI {
 	public static void main(Thread coreSimThread, String[] args) {
 		BridgeState bridgeState = new BridgeState(1);
 		Main.settings.__showGraphics = true;
+		Main.settings.__useSoundEffects = true;
 		FancySimulationUI simUI = new FancySimulationUI(bridgeState);
 
 		simUI.createController();
