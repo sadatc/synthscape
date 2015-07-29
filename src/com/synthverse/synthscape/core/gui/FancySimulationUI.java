@@ -9,8 +9,8 @@ import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.util.GridUtils;
 
 import sim.display.Controller;
 import sim.display.Display2D;
@@ -83,12 +83,13 @@ public class FancySimulationUI extends SimulationUI {
 	public void initPortrayals() {
 		BridgeState theState = (BridgeState) state;
 
-		
+		// player.play("V0 I[Piano] Eq Ch. | Eq Ch. | Dq Eq Dq Cq V1 I[Flute] Rw
+		// | Rw | GmajQQQ CmajQ");
+
 		collectedResourcesPortrayal.setField(theState.collectedResourceLocationGrid);
 		collectedResourcesPortrayal.setPortrayalForAll(
 				new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR));
 
-		
 		// collection sites
 		collectionSitePortrayal.setField(theState.collectionSiteGrid);
 		collectionSitePortrayal.setPortrayalForAll(
@@ -96,32 +97,50 @@ public class FancySimulationUI extends SimulationUI {
 
 		// resources -- they can be in different states
 		resourcePortrayal.setField(theState.resourceGrid);
-		
+
 		resourcePortrayal.setPortrayalForAll(
 				new FacetedPortrayal2D(new SimplePortrayal2D[]{new RectanglePortrayal2D(Color.TRANSLUCENT, true),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_RAW_RESOURCE), GRID_ICON_SCALE_FACTOR),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_EXTRACTED_RESOURCE), GRID_ICON_SCALE_FACTOR),
 						new ImagePortrayal2D(new ImageIcon(GRID_ICON_PROCESSED_RESOURCE), GRID_ICON_SCALE_FACTOR),
-						//new ImagePortrayal2D(new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR)
+				// new ImagePortrayal2D(new
+				// ImageIcon(GRID_ICON_COLLECTED_RESOURCE),
+				// GRID_ICON_SCALE_FACTOR)
 
 		}
 
 		));
-		
-		
+
 		// obstacles sites
 		obstaclesPortrayal.setField(theState.obstacleGrid);
 		obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.GRAY, true));
 
 		agentPortrayal.setField(theState.agentGrid);
 
-		agentPortrayal
-				.setPortrayalForAll(new FacetedPortrayal2D(new SimplePortrayal2D[]{
+		/*
+		 * agentPortrayal .setPortrayalForAll(new FacetedPortrayal2D(new
+		 * SimplePortrayal2D[]{
+		 * 
+		 * new ImagePortrayal2D(new ImageIcon(GRID_ICON_AGENT),
+		 * GRID_ICON_SCALE_FACTOR), new ImagePortrayal2D(new
+		 * ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR)
+		 * 
+		 * }));
+		 */
 
-				new ImagePortrayal2D(new ImageIcon(GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR),
-						new ImagePortrayal2D(new ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR)
+		agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
+				Agent agent = (Agent) object;
+				if (agent.isCarryingResource()) {
+					new ImagePortrayal2D(new ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR).draw(object,
+							graphics, info);;
+				} else {
+					new ImagePortrayal2D(new ImageIcon(GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR).draw(object, graphics,
+							info);;
+				}
+			}
 
-		}));
+		});
 
 		// this draws the grid lines
 		IntGrid2D worldGrid = new IntGrid2D(Main.settings.WORLD_WIDTH, Main.settings.WORLD_HEIGHT, 1);
@@ -137,7 +156,7 @@ public class FancySimulationUI extends SimulationUI {
 					Color.YELLOW) {
 				public double filterLevel(double level) {
 					// this silly function grows very very slowly.
-					return Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(level/2))));
+					return Math.sqrt(Math.sqrt(Math.sqrt(Math.sqrt(level / 2))));
 				}
 			};
 
