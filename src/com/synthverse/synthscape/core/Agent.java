@@ -102,7 +102,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	public boolean detectedUnicastB = false;
 	public boolean detectedUnicastC = false;
 
-	private boolean hosted = false;
+	private boolean isProxyAgent = false;
 	private Agent hostAgent = null;
 
 	static {
@@ -406,7 +406,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							sim.recordEvent(this, event, NA, this.agentId);
 
 							Agent detectorAgent = this;
-							if (this.isHosted()) {
+							if (this.isProxyAgent()) {
 								detectorAgent = this.getHostAgent();
 							}
 							if (signalType == SignalType.SIGNAL_A) {
@@ -549,7 +549,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							sim.recordEvent(this, event, NA, this.agentId);
 
 							Agent detectorAgent = this;
-							if (this.isHosted()) {
+							if (this.isProxyAgent()) {
 								detectorAgent = this.getHostAgent();
 							}
 							if (signalType == SignalType.SIGNAL_A) {
@@ -595,14 +595,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 		if (closestAgent != null) {
 
-			// if this is a hosted agent, we'll UNICAST to the host
-			if (closestAgent.isHosted()) {
+			// if this is a isProxyAgent agent, we'll UNICAST to the host
+			if (closestAgent.isProxyAgent()) {
 				closestAgent = closestAgent.getHostAgent();
 			}
 
 			Unicast targetUnicast = null;
 			Agent senderAgent = this;
-			if (this.isHosted()) {
+			if (this.isProxyAgent()) {
 				senderAgent = this.getHostAgent();
 			}
 
@@ -702,14 +702,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 			if (closestAgent != null) {
 
-				// if this is a hosted agent, we'll UNICAST to the host
-				if (closestAgent.isHosted()) {
+				// if this is a isProxyAgent agent, we'll UNICAST to the host
+				if (closestAgent.isProxyAgent()) {
 					closestAgent = closestAgent.getHostAgent();
 				}
 
 				Unicast targetUnicast = null;
 				Agent senderAgent = this;
-				if (this.isHosted()) {
+				if (this.isProxyAgent()) {
 					senderAgent = this.getHostAgent();
 				}
 
@@ -790,7 +790,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					Agent receivingAgent = this;
 					Event event = null;
 
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						receivingAgent = this.getHostAgent();
 					}
 
@@ -837,7 +837,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							detectorAgent = this.getHostAgent();
 						}
 						if (signalType == SignalType.SIGNAL_A) {
@@ -855,7 +855,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 					// unconstrained
 					if (signalType == SignalType.SIGNAL_A) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastA;
 						} else {
 							targetUnicast = this.receivedUnicastA;
@@ -866,7 +866,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastB;
 						} else {
 							targetUnicast = this.receivedUnicastB;
@@ -877,7 +877,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 									targetUnicast.getSenderAgent().getId(), targetUnicast.getReceiverAgent().getId());
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastC;
 						} else {
 							targetUnicast = this.receivedUnicastC;
@@ -914,7 +914,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					Agent receivingAgent = this;
 					Event event = null;
 
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						receivingAgent = this.getHostAgent();
 					}
 
@@ -961,7 +961,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 						targetUnicast.markReceived();
 
 						Agent detectorAgent = this;
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							detectorAgent = this.getHostAgent();
 						}
 						if (signalType == SignalType.SIGNAL_A) {
@@ -979,7 +979,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 					// unconstrained version
 					if (signalType == SignalType.SIGNAL_A) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastA;
 						} else {
 							targetUnicast = this.receivedUnicastA;
@@ -991,7 +991,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_B) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastB;
 						} else {
 							targetUnicast = this.receivedUnicastB;
@@ -1003,7 +1003,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 							result = true;
 						}
 					} else if (signalType == SignalType.SIGNAL_C) {
-						if (this.isHosted()) {
+						if (this.isProxyAgent()) {
 							targetUnicast = this.getHostAgent().receivedUnicastC;
 						} else {
 							targetUnicast = this.receivedUnicastC;
@@ -1186,11 +1186,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 				if (agent == this) {
 					continue;
 				}
-				if (this.isHosted() && agent == this.getHostAgent()) {
+				if (this.isProxyAgent() && agent == this.getHostAgent()) {
 					continue;
 				}
 
-				if (agent.isHosted() && agent.getHostAgent() == this) {
+				if (agent.isProxyAgent() && agent.getHostAgent() == this) {
 					continue;
 				}
 
@@ -1227,11 +1227,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			if (agent == this) {
 				continue;
 			}
-			if (this.isHosted() && agent == this.getHostAgent()) {
+			if (this.isProxyAgent() && agent == this.getHostAgent()) {
 				continue;
 			}
 
-			if (agent.isHosted() && agent.getHostAgent() == this) {
+			if (agent.isProxyAgent() && agent.getHostAgent() == this) {
 				continue;
 			}
 
@@ -1353,7 +1353,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 				boolean canExtract = false;
 
-				if (this.isHosted()) {
+				if (this.isProxyAgent()) {
 					canExtract = this.getHostAgent().detectedBroadcastA || this.getHostAgent().detectedUnicastA;
 				} else {
 					canExtract = this.detectedBroadcastA || this.detectedUnicastA;
@@ -1366,7 +1366,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					_operationLeaveRewards(sim.detectorPeerReward, Event.DROPPED_DETECTOR_REWARDS);
 
 					// now reset the detected signal...
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						if (this.getHostAgent().detectedBroadcastA) {
 							this.getHostAgent().detectedBroadcastA = false;
 						}
@@ -1414,7 +1414,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 				boolean canProcess = false;
 
-				if (this.isHosted()) {
+				if (this.isProxyAgent()) {
 					canProcess = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 				} else {
 					canProcess = this.detectedBroadcastB || this.detectedUnicastB;
@@ -1426,7 +1426,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					_operationLeaveRewards(sim.extractorPeerReward, Event.DROPPED_EXTRACTOR_REWARDS);
 
 					// now reset the detected signal...
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						if (this.getHostAgent().detectedBroadcastB) {
 							this.getHostAgent().detectedBroadcastB = false;
 						}
@@ -1478,13 +1478,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 				boolean canTransport = false;
 
 				if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						canTransport = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 					} else {
 						canTransport = this.detectedBroadcastB || this.detectedUnicastB;
 					}
 				} else {
-					if (this.isHosted()) {
+					if (this.isProxyAgent()) {
 						canTransport = this.getHostAgent().detectedBroadcastC || this.getHostAgent().detectedUnicastC;
 					} else {
 						canTransport = this.detectedBroadcastC || this.detectedUnicastC;
@@ -1671,13 +1671,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 			boolean canTransport = false;
 			if (this.sim.problemComplexity == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
-				if (this.isHosted()) {
+				if (this.isProxyAgent()) {
 					canTransport = this.getHostAgent().detectedBroadcastB || this.getHostAgent().detectedUnicastB;
 				} else {
 					canTransport = this.detectedBroadcastB || this.detectedUnicastB;
 				}
 			} else {
-				if (this.isHosted()) {
+				if (this.isProxyAgent()) {
 					canTransport = this.getHostAgent().detectedBroadcastC || this.getHostAgent().detectedUnicastC;
 				} else {
 					canTransport = this.detectedBroadcastC || this.detectedUnicastC;
@@ -1713,7 +1713,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 								// reset the receive signal flag
 
 								// now reset the detected signal...
-								if (this.isHosted()) {
+								if (this.isProxyAgent()) {
 									if (this.getHostAgent().detectedBroadcastB) {
 										this.getHostAgent().detectedBroadcastB = false;
 									}
@@ -1751,7 +1751,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 								_operationLeaveRewards(sim.processorPeerReward, Event.DROPPED_PROCESSOR_REWARDS);
 
 								// now reset the detected signal...
-								if (this.isHosted()) {
+								if (this.isProxyAgent()) {
 									if (this.getHostAgent().detectedBroadcastC) {
 										this.getHostAgent().detectedBroadcastC = false;
 									}
@@ -2124,12 +2124,12 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		setY(newY);
 	}
 
-	public boolean isHosted() {
-		return hosted;
+	public boolean isProxyAgent() {
+		return isProxyAgent;
 	}
 
-	public void setHosted(boolean hosted) {
-		this.hosted = hosted;
+	public void setProxyAgent(boolean hosted) {
+		this.isProxyAgent = hosted;
 	}
 
 	public Agent getHostAgent() {
