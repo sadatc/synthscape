@@ -591,7 +591,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		// -- UNCONSTRAINED VERSION ---
 		//
 		// find the closest agent...
-		Agent closestAgent = findClosestAgent(this.x, this.y, 1);
+		Agent closestAgent = findClosestAgent(this.x, this.y, 0);
 
 		if (closestAgent != null) {
 
@@ -698,7 +698,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 			// FIXME: code here
 
-			Agent closestAgent = findClosestAgent(this.x, this.y, 1, targetTrait);
+			Agent closestAgent = findClosestAgent(this.x, this.y, 0, targetTrait);
 
 			if (closestAgent != null) {
 
@@ -1181,19 +1181,23 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		for (int i = 0; i < agentBag.numObjs; i++) {
 
 			Agent agent = (Agent) agentBag.get(i);
-
+			
+			// only check agents that have the same species
 			if (agent.getSpecies().getTraits().contains(agentTrait)) {
+				
+				// if the agent we're looking at is itself, we skip...
 				if (agent == this) {
 					continue;
 				}
+				// if the agent we're looking at is the host, we skip...
 				if (this.isProxyAgent() && agent == this.getHostAgent()) {
 					continue;
 				}
-
+				// if the agent we're looking at is a child of this, we skip... 
 				if (agent.isProxyAgent() && agent.getHostAgent() == this) {
 					continue;
 				}
-
+				
 				double distance = distance(agent.x, agent.y, this.x, this.y);
 				if (distance >= minimumDistance && distance < closestDistance) {
 					closestAgent = agent;
@@ -1224,13 +1228,15 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		for (int i = 0; i < agentBag.numObjs; i++) {
 
 			Agent agent = (Agent) agentBag.get(i);
+			// if the agent we're looking at is itself, we skip...
 			if (agent == this) {
 				continue;
 			}
+			// if the agent we're looking at is the host, we skip...
 			if (this.isProxyAgent() && agent == this.getHostAgent()) {
 				continue;
 			}
-
+			// if the agent we're looking at is a child of this, we skip... 
 			if (agent.isProxyAgent() && agent.getHostAgent() == this) {
 				continue;
 			}
