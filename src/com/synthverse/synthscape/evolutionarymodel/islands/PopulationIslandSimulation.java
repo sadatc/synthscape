@@ -2,23 +2,14 @@ package com.synthverse.synthscape.evolutionarymodel.islands;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.jfree.util.Log;
-
-import sim.engine.Schedule;
-import sim.engine.SimState;
-import sim.engine.Steppable;
-import sim.util.Int2D;
 
 import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
@@ -26,7 +17,6 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
 import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.GridUtils;
@@ -34,6 +24,10 @@ import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
 import ec.util.MersenneTwisterFast;
+import sim.engine.Schedule;
+import sim.engine.SimState;
+import sim.engine.Steppable;
+import sim.util.Int2D;
 
 @SuppressWarnings("serial")
 public class PopulationIslandSimulation extends Simulation {
@@ -160,6 +154,7 @@ public class PopulationIslandSimulation extends Simulation {
 				agent.setTeam(team);
 
 				agentGrid.setObjectLocation(agent, new Int2D(randomX, randomY));
+
 				agents.add(agent);
 
 				// add agents to the scheduler
@@ -202,7 +197,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		
+		synchronizeWithVisualizer();
 
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
@@ -226,6 +221,7 @@ public class PopulationIslandSimulation extends Simulation {
 		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step
+
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			public void step(SimState state) {
 
@@ -362,8 +358,6 @@ public class PopulationIslandSimulation extends Simulation {
 		return settings.RESOURCE_DENSITY;
 	}
 
-	
-
 	@Override
 	public EnumSet<InteractionMechanism> configInteractionMechanisms() {
 		EnumSet<InteractionMechanism> mechanisms = EnumSet.noneOf(InteractionMechanism.class);
@@ -465,7 +459,5 @@ public class PopulationIslandSimulation extends Simulation {
 		// there is no internal agent factory
 		return null;
 	}
-
-	
 
 }

@@ -15,13 +15,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import sim.engine.Schedule;
-import sim.engine.SimState;
-import sim.engine.Steppable;
-import sim.field.grid.SparseGrid2D;
-import sim.util.Int2D;
-import sim.util.MutableDouble;
-
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.gui.SimulationUI;
 import com.synthverse.util.DateUtils;
@@ -29,6 +22,12 @@ import com.synthverse.util.GridUtils;
 import com.synthverse.util.LogUtils;
 
 import ec.util.MersenneTwisterFast;
+import sim.engine.Schedule;
+import sim.engine.SimState;
+import sim.engine.Steppable;
+import sim.field.grid.SparseGrid2D;
+import sim.util.Int2D;
+import sim.util.MutableDouble;
 
 /**
  * @author sadat
@@ -159,6 +158,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public boolean renderStep = false;
 	public long lastGenerationRendered = Long.MIN_VALUE;
 	public long lastSimulationRendered = Long.MIN_VALUE;
+	public boolean isVisualizerAttached = false;
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -280,22 +280,41 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 
 		if (showGraphics) {
-			cloneGrids();
+			attachVisualizationGrids();
 		}
 
 	}
 
-	protected void cloneGrids() {
-		Main.settings.__bridgeState.agentGrid = this.agentGrid;
-		Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
-		Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
-		Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
-		Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
-		Main.settings.__bridgeState.collectedResourceLocationGrid = this.collectedResourceLocationGrid;
+	protected synchronized void attachVisualizationGrids() {
+		if (!isVisualizerAttached) {
+			isVisualizerAttached = true;
+			D.p("attaching visualizer...");
+			Main.settings.__bridgeState.agentGrid = this.agentGrid;
+			Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
+			Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
+			Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
+			Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
+			Main.settings.__bridgeState.collectedResourceLocationGrid = this.collectedResourceLocationGrid;
+		}
+	}
+
+	protected synchronized void detachVisualizationGrids() {
+		if (isVisualizerAttached) {
+			isVisualizerAttached = false;
+			D.p("detaching visualizer...");
+			Main.settings.__bridgeState.agentGrid = null;
+			Main.settings.__bridgeState.obstacleGrid = null;
+			Main.settings.__bridgeState.collectionSiteGrid = null;
+			Main.settings.__bridgeState.trailGrid = null;
+			Main.settings.__bridgeState.resourceGrid = null;
+			Main.settings.__bridgeState.collectedResourceLocationGrid = null;
+		}
+
 	}
 
 	protected void resetEnvironment() {
 
+		// agentGrid.clear();
 		obstacleGrid.clear();
 		collectionSiteGrid.clear();
 		collectionSiteList.clear();
@@ -811,9 +830,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	}
 
-	public final void lockForAnyBridgeSimulation() {
+	// if graphics mode is turned on, this synchronizes with the visaulizer
+	// by attaching and detaching data-structures as needed.
+	public final void synchronizeWithVisualizer() {
 		if (showGraphics) {
-
 			if (this.simulationCounter != lastSimulationRendered
 					&& settings.generationCounter != this.lastGenerationRendered) {
 
@@ -821,11 +841,15 @@ public abstract class Simulation extends SimState implements Constants {
 				renderStep = true;
 				lastGenerationRendered = settings.generationCounter;
 				lastSimulationRendered = this.simulationCounter;
+				// now that we are going to render, we should re-attach the
+				// visualizer
+				attachVisualizationGrids();
 
 			} else {
 				renderStep = false;
-				// logger.info("will NOT render simulation:" +
-				// this.simulationCounter);
+				// since we won't render this, we will detach the visualizer
+				detachVisualizationGrids();
+
 			}
 
 		}
@@ -833,9 +857,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void startNextSimulation() {
-		// logger.info("+");
-		// D.p("+" + this.simsRunForThisGeneration);
-		lockForAnyBridgeSimulation();
+		synchronizeWithVisualizer();
 
 		intervalStats.resetLastSteps();
 		simEventStats.clear();
@@ -866,15 +888,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	protected void doEndOfStepTasks() {
 		if (Main.settings.__showGraphics && Main.settings.__guiStarted && this.renderStep) {
+			// this tells the visualizer that the model has updated
 			Main.settings.__renderStageLock = 1;
-			//
 
-			// String trailString = this.trailGridWrapper.debug();
-			// if (trailString != null) {
-			// D.p("trails in step:" + this.simStepCounter + ": " +
-			// trailString);
-			// }
-
+			// wait for the visualizer to finish it's rendering
 			while (Main.settings.__renderStageLock != 2) {
 				Thread.yield();
 			}
@@ -902,14 +919,12 @@ public abstract class Simulation extends SimState implements Constants {
 
 		agent.eventStats.recordValue(event);
 		agent.setInteractionMode(event);
-		
+
 		// also record if agent caught a resource;
-		if(event==Event.COLLECTED_RESOURCE) {
+		if (event == Event.COLLECTED_RESOURCE) {
 			agent.__capturedResource = true;
 		}
 
-		// D.p("Gen:"+agent.getGeneration()+" Sim:"+simulationCounter+"
-		// Step:"+simStepCounter+" EVENT: "+event);
 		intervalStats.recordValue(event, agent.getSpecies(), simStepCounter);
 
 		if (isReportEvents()) {

@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import com.synthverse.Main;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.InteractionMode;
 import com.synthverse.util.SoundEffect;
 
@@ -63,7 +64,8 @@ public class FancySimulationUI extends SimulationUI {
 
 		super.init(controller);
 
-		display = new Display2D(800, 650, this);
+		// display = new Display2D(800, 650, this);
+		display = new Display2D(400, 350, this);
 		display.setScale(1.0);
 		display.setClipping(false);
 
@@ -134,34 +136,33 @@ public class FancySimulationUI extends SimulationUI {
 		agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
 				Agent agent = (Agent) object;
+				if (!agent.isProxyAgent()) {
 
-				if (agent.__capturedResource) {
-					agent.__capturedResource = false;
-					SoundEffect.CAPTURE.play();
-				}
-				if (agent.interactionMode == InteractionMode.SENDING_TRAIL) {
-					agent.interactionMode = InteractionMode.NONE;
-					SoundEffect.SEND.play();
-				}
-				if (agent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
-					agent.interactionMode = InteractionMode.NONE;
-					new RectanglePortrayal2D(Color.PINK, 0.97, true).draw(object, graphics, info);
-
-					SoundEffect.RECEIVE.play();
-					try {
-						Thread.sleep(2000);
-					} catch(Exception e) {
-						
+					if (agent.__capturedResource) {
+						agent.__capturedResource = false;
+						SoundEffect.CAPTURE.play();
 					}
-					return;
-				}
+					if (agent.interactionMode == InteractionMode.SENDING_TRAIL) {
+						agent.interactionMode = InteractionMode.NONE;
+						D.p("sending...");
+						// SoundEffect.SEND.play();
+					}
+					if (agent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
+						agent.interactionMode = InteractionMode.NONE;
+						new RectanglePortrayal2D(Color.BLUE, 0.97, true).draw(object, graphics, info);
 
-				if (agent.isCarryingResource()) {
-					new ImagePortrayal2D(new ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR).draw(object,
-							graphics, info);;
-				} else {
-					new ImagePortrayal2D(new ImageIcon(GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR).draw(object, graphics,
-							info);;
+						D.p("receiving...");
+						// SoundEffect.RECEIVE.play();
+						return;
+					}
+
+					if (agent.isCarryingResource()) {
+						new ImagePortrayal2D(new ImageIcon(GRID_ICON_LOADED_AGENT), GRID_ICON_SCALE_FACTOR).draw(object,
+								graphics, info);;
+					} else {
+						new ImagePortrayal2D(new ImageIcon(GRID_ICON_AGENT), GRID_ICON_SCALE_FACTOR).draw(object,
+								graphics, info);;
+					}
 				}
 			}
 

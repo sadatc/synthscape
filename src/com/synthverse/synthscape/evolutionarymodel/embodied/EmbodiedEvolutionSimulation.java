@@ -2,22 +2,15 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import sim.engine.Schedule;
-import sim.engine.SimState;
-import sim.engine.Steppable;
-import sim.util.Int2D;
-
 import com.synthverse.Main;
-import com.synthverse.stacks.InstructionTranslator;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
@@ -26,9 +19,7 @@ import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
-import com.synthverse.synthscape.core.SpeciesComparator;
 import com.synthverse.synthscape.core.Team;
-import com.synthverse.synthscape.evolutionarymodel.alife.ALifeEvolutionSimulation;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.GridUtils;
@@ -36,6 +27,10 @@ import com.synthverse.util.LogUtils;
 import com.synthverse.util.StringUtils;
 
 import ec.util.MersenneTwisterFast;
+import sim.engine.Schedule;
+import sim.engine.SimState;
+import sim.engine.Steppable;
+import sim.util.Int2D;
 
 @SuppressWarnings("serial")
 public class EmbodiedEvolutionSimulation extends Simulation {
@@ -125,7 +120,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	protected void init() throws Exception {
 		this.showGraphics = settings.__showGraphics;
-		
+
 		// we can compute the server name and batch ID right away
 		settings.experimentNumber++;
 		try {
@@ -229,6 +224,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
 				embodiedAgent.setLocation(randomX, randomY);
 				agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+
 				embodiedAgent.synchronizeLocationToActiveAgent();
 
 				team.addMember(embodiedAgent);
@@ -272,6 +268,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 			embodiedAgent.setLocation(randomX, randomY);
 			agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+
 			embodiedAgent.synchronizeLocationToActiveAgent();
 			embodiedAgent.setStepCounter(0);
 
@@ -354,8 +351,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	
-
 	@Override
 	protected void doEndOfSimulationTasks() {
 
@@ -390,7 +385,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startNextSimulation() {
-		lockForAnyBridgeSimulation();
+		synchronizeWithVisualizer();
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
@@ -416,7 +411,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-
+		synchronizeWithVisualizer();
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
@@ -524,8 +519,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	public double configResourceDensity() {
 		return settings.RESOURCE_DENSITY;
 	}
-
-	
 
 	@Override
 	public EnumSet<InteractionMechanism> configInteractionMechanisms() {
