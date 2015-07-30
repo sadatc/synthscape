@@ -34,8 +34,7 @@ import ec.util.MersenneTwisterFast;
  */
 public final class VirtualMachine {
 
-	private static Logger logger = Logger.getLogger(VirtualMachine.class
-			.getName());
+	private static Logger logger = Logger.getLogger(VirtualMachine.class.getName());
 
 	private MersenneTwisterFast randomNumberGenerator = null;
 	private BooleanStack booleanStack = null;
@@ -184,18 +183,13 @@ public final class VirtualMachine {
 			instruction.execute(this);
 			decrementCpuCycles();
 			result = true;
-		} else if (cpuCycles > 0
-				&& Config.RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES) {
+		} else if (cpuCycles > 0 && Config.RECYCLE_EXECUTION_FOR_EXCESSIVE_CPU_CYCLES) {
 			this.resetIP();
 			GenotypeInstruction instruction = genotype.getValue(IP);
 			instruction.execute(this);
 			decrementCpuCycles();
 			result = true;
 		}
-
-		/*
-		 * if(result) { logger.info("executed: "+this.toString()); }
-		 */
 
 		return result;
 	}
@@ -208,11 +202,9 @@ public final class VirtualMachine {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("VirtualMachine [IP=").append(IP).append(", cpuCycles=")
-				.append(cpuCycles).append(", booleanStack=")
-				.append(booleanStack).append(", integerStack=")
-				.append(integerStack).append(", floatStack=")
-				.append(floatStack).append(", codeStack=").append(codeStack)
+		builder.append("VirtualMachine [IP=").append(IP).append(", cpuCycles=").append(cpuCycles)
+				.append(", booleanStack=").append(booleanStack).append(", integerStack=").append(integerStack)
+				.append(", floatStack=").append(floatStack).append(", codeStack=").append(codeStack)
 				.append(", genotype=").append(genotype).append("]");
 		return builder.toString();
 	}
@@ -222,21 +214,13 @@ public final class VirtualMachine {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + IP;
-		result = prime * result
-				+ ((booleanStack == null) ? 0 : booleanStack.hashCode());
-		result = prime * result
-				+ ((codeStack == null) ? 0 : codeStack.hashCode());
+		result = prime * result + ((booleanStack == null) ? 0 : booleanStack.hashCode());
+		result = prime * result + ((codeStack == null) ? 0 : codeStack.hashCode());
 		result = prime * result + cpuCycles;
-		result = prime * result
-				+ ((floatStack == null) ? 0 : floatStack.hashCode());
-		result = prime * result
-				+ ((genotype == null) ? 0 : genotype.hashCode());
-		result = prime * result
-				+ ((integerStack == null) ? 0 : integerStack.hashCode());
-		result = prime
-				* result
-				+ ((randomNumberGenerator == null) ? 0 : randomNumberGenerator
-						.hashCode());
+		result = prime * result + ((floatStack == null) ? 0 : floatStack.hashCode());
+		result = prime * result + ((genotype == null) ? 0 : genotype.hashCode());
+		result = prime * result + ((integerStack == null) ? 0 : integerStack.hashCode());
+		result = prime * result + ((randomNumberGenerator == null) ? 0 : randomNumberGenerator.hashCode());
 
 		result = prime * result + ((agent == null) ? 0 : agent.hashCode());
 
@@ -330,15 +314,14 @@ public final class VirtualMachine {
 		return randomNumberGenerator;
 	}
 
-	private void setRandomNumberGenerator(
-			MersenneTwisterFast randomNumberGenerator) {
+	private void setRandomNumberGenerator(MersenneTwisterFast randomNumberGenerator) {
 		this.randomNumberGenerator = randomNumberGenerator;
 	}
 
 	public static class Factory {
 
-		public static final VirtualMachine createDefault(Simulation sim,
-				Agent agent, MersenneTwisterFast randomNumberGenerator) {
+		public static final VirtualMachine createDefault(Simulation sim, Agent agent,
+				MersenneTwisterFast randomNumberGenerator) {
 			VirtualMachine vm = new VirtualMachine();
 			vm.setAgent(agent);
 			vm.setSim(sim);

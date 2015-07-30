@@ -8,8 +8,7 @@ import com.synthverse.synthscape.core.Constants;
 import com.synthverse.util.LogUtils;
 
 public class GenotypeInstruction implements Constants {
-	private static Logger logger = Logger.getLogger(GenotypeInstruction.class
-			.getName());
+	private static Logger logger = Logger.getLogger(GenotypeInstruction.class.getName());
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
@@ -173,12 +172,9 @@ public class GenotypeInstruction implements Constants {
 		setBooleanValue(booleanValue);
 	}
 
-	public static GenotypeInstruction NOOP = new GenotypeInstruction(
-			Instruction.NOOP);
-	public static GenotypeInstruction CONST_TRUE = new GenotypeInstruction(
-			Instruction.CONST_TRUE);
-	public static GenotypeInstruction CONST_FALSE = new GenotypeInstruction(
-			Instruction.CONST_FALSE);
+	public static GenotypeInstruction NOOP = new GenotypeInstruction(Instruction.NOOP);
+	public static GenotypeInstruction CONST_TRUE = new GenotypeInstruction(Instruction.CONST_TRUE);
+	public static GenotypeInstruction CONST_FALSE = new GenotypeInstruction(Instruction.CONST_FALSE);
 
 	public void execute(VirtualMachine virtualMachine) {
 		if (instructionType == InstructionType.INSTRUCTION) {
@@ -196,7 +192,6 @@ public class GenotypeInstruction implements Constants {
 			logger.severe("FATAL error in determining instruction type. Program should have never reached here...");
 			System.exit(1);
 		}
-		// logger.info("executing"+this);
 
 	}
 
