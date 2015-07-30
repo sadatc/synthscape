@@ -40,6 +40,7 @@ public class BridgeState extends SimState {
 
 			@Override
 			public void step(SimState state) {
+				// wait for model to do it's update
 				while (Main.settings.__renderStageLock != 1) {
 					Thread.yield();
 				}
@@ -51,6 +52,7 @@ public class BridgeState extends SimState {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				// this tells the model to keep updating
 				Main.settings.__renderStageLock = 2;
 
 			}
