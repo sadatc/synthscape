@@ -19,6 +19,7 @@ import sim.display.Controller;
 import sim.display.Display2D;
 import sim.field.grid.IntGrid2D;
 import sim.portrayal.DrawInfo2D;
+import sim.portrayal.FieldPortrayal2D;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.grid.SparseGridPortrayal2D;
 import sim.portrayal.grid.ValueGridPortrayal2D;
@@ -94,6 +95,7 @@ public class FancySimulationUI extends SimulationUI {
 	display.attach(trailPortrayal, "Trails");
 	display.attach(agentPortrayal, "Agents");
 	display.attach(collectedResourcesPortrayal, "Collected Resources");
+	
 
     }
 
@@ -114,13 +116,16 @@ public class FancySimulationUI extends SimulationUI {
 
     public void initPortrayals() {
 
-	startCoreSimulator();
+	
 
 	BridgeState theState = (BridgeState) state;
 
+	startCoreSimulator();
+	
 	// player.play("V0 I[Piano] Eq Ch. | Eq Ch. | Dq Eq Dq Cq V1 I[Flute] Rw
 	// | Rw | GmajQQQ CmajQ");
 
+	
 	collectedResourcesPortrayal.setField(theState.collectedResourceLocationGrid);
 	collectedResourcesPortrayal.setPortrayalForAll(new ImagePortrayal2D(
 		new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR));
@@ -153,7 +158,7 @@ public class FancySimulationUI extends SimulationUI {
 	obstaclesPortrayal.setPortrayalForAll(new RectanglePortrayal2D(Color.GRAY, true));
 
 	agentPortrayal.setField(theState.agentGrid);
-
+	agentPortrayal.setBuffering(FieldPortrayal2D.DONT_USE_BUFFER);
 	agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
 	    public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
 

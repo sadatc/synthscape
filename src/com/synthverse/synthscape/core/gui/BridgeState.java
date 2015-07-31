@@ -47,11 +47,11 @@ public class BridgeState extends SimState {
 				while (Main.settings.__renderStageLock != 1) {
 					Thread.yield();
 				}
-
+				D.p("came back after wait...");
 				
 				
 				try {
-					Thread.sleep(10);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

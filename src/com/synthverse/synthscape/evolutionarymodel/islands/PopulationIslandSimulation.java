@@ -229,6 +229,8 @@ public class PopulationIslandSimulation extends Simulation {
 		Main.settings.__simulationStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			public void step(SimState state) {
+			    
+				
 
 				simStepCounter++;
 

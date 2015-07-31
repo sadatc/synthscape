@@ -1831,6 +1831,9 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 		isCarryingResource = false;
 		fitness = 0.0;
 		eventStats.clear();
+		this.interactionMode = InteractionMode.NONE;
+		this.__capturedResource = false;
+		
 	}
 
 	public void updateLocationStatus(int x, int y) {
