@@ -385,7 +385,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startNextSimulation() {
-		unlockGenerationalVisualizer();
+		
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
@@ -397,6 +397,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		}
 
 		initNextAgents();
+		unlockGenerationalVisualizer();
 
 	}
 
@@ -411,7 +412,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		unlockGenerationalVisualizer();
+		
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
@@ -431,6 +432,11 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		experimentReporter.initReporter();
 
 		reportTime = System.currentTimeMillis();
+		
+		attachVisualizationGrids();
+		
+		// before we start stepping, let's synchronize with visualizer, if any
+		unlockGenerationalVisualizer();
 
 		// this is run at the end of each step
 		Main.settings.__simulationStarted = true;
@@ -438,7 +444,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			public void step(SimState state) {
 
 				simStepCounter++;
-				D.p("step="+simStepCounter);
+				
 
 				if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 					fadeTrails();
@@ -473,13 +479,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 							simsRunForThisGeneration = 0;
 						}
 
-						/*
-						 * logger.info("---- starting simulation (" +
-						 * simulationCounter + ") with: world=" + (gridHeight *
-						 * gridWidth) + " obstacles=" + numberOfObstacles +
-						 * " sites=" + numberOfCollectionSites + " resources=" +
-						 * numberOfResources + " agents=" + agents.size());
-						 */
 
 						startNextSimulation();
 
