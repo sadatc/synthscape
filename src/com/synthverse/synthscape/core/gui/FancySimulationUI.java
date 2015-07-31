@@ -177,7 +177,7 @@ public class FancySimulationUI extends SimulationUI {
 		    }
 		    if (realAgent.interactionMode == InteractionMode.SENDING_TRAIL) {
 			realAgent.interactionMode = InteractionMode.NONE;
-			D.p("sending...");
+			
 			//SoundEffect.SEND.play();
 		    }
 		    if (realAgent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
@@ -185,10 +185,10 @@ public class FancySimulationUI extends SimulationUI {
 			Main.settings.__animationDelay=Constants.LONG_PAUSE;
 			// this will cause us to see the receive for longer
 			realAgent.interactionMode = InteractionMode.NONE;
-			new RectanglePortrayal2D(Color.MAGENTA, 0.97, true).draw(object, graphics,
+			new RectanglePortrayal2D(Color.GREEN, 0.97, true).draw(object, graphics,
 				info);
 
-			D.p("receiving...");
+			
 			//SoundEffect.RECEIVE.play();
 			return;
 		    }
