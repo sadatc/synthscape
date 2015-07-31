@@ -41,17 +41,14 @@ public class BridgeState extends SimState {
 			@Override
 			public void step(SimState state) {
 			    stepCounter++;
-			    D.p("bridgestate stepper:"+stepCounter);
-			    
+
 			    	// wait for model to do it's update
 				while (Main.settings.__renderStageLock != 1) {
 					Thread.yield();
 				}
-				D.p("came back after wait...");
-				
 				
 				try {
-					Thread.sleep(5);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

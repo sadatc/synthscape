@@ -887,7 +887,7 @@ public abstract class Simulation extends SimState implements Constants {
     protected void doEndOfStepTasks() {
 
 	if (Main.settings.__showGraphics && Main.settings.__guiStarted && this.renderStep) {
-	    D.p("sim step=" + this.simStepCounter);
+
 	    // this tells the visualizer that the model has updated
 	    Main.settings.__renderStageLock = 1;
 
