@@ -385,7 +385,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startNextSimulation() {
-		synchronizeWithVisualizer();
+		unlockGenerationalVisualizer();
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
@@ -411,7 +411,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		synchronizeWithVisualizer();
+		unlockGenerationalVisualizer();
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 

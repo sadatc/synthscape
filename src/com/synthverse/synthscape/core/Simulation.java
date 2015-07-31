@@ -159,9 +159,6 @@ public abstract class Simulation extends SimState implements Constants {
     public boolean renderStep = false;
     public long lastGenerationRendered = Long.MIN_VALUE;
     public long lastSimulationRendered = Long.MIN_VALUE;
-    public boolean isVisualizerAttached = false;
-
-    public boolean attachSwitch = false;
 
     static {
 	LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -286,31 +283,14 @@ public abstract class Simulation extends SimState implements Constants {
     }
 
     protected synchronized void attachVisualizationGrids() {
-	if (!isVisualizerAttached) {
-	    isVisualizerAttached = true;
-	    D.p("attaching visualizer...");
-	    
+	if (showGraphics) {
+
 	    Main.settings.__bridgeState.agentGrid = this.agentGrid;
 	    Main.settings.__bridgeState.obstacleGrid = this.obstacleGrid;
 	    Main.settings.__bridgeState.collectionSiteGrid = this.collectionSiteGrid;
 	    Main.settings.__bridgeState.trailGrid = this.trailGridWrapper.strengthGrid;
 	    Main.settings.__bridgeState.resourceGrid = this.resourceGrid;
 	    Main.settings.__bridgeState.collectedResourceLocationGrid = this.collectedResourceLocationGrid;
-	}
-    }
-
-    protected synchronized void detachVisualizationGrids() {
-	if (isVisualizerAttached) {
-	    isVisualizerAttached = false;
-	    D.p("detaching visualizer...");
-	    /*
-	    Main.settings.__bridgeState.agentGrid = null;
-	    Main.settings.__bridgeState.obstacleGrid = null;
-	    Main.settings.__bridgeState.collectionSiteGrid = null;
-	    Main.settings.__bridgeState.trailGrid = null;
-	    Main.settings.__bridgeState.resourceGrid = null;
-	    Main.settings.__bridgeState.collectedResourceLocationGrid = null;
-	    */
 	}
 
     }
@@ -775,8 +755,10 @@ public abstract class Simulation extends SimState implements Constants {
 
 	experimentReporter.initReporter();
 
+	attachVisualizationGrids();
 	// before we start stepping, let's synchronize with visualizer, if any
-	synchronizeWithVisualizer();
+
+	unlockGenerationalVisualizer();
 
 	// this is run at the end of each step
 	Main.settings.__simulationStarted = true;
@@ -853,7 +835,7 @@ public abstract class Simulation extends SimState implements Constants {
 
     // if graphics mode is turned on, this synchronizes with the visaulizer
     // by attaching and detaching data-structures as needed.
-    public final void synchronizeWithVisualizer() {
+    public final void unlockGenerationalVisualizer() {
 	if (showGraphics) {
 	    if (this.simulationCounter != lastSimulationRendered
 		    && settings.generationCounter != this.lastGenerationRendered) {
@@ -862,16 +844,9 @@ public abstract class Simulation extends SimState implements Constants {
 		renderStep = true;
 		lastGenerationRendered = settings.generationCounter;
 		lastSimulationRendered = this.simulationCounter;
-		// now that we are going to render, we should re-attach the
-		// visualizer
-		//attachVisualizationGrids();
-		this.attachSwitch = true;
 
 	    } else {
 		renderStep = false;
-		// since we won't render this, we will detach the visualizer
-		detachVisualizationGrids();
-		//this.attachSwitch = false;
 
 	    }
 
@@ -892,7 +867,7 @@ public abstract class Simulation extends SimState implements Constants {
 	    initEnvironment();
 	}
 	initAgents();
-	synchronizeWithVisualizer();
+	unlockGenerationalVisualizer();
 
     }
 
@@ -915,13 +890,6 @@ public abstract class Simulation extends SimState implements Constants {
 	    D.p("sim step=" + this.simStepCounter);
 	    // this tells the visualizer that the model has updated
 	    Main.settings.__renderStageLock = 1;
-	    
-		if(attachSwitch) {
-		   
-		    attachVisualizationGrids();
-		    attachSwitch = false;
-		}
-	    
 
 	    // wait for the visualizer to finish it's rendering
 	    while (Main.settings.__renderStageLock != 2) {

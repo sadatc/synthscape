@@ -219,10 +219,12 @@ public class PopulationIslandSimulation extends Simulation {
 		experimentReporter.initReporter();
 
 		reportTime = System.currentTimeMillis();
+		
+		attachVisualizationGrids();
 
 		
 		// before we start stepping, let's synchronize with visualizer, if any
-		synchronizeWithVisualizer();
+		unlockGenerationalVisualizer();
 
 		
 		// this is run at the end of each step
