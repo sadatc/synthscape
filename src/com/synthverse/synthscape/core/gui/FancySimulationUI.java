@@ -161,12 +161,12 @@ public class FancySimulationUI extends SimulationUI {
 	agentPortrayal.setBuffering(FieldPortrayal2D.DONT_USE_BUFFER);
 	agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
 	    public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
-
+		
 		Agent agent = (Agent) object;
 
 		if (!agent.isProxyAgent) {
 		    Agent realAgent = agent;
-
+		    
 		    if (agent.isHostAgent) {
 			realAgent = agent.activeAgent;
 		    }
@@ -178,15 +178,18 @@ public class FancySimulationUI extends SimulationUI {
 		    if (realAgent.interactionMode == InteractionMode.SENDING_TRAIL) {
 			realAgent.interactionMode = InteractionMode.NONE;
 			D.p("sending...");
-			SoundEffect.SEND.play();
+			//SoundEffect.SEND.play();
 		    }
 		    if (realAgent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
+			
+			Main.settings.__animationDelay=Constants.LONG_PAUSE;
+			// this will cause us to see the receive for longer
 			realAgent.interactionMode = InteractionMode.NONE;
-			new RectanglePortrayal2D(Color.BLUE, 0.97, true).draw(object, graphics,
+			new RectanglePortrayal2D(Color.MAGENTA, 0.97, true).draw(object, graphics,
 				info);
 
 			D.p("receiving...");
-			SoundEffect.RECEIVE.play();
+			//SoundEffect.RECEIVE.play();
 			return;
 		    }
 

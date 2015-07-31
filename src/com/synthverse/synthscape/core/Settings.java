@@ -136,6 +136,8 @@ public class Settings implements Constants {
 	public boolean __simulationStarted = false;
 	public BridgeState __bridgeState = null;
 
+	public long __animationDelay = Constants.SHORT_PAUSE;
+
 	private Settings() {
 
 	}

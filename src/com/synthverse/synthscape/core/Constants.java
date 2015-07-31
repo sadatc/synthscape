@@ -92,6 +92,9 @@ public interface Constants {
 	public static final String EMPTY_STRING = "";
 	
 	public static final int MAX_TRIES_TO_FIND_EMPTY_MOVE_LOCATION = 1000;
+
+	public static final long SHORT_PAUSE = 5;
+	public static final long LONG_PAUSE = 75;
 	
 	
 	

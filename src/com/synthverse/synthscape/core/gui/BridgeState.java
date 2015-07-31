@@ -48,7 +48,10 @@ public class BridgeState extends SimState {
 				}
 				
 				try {
-					Thread.sleep(1);
+					Thread.sleep(Main.settings.__animationDelay);
+					if(Main.settings.__animationDelay>5) {
+					    Main.settings.__animationDelay=5; 
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
