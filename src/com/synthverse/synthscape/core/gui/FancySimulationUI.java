@@ -95,7 +95,6 @@ public class FancySimulationUI extends SimulationUI {
 	display.attach(trailPortrayal, "Trails");
 	display.attach(agentPortrayal, "Agents");
 	display.attach(collectedResourcesPortrayal, "Collected Resources");
-	
 
     }
 
@@ -116,16 +115,10 @@ public class FancySimulationUI extends SimulationUI {
 
     public void initPortrayals() {
 
-	
-
 	BridgeState theState = (BridgeState) state;
 
 	startCoreSimulator();
-	
-	// player.play("V0 I[Piano] Eq Ch. | Eq Ch. | Dq Eq Dq Cq V1 I[Flute] Rw
-	// | Rw | GmajQQQ CmajQ");
 
-	
 	collectedResourcesPortrayal.setField(theState.collectedResourceLocationGrid);
 	collectedResourcesPortrayal.setPortrayalForAll(new ImagePortrayal2D(
 		new ImageIcon(GRID_ICON_COLLECTED_RESOURCE), GRID_ICON_SCALE_FACTOR));
@@ -145,9 +138,6 @@ public class FancySimulationUI extends SimulationUI {
 			GRID_ICON_SCALE_FACTOR),
 		new ImagePortrayal2D(new ImageIcon(GRID_ICON_PROCESSED_RESOURCE),
 			GRID_ICON_SCALE_FACTOR),
-		// new ImagePortrayal2D(new
-		// ImageIcon(GRID_ICON_COLLECTED_RESOURCE),
-		// GRID_ICON_SCALE_FACTOR)
 
 	}
 
@@ -161,12 +151,12 @@ public class FancySimulationUI extends SimulationUI {
 	agentPortrayal.setBuffering(FieldPortrayal2D.DONT_USE_BUFFER);
 	agentPortrayal.setPortrayalForAll(new SimplePortrayal2D() {
 	    public void draw(Object object, Graphics2D graphics, DrawInfo2D info) {
-		
+
 		Agent agent = (Agent) object;
 
 		if (!agent.isProxyAgent) {
 		    Agent realAgent = agent;
-		    
+
 		    if (agent.isHostAgent) {
 			realAgent = agent.activeAgent;
 		    }
@@ -177,19 +167,18 @@ public class FancySimulationUI extends SimulationUI {
 		    }
 		    if (realAgent.interactionMode == InteractionMode.SENDING_TRAIL) {
 			realAgent.interactionMode = InteractionMode.NONE;
-			
-			//SoundEffect.SEND.play();
+
+			// SoundEffect.SEND.play();
 		    }
 		    if (realAgent.interactionMode == InteractionMode.RECEIVING_TRAIL) {
-			
-			Main.settings.__animationDelay=Constants.LONG_PAUSE;
+
+			Main.settings.__animationDelay = Constants.LONG_PAUSE;
 			// this will cause us to see the receive for longer
 			realAgent.interactionMode = InteractionMode.NONE;
 			new RectanglePortrayal2D(Color.GREEN, 0.97, true).draw(object, graphics,
 				info);
 
-			
-			//SoundEffect.RECEIVE.play();
+			// SoundEffect.RECEIVE.play();
 			return;
 		    }
 
