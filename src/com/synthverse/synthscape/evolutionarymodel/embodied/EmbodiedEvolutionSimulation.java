@@ -433,10 +433,12 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		reportTime = System.currentTimeMillis();
 
 		// this is run at the end of each step
+		Main.settings.__simulationStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			public void step(SimState state) {
 
 				simStepCounter++;
+				D.p("step="+simStepCounter);
 
 				if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 					fadeTrails();

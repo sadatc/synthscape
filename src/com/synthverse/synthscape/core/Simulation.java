@@ -279,9 +279,7 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 		}
 
-		if (showGraphics) {
-			attachVisualizationGrids();
-		}
+
 
 	}
 
@@ -757,8 +755,13 @@ public abstract class Simulation extends SimState implements Constants {
 		settings.SEED = (int) this.seed();
 
 		experimentReporter.initReporter();
+		
+		// before we start stepping, let's synchronize with visualizer, if any
+		synchronizeWithVisualizer();
+		
 
 		// this is run at the end of each step
+		Main.settings.__simulationStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			/**
 			* 
@@ -887,6 +890,7 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void doEndOfStepTasks() {
+	    D.p("sim step="+this.simStepCounter);
 		if (Main.settings.__showGraphics && Main.settings.__guiStarted && this.renderStep) {
 			// this tells the visualizer that the model has updated
 			Main.settings.__renderStageLock = 1;

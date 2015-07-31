@@ -197,7 +197,7 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		synchronizeWithVisualizer();
+		
 
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
@@ -220,8 +220,13 @@ public class PopulationIslandSimulation extends Simulation {
 
 		reportTime = System.currentTimeMillis();
 
-		// this is run at the end of each step
+		
+		// before we start stepping, let's synchronize with visualizer, if any
+		synchronizeWithVisualizer();
 
+		
+		// this is run at the end of each step
+		Main.settings.__simulationStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			public void step(SimState state) {
 

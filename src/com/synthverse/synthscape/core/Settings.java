@@ -133,6 +133,7 @@ public class Settings implements Constants {
 	// __renderStageLock = 1 (grids copied over, ready to render)
 	// __renderStageLock = 2 (rendering completed, ready to update grid)
 	public Integer __renderStageLock = new Integer(0);
+	public boolean __simulationStarted = false;
 	public BridgeState __bridgeState = null;
 
 	private Settings() {

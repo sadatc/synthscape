@@ -48,7 +48,7 @@ public class EmbodiedAgent extends Agent {
 
 	// private PopulationIslandEvolver islandEvolver = null;
 
-	Agent activeAgent = null;
+	
 
 	public EventStats poolHistoricalEventStats = new EventStats();
 
@@ -86,7 +86,8 @@ public class EmbodiedAgent extends Agent {
 
 		activeAgent = evolver.getAgent(species, 0, 0);
 		activeAgent.setHostAgent(this);
-		activeAgent.setProxyAgent(true);
+		this.isHostAgent = true;
+		activeAgent.isProxyAgent = true;
 	}
 
 	public EmbodiedAgent(Simulation sim, AgentFactory agentFactory, Species species, int poolSize, int generationNumber,
@@ -122,8 +123,9 @@ public class EmbodiedAgent extends Agent {
 
 	public void setNextActiveAgent(int newX, int newY) {
 		activeAgent = evolver.getAgent(species, newX, newY);
-		activeAgent.setHostAgent(this);
-		activeAgent.setProxyAgent(true);
+		activeAgent.setHostAgent(this);		
+		this.isHostAgent = true;
+		activeAgent.isProxyAgent = true;;
 
 	}
 

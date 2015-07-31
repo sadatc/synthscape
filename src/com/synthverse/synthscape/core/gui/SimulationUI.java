@@ -3,14 +3,13 @@ package com.synthverse.synthscape.core.gui;
 import javax.swing.JFrame;
 
 import com.synthverse.synthscape.core.Constants;
-import com.synthverse.synthscape.core.Simulation;
+import com.synthverse.synthscape.core.D;
 
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.Inspector;
-import sim.portrayal.grid.SparseGridPortrayal2D;
 
 public abstract class SimulationUI extends GUIState implements Constants {
 
@@ -49,6 +48,7 @@ public abstract class SimulationUI extends GUIState implements Constants {
 	public void start() {
 		super.start();
 		initPortrayals();
+		
 	}
 
 	public void load(SimState state) {
