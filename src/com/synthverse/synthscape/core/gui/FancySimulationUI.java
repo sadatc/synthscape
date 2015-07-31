@@ -50,8 +50,6 @@ public class FancySimulationUI extends SimulationUI {
 	super.start();
 	D.p("play button was pressed...");
 
-	// once all the visualizer has been setup...start simulator...
-
     }
 
     BridgeState theState;
@@ -99,8 +97,7 @@ public class FancySimulationUI extends SimulationUI {
 
     }
 
-    public void initPortrayals() {
-
+    public void startCoreSimulator() {
 	// before starting off the portrayals, start the core simulator
 	synchronized (simLock) {
 	    if (!simThreadStarted) {
@@ -112,6 +109,12 @@ public class FancySimulationUI extends SimulationUI {
 	while (!Main.settings.__simulationStarted) {
 	    Thread.yield();
 	}
+
+    }
+
+    public void initPortrayals() {
+
+	startCoreSimulator();
 
 	BridgeState theState = (BridgeState) state;
 
