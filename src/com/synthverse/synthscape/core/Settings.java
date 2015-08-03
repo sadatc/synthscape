@@ -119,6 +119,7 @@ public class Settings implements Constants {
 	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
+	public int DE_WINDOW_SIZE = 5;
 
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;

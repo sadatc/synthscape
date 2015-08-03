@@ -25,7 +25,7 @@ public class PopulationIslandEvolver extends Evolver implements Constants {
 
 	private EmbodiedAgent ownerAgent = null;
 
-	protected int generation;
+	public int generation;
 
 	protected static Logger logger = Logger
 			.getLogger(PopulationIslandEvolver.class.getName());

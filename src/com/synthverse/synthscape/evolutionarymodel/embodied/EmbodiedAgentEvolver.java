@@ -54,12 +54,7 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements
 
 	@Override
 	public String toString() {
-		return "EmbodiedAgentEvolver [generation=" + generation + ", clonesPerSpecies=" + clonesPerSpecies
-				+ ", totalPopulation=" + totalPopulation + ", genePoolSize=" + genePoolSize + ", genePoolIndex="
-				+ genePoolIndex + ", species=" + species + ", evolutionEngine=" + evolutionEngine + ", requestCounter="
-				+ requestCounter + ", cloneCounter=" + cloneCounter + ", activeBuffer=" + activeBuffer
-				+ ", computedAlphaDistance=" + computedAlphaDistance + ", simulation=" + simulation + ", agentFactory="
-				+ agentFactory + "]";
+		return "EmbodiedAgentEvolver [species=" + species + ", evolutionEngine=" + evolutionEngine +"]";
 	}
 	
 	
