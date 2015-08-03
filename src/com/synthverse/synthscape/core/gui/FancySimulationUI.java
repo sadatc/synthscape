@@ -168,7 +168,7 @@ public class FancySimulationUI extends SimulationUI {
 		    if (realAgent.interactionMode == InteractionMode.SENDING_TRAIL
 			    || realAgent.interactionMode == InteractionMode.SENDING_BROADCAST
 			    || realAgent.interactionMode == InteractionMode.SENDING_UNICAST) {
-			D.p("sending...");
+			//D.p("sending...");
 			Main.settings.__animationDelay = Constants.LONG_PAUSE;
 			realAgent.interactionMode = InteractionMode.NONE;
 			new RectanglePortrayal2D(Color.RED, 0.97, true).draw(object, graphics,
@@ -180,7 +180,7 @@ public class FancySimulationUI extends SimulationUI {
 			    || realAgent.interactionMode == InteractionMode.RECEIVING_BROADCAST
 			    || realAgent.interactionMode == InteractionMode.RECEIVING_UNICAST) {
 
-			D.p("receiving...");
+			//D.p("receiving...");
 			Main.settings.__animationDelay = Constants.LONG_PAUSE;
 			// this will cause us to see the receive for longer
 			realAgent.interactionMode = InteractionMode.NONE;
