@@ -291,8 +291,27 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		// statistics...
 		generation++;
 
+		if (Main.settings.DYNAMIC_EVENNESS) {
+			Main.settings.__numDetectors = 0;
+			Main.settings.__numExtractors = 0;
+			Main.settings.__numTransporters = 0;
+			Main.settings.__numProcessors = 0;
+		}
+
 		for (Agent agent : agents) {
 			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+
+			if (Main.settings.DYNAMIC_EVENNESS) {
+				if (embodiedAgent.activeSpecies == Species.DETECTOR) {
+					Main.settings.__numDetectors++;
+				} else if (embodiedAgent.activeSpecies == Species.EXTRACTOR) {
+					Main.settings.__numExtractors++;
+				} else if (embodiedAgent.activeSpecies == Species.TRANSPORTER) {
+					Main.settings.__numTransporters++;
+				} else if (embodiedAgent.activeSpecies == Species.PROCESSOR) {
+					Main.settings.__numProcessors++;
+				}
+			}
 
 			// accumulate event counts for agents...
 			embodiedAgent.poolGenerationEventStats.aggregateStatsTo(embodiedAgent.poolHistoricalEventStats);
@@ -310,7 +329,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			// this part computes the genetic distance between the current and
 			// previous alpha
 
-			double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.activeEvolver.evolutionEngine.alphaProgram,
+			double alphaGeneticDistance = Program.comparePrograms(
+					embodiedAgent.activeEvolver.evolutionEngine.alphaProgram,
 					embodiedAgent.activeEvolver.evolutionEngine.previousAlphaProgram);
 
 			if (alphaGeneticDistance != Double.NaN) {
@@ -332,9 +352,18 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
 				resourceCaptureStats, this.simulationCounter, deltaTime, allocatedMemory);
 
-		logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-				+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
-				+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+		if (Main.settings.DYNAMIC_EVENNESS) {
+			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + "; "
+					+ Main.settings.__numDetectors + ":" + Main.settings.__numExtractors + ":"
+					+ Main.settings.__numTransporters + ":" + Main.settings.__numProcessors + " ["
+					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+		} else {
+
+			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
+					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+		}
 		reportTime = currentTime;
 
 		// clear pool generation event stats for next generation...
@@ -384,7 +413,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startNextSimulation() {
-		
+
 		intervalStats.resetLastSteps();
 		resetEnvironment();
 
@@ -411,7 +440,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		
+
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
@@ -431,9 +460,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		experimentReporter.initReporter();
 
 		reportTime = System.currentTimeMillis();
-		
+
 		attachVisualizationGrids();
-		
+
 		// before we start stepping, let's synchronize with visualizer, if any
 		unlockGenerationalVisualizer();
 
@@ -443,7 +472,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			public void step(SimState state) {
 
 				simStepCounter++;
-				
 
 				if (interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 					fadeTrails();
@@ -477,7 +505,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 							evolveEmbodiedAgents();
 							simsRunForThisGeneration = 0;
 						}
-
 
 						startNextSimulation();
 

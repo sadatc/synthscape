@@ -144,6 +144,12 @@ public class Settings implements Constants {
 	public BridgeState __bridgeState = null;
 
 	public long __animationDelay = Constants.SHORT_PAUSE;
+	
+	public int __numDetectors = 0;
+	public int __numExtractors = 0;
+	public int __numTransporters = 0;
+	public int __numProcessors = 0;
+	
 
 	private Settings() {
 

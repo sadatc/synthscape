@@ -572,6 +572,16 @@ public class ExperimentReporter implements Constants {
 
 				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 
+				if (Main.settings.DYNAMIC_EVENNESS) {
+					columnHeader += ", NUM_DETECTORS";
+					columnHeader += ", NUM_EXTRACTORS";
+					columnHeader += ", NUM_TRANSPORTERS";
+					if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+						columnHeader += ", NUM_PROCESSORS";
+					}
+
+				}
+
 				performanceWriter.write(columnHeader);
 				performanceWriter.newLine();
 			}
@@ -872,6 +882,24 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, Unicast.getUsed());
 				Unicast.resetSendReceiveCounters();
+
+				if (Main.settings.DYNAMIC_EVENNESS) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, Main.settings.__numDetectors);
+
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, Main.settings.__numExtractors);
+
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, Main.settings.__numTransporters);
+
+					if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+						formattedAppend(sbPerformance, COMMA);
+						formattedAppend(sbPerformance, Main.settings.__numProcessors);
+					}
+
+			
+				}
 
 				performanceWriter.write(sbPerformance.toString());
 

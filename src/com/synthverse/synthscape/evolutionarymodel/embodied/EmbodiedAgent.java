@@ -395,8 +395,10 @@ public class EmbodiedAgent extends Agent {
 		// decide if this agent should switch
 		if (Main.settings.DYNAMIC_EVENNESS) {
 			boolean shouldSwitchSpecies = false;
+			/*
 			D.p("evolving agent:" + this.getAgentId() + " type:" + this.activeSpecies + " fitness:"
 					+ this.fitnessStats.getMean());
+			*/
 			ancestorFitnessValues.add(this.fitnessStats.getMean());
 			if (ancestorFitnessValues.remainingCapacity() == 0) {
 				double mean = 0;
@@ -410,12 +412,14 @@ public class EmbodiedAgent extends Agent {
 					// no change needed -- situation is same or improving
 					previousAncestorFitnessMean = mean;
 				} else {
-					// next generation should switch species
-					shouldSwitchSpecies = true;
-					// reset ancestor calculations so that
-					// we give the new species some boost
-					this.ancestorFitnessValues.clear();
-					previousAncestorFitnessMean = 0.0;
+					// next generation should probably switch
+					if (sim.random.nextBoolean(0.5)) {
+						shouldSwitchSpecies = true;
+						// reset ancestor calculations so that
+						// we give the new species some boost
+						this.ancestorFitnessValues.clear();
+						previousAncestorFitnessMean = 0.0;
+					}
 				}
 
 			}
@@ -486,29 +490,21 @@ public class EmbodiedAgent extends Agent {
 					}
 				}
 
-			
 				// now do the actual switching
 				// first get the evolver
-				D.p("!!!!! When I grow up, I want to be a "+targetSpecies);
+				// D.p("!!!!! When I grow up, I want to be a "+targetSpecies);
 				EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
-				
-				targetEvolver.generation = activeEvolver.generation; 
+
+				targetEvolver.generation = activeEvolver.generation;
 				activeEvolver = targetEvolver;
 				this.species = targetSpecies;
 				this.activeSpecies = targetSpecies;
-				
+
 				activeAgent = activeEvolver.getAgent(species, 0, 0);
 				activeAgent.setHostAgent(this);
 				this.isHostAgent = true;
 				activeAgent.isProxyAgent = true;
-				
-				
-				
-				
-				
-				
-			
-			
+
 			}
 		}
 
