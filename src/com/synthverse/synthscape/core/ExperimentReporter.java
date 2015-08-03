@@ -32,8 +32,7 @@ import com.synthverse.util.LogUtils;
  */
 public class ExperimentReporter implements Constants {
 
-	private static Logger logger = Logger.getLogger(ExperimentReporter.class
-			.getName());
+	private static Logger logger = Logger.getLogger(ExperimentReporter.class.getName());
 
 	Settings settings = Settings.getInstance();
 
@@ -53,8 +52,7 @@ public class ExperimentReporter implements Constants {
 	private final static char COMMA = ',';
 
 	private StringBuilder sbEvent = new StringBuilder(STRING_BUFFER_MAX_SIZE);
-	private StringBuilder sbPerformance = new StringBuilder(
-			STRING_BUFFER_MAX_SIZE);
+	private StringBuilder sbPerformance = new StringBuilder(STRING_BUFFER_MAX_SIZE);
 
 	@SuppressWarnings("unused")
 	private int numberOfSpecies;
@@ -74,8 +72,7 @@ public class ExperimentReporter implements Constants {
 		throw new AssertionError("not allowed");
 	}
 
-	public ExperimentReporter(Simulation simulation, boolean flushAlways)
-			throws IOException {
+	public ExperimentReporter(Simulation simulation, boolean flushAlways) throws IOException {
 
 		this.simulation = simulation;
 		this.flushAlways = flushAlways;
@@ -86,20 +83,19 @@ public class ExperimentReporter implements Constants {
 		String seedString = Integer.toString(settings.SEED, 16);
 
 		if (simulation.isReportEvents()) {
-			String eventFileName = constructFileName(settings.DATA_DIR,
-					settings.EVENT_DATA_FILE, settings.JOB_NAME, seedString);
+			String eventFileName = constructFileName(settings.DATA_DIR, settings.EVENT_DATA_FILE, settings.JOB_NAME,
+					seedString);
 			eventWriter = openFile(eventFileName);
 		}
 
 		if (simulation.isReportPerformance()) {
-			String performanceFileName = constructFileName(settings.DATA_DIR,
-					settings.PERFORMANCE_DATA_FILE, settings.JOB_NAME,
-					seedString);
+			String performanceFileName = constructFileName(settings.DATA_DIR, settings.PERFORMANCE_DATA_FILE,
+					settings.JOB_NAME, seedString);
 			performanceWriter = openFile(performanceFileName);
 		}
 
-		String dnaProgressionFileName = constructFileName(settings.DATA_DIR,
-				settings.DNA_PROGRESSION_FILE, settings.JOB_NAME, seedString);
+		String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
+				settings.JOB_NAME, seedString);
 		dnaWriter = openCompressedFile(dnaProgressionFileName);
 
 	}
@@ -116,12 +112,10 @@ public class ExperimentReporter implements Constants {
 			} else {
 
 			}
-			writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),
-					true), FILE_IO_BUFFER_SIZE);
+			writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
 
 		} catch (Exception e) {
-			logger.severe("Exception while trying to open experiment output file: "
-					+ e.getMessage());
+			logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -148,19 +142,16 @@ public class ExperimentReporter implements Constants {
 
 			if (settings.COMPRESS_DNA_PROGRESSION) {
 				fileOutputStream = new FileOutputStream(fileName, true);
-				gzOutputStream = new GZIPOutputStream(fileOutputStream,
-						FILE_IO_BUFFER_SIZE);
+				gzOutputStream = new GZIPOutputStream(fileOutputStream, FILE_IO_BUFFER_SIZE);
 				osWriter = new OutputStreamWriter(gzOutputStream);
 				writer = new BufferedWriter(osWriter);
 
 			} else {
-				writer = new BufferedWriter(new FileWriter(
-						file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
+				writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true), FILE_IO_BUFFER_SIZE);
 			}
 
 		} catch (Exception e) {
-			logger.severe("Exception while trying to open experiment output file: "
-					+ e.getMessage());
+			logger.severe("Exception while trying to open experiment output file: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -170,9 +161,8 @@ public class ExperimentReporter implements Constants {
 
 	private void writeExperimentDetails() {
 
-		settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR,
-				settings.EXPERIMENT_DETAILS_FILE_MAIN, settings.JOB_NAME,
-				EMPTY_STRING);
+		settings.EXPERIMENT_DETAILS_FILE = constructFileName(settings.DATA_DIR, settings.EXPERIMENT_DETAILS_FILE_MAIN,
+				settings.JOB_NAME, EMPTY_STRING);
 
 		// if this is a whole set of experiments sharing the same job
 		// description
@@ -189,14 +179,13 @@ public class ExperimentReporter implements Constants {
 				}
 				file.createNewFile();
 
-				BufferedWriter detailWriter = new BufferedWriter(
-						new FileWriter(file.getAbsoluteFile(), false),
+				BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), false),
 						FILE_IO_BUFFER_SIZE);
 
 				/*
-				detailWriter.write("SEED=" + settings.SEED + "-"
-						+ (settings.SEED + settings.REPEAT - 1));
-				*/
+				 * detailWriter.write("SEED=" + settings.SEED + "-" +
+				 * (settings.SEED + settings.REPEAT - 1));
+				 */
 				detailWriter.newLine();
 
 				for (String line : settings.EXPERIMENT_DETAILS) {
@@ -210,8 +199,7 @@ public class ExperimentReporter implements Constants {
 				detailWriter.close();
 
 			} catch (Exception e) {
-				logger.severe("Exception while trying to open experiment details file: "
-						+ e.getMessage());
+				logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
 				e.printStackTrace();
 				System.exit(0);
 			}
@@ -219,10 +207,9 @@ public class ExperimentReporter implements Constants {
 
 	}
 
-	private final String constructFileName(String dir, String fileName,
-			String jobName, String simulationSeed) {
-		return dir + File.separator + jobName + "_" + simulationSeed + "_"
-				+ DateUtils.getFileNameDateStamp() + "_" + fileName;
+	private final String constructFileName(String dir, String fileName, String jobName, String simulationSeed) {
+		return dir + File.separator + jobName + "_" + simulationSeed + "_" + DateUtils.getFileNameDateStamp() + "_"
+				+ fileName;
 
 	}
 
@@ -232,8 +219,7 @@ public class ExperimentReporter implements Constants {
 		try {
 
 			if (file.exists() && file.isFile()) {
-				BufferedWriter detailWriter = new BufferedWriter(
-						new FileWriter(file.getAbsoluteFile(), true),
+				BufferedWriter detailWriter = new BufferedWriter(new FileWriter(file.getAbsoluteFile(), true),
 						FILE_IO_BUFFER_SIZE);
 				detailWriter.write("EXPERIMENT_END = " + new Date());
 				detailWriter.newLine();
@@ -244,8 +230,7 @@ public class ExperimentReporter implements Constants {
 			}
 
 		} catch (Exception e) {
-			logger.severe("Exception while trying to open experiment details file: "
-					+ e.getMessage());
+			logger.severe("Exception while trying to open experiment details file: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -256,8 +241,8 @@ public class ExperimentReporter implements Constants {
 
 		try {
 			if (simulation.isReportEvents()) {
-				eventWriter
-						.write("SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
+				eventWriter.write(
+						"SERVER,EXPERIMENT,BATCH_ID,START_DATE,WIDTH,HEIGHT,OBSTACLE_DENSITY,RESOURCE_DENSITY,AGENTS_PER_SPECIES,GENE_POOL,COLLECTION_SITES,MAX_STEPS,PROBLEM_COMPLEXITY,SPECIES,INTERACTIONS");
 				eventWriter.newLine();
 
 				eventWriter.append(simulation.getServerName());
@@ -266,37 +251,26 @@ public class ExperimentReporter implements Constants {
 				eventWriter.append(COMMA);
 				eventWriter.append(simulation.getBatchId());
 				eventWriter.append(COMMA);
-				eventWriter
-						.append(DateUtils
-								.getReportFormattedDateString(simulation
-										.getStartDate()));
+				eventWriter.append(DateUtils.getReportFormattedDateString(simulation.getStartDate()));
 				eventWriter.append(COMMA);
 				eventWriter.append(Integer.toString(simulation.getGridWidth()));
 				eventWriter.append(COMMA);
-				eventWriter
-						.append(Integer.toString(simulation.getGridHeight()));
+				eventWriter.append(Integer.toString(simulation.getGridHeight()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Double.toString(simulation
-						.getObstacleDensity()));
+				eventWriter.append(Double.toString(simulation.getObstacleDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Double.toString(simulation
-						.getResourceDensity()));
+				eventWriter.append(Double.toString(simulation.getResourceDensity()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation
-						.getClonesPerSpecies()));
+				eventWriter.append(Integer.toString(simulation.getClonesPerSpecies()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation
-						.getGenePoolSize()));
+				eventWriter.append(Integer.toString(simulation.getGenePoolSize()));
 				eventWriter.append(COMMA);
 
-				eventWriter.append(Integer.toString(simulation
-						.getNumberOfCollectionSites()));
+				eventWriter.append(Integer.toString(simulation.getNumberOfCollectionSites()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation
-						.getMaxStepsPerAgent()));
+				eventWriter.append(Integer.toString(simulation.getMaxStepsPerAgent()));
 				eventWriter.append(COMMA);
-				eventWriter.append(Integer.toString(simulation
-						.getProblemComplexity().getId()));
+				eventWriter.append(Integer.toString(simulation.getProblemComplexity().getId()));
 				eventWriter.append(COMMA);
 
 				eventWriter.append(simulation.getSpeciesCompositionString());
@@ -320,8 +294,7 @@ public class ExperimentReporter implements Constants {
 	private void writeEventFieldDescription() {
 		try {
 			if (simulation.isReportEvents()) {
-				eventWriter
-						.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
+				eventWriter.write("SIMULATION,GENERATION,SPECIES,ID,STEP,X,Y,EVENT,SRC,DEST");
 				eventWriter.newLine();
 			}
 
@@ -349,9 +322,8 @@ public class ExperimentReporter implements Constants {
 
 	}
 
-	public void reportEvent(long simulationNumber, int generation,
-			Species species, int agentId, int step, int x, int y, Event event,
-			long source, long destination) {
+	public void reportEvent(long simulationNumber, int generation, Species species, int agentId, int step, int x, int y,
+			Event event, long source, long destination) {
 		try {
 
 			sbEvent.append(simulationNumber);
@@ -391,16 +363,15 @@ public class ExperimentReporter implements Constants {
 
 	}
 
-	public void reportAlphaProgram(int generation, int poolId, Species species,
-			Program currentAlphaProgram) {
+	public void reportAlphaProgram(int generation, int poolId, Species species, Program currentAlphaProgram) {
 
 		try {
 
 			StringBuilder alphaCache = getAlphaCacheByPoolId(poolId);
 
 			alphaCache.delete(0, alphaCache.length());
-			alphaCache.append(settings.experimentNumber + "," + generation
-					+ "," + species + "," + poolId + "," + currentAlphaProgram);
+			alphaCache.append(settings.experimentNumber + "," + generation + "," + species + "," + poolId + ","
+					+ currentAlphaProgram);
 
 			if (settings.REPORT_DNA_PROGRESSION) {
 
@@ -533,7 +504,8 @@ public class ExperimentReporter implements Constants {
 
 				String columnHeader = "GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
 				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+							&& type == EventType.PROCESSING)) {
 						continue;
 					} else {
 						columnHeader += ", RATE_" + type;
@@ -541,62 +513,61 @@ public class ExperimentReporter implements Constants {
 					}
 				}
 
-				for (Species species : simulation.speciesComposition) {
-					String name = species.toString();
+				if (Main.settings.SPECIES_LEVEL_REPORT) {
 
-					columnHeader += ", ";
-					columnHeader += name + "_ALPHA_DIST";
+					for (Species species : simulation.speciesComposition) {
+						String name = species.toString();
 
-					if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.ISLAND_MODEL) {
-						// in the island model, all species share the same total
-						// fitness...
 						columnHeader += ", ";
-						columnHeader += name + "_FITNESS_MEAN, ";
-						columnHeader += name + "_FITNESS_VAR ";
-					}
+						columnHeader += name + "_ALPHA_DIST";
 
-					for (EventType type : EventType.values()) {
-						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
-							continue;
-						} else {
-							columnHeader += ", " + name + "_RATE_" + type;
-							columnHeader += ", " + name + "_INTERVAL_" + type;
+						if (Main.settings.EVOLUTIONARY_MODEL != EvolutionaryModel.ISLAND_MODEL) {
+							// in the island model, all species share the same
+							// total
+							// fitness...
+							columnHeader += ", ";
+							columnHeader += name + "_FITNESS_MEAN, ";
+							columnHeader += name + "_FITNESS_VAR ";
 						}
-					}
 
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.TRAIL)) {
-						columnHeader += ", " + name + "_TRAILS_SENT, ";
-						columnHeader += name + "_TRAILS_RECEIVED ";
-					}
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.BROADCAST)) {
-						columnHeader += ", " + name + "_SENT_BROADCAST_A, ";
-						columnHeader += name + "_RECEIVED_BROADCAST_A, ";
-						columnHeader += name + "_SENT_BROADCAST_B, ";
-						columnHeader += name + "_RECEIVED_BROADCAST_B";
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-							columnHeader += ", " + name + "_SENT_BROADCAST_C, ";
-							columnHeader += name + "_RECEIVED_BROADCAST_C";
+						for (EventType type : EventType.values()) {
+							if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+									&& type == EventType.PROCESSING)) {
+								continue;
+							} else {
+								columnHeader += ", " + name + "_RATE_" + type;
+								columnHeader += ", " + name + "_INTERVAL_" + type;
+							}
 						}
-					}
 
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-						columnHeader += ", " + name
-								+ "_SENT_UNICAST_A_CLOSEST, ";
-						columnHeader += name + "_RECEIVED_UNICAST_A_CLOSEST, ";
-						columnHeader += name + "_SENT_UNICAST_B_CLOSEST, ";
-						columnHeader += name + "_RECEIVED_UNICAST_B_CLOSEST";
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-							columnHeader += ", " + name
-									+ "_SENT_UNICAST_C_CLOSEST, ";
-							columnHeader += name
-									+ "_RECEIVED_UNICAST_C_CLOSEST ";
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+							columnHeader += ", " + name + "_TRAILS_SENT, ";
+							columnHeader += name + "_TRAILS_RECEIVED ";
 						}
-					}
 
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+							columnHeader += ", " + name + "_SENT_BROADCAST_A, ";
+							columnHeader += name + "_RECEIVED_BROADCAST_A, ";
+							columnHeader += name + "_SENT_BROADCAST_B, ";
+							columnHeader += name + "_RECEIVED_BROADCAST_B";
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+								columnHeader += ", " + name + "_SENT_BROADCAST_C, ";
+								columnHeader += name + "_RECEIVED_BROADCAST_C";
+							}
+						}
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+							columnHeader += ", " + name + "_SENT_UNICAST_A_CLOSEST, ";
+							columnHeader += name + "_RECEIVED_UNICAST_A_CLOSEST, ";
+							columnHeader += name + "_SENT_UNICAST_B_CLOSEST, ";
+							columnHeader += name + "_RECEIVED_UNICAST_B_CLOSEST";
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+								columnHeader += ", " + name + "_SENT_UNICAST_C_CLOSEST, ";
+								columnHeader += name + "_RECEIVED_UNICAST_C_CLOSEST ";
+							}
+						}
+
+					}
 				}
 
 				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
@@ -606,8 +577,7 @@ public class ExperimentReporter implements Constants {
 			}
 
 		} catch (Exception e) {
-			logger.severe("Exception while reporting performance:"
-					+ e.getMessage());
+			logger.severe("Exception while reporting performance:" + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 
@@ -615,13 +585,10 @@ public class ExperimentReporter implements Constants {
 
 	}
 
-	public void reportPerformanceEmbodiedModel(int generationCounter,
-			IntervalStats intervalStats, EventStats generationEventStats,
-			EnumMap<Species, EventStats> speciesEventStatsMap,
-			ArrayList<Agent> agents, SummaryStatistics captureStats,
-			SummaryStatistics populationFitnessStats, long simsRun,
-			ResourceCaptureStats resourceCaptureStats, long simCounter,
-			long timeDelta, long allocatedMemory) {
+	public void reportPerformanceEmbodiedModel(int generationCounter, IntervalStats intervalStats,
+			EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap, ArrayList<Agent> agents,
+			SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun,
+			ResourceCaptureStats resourceCaptureStats, long simCounter, long timeDelta, long allocatedMemory) {
 		try {
 
 			if (simulation.isReportPerformance()) {
@@ -635,7 +602,7 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, timeDelta);
-				
+
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, allocatedMemory);
 
@@ -652,23 +619,19 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, populationFitnessStats.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						populationFitnessStats.getVariance());
+				formattedAppend(sbPerformance, populationFitnessStats.getVariance());
 
 				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+							&& type == EventType.PROCESSING)) {
 						continue;
 					} else {
 						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(
-								sbPerformance,
-								(double) generationEventStats
-										.getTypeValue(type) / simsRun);
+						formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
 
 						formattedAppend(sbPerformance, COMMA);
 
-						SummaryStatistics stats = intervalStats
-								.getTypeIntervalStats(type);
+						SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
 
 						if (stats != null) {
 							formattedAppend(sbPerformance, stats.getMean());
@@ -687,231 +650,207 @@ public class ExperimentReporter implements Constants {
 
 				settings.statusCache = EMPTY_STRING;
 
-				for (Species species : simulation.speciesComposition) {
+				if (Main.settings.SPECIES_LEVEL_REPORT) {
+					for (Species species : simulation.speciesComposition) {
 
-					summaryFitnessStats.clear();
-					summaryAlphaDiffStats.clear();
+						summaryFitnessStats.clear();
+						summaryAlphaDiffStats.clear();
 
-					long sentTrail = 0;
-					long receivedTrail = 0;
+						long sentTrail = 0;
+						long receivedTrail = 0;
 
-					long sentBroadcastA = 0;
-					long receivedBroadcastA = 0;
+						long sentBroadcastA = 0;
+						long receivedBroadcastA = 0;
 
-					long sentBroadcastB = 0;
-					long receivedBroadcastB = 0;
+						long sentBroadcastB = 0;
+						long receivedBroadcastB = 0;
 
-					long sentBroadcastC = 0;
-					long receivedBroadcastC = 0;
+						long sentBroadcastC = 0;
+						long receivedBroadcastC = 0;
 
-					long sentUnicastClosestA = 0;
-					long receivedUnicastClosestA = 0;
+						long sentUnicastClosestA = 0;
+						long receivedUnicastClosestA = 0;
 
-					long sentUnicastClosestB = 0;
-					long receivedUnicastClosestB = 0;
+						long sentUnicastClosestB = 0;
+						long receivedUnicastClosestB = 0;
 
-					long sentUnicastClosestC = 0;
-					long receivedUnicastClosestC = 0;
+						long sentUnicastClosestC = 0;
+						long receivedUnicastClosestC = 0;
 
-		
-					for (Agent agent : agents) {
-						EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
-						if (agent.getSpecies() == species) {
+						for (Agent agent : agents) {
+							EmbodiedAgent embodiedAgent = (EmbodiedAgent) agent;
+							if (agent.getSpecies() == species) {
 
-							summaryAlphaDiffStats
-									.addValue(embodiedAgent.computedAlphaDistance);
+								summaryAlphaDiffStats.addValue(embodiedAgent.computedAlphaDistance);
 
-							for (double fitnessValue : embodiedAgent.fitnessStats
-									.getValues()) {
-								summaryFitnessStats.addValue(fitnessValue);
-							}
+								for (double fitnessValue : embodiedAgent.fitnessStats.getValues()) {
+									summaryFitnessStats.addValue(fitnessValue);
+								}
 
-							if (simulation.interactionMechanisms
-									.contains(InteractionMechanism.TRAIL)) {
+								if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
 
-								sentTrail += embodiedAgent.poolGenerationEventStats
-										.getValue(Event.SENT_TRAIL);
-								receivedTrail += embodiedAgent.poolGenerationEventStats
-										.getValue(Event.RECEIVED_TRAIL);
-
-							}
-
-							if (simulation.interactionMechanisms
-									.contains(InteractionMechanism.BROADCAST)) {
-
-								sentBroadcastA = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.SENT_BROADCAST_A);
-								receivedBroadcastA = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.RECEIVED_BROADCAST_A);
-
-								sentBroadcastB = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.SENT_BROADCAST_B);
-								receivedBroadcastB = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.RECEIVED_BROADCAST_B);
-
-								if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-
-									sentBroadcastC = embodiedAgent.poolGenerationEventStats
-											.getValue(Event.SENT_BROADCAST_C);
-									receivedBroadcastC = embodiedAgent.poolGenerationEventStats
-											.getValue(Event.RECEIVED_BROADCAST_C);
+									sentTrail += embodiedAgent.poolGenerationEventStats.getValue(Event.SENT_TRAIL);
+									receivedTrail += embodiedAgent.poolGenerationEventStats
+											.getValue(Event.RECEIVED_TRAIL);
 
 								}
 
-							}
+								if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
 
-							if (simulation.interactionMechanisms
-									.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+									sentBroadcastA = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.SENT_BROADCAST_A);
+									receivedBroadcastA = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.RECEIVED_BROADCAST_A);
 
-								sentUnicastClosestA = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.SENT_UNICAST_A_CLOSEST);
-								receivedUnicastClosestA = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
+									sentBroadcastB = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.SENT_BROADCAST_B);
+									receivedBroadcastB = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.RECEIVED_BROADCAST_B);
 
-								sentUnicastClosestB = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.SENT_UNICAST_B_CLOSEST);
-								receivedUnicastClosestB = embodiedAgent.poolGenerationEventStats
-										.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
+									if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 
-								if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-									sentUnicastClosestC = embodiedAgent.poolGenerationEventStats
-											.getValue(Event.SENT_UNICAST_C_CLOSEST);
-									receivedUnicastClosestC = embodiedAgent.poolGenerationEventStats
-											.getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
+										sentBroadcastC = embodiedAgent.poolGenerationEventStats
+												.getValue(Event.SENT_BROADCAST_C);
+										receivedBroadcastC = embodiedAgent.poolGenerationEventStats
+												.getValue(Event.RECEIVED_BROADCAST_C);
+
+									}
+
+								}
+
+								if (simulation.interactionMechanisms
+										.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+									sentUnicastClosestA = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.SENT_UNICAST_A_CLOSEST);
+									receivedUnicastClosestA = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
+
+									sentUnicastClosestB = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.SENT_UNICAST_B_CLOSEST);
+									receivedUnicastClosestB = embodiedAgent.poolGenerationEventStats
+											.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
+
+									if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+										sentUnicastClosestC = embodiedAgent.poolGenerationEventStats
+												.getValue(Event.SENT_UNICAST_C_CLOSEST);
+										receivedUnicastClosestC = embodiedAgent.poolGenerationEventStats
+												.getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
+									}
+
 								}
 
 							}
 
 						}
 
-					}
+						formattedAppend(sbPerformance, COMMA);
+						formattedAppend(sbPerformance, summaryAlphaDiffStats.getMean());
 
-					formattedAppend(sbPerformance, COMMA);
-					formattedAppend(sbPerformance,
-							summaryAlphaDiffStats.getMean());
+						formattedAppend(sbPerformance, COMMA);
+						formattedAppend(sbPerformance, summaryFitnessStats.getMean());
 
-					formattedAppend(sbPerformance, COMMA);
-					formattedAppend(sbPerformance,
-							summaryFitnessStats.getMean());
+						formattedAppend(sbPerformance, COMMA);
+						formattedAppend(sbPerformance, summaryFitnessStats.getVariance());
 
-					formattedAppend(sbPerformance, COMMA);
-					formattedAppend(sbPerformance,
-							summaryFitnessStats.getVariance());
-
-					for (EventType type : EventType.values()) {
-						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
-							continue;
-						} else {
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance,
-									(double) speciesEventStatsMap.get(species)
-											.getTypeValue(type) / simsRun);
-
-							formattedAppend(sbPerformance, COMMA);
-
-							SummaryStatistics stats = intervalStats
-									.getSpeciesEventTypeIntervalStats(species,
-											type);
-
-							if (stats != null) {
-								formattedAppend(sbPerformance, stats.getMean());
+						for (EventType type : EventType.values()) {
+							if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+									&& type == EventType.PROCESSING)) {
+								continue;
 							} else {
-								formattedAppend(sbPerformance, EMPTY_STRING);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance,
+										(double) speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+
+								formattedAppend(sbPerformance, COMMA);
+
+								SummaryStatistics stats = intervalStats.getSpeciesEventTypeIntervalStats(species, type);
+
+								if (stats != null) {
+									formattedAppend(sbPerformance, stats.getMean());
+								} else {
+									formattedAppend(sbPerformance, EMPTY_STRING);
+								}
+
+							}
+						}
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sentTrail);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, receivedTrail);
+
+						}
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sentBroadcastA);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, receivedBroadcastA);
+
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sentBroadcastB);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, receivedBroadcastB);
+
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, sentBroadcastC);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, receivedBroadcastC);
+
 							}
 
 						}
-					}
 
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.TRAIL)) {
-
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sentTrail);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, receivedTrail);
-
-					}
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.BROADCAST)) {
-
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sentBroadcastA);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, receivedBroadcastA);
-
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sentBroadcastB);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, receivedBroadcastB);
-
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
 
 							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, sentBroadcastC);
+							formattedAppend(sbPerformance, sentUnicastClosestA);
 							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, receivedBroadcastC);
+							formattedAppend(sbPerformance, receivedUnicastClosestA);
 
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sentUnicastClosestB);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, receivedUnicastClosestB);
+
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, sentUnicastClosestC);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, receivedUnicastClosestC);
+							}
+							D.p("XXX:" + species + ":A:" + sentUnicastClosestA + ":" + receivedUnicastClosestA + "--B:"
+									+ sentUnicastClosestB + ":" + receivedUnicastClosestB);
 						}
 
+						settings.statusCache += species + ":" + summaryFitnessStats.getMean() + " ";
+
 					}
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sentUnicastClosestA);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, receivedUnicastClosestA);
-
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sentUnicastClosestB);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, receivedUnicastClosestB);
-
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, sentUnicastClosestC);
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance,
-									receivedUnicastClosestC);
-						}
-						D.p("XXX:" + species + ":A:" + sentUnicastClosestA
-								+ ":" + receivedUnicastClosestA + "--B:"
-								+ sentUnicastClosestB + ":"
-								+ receivedUnicastClosestB);
-					}
-
-					settings.statusCache += species + ":"
-							+ summaryFitnessStats.getMean() + " ";
-
 				}
 
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance
-						.append(resourceCaptureStats.detectionToCaptureInterval
-								.getMean());
+				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance
-						.append(resourceCaptureStats.extractionToCaptureInterval
-								.getMean());
+				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.detections.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.loads.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.unloads.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.touchedResources.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, Trail.getCounter());
@@ -945,8 +884,7 @@ public class ExperimentReporter implements Constants {
 
 			}
 		} catch (Exception e) {
-			logger.severe("Exception while reporting performance:"
-					+ e.getMessage());
+			logger.severe("Exception while reporting performance:" + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}
@@ -974,13 +912,10 @@ public class ExperimentReporter implements Constants {
 		sb.append(String.format(Constants.CSV_DOUBLE_FORMAT, value));
 	}
 
-	public void reportPerformanceIslandModel(int generationCounter,
-			IntervalStats intervalStats, EventStats generationEventStats,
-			EnumMap<Species, EventStats> speciesEventStatsMap,
-			SummaryStatistics captureStats,
-			SummaryStatistics populationFitnessStats, long simsRun,
-			ResourceCaptureStats resourceCaptureStats,
-			LinkedHashMap<Species, PopulationIslandEvolver> speciesIslandMap,
+	public void reportPerformanceIslandModel(int generationCounter, IntervalStats intervalStats,
+			EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap,
+			SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun,
+			ResourceCaptureStats resourceCaptureStats, LinkedHashMap<Species, PopulationIslandEvolver> speciesIslandMap,
 			long simCounter, long timeDelta, long allocatedMemory) {
 		try {
 			if (simulation.isReportPerformance()) {
@@ -992,10 +927,10 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, simCounter);
 				formattedAppend(sbPerformance, COMMA);
-				
+
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, timeDelta);
-				
+
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, allocatedMemory);
 
@@ -1011,23 +946,19 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, populationFitnessStats.getMean());
 				formattedAppend(sbPerformance, COMMA);
 
-				formattedAppend(sbPerformance,
-						populationFitnessStats.getVariance());
+				formattedAppend(sbPerformance, populationFitnessStats.getVariance());
 
 				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
+					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+							&& type == EventType.PROCESSING)) {
 						continue;
 					} else {
 						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(
-								sbPerformance,
-								(double) generationEventStats
-										.getTypeValue(type) / simsRun);
+						formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
 
 						formattedAppend(sbPerformance, COMMA);
 
-						SummaryStatistics stats = intervalStats
-								.getTypeIntervalStats(type);
+						SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
 
 						if (stats != null) {
 							formattedAppend(sbPerformance, stats.getMean());
@@ -1038,146 +969,125 @@ public class ExperimentReporter implements Constants {
 					}
 				}
 
-				for (Species species : simulation.speciesComposition) {
+				if (Main.settings.SPECIES_LEVEL_REPORT) {
 
-					PopulationIslandEvolver evolver = speciesIslandMap
-							.get(species);
-					formattedAppend(sbPerformance, COMMA);
-					sbPerformance
-							.append((double) evolver.computedAlphaDistance);
+					for (Species species : simulation.speciesComposition) {
 
-					for (EventType type : EventType.values()) {
-						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS && type == EventType.PROCESSING)) {
-							continue;
-						} else {
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance,
-									(double) speciesEventStatsMap.get(species)
-											.getTypeValue(type) / simsRun);
+						PopulationIslandEvolver evolver = speciesIslandMap.get(species);
+						formattedAppend(sbPerformance, COMMA);
+						sbPerformance.append((double) evolver.computedAlphaDistance);
 
-							formattedAppend(sbPerformance, COMMA);
-							SummaryStatistics stats = intervalStats
-									.getSpeciesEventTypeIntervalStats(species,
-											type);
-
-							if (stats != null) {
-								formattedAppend(sbPerformance, stats.getMean());
+						for (EventType type : EventType.values()) {
+							if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+									&& type == EventType.PROCESSING)) {
+								continue;
 							} else {
-								formattedAppend(sbPerformance, EMPTY_STRING);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance,
+										(double) speciesEventStatsMap.get(species).getTypeValue(type) / simsRun);
+
+								formattedAppend(sbPerformance, COMMA);
+								SummaryStatistics stats = intervalStats.getSpeciesEventTypeIntervalStats(species, type);
+
+								if (stats != null) {
+									formattedAppend(sbPerformance, stats.getMean());
+								} else {
+									formattedAppend(sbPerformance, EMPTY_STRING);
+								}
+
+							}
+						}
+
+						EventStats eventStats = speciesEventStatsMap.get(species);
+						long sent = 0;
+						long received = 0;
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.TRAIL)) {
+							sent = eventStats.getValue(Event.SENT_TRAIL);
+							received = eventStats.getValue(Event.RECEIVED_TRAIL);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sent);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, received);
+
+						}
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+
+							sent = eventStats.getValue(Event.SENT_BROADCAST_A);
+							received = eventStats.getValue(Event.RECEIVED_BROADCAST_A);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sent);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, received);
+							formattedAppend(sbPerformance, COMMA);
+
+							sent = eventStats.getValue(Event.SENT_BROADCAST_B);
+							received = eventStats.getValue(Event.RECEIVED_BROADCAST_B);
+							formattedAppend(sbPerformance, sent);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, received);
+
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+
+								sent = eventStats.getValue(Event.SENT_BROADCAST_C);
+								received = eventStats.getValue(Event.RECEIVED_BROADCAST_C);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, sent);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, received);
+
+							}
+
+						}
+
+						if (simulation.interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+							sent = eventStats.getValue(Event.SENT_UNICAST_A_CLOSEST);
+							received = eventStats.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, sent);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, received);
+							formattedAppend(sbPerformance, COMMA);
+
+							sent = eventStats.getValue(Event.SENT_UNICAST_B_CLOSEST);
+							received = eventStats.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
+							formattedAppend(sbPerformance, sent);
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, received);
+
+							if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+								sent = eventStats.getValue(Event.SENT_UNICAST_C_CLOSEST);
+								received = eventStats.getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, sent);
+								formattedAppend(sbPerformance, COMMA);
+								formattedAppend(sbPerformance, received);
+
 							}
 
 						}
 					}
-
-					EventStats eventStats = speciesEventStatsMap.get(species);
-					long sent = 0;
-					long received = 0;
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.TRAIL)) {
-						sent = eventStats.getValue(Event.SENT_TRAIL);
-						received = eventStats.getValue(Event.RECEIVED_TRAIL);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sent);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, received);
-
-					}
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.BROADCAST)) {
-
-						sent = eventStats.getValue(Event.SENT_BROADCAST_A);
-						received = eventStats
-								.getValue(Event.RECEIVED_BROADCAST_A);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sent);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, received);
-						formattedAppend(sbPerformance, COMMA);
-
-						sent = eventStats.getValue(Event.SENT_BROADCAST_B);
-						received = eventStats
-								.getValue(Event.RECEIVED_BROADCAST_B);
-						formattedAppend(sbPerformance, sent);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, received);
-
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-
-							sent = eventStats.getValue(Event.SENT_BROADCAST_C);
-							received = eventStats
-									.getValue(Event.RECEIVED_BROADCAST_C);
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, sent);
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, received);
-
-						}
-
-					}
-
-					if (simulation.interactionMechanisms
-							.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-
-						sent = eventStats
-								.getValue(Event.SENT_UNICAST_A_CLOSEST);
-						received = eventStats
-								.getValue(Event.RECEIVED_UNICAST_A_CLOSEST);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, sent);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, received);
-						formattedAppend(sbPerformance, COMMA);
-
-						sent = eventStats
-								.getValue(Event.SENT_UNICAST_B_CLOSEST);
-						received = eventStats
-								.getValue(Event.RECEIVED_UNICAST_B_CLOSEST);
-						formattedAppend(sbPerformance, sent);
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, received);
-
-						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
-							sent = eventStats
-									.getValue(Event.SENT_UNICAST_C_CLOSEST);
-							received = eventStats
-									.getValue(Event.RECEIVED_UNICAST_C_CLOSEST);
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, sent);
-							formattedAppend(sbPerformance, COMMA);
-							formattedAppend(sbPerformance, received);
-
-						}
-
-					}
 				}
 
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance
-						.append(resourceCaptureStats.detectionToCaptureInterval
-								.getMean());
+				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance
-						.append(resourceCaptureStats.extractionToCaptureInterval
-								.getMean());
+				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.detections.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.loads.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.unloads.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
 
 				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance,
-						resourceCaptureStats.touchedResources.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
 
 				performanceWriter.write(sbPerformance.toString());
 
@@ -1191,8 +1101,7 @@ public class ExperimentReporter implements Constants {
 			}
 
 		} catch (Exception e) {
-			logger.severe("Exception while reporting performance:"
-					+ e.getMessage());
+			logger.severe("Exception while reporting performance:" + e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}

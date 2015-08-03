@@ -114,6 +114,8 @@ public class Settings implements Constants {
 
 	public boolean COMPRESS_DNA_PROGRESSION = false;
 
+	public boolean SPECIES_LEVEL_REPORT = false;
+
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;
 	public int lastLoggedGeneration = 0;
@@ -153,6 +155,8 @@ public class Settings implements Constants {
 		Options options = new Options();
 
 		options.addOption(new Option("help", "print this message"));
+
+		options.addOption(new Option("slr", "species level report [default: do not report at species level]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
@@ -284,6 +288,11 @@ public class Settings implements Constants {
 				RANDOMIZE_SIM_SEED = false;
 			}
 			printAndStore("RANDOMIZE_SIM_SEED = " + RANDOMIZE_SIM_SEED);
+
+			if (line.hasOption("slr")) {
+				SPECIES_LEVEL_REPORT = true;
+			}
+			printAndStore("SPECIES_LEVEL_REPORT = " + SPECIES_LEVEL_REPORT);
 
 			if (line.hasOption("clustered")) {
 				CLUSTERED = true;
