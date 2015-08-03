@@ -133,7 +133,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected int simulationsPerExperiment;
 	protected int stepsPerSimulation;
 
-	protected Set<Species> speciesComposition = new TreeSet<Species>(new SpeciesComparator());
+	public Set<Species> speciesComposition = new TreeSet<Species>(new SpeciesComparator());
 	protected EnumSet<InteractionMechanism> interactionMechanisms = EnumSet.noneOf(InteractionMechanism.class);
 
 	protected String eventFileName;
