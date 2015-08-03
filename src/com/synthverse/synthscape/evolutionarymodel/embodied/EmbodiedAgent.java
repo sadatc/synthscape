@@ -44,7 +44,7 @@ public class EmbodiedAgent extends Agent {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
-	public EmbodiedAgentEvolver evolver;
+	public EmbodiedAgentEvolver activeEvolver;
 
 	// private PopulationIslandEvolver islandEvolver = null;
 
@@ -77,14 +77,14 @@ public class EmbodiedAgent extends Agent {
 		setPoolSize(poolSize);
 
 		try {
-			evolver = new EmbodiedAgentEvolver(this, simulation, agentFactory, species);
+			activeEvolver = new EmbodiedAgentEvolver(this, simulation, agentFactory, species);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 
-		activeAgent = evolver.getAgent(species, 0, 0);
+		activeAgent = activeEvolver.getAgent(species, 0, 0);
 		activeAgent.setHostAgent(this);
 		this.isHostAgent = true;
 		activeAgent.isProxyAgent = true;
@@ -98,12 +98,12 @@ public class EmbodiedAgent extends Agent {
 		embodiedAgentId = _optimizationEmbodiedAgentCounter;
 		setPoolSize(poolSize);
 		try {
-			evolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
+			activeEvolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		activeAgent = evolver.getAgent(species, startX, startY);
+		activeAgent = activeEvolver.getAgent(species, startX, startY);
 
 	}
 
@@ -122,7 +122,7 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	public void setNextActiveAgent(int newX, int newY) {
-		activeAgent = evolver.getAgent(species, newX, newY);
+		activeAgent = activeEvolver.getAgent(species, newX, newY);
 		activeAgent.setHostAgent(this);		
 		this.isHostAgent = true;
 		activeAgent.isProxyAgent = true;;
@@ -177,7 +177,7 @@ public class EmbodiedAgent extends Agent {
 				potentialMate.generationsSinceLastMating = 0;
 				String speciesName = potentialMate.getSpecies().toString();
 				logger.info(speciesName + this.embodiedAgentId + " mated with " + speciesName
-						+ potentialMate.embodiedAgentId + " @generation=" + evolver.getGeneration());
+						+ potentialMate.embodiedAgentId + " @generation=" + activeEvolver.getGeneration());
 			}
 
 		}
@@ -189,8 +189,8 @@ public class EmbodiedAgent extends Agent {
 		partnerABuffer.clear();
 		partnerBBuffer.clear();
 
-		int partnerASize = partnerA.evolver.activeBuffer.size();
-		int partnerBSize = partnerB.evolver.activeBuffer.size();
+		int partnerASize = partnerA.activeEvolver.activeBuffer.size();
+		int partnerBSize = partnerB.activeEvolver.activeBuffer.size();
 
 		int partnerAHalfIndex = partnerASize / 2;
 		int partnerBHalfIndex = partnerBSize / 2;
@@ -202,20 +202,20 @@ public class EmbodiedAgent extends Agent {
 
 		// make a deep copy of A's top half
 		for (int i = 0; i < partnerAHalfIndex; i++) {
-			partnerABuffer.add(new Program(partnerA.evolver.activeBuffer.get(i).getProgram()));
+			partnerABuffer.add(new Program(partnerA.activeEvolver.activeBuffer.get(i).getProgram()));
 		}
 		// now write this into B's bottom half
 		for (int i = partnerBHalfIndex, k = 0; i < partnerBSize; i++, k++) {
-			partnerB.evolver.activeBuffer.get(i).setProgram(partnerABuffer.get(k));
+			partnerB.activeEvolver.activeBuffer.get(i).setProgram(partnerABuffer.get(k));
 		}
 
 		// make a deep copy of B's top half
 		for (int i = 0; i < partnerBHalfIndex; i++) {
-			partnerBBuffer.add(new Program(partnerB.evolver.activeBuffer.get(i).getProgram()));
+			partnerBBuffer.add(new Program(partnerB.activeEvolver.activeBuffer.get(i).getProgram()));
 		}
 		// now write this into A's bottom half
 		for (int i = partnerAHalfIndex, k = 0; i < partnerASize; i++, k++) {
-			partnerA.evolver.activeBuffer.get(i).setProgram(partnerBBuffer.get(k));
+			partnerA.activeEvolver.activeBuffer.get(i).setProgram(partnerBBuffer.get(k));
 		}
 
 	}
@@ -246,7 +246,7 @@ public class EmbodiedAgent extends Agent {
 
 	public final void reclaimActiveAgent() {
 		activeAgent.eventStats.clear();
-		evolver.reclaimEmbodiedAgent(activeAgent);
+		activeEvolver.reclaimEmbodiedAgent(activeAgent);
 	}
 
 	private double computeFitness(Trait trait) {
@@ -346,7 +346,7 @@ public class EmbodiedAgent extends Agent {
 			generationsSinceLastMating++;
 		}
 
-		int returnValue = evolver.evolve();
+		int returnValue = activeEvolver.evolve();
 
 		if (sim.matingEnabled) {
 			mateWithPotentiallyClosebyPartner();
@@ -357,7 +357,7 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	public int getGeneration() {
-		return evolver.getGeneration();
+		return activeEvolver.getGeneration();
 	}
 
 	@Override

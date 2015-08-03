@@ -162,7 +162,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		setStepsPerSimulation(configStepsPerSimulation());
 		setSimulationsPerExperiment(configSimulationsPerExperiment());
 
-		// agent factory and evolver...
+		// agent factory and activeEvolver...
 		setAgentFactory(configAgentFactory());
 		setEmbodiedAgentFactory(configEmbodiedAgentFactory());
 
@@ -310,15 +310,15 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			// this part computes the genetic distance between the current and
 			// previous alpha
 
-			double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.evolver.evolutionEngine.alphaProgram,
-					embodiedAgent.evolver.evolutionEngine.previousAlphaProgram);
+			double alphaGeneticDistance = Program.comparePrograms(embodiedAgent.activeEvolver.evolutionEngine.alphaProgram,
+					embodiedAgent.activeEvolver.evolutionEngine.previousAlphaProgram);
 
 			if (alphaGeneticDistance != Double.NaN) {
 				embodiedAgent.computedAlphaDistance = alphaGeneticDistance;
 			}
 
 			experimentReporter.reportAlphaProgram(generation, embodiedAgent.getAgentId(), embodiedAgent.getSpecies(),
-					embodiedAgent.evolver.evolutionEngine.alphaProgram);
+					embodiedAgent.activeEvolver.evolutionEngine.alphaProgram);
 
 		}
 
