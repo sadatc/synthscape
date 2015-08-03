@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import org.apache.commons.cli.BasicParser;
@@ -116,6 +118,8 @@ public class Settings implements Constants {
 
 	public boolean SPECIES_LEVEL_REPORT = false;
 
+	public boolean DYNAMIC_EVENNESS = false;
+
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;
 	public int lastLoggedGeneration = 0;
@@ -157,6 +161,8 @@ public class Settings implements Constants {
 		options.addOption(new Option("help", "print this message"));
 
 		options.addOption(new Option("slr", "species level report [default: do not report at species level]"));
+
+		options.addOption(new Option("de", "use dynamic evenness [default: do not use dynamic evenness]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
@@ -550,6 +556,34 @@ public class Settings implements Constants {
 			}
 			printAndStore("JOB_NAME = " + JOB_NAME);
 
+			if (line.hasOption("de")) {
+				boolean validOptions = false;
+				Set<Species> parsedSpecies = parseSpeciesString(MODEL_SPECIES);
+
+				if (EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL
+						|| EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
+					if (parsedSpecies.size() == 3 && parsedSpecies.contains(Species.DETECTOR)
+							&& parsedSpecies.contains(Species.EXTRACTOR)
+							&& parsedSpecies.contains(Species.TRANSPORTER)) {
+						DYNAMIC_EVENNESS = true;
+						validOptions = true;
+					} else
+						if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
+								&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
+								&& parsedSpecies.contains(Species.TRANSPORTER)) {
+						DYNAMIC_EVENNESS = true;
+						validOptions = true;
+					}
+				}
+
+				if (!validOptions) {
+					D.p("Dynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
+					System.exit(1);
+				}
+
+			}
+			printAndStore("DYNAMIC_EVENNESS = " + DYNAMIC_EVENNESS);
+
 			// some calculated values
 			PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
 			PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
@@ -616,6 +650,69 @@ public class Settings implements Constants {
 		}
 
 		return instance;
+
+	}
+
+	public Set<Species> parseSpeciesString(String speciesString) {
+
+		Set<Species> speciesSet = new TreeSet<Species>(new SpeciesComparator());
+
+		if (speciesString.contains("+d")) {
+			speciesSet.add(Species.D);
+
+		}
+
+		if (speciesString.contains("+e")) {
+			speciesSet.add(Species.E);
+
+		}
+
+		if (speciesString.contains("+t")) {
+			speciesSet.add(Species.T);
+
+		}
+
+		if (speciesString.contains("^de")) {
+			speciesSet.add(Species.DE);
+
+		}
+
+		if (speciesString.contains("^dt")) {
+			speciesSet.add(Species.DT);
+
+		}
+
+		if (speciesString.contains("^et")) {
+			speciesSet.add(Species.ET);
+
+		}
+
+		if (speciesString.contains("*det")) {
+			speciesSet.add(Species.DET);
+
+		}
+
+		if (speciesString.contains("detector")) {
+			speciesSet.add(Species.DETECTOR);
+
+		}
+
+		if (speciesString.contains("extractor")) {
+			speciesSet.add(Species.EXTRACTOR);
+
+		}
+
+		if (speciesString.contains("transporter")) {
+			speciesSet.add(Species.TRANSPORTER);
+
+		}
+
+		if (speciesString.contains("homogenous")) {
+			speciesSet.add(Species.HOMOGENOUS);
+
+		}
+
+		return speciesSet;
 
 	}
 
