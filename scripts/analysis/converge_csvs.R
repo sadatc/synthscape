@@ -15,8 +15,8 @@ csvFiles <- list.files(directory,pattern="*perf_dat.csv")
 #aggregateData will contain the data from ALL csv files.
 aggregateData <- data.frame()
 
-#for(i in 1:length(csvFiles)){
-for(i in 1:10){
+for(i in 1:length(csvFiles)){
+#for(i in 1:20){
 	csvFile <- paste(directory,csvFiles[i],sep="/") # concats
 	csvFileData <- read.csv(csvFile, header=TRUE)
  
@@ -30,14 +30,25 @@ for(i in 1:10){
   	}
 }
 # aggregateData now contains a gigantic table of experiment x generation values
-# we can check for the normality of the fields we're interested in
+# at this point we do two things: 1) check normality and 2) create summary table
+
+# 1) check normality
 
 summaryData <- data.frame()
-for(i in 1:1) {
-	numDataCols <- ncol(aggregateData)
-	generationData <- aggregateData[aggregateData$GENERATION==i,3:numDataCols]
-	meanData <- mean(generationData$TOT_FITNESS_MEAN)
-	print(generationData$TOT_FITNESS_MEAN)
-	print(summary(generationData$TOT_FITNESS_MEAN))
-}
 
+for(generation in 1:MAX_GENERATIONS) {
+	print(paste("averaging generation=",generation))
+	numDataCols <- ncol(aggregateData)
+
+	# pick the observations: they are from col 3 onwards...
+	observations <- aggregateData[aggregateData$GENERATION==generation,3:numDataCols]
+
+	# find the means of these values
+	
+	meanObservations <-lapply(observations,mean, na.rm=TRUE)
+	
+	generationSummary <- data.frame(GENERATION=generation,meanObservations)
+
+	summaryData <-rbind(summaryData,generationSummary)
+}
+print(summaryData)
