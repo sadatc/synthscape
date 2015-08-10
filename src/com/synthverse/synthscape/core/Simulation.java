@@ -146,7 +146,7 @@ public abstract class Simulation extends SimState implements Constants {
 
 	private SimulationUI uiObject;
 
-	private HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
+	public HashMap<SignalType, Broadcast> registeredBroadcasts = new HashMap<SignalType, Broadcast>();
 	private HashMap<SignalType, Broadcast> tmpBroadcasts = new HashMap<SignalType, Broadcast>();
 
 	public SummaryStatistics captureStats = new SummaryStatistics();

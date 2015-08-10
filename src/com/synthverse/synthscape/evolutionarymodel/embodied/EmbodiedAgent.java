@@ -17,11 +17,14 @@ import com.synthverse.stacks.Program;
 import com.synthverse.stacks.VirtualMachine;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Broadcast;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
+import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
+import com.synthverse.synthscape.core.SignalType;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Trait;
@@ -172,6 +175,82 @@ public class EmbodiedAgent extends Agent {
 		activeAgent.getVirtualMachine().step();
 		// synchronize location
 		synchronizeLocationFromActiveAgent();
+
+		if (Main.settings.DYNAMIC_EVENNESS && Main.settings.DE_SIGNAL_DEMAND_BASED_SWITCH) {
+			// passively listen for signals
+			passivelyListenForSignals();
+
+		}
+
+	}
+
+	/**
+	 * an agent can passively listen for signals, even if it doesn't use it
+	 * directly. However, it may be used in dynamic evenness experiments
+	 */
+	final public void passivelyListenForSignals() {
+		Event passiveListenEvent = null;
+		long senderId = 0;
+		long receiverId = this.embodiedAgentId;	
+		
+
+		// deal with broadcast, if any
+		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+			if (!sim.registeredBroadcasts.isEmpty()) {
+				for (Broadcast broadcast : sim.registeredBroadcasts.values()) {
+					switch (broadcast.getSignalType()) {
+						case SIGNAL_A :
+							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_A;
+							senderId = broadcast.getSenderAgent().getId();
+							
+							break;
+						case SIGNAL_B :
+							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_B;
+							senderId = broadcast.getSenderAgent().getId();
+							
+							break;
+						case SIGNAL_C :
+							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_C;
+							senderId = broadcast.getSenderAgent().getId();
+							
+							break;
+					}
+				}
+			}
+			sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+		}
+
+		// deal with unicast, if any
+		if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+			// constrained
+			Agent receivingAgent = this;
+
+			if (this.isProxyAgent) {
+				receivingAgent = this.getHostAgent();
+			}
+
+			if (receivingAgent.receivedUnicastA != null
+					&& receivingAgent.receivedUnicastA.getSignalType() == SignalType.SIGNAL_A) {
+				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_A;
+				senderId = receivedUnicastA.getSenderAgent().getId();
+				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			}
+			
+			if (receivingAgent.receivedUnicastB != null
+					&& receivingAgent.receivedUnicastB.getSignalType() == SignalType.SIGNAL_B) {
+				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_B;
+				senderId = receivedUnicastB.getSenderAgent().getId();
+				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			}
+			
+			if (receivingAgent.receivedUnicastC != null
+					&& receivingAgent.receivedUnicastC.getSignalType() == SignalType.SIGNAL_C) {
+				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_C;
+				senderId = receivedUnicastC.getSenderAgent().getId();
+				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			}
+			
+		}
 
 	}
 
@@ -379,7 +458,26 @@ public class EmbodiedAgent extends Agent {
 		return result;
 	}
 
-	public int evolve() {
+	final public int evolve() {
+		return evolveWithFitnessBasedSwitching();
+	}
+
+	final public int evolveNoSpeciesSwitch() {
+		if (generationsSinceLastMating < Integer.MAX_VALUE) {
+			generationsSinceLastMating++;
+		}
+
+		int returnValue = activeEvolver.evolve();
+
+		if (sim.matingEnabled) {
+			mateWithPotentiallyClosebyPartner();
+		}
+
+		return returnValue;
+
+	}
+
+	final public int evolveWithFitnessBasedSwitching() {
 
 		if (generationsSinceLastMating < Integer.MAX_VALUE) {
 			generationsSinceLastMating++;
@@ -396,9 +494,9 @@ public class EmbodiedAgent extends Agent {
 		if (Main.settings.DYNAMIC_EVENNESS) {
 			boolean shouldSwitchSpecies = false;
 			/*
-			D.p("evolving agent:" + this.getAgentId() + " type:" + this.activeSpecies + " fitness:"
-					+ this.fitnessStats.getMean());
-			*/
+			 * D.p("evolving agent:" + this.getAgentId() + " type:" +
+			 * this.activeSpecies + " fitness:" + this.fitnessStats.getMean());
+			 */
 			ancestorFitnessValues.add(this.fitnessStats.getMean());
 			if (ancestorFitnessValues.remainingCapacity() == 0) {
 				double mean = 0;

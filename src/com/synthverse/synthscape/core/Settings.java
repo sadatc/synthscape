@@ -120,7 +120,12 @@ public class Settings implements Constants {
 
 	public boolean DYNAMIC_EVENNESS = false;
 	public int DE_WINDOW_SIZE = 5;
-
+	public boolean DE_FITNESS_BASED_SWITCH = true;
+	public boolean DE_SIGNAL_DEMAND_BASED_SWITCH = true;
+	
+	
+	
+	
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;
 	public int lastLoggedGeneration = 0;
