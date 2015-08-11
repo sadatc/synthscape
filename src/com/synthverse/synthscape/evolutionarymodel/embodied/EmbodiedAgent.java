@@ -216,7 +216,9 @@ public class EmbodiedAgent extends Agent {
 					}
 				}
 			}
-			sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			if (passiveListenEvent != null) {
+				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			}
 		}
 
 		// deal with unicast, if any
@@ -246,6 +248,9 @@ public class EmbodiedAgent extends Agent {
 					&& receivingAgent.receivedUnicastC.getSignalType() == SignalType.SIGNAL_C) {
 				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_C;
 				senderId = receivedUnicastC.getSenderAgent().getId();
+				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+			}
+			if (passiveListenEvent != null) {
 				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
 			}
 
@@ -460,10 +465,10 @@ public class EmbodiedAgent extends Agent {
 	final public int evolve() {
 
 		if (Main.settings.DYNAMIC_EVENNESS) {
-			if (Main.settings.DE_RANDOM_SWITCH) {
-				return evolveWithRandomSwitching();
-			} else if (Main.settings.DE_SIGNAL_DEMAND_BASED_SWITCH) {
+			if (Main.settings.DE_SIGNAL_DEMAND_BASED_SWITCH) {
 				return evolveWithSignalSupplyDemandSwitching();
+			} else if (Main.settings.DE_RANDOM_SWITCH) {
+				return evolveWithRandomSwitching();
 			}
 		}
 
@@ -638,72 +643,105 @@ public class EmbodiedAgent extends Agent {
 		// decide if this agent should switch
 		if (Main.settings.DYNAMIC_EVENNESS) {
 
-			Species targetSpecies = null;
-
-			long signalA = 0;
-			long signalB = 0;
-			long signalC = 0;
-
-			if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-				signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_A);
-				signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_B);
-
-			} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-
-				signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_A);
-				signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_B);
+			boolean shouldSwitchSpecies = false;
+			/*
+			 * D.p("evolving agent:" + this.getAgentId() + " type:" +
+			 * this.activeSpecies + " fitness:" + this.fitnessStats.getMean());
+			 */
+			ancestorFitnessValues.add(this.fitnessStats.getMean());
+			if (ancestorFitnessValues.remainingCapacity() == 0) {
+				double mean = 0;
+				for (Double d : ancestorFitnessValues) {
+					if (!d.isNaN()) {
+						mean += d;
+					}
+				}
+				mean = mean / Main.settings.DE_WINDOW_SIZE;
+				if (mean != 0.0 && mean >= previousAncestorFitnessMean) {
+					// no change needed -- situation is same or improving
+					previousAncestorFitnessMean = mean;
+				} else {
+					// next generation should probably switch
+					if (sim.random.nextBoolean(0.5)) {
+						shouldSwitchSpecies = true;
+						// reset ancestor calculations so that
+						// we give the new species some boost
+						this.ancestorFitnessValues.clear();
+						previousAncestorFitnessMean = 0.0;
+					}
+				}
 
 			}
-			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
-				// 3-task problem
-				if (signalA == 0) {
-					targetSpecies = Species.DETECTOR;
-				} else if (signalB == 0) {
-					targetSpecies = Species.EXTRACTOR;
-				} else if (signalA > signalB) {
-					targetSpecies = Species.EXTRACTOR;
-				} else if (signalB > signalA) {
-					targetSpecies = Species.TRANSPORTER;
-				}
-			} else {
-				// 4-task problem
+			if (shouldSwitchSpecies) {
+
+				Species targetSpecies = null;
+
+				long signalA = 0;
+				long signalB = 0;
+				long signalC = 0;
+
 				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-					signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_C);
+					signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_A);
+					signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_B);
+
 				} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-					signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_C);
+
+					signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_A);
+					signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_B);
+
+				}
+				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+					// 3-task problem
+					if (signalA == 0) {
+						targetSpecies = Species.DETECTOR;
+					} else if (signalB == 0) {
+						targetSpecies = Species.EXTRACTOR;
+					} else if (signalA > signalB) {
+						targetSpecies = Species.EXTRACTOR;
+					} else if (signalB > signalA) {
+						targetSpecies = Species.TRANSPORTER;
+					}
+				} else {
+					// 4-task problem
+					if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+						signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_C);
+					} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+						signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_C);
+					}
+
+					if (signalA == 0) {
+						targetSpecies = Species.DETECTOR;
+					} else if (signalB == 0) {
+						targetSpecies = Species.EXTRACTOR;
+					} else if (signalC == 0) {
+						targetSpecies = Species.PROCESSOR;
+					} else if (signalA > signalB && signalA > signalC) {
+						targetSpecies = Species.EXTRACTOR;
+					} else if (signalB > signalA && signalB > signalC) {
+						targetSpecies = Species.PROCESSOR;
+					} else if (signalC > signalA && signalC > signalB) {
+						targetSpecies = Species.TRANSPORTER;
+					}
 				}
 
-				if (signalA == 0) {
-					targetSpecies = Species.DETECTOR;
-				} else if (signalB == 0) {
-					targetSpecies = Species.EXTRACTOR;
-				} else if (signalC == 0) {
-					targetSpecies = Species.PROCESSOR;
-				} else if (signalA > signalB && signalA > signalC) {
-					targetSpecies = Species.EXTRACTOR;
-				} else if (signalB > signalA && signalB > signalC) {
-					targetSpecies = Species.PROCESSOR;
-				} else if (signalC > signalA && signalC > signalB) {
-					targetSpecies = Species.TRANSPORTER;
+				if (targetSpecies != null && targetSpecies != this.species) {
+
+					// now do the actual switching
+					// first get the evolver
+					D.p("!!!!! When I grow up, I want to be a " + targetSpecies);
+					EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
+
+					targetEvolver.generation = activeEvolver.generation;
+					activeEvolver = targetEvolver;
+					this.species = targetSpecies;
+					this.activeSpecies = targetSpecies;
+
+					activeAgent = activeEvolver.getAgent(species, 0, 0);
+					activeAgent.setHostAgent(this);
+					this.isHostAgent = true;
+					activeAgent.isProxyAgent = true;
 				}
-			}
 
-			if (targetSpecies != null && targetSpecies != this.species) {
-
-				// now do the actual switching
-				// first get the evolver
-				D.p("!!!!! When I grow up, I want to be a " + targetSpecies);
-				EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
-
-				targetEvolver.generation = activeEvolver.generation;
-				activeEvolver = targetEvolver;
-				this.species = targetSpecies;
-				this.activeSpecies = targetSpecies;
-
-				activeAgent = activeEvolver.getAgent(species, 0, 0);
-				activeAgent.setHostAgent(this);
-				this.isHostAgent = true;
-				activeAgent.isProxyAgent = true;
 			}
 
 		}

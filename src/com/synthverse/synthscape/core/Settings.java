@@ -119,8 +119,8 @@ public class Settings implements Constants {
 	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
-	public int DE_WINDOW_SIZE = 5;
-	public boolean DE_RANDOM_SWITCH = true;
+	public int DE_WINDOW_SIZE = 10;
+	public boolean DE_RANDOM_SWITCH = false;
 	public boolean DE_SIGNAL_DEMAND_BASED_SWITCH = true;
 	
 	
