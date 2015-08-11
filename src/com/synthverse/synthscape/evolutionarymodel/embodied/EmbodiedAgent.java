@@ -191,8 +191,7 @@ public class EmbodiedAgent extends Agent {
 	final public void passivelyListenForSignals() {
 		Event passiveListenEvent = null;
 		long senderId = 0;
-		long receiverId = this.embodiedAgentId;	
-		
+		long receiverId = this.embodiedAgentId;
 
 		// deal with broadcast, if any
 		if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
@@ -202,17 +201,17 @@ public class EmbodiedAgent extends Agent {
 						case SIGNAL_A :
 							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_A;
 							senderId = broadcast.getSenderAgent().getId();
-							
+
 							break;
 						case SIGNAL_B :
 							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_B;
 							senderId = broadcast.getSenderAgent().getId();
-							
+
 							break;
 						case SIGNAL_C :
 							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_C;
 							senderId = broadcast.getSenderAgent().getId();
-							
+
 							break;
 					}
 				}
@@ -235,21 +234,21 @@ public class EmbodiedAgent extends Agent {
 				senderId = receivedUnicastA.getSenderAgent().getId();
 				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
 			}
-			
+
 			if (receivingAgent.receivedUnicastB != null
 					&& receivingAgent.receivedUnicastB.getSignalType() == SignalType.SIGNAL_B) {
 				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_B;
 				senderId = receivedUnicastB.getSenderAgent().getId();
 				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
 			}
-			
+
 			if (receivingAgent.receivedUnicastC != null
 					&& receivingAgent.receivedUnicastC.getSignalType() == SignalType.SIGNAL_C) {
 				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_C;
 				senderId = receivedUnicastC.getSenderAgent().getId();
 				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
 			}
-			
+
 		}
 
 	}
@@ -459,7 +458,17 @@ public class EmbodiedAgent extends Agent {
 	}
 
 	final public int evolve() {
-		return evolveWithFitnessBasedSwitching();
+
+		if (Main.settings.DYNAMIC_EVENNESS) {
+			if (Main.settings.DE_RANDOM_SWITCH) {
+				return evolveWithRandomSwitching();
+			} else if (Main.settings.DE_SIGNAL_DEMAND_BASED_SWITCH) {
+				return evolveWithSignalSupplyDemandSwitching();
+			}
+		}
+
+		return evolveNoSpeciesSwitch();
+
 	}
 
 	final public int evolveNoSpeciesSwitch() {
@@ -477,7 +486,7 @@ public class EmbodiedAgent extends Agent {
 
 	}
 
-	final public int evolveWithFitnessBasedSwitching() {
+	final public int evolveWithRandomSwitching() {
 
 		if (generationsSinceLastMating < Integer.MAX_VALUE) {
 			generationsSinceLastMating++;
@@ -604,6 +613,99 @@ public class EmbodiedAgent extends Agent {
 				activeAgent.isProxyAgent = true;
 
 			}
+		}
+
+		return returnValue;
+
+	}
+
+	final public int evolveWithSignalSupplyDemandSwitching() {
+
+		// FIXME: change all of this...
+
+		if (generationsSinceLastMating < Integer.MAX_VALUE) {
+			generationsSinceLastMating++;
+		}
+
+		int returnValue = activeEvolver.evolve();
+
+		if (sim.matingEnabled) {
+			mateWithPotentiallyClosebyPartner();
+		}
+
+		// above, everything evolved as normal..
+		// if dynamic evenness is enabled, we now
+		// decide if this agent should switch
+		if (Main.settings.DYNAMIC_EVENNESS) {
+
+			Species targetSpecies = null;
+
+			long signalA = 0;
+			long signalB = 0;
+			long signalC = 0;
+
+			if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+				signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_A);
+				signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_B);
+
+			} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+
+				signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_A);
+				signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_B);
+
+			}
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
+				// 3-task problem
+				if (signalA == 0) {
+					targetSpecies = Species.DETECTOR;
+				} else if (signalB == 0) {
+					targetSpecies = Species.EXTRACTOR;
+				} else if (signalA > signalB) {
+					targetSpecies = Species.EXTRACTOR;
+				} else if (signalB > signalA) {
+					targetSpecies = Species.TRANSPORTER;
+				}
+			} else {
+				// 4-task problem
+				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
+					signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_C);
+				} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
+					signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_C);
+				}
+
+				if (signalA == 0) {
+					targetSpecies = Species.DETECTOR;
+				} else if (signalB == 0) {
+					targetSpecies = Species.EXTRACTOR;
+				} else if (signalC == 0) {
+					targetSpecies = Species.PROCESSOR;
+				} else if (signalA > signalB && signalA > signalC) {
+					targetSpecies = Species.EXTRACTOR;
+				} else if (signalB > signalA && signalB > signalC) {
+					targetSpecies = Species.PROCESSOR;
+				} else if (signalC > signalA && signalC > signalB) {
+					targetSpecies = Species.TRANSPORTER;
+				}
+			}
+
+			if (targetSpecies != null && targetSpecies != this.species) {
+
+				// now do the actual switching
+				// first get the evolver
+				D.p("!!!!! When I grow up, I want to be a " + targetSpecies);
+				EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
+
+				targetEvolver.generation = activeEvolver.generation;
+				activeEvolver = targetEvolver;
+				this.species = targetSpecies;
+				this.activeSpecies = targetSpecies;
+
+				activeAgent = activeEvolver.getAgent(species, 0, 0);
+				activeAgent.setHostAgent(this);
+				this.isHostAgent = true;
+				activeAgent.isProxyAgent = true;
+			}
+
 		}
 
 		return returnValue;
