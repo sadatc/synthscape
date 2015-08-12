@@ -21,7 +21,6 @@ import com.synthverse.synthscape.core.Broadcast;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.Event;
 import com.synthverse.synthscape.core.EventStats;
-import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.InteractionMechanism;
 import com.synthverse.synthscape.core.ProblemComplexity;
 import com.synthverse.synthscape.core.SignalType;
@@ -75,6 +74,17 @@ public class EmbodiedAgent extends Agent {
 
 	public List<Program> partnerABuffer = new ArrayList<Program>();
 	public List<Program> partnerBBuffer = new ArrayList<Program>();
+
+	public EventStats passivelyReceivedSignals = new EventStats();
+	
+	public long passivelyReceivedBroadcastA = 0;
+	public long passivelyReceivedBroadcastB = 0;
+	public long passivelyReceivedBroadcastC = 0;
+	
+	public long passivelyReceivedUnicastA = 0;
+	public long passivelyReceivedUnicastB = 0;
+	public long passivelyReceivedUnicastC = 0;
+
 
 	protected long embodiedAgentId;
 
@@ -189,7 +199,7 @@ public class EmbodiedAgent extends Agent {
 	 * directly. However, it may be used in dynamic evenness experiments
 	 */
 	final public void passivelyListenForSignals() {
-		Event passiveListenEvent = null;
+		//Event passiveListenEvent = null;
 		long senderId = 0;
 		long receiverId = this.embodiedAgentId;
 
@@ -199,26 +209,33 @@ public class EmbodiedAgent extends Agent {
 				for (Broadcast broadcast : sim.registeredBroadcasts.values()) {
 					switch (broadcast.getSignalType()) {
 						case SIGNAL_A :
-							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_A;
+							//passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_A;
 							senderId = broadcast.getSenderAgent().getId();
-
+							if(senderId!=receiverId) {
+								passivelyReceivedBroadcastA++;
+							}
+							
 							break;
 						case SIGNAL_B :
-							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_B;
+							//passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_B;
 							senderId = broadcast.getSenderAgent().getId();
-
+							if(senderId!=receiverId) {
+								passivelyReceivedBroadcastB++;
+							}
+							
 							break;
 						case SIGNAL_C :
-							passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_C;
+							//passiveListenEvent = Event.PASSIVE_RECEIVE_BROADCAST_C;
 							senderId = broadcast.getSenderAgent().getId();
+							if(senderId!=receiverId) {
+								passivelyReceivedBroadcastC++;
+							}
 
 							break;
 					}
 				}
 			}
-			if (passiveListenEvent != null) {
-				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
-			}
+			
 		}
 
 		// deal with unicast, if any
@@ -232,26 +249,32 @@ public class EmbodiedAgent extends Agent {
 
 			if (receivingAgent.receivedUnicastA != null
 					&& receivingAgent.receivedUnicastA.getSignalType() == SignalType.SIGNAL_A) {
-				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_A;
+				//passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_A;
 				senderId = receivedUnicastA.getSenderAgent().getId();
-				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+
+				if (senderId != receiverId) {
+					passivelyReceivedUnicastA++;
+				}
 			}
 
 			if (receivingAgent.receivedUnicastB != null
 					&& receivingAgent.receivedUnicastB.getSignalType() == SignalType.SIGNAL_B) {
-				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_B;
+				//passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_B;
 				senderId = receivedUnicastB.getSenderAgent().getId();
-				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+				if (senderId != receiverId) {
+					passivelyReceivedUnicastB++;
+				}
+
 			}
 
 			if (receivingAgent.receivedUnicastC != null
 					&& receivingAgent.receivedUnicastC.getSignalType() == SignalType.SIGNAL_C) {
-				passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_C;
+				//passiveListenEvent = Event.PASSIVE_RECEIVE_UNICAST_C;
 				senderId = receivedUnicastC.getSenderAgent().getId();
-				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
-			}
-			if (passiveListenEvent != null) {
-				sim.recordEvent(this, passiveListenEvent, senderId, receiverId);
+				if (senderId != receiverId) {
+					passivelyReceivedUnicastC++;
+				}
+
 			}
 
 		}
@@ -681,13 +704,17 @@ public class EmbodiedAgent extends Agent {
 				long signalC = 0;
 
 				if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-					signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_A);
-					signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_B);
+					//signalA = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_BROADCAST_A);
+					//signalB = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_BROADCAST_B);
+					signalA = passivelyReceivedBroadcastA;
+					signalB = passivelyReceivedBroadcastB;
 
 				} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
 
-					signalA = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_A);
-					signalB = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_B);
+					//signalA = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_UNICAST_A);
+					//signalB = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_UNICAST_B);
+					signalA = passivelyReceivedUnicastA;
+					signalB = passivelyReceivedUnicastB;
 
 				}
 				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
@@ -704,9 +731,11 @@ public class EmbodiedAgent extends Agent {
 				} else {
 					// 4-task problem
 					if (interactionMechanisms.contains(InteractionMechanism.BROADCAST)) {
-						signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_BROADCAST_C);
+						//signalC = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_BROADCAST_C);
+						signalC = passivelyReceivedBroadcastC;
 					} else if (interactionMechanisms.contains(InteractionMechanism.UNICAST_CLOSEST_AGENT)) {
-						signalC = poolGenerationEventStats.getValue(Event.PASSIVE_RECEIVE_UNICAST_C);
+						//signalC = passivelyReceivedSignals.getValue(Event.PASSIVE_RECEIVE_UNICAST_C);
+						signalC = passivelyReceivedUnicastC;
 					}
 
 					if (signalA == 0) {
@@ -723,6 +752,10 @@ public class EmbodiedAgent extends Agent {
 						targetSpecies = Species.TRANSPORTER;
 					}
 				}
+
+				D.p("signalA=" + signalA);
+				D.p("signalB=" + signalB);
+				D.p("signalC=" + signalC);
 
 				if (targetSpecies != null && targetSpecies != this.species) {
 
@@ -742,10 +775,20 @@ public class EmbodiedAgent extends Agent {
 					activeAgent.isProxyAgent = true;
 				}
 
+		
 			}
 
 		}
 
+		//passivelyReceivedSignals.clear();
+		passivelyReceivedBroadcastA = 0;
+		passivelyReceivedBroadcastB = 0;
+		passivelyReceivedBroadcastC = 0;
+		
+		passivelyReceivedUnicastA = 0;
+		passivelyReceivedUnicastB = 0;
+		passivelyReceivedUnicastC = 0;
+		
 		return returnValue;
 
 	}
