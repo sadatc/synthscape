@@ -10,15 +10,25 @@ import com.synthverse.util.LogUtils;
 
 public class EventStats {
 
+	@Override
+	public String toString() {
+		String result = "[";
+
+		for (Event event : events) {
+			result += event.name() + ":" + eventCounterMap.get(event) + " ";
+		}
+		result += "]";
+
+		return result;
+	}
+
 	private static Logger logger = Logger.getLogger(EventStats.class.getName());
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
-	private EnumMap<Event, Long> eventCounterMap = new EnumMap<Event, Long>(
-			Event.class);
-	private EnumMap<EventType, Long> eventTypeCounterMap = new EnumMap<EventType, Long>(
-			EventType.class);
+	private EnumMap<Event, Long> eventCounterMap = new EnumMap<Event, Long>(Event.class);
+	private EnumMap<EventType, Long> eventTypeCounterMap = new EnumMap<EventType, Long>(EventType.class);
 
 	private Set<Event> events = EnumSet.noneOf(Event.class);
 	private Set<EventType> eventTypes = EnumSet.noneOf(EventType.class);
@@ -54,14 +64,12 @@ public class EventStats {
 	}
 
 	public long getValue(Event event) {
-		long result = eventCounterMap.containsKey(event) ? eventCounterMap
-				.get(event) : 0;
+		long result = eventCounterMap.containsKey(event) ? eventCounterMap.get(event) : 0;
 		return result;
 	}
 
 	public long getTypeValue(EventType type) {
-		long result = eventTypeCounterMap.containsKey(type) ? eventTypeCounterMap
-				.get(type) : 0;
+		long result = eventTypeCounterMap.containsKey(type) ? eventTypeCounterMap.get(type) : 0;
 		return result;
 	}
 
@@ -82,11 +90,9 @@ public class EventStats {
 		for (Event event : events) {
 			if (accumulatingStats.eventCounterMap.containsKey(event)) {
 				accumulatingStats.eventCounterMap.put(event,
-						accumulatingStats.eventCounterMap.get(event)
-								+ eventCounterMap.get(event));
+						accumulatingStats.eventCounterMap.get(event) + eventCounterMap.get(event));
 			} else {
-				accumulatingStats.eventCounterMap.put(event,
-						eventCounterMap.get(event));
+				accumulatingStats.eventCounterMap.put(event, eventCounterMap.get(event));
 				accumulatingStats.events.add(event);
 			}
 		}
@@ -94,11 +100,9 @@ public class EventStats {
 		for (EventType type : eventTypes) {
 			if (accumulatingStats.eventTypeCounterMap.containsKey(type)) {
 				accumulatingStats.eventTypeCounterMap.put(type,
-						accumulatingStats.eventTypeCounterMap.get(type)
-								+ eventTypeCounterMap.get(type));
+						accumulatingStats.eventTypeCounterMap.get(type) + eventTypeCounterMap.get(type));
 			} else {
-				accumulatingStats.eventTypeCounterMap.put(type,
-						eventTypeCounterMap.get(type));
+				accumulatingStats.eventTypeCounterMap.put(type, eventTypeCounterMap.get(type));
 				accumulatingStats.eventTypes.add(type);
 			}
 		}
