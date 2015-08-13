@@ -119,9 +119,11 @@ public class Settings implements Constants {
 	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
+	
 	public int DE_WINDOW_SIZE = 15;
-	public boolean DE_RANDOM_SWITCH = false;
-	public boolean DE_SIGNAL_DEMAND_BASED_SWITCH = true;
+	
+	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
+	
 	
 	
 	
@@ -174,7 +176,9 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("slr", "species level report [default: do not report at species level]"));
 
-		options.addOption(new Option("de", "use dynamic evenness [default: do not use dynamic evenness]"));
+		options.addOption(new Option("de_ar", "use dynamic evenness with random switch algo [default: do not use dynamic evenness]"));
+		
+		options.addOption(new Option("de_msd", "use dynamic evenness with msg supply demand algo[default: do not use dynamic evenness]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
@@ -568,7 +572,7 @@ public class Settings implements Constants {
 			}
 			printAndStore("JOB_NAME = " + JOB_NAME);
 
-			if (line.hasOption("de")) {
+			if (line.hasOption("de_ar") || line.hasOption("de_msd")) {
 				boolean validOptions = false;
 				Set<Species> parsedSpecies = parseSpeciesString(MODEL_SPECIES);
 
@@ -592,6 +596,16 @@ public class Settings implements Constants {
 					D.p("Dynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
 					System.exit(1);
 				}
+				
+				// message based is only valied with broadcast
+				if(line.hasOption("de_msd")) {
+					if (!MODEL_INTERACTIONS.toLowerCase().contains("broadcast")) {
+						D.p("Dynamic Evenness that uses the algorithm based on message based supply & demand works with BROADCASTS only!");
+						System.exit(1);
+					}
+				}
+				
+				
 
 			}
 			printAndStore("DYNAMIC_EVENNESS = " + DYNAMIC_EVENNESS);
