@@ -1,0 +1,54 @@
+source("converge_csvs.R")
+observation
+observations
+hist(observations$RATE_COMMUNICATION)
+hist(observations$CAPTURES_BEST_CASE)
+observations <- aggregateData[aggregateData$GENERATION==50,3:numDataCols]
+hist(observations$CAPTURES_BEST_CASE)
+hist(observations$RATE_COMMUNICATION)
+hist(observations$TOT_FITNESS_MEAN)
+observations <- aggregateData[aggregateData$GENERATION==250,3:numDataCols]
+hist(observations$TOT_FITNESS_MEAN)
+hist(observations$RATE_COMMUNICATION)
+hist(observations$CAPTURES_BEST_CASE)
+observations <- aggregateData[aggregateData$GENERATION==750,3:numDataCols]
+hist(observations$CAPTURES_BEST_CASE)
+hist(observations$RATE_COMMUNICATION)
+hist(observations$TOT_FITNESS_MEAN)
+source("converge_csvs.R")
+processCSVs
+ls
+ls()
+class(processCSVS)
+processCSVS
+source("converge_csvs.R")
+rcmdr
+rcmdr()
+Rcmdr()
+load("Rcmdr")
+library(Rcmdr)
+csvData <- read.csv("~/Dropbox/evenness_random_switch.csv", header=TRUE)
+csvData
+names(csvData)
+plot(csvData$NUM_DETECTORS)
+plot(csvData$NUM_DETECTORS,csvData$NUM_EXTRACTORS)
+hist(csvData$NUM_DETECTORS)
+hist(csvData$NUM_EXTRACTORS)
+hist(csvData$NUM_TRANSPORTERS)
+hist(csvData$CAPTURES_BEST_CASE)
+t <- csvData[csvData$CAPTURES_BEST_CASE=10]
+t <- csvData[csvData$CAPTURES_BEST_CASE==10]
+t <- csvData[csvData$CAPTURES_BEST_CASE==10,]
+t
+hist(t$NUM_DETECTORS)
+hist(t$NUM_EXTRACTORS)
+hist(t$NUM_TRANSPORTERS)
+t <- csvData[csvData$CAPTURES_BEST_CASE==15,]
+t
+hist(t$NUM_DETECTORS)
+hist(t$NUM_EXTRACTORS)
+hist(t$NUM_TRANSPORTERS)
+hist(t$NUM_DETECTORS)
+hist(t$NUM_DETECTORS)
+hist(t$NUM_TRANSPORTERS)
+hist(t$NUM_EXTRACTORS)
