@@ -58,5 +58,5 @@ processCSVS <-function(directory) {
 
 
 ### Main Program
-#directory <- "/Users/sadat/richness_data/data/rich_broad_bi"
+directory <- "/Users/sadat/richness_data/data/rich_broad_bi"
 print(processCSVS(directory))
