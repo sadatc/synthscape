@@ -119,15 +119,13 @@ public class Settings implements Constants {
 	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
-	
-	public int DE_WINDOW_SIZE = 15;
-	
+
+	public int DE_WINDOW_SIZE = 5;
+
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
-	
-	
-	
-	
-	
+
+	public Environment ENVIRONMENT = Environment.RANDOM;
+
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;
 	public int lastLoggedGeneration = 0;
@@ -151,12 +149,11 @@ public class Settings implements Constants {
 	public BridgeState __bridgeState = null;
 
 	public long __animationDelay = Constants.SHORT_PAUSE;
-	
+
 	public int __numDetectors = 0;
 	public int __numExtractors = 0;
 	public int __numTransporters = 0;
 	public int __numProcessors = 0;
-	
 
 	private Settings() {
 
@@ -176,9 +173,13 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("slr", "species level report [default: do not report at species level]"));
 
-		options.addOption(new Option("de_ar", "use dynamic evenness with random switch algo [default: do not use dynamic evenness]"));
-		
-		options.addOption(new Option("de_msd", "use dynamic evenness with msg supply demand algo[default: do not use dynamic evenness]"));
+		options.addOption(new Option("de_ar",
+				"use dynamic evenness with random switch algo [default: do not use dynamic evenness]"));
+
+		options.addOption(new Option("de_msd",
+				"use dynamic evenness with msg supply demand algo[default: do not use dynamic evenness]"));
+
+		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
@@ -305,6 +306,11 @@ public class Settings implements Constants {
 				SHOW_GRAPHICS = true;
 			}
 			printAndStore("SHOW_GRAPHICS = " + SHOW_GRAPHICS);
+
+			if (line.hasOption("env_diff")) {
+				ENVIRONMENT = Environment.DIFFICULT;
+			}
+			printAndStore("ENVIRONMENT = " + ENVIRONMENT);
 
 			if (line.hasOption("no_randomization")) {
 				RANDOMIZE_SIM_SEED = false;
@@ -583,10 +589,9 @@ public class Settings implements Constants {
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
-					} else
-						if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
-								&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
-								&& parsedSpecies.contains(Species.TRANSPORTER)) {
+					} else if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
+							&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
+							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
 					}
@@ -596,23 +601,26 @@ public class Settings implements Constants {
 					D.p("Dynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
 					System.exit(1);
 				}
-				
+
 				// message based is only valied with broadcast
-				if(line.hasOption("de_msd")) {
+				if (line.hasOption("de_msd")) {
 					if (!MODEL_INTERACTIONS.toLowerCase().contains("broadcast")) {
 						D.p("Dynamic Evenness that uses the algorithm based on message based supply & demand works with BROADCASTS only!");
 						System.exit(1);
 					}
 				}
-				
-				
 
 			}
 			printAndStore("DYNAMIC_EVENNESS = " + DYNAMIC_EVENNESS);
 
 			// some calculated values
-			PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
-			PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
+			if (ENVIRONMENT == Environment.DIFFICULT) {
+				PRIMARY_COLLECTION_SITE_X = 0;
+				PRIMARY_COLLECTION_SITE_Y = 0;
+			} else {
+				PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
+				PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
+			}
 			SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
 
 			printAndStore("PRIMARY_COLLECTION_SITE_X = " + PRIMARY_COLLECTION_SITE_X);

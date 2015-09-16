@@ -470,11 +470,86 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void initEnvironment() {
-		initPrimaryCollectionSite();
-		initNonPrimaryCollectionSites();
-		initObstacles();
-		initResources();
+		if (Main.settings.ENVIRONMENT == Environment.DIFFICULT) {
+			// collection sites are in 4 corners
+			// obstacles are set all around resources with a path
+			initDifficultEnvironment();
+
+		} else {
+			initPrimaryCollectionSite();
+			initNonPrimaryCollectionSites();
+			initObstacles();
+			initResources();
+
+		}
 		resetCollectionCounts();
+	}
+
+	protected void initDifficultEnvironment() {
+		// PRIMARY_COLLECTION_SITE = (0,0)
+		// this is the north-west corner
+		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
+		GridUtils.set(collisionGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
+		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
+
+		// now we setup for north-east, south-west and south-east corner
+		GridUtils.set(collectionSiteGrid, gridWidth - 1, 0, true);
+		GridUtils.set(collisionGrid, gridWidth - 1, 0, true);
+		collectionSiteList.add(new Int2D(gridWidth - 1, 0));
+
+		GridUtils.set(collectionSiteGrid, 0, gridHeight - 1, true);
+		GridUtils.set(collisionGrid, 0, gridHeight - 1, true);
+		collectionSiteList.add(new Int2D(0, gridHeight - 1));
+
+		GridUtils.set(collectionSiteGrid, gridWidth - 1, gridHeight - 1, true);
+		GridUtils.set(collisionGrid, gridWidth - 1, gridHeight - 1, true);
+		collectionSiteList.add(new Int2D(gridWidth - 1, gridHeight - 1));
+
+		// now box in an area
+		int startX = (gridWidth - 6) / 2;
+		int startY = (gridHeight - 6) / 2;
+		int x = startX;
+		int y = startY;
+		for (int i = 0; i < 6; i++) {
+			if (i == 2 || i == 3) {
+				// this leaves an opening at the top
+			} else {
+				GridUtils.set(collisionGrid, x, y, true);
+				GridUtils.set(obstacleGrid, x, y, true);
+			}
+			x++;
+		}
+		for (int j = 0; j < 4; j++) {
+			y++;
+			x = startX;
+			GridUtils.set(collisionGrid, x, y, true);
+			GridUtils.set(obstacleGrid, x, y, true);
+			x++;
+			for (int i = 0; i < 4; i++) {
+				GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
+				resourceStatusArray[x][y].state = ResourceState.RAW;
+				resourceStatusArray[x][y].originX = x;
+				resourceStatusArray[x][y].originY = y;
+				resourceStatusArray[x][y].currentX = x;
+				resourceStatusArray[x][y].currentY = y;
+				GridUtils.set(collisionGrid, x, y, true);
+				x++;
+			}
+			GridUtils.set(collisionGrid, x, y, true);
+			GridUtils.set(obstacleGrid, x, y, true);
+		}
+		y++;
+		x = startX;
+		for (int i = 0; i < 6; i++) {
+			if (i == 2 || i == 3) {
+				// this leaves an opening in the bottom
+			} else {
+				GridUtils.set(collisionGrid, x, y, true);
+				GridUtils.set(obstacleGrid, x, y, true);
+			}
+			x++;
+		}
+
 	}
 
 	public static ResourceStatus[][] copyResourceStatusArray(ResourceStatus[][] input) {
