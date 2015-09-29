@@ -121,8 +121,8 @@ public class Settings implements Constants {
 	public boolean DYNAMIC_EVENNESS = false;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
-	
-	public int DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = 3;
+
+	public int DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = 5;
 
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
@@ -180,6 +180,16 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("de_msd",
 				"use dynamic evenness with msg supply demand algo[default: do not use dynamic evenness]"));
+
+		options.addOption(OptionBuilder.withArgName("degofp").hasArg().withType(Integer.class)
+				.withDescription("dynamic evenness param: gen. to observe fitness performance ["
+						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE + "]")
+				.create("degofp"));
+
+		options.addOption(OptionBuilder.withArgName("degosc").hasArg().withType(Integer.class)
+				.withDescription("dynamic evenness param: gen. to observe signal changes ["
+						+ DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES + "]")
+				.create("degosc"));
 
 		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
 
@@ -614,6 +624,23 @@ public class Settings implements Constants {
 
 			}
 			printAndStore("DYNAMIC_EVENNESS = " + DYNAMIC_EVENNESS);
+
+			if (DYNAMIC_EVENNESS) {
+				if (line.hasOption("degofp")) {
+					DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = new Integer(line.getOptionValue("degofp"))
+							.intValue();
+
+				}
+				printAndStore("DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = "
+						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
+
+				if (line.hasOption("degosc")) {
+					DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = new Integer(line.getOptionValue("degosc")).intValue();
+
+				}
+				printAndStore("DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = " + DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
+
+			}
 
 			// some calculated values
 			if (ENVIRONMENT == Environment.DIFFICULT) {
