@@ -120,7 +120,9 @@ public class Settings implements Constants {
 
 	public boolean DYNAMIC_EVENNESS = false;
 
-	public int DE_WINDOW_SIZE = 5;
+	public int DE_WINDOW_SIZE1 = 50;
+	
+	public int DE_WINDOW_SIZE2 = 3;
 
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
