@@ -55,16 +55,16 @@ public class EmbodiedAgent extends Agent {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
-	SummaryStatistics ancestorFitnessStats = new SummaryStatistics();
+	DescriptiveStatistics ancestorFitnessStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE1);
 	double previousAncestorFitnessMean = 0.0;
 
-	SummaryStatistics ancestorSignalAStats = new SummaryStatistics();
+	DescriptiveStatistics ancestorSignalAStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
 	double previousMeanA = 0;
 
-	SummaryStatistics ancestorSignalBStats = new SummaryStatistics();
+	DescriptiveStatistics ancestorSignalBStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
 	double previousMeanB = 0;
 
-	SummaryStatistics ancestorSignalCStats = new SummaryStatistics();
+	DescriptiveStatistics ancestorSignalCStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
 	double previousMeanC = 0;
 
 	public EmbodiedAgentEvolver activeEvolver;
@@ -499,22 +499,18 @@ public class EmbodiedAgent extends Agent {
 			boolean shouldSwitchSpecies = false;
 			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
 
-			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE) {
+			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE1) {
 				double mean = ancestorFitnessStats.getMean();
 				if (mean != 0.0 && mean >= previousAncestorFitnessMean) {
 					// no change needed -- situation is same or improving
 					previousAncestorFitnessMean = mean;
 				} else {
-					// next generation should probably switch
-					if (sim.random.nextBoolean(0.5)) {
+					// next generation should switch with some probability
+					if (sim.random.nextBoolean(0.1)) {
 						shouldSwitchSpecies = true;
 						previousAncestorFitnessMean = 0.0;
 					}
 				}
-				// clear up the stat counters so we can begin
-				// gathering fresh stats again from next generation
-				ancestorFitnessStats.clear();
-
 			}
 			if (shouldSwitchSpecies) {
 				// now do a species switch...
@@ -630,9 +626,16 @@ public class EmbodiedAgent extends Agent {
 			ancestorSignalAStats.addValue(passivelyReceivedBroadcastA);
 			ancestorSignalBStats.addValue(passivelyReceivedBroadcastB);
 			ancestorSignalCStats.addValue(passivelyReceivedBroadcastC);
+			/*
+			 * D.p(this.species.toString() + this.embodiedAgentId +
+			 * " fitness.mean=" + this.fitnessStats.getMean() + " s.A=" +
+			 * passivelyReceivedBroadcastA + " s.B=" +
+			 * passivelyReceivedBroadcastB + " s.C=" +
+			 * passivelyReceivedBroadcastC);
+			 */
 
 			// this forces an evaluation every DE_WINDOW_SIZE generations
-			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE) {
+			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE1) {
 				// calculate the mean fitness of current window
 				double fitnessMean = ancestorFitnessStats.getMean();
 
@@ -645,29 +648,11 @@ public class EmbodiedAgent extends Agent {
 					previousMeanA = ancestorSignalAStats.getMean();
 					previousMeanB = ancestorSignalBStats.getMean();
 					previousMeanC = ancestorSignalCStats.getMean();
-
-					// reset all stats
-					ancestorFitnessStats.clear();
-					ancestorSignalAStats.clear();
-					ancestorSignalBStats.clear();
-					ancestorSignalCStats.clear();
-
 				} else {
 					// conditions didn't improve...
 					// either switch or reset stats
-					if (sim.random.nextBoolean(0.50)) {
+					if (sim.random.nextBoolean(0.25)) {
 						shouldSwitchSpecies = true;
-						// reset ancestor calculations so that
-						// we give the new species some boost
-						previousAncestorFitnessMean = 0.0;
-						ancestorFitnessStats.clear();
-
-					} else {
-						// reset all stats
-						ancestorFitnessStats.clear();
-						ancestorSignalAStats.clear();
-						ancestorSignalBStats.clear();
-						ancestorSignalCStats.clear();
 					}
 
 				}
@@ -682,9 +667,12 @@ public class EmbodiedAgent extends Agent {
 				double currentMeanB = ancestorSignalBStats.getMean();
 				double currentMeanC = ancestorSignalCStats.getMean();
 
-				D.p("currentMeanA=" + currentMeanA + " previousMeanA=" + previousMeanA);
-				D.p("currentMeanB=" + currentMeanB + " previousMeanB=" + previousMeanB);
-				D.p("currentMeanC=" + currentMeanC + " previousMeanC=" + previousMeanC);
+				// D.p("currentMeanA=" + currentMeanA + " previousMeanA=" +
+				// previousMeanA);
+				// D.p("currentMeanB=" + currentMeanB + " previousMeanB=" +
+				// previousMeanB);
+				// D.p("currentMeanC=" + currentMeanC + " previousMeanC=" +
+				// previousMeanC);
 
 				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
 					// 3-task problem
@@ -711,7 +699,7 @@ public class EmbodiedAgent extends Agent {
 						// a++ and b++
 						targetSpecies = Species.TRANSPORTER;
 					} else if (currentMeanA < previousMeanA && currentMeanB < previousMeanB) {
-						// a++ and b++
+						// a-- and b--
 						targetSpecies = Species.DETECTOR;
 					}
 
@@ -721,10 +709,10 @@ public class EmbodiedAgent extends Agent {
 				}
 
 				if (targetSpecies != null && targetSpecies != this.species) {
-
+					// YES SWITCHING
 					// now do the actual switching
 					// first get the evolver
-					D.p("!!! SWITCHING TO SPECIES:::  " + targetSpecies);
+					D.p(this.species.toString() + this.embodiedAgentId + "is SWITCHING TO  ===>  " + targetSpecies);
 					EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
 
 					targetEvolver.generation = activeEvolver.generation;
@@ -736,17 +724,30 @@ public class EmbodiedAgent extends Agent {
 					activeAgent.setHostAgent(this);
 					this.isHostAgent = true;
 					activeAgent.isProxyAgent = true;
+
+					// since we have switched, we reset all counters
+
+					previousMeanA = 0;
+					previousMeanB = 0;
+					previousMeanC = 0;
+					previousAncestorFitnessMean = 0;
+
+					// reset all stat counters
+					ancestorFitnessStats.clear();
+					ancestorSignalAStats.clear();
+					ancestorSignalBStats.clear();
+					ancestorSignalCStats.clear();
+
+				} else {
+					// NOT SWITCHING
+
+					previousMeanA = ancestorSignalAStats.getMean();
+					previousMeanB = ancestorSignalBStats.getMean();
+					previousMeanC = ancestorSignalCStats.getMean();
+
+					// how about preserving previous fitness stats
+
 				}
-
-				previousMeanA = ancestorSignalAStats.getMean();
-				previousMeanB = ancestorSignalBStats.getMean();
-				previousMeanC = ancestorSignalCStats.getMean();
-
-				// reset all stats
-				ancestorFitnessStats.clear();
-				ancestorSignalAStats.clear();
-				ancestorSignalBStats.clear();
-				ancestorSignalCStats.clear();
 
 			}
 
