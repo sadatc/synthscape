@@ -50,6 +50,7 @@ import sim.util.Int2D;
 public class EmbodiedAgent extends Agent {
 
 	private static Logger logger = Logger.getLogger(EmbodiedAgent.class.getName());
+
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
@@ -182,7 +183,7 @@ public class EmbodiedAgent extends Agent {
 		activeAgent = activeEvolver.getAgent(species, newX, newY);
 		activeAgent.setHostAgent(this);
 		this.isHostAgent = true;
-		activeAgent.isProxyAgent = true;;
+		activeAgent.isProxyAgent = true;
 
 	}
 
@@ -214,33 +215,33 @@ public class EmbodiedAgent extends Agent {
 		if (!sim.registeredBroadcasts.isEmpty()) {
 			for (Broadcast broadcast : sim.registeredBroadcasts.values()) {
 				switch (broadcast.getSignalType()) {
-					case SIGNAL_A :
-						// passiveListenEvent =
-						// Event.PASSIVE_RECEIVE_BROADCAST_A;
-						senderId = broadcast.getSenderAgent().getId();
-						if (senderId != receiverId) {
-							passivelyReceivedBroadcastA++;
-						}
+				case SIGNAL_A:
+					// passiveListenEvent =
+					// Event.PASSIVE_RECEIVE_BROADCAST_A;
+					senderId = broadcast.getSenderAgent().getId();
+					if (senderId != receiverId) {
+						passivelyReceivedBroadcastA++;
+					}
 
-						break;
-					case SIGNAL_B :
-						// passiveListenEvent =
-						// Event.PASSIVE_RECEIVE_BROADCAST_B;
-						senderId = broadcast.getSenderAgent().getId();
-						if (senderId != receiverId) {
-							passivelyReceivedBroadcastB++;
-						}
+					break;
+				case SIGNAL_B:
+					// passiveListenEvent =
+					// Event.PASSIVE_RECEIVE_BROADCAST_B;
+					senderId = broadcast.getSenderAgent().getId();
+					if (senderId != receiverId) {
+						passivelyReceivedBroadcastB++;
+					}
 
-						break;
-					case SIGNAL_C :
-						// passiveListenEvent =
-						// Event.PASSIVE_RECEIVE_BROADCAST_C;
-						senderId = broadcast.getSenderAgent().getId();
-						if (senderId != receiverId) {
-							passivelyReceivedBroadcastC++;
-						}
+					break;
+				case SIGNAL_C:
+					// passiveListenEvent =
+					// Event.PASSIVE_RECEIVE_BROADCAST_C;
+					senderId = broadcast.getSenderAgent().getId();
+					if (senderId != receiverId) {
+						passivelyReceivedBroadcastC++;
+					}
 
-						break;
+					break;
 				}
 			}
 		}
@@ -386,14 +387,14 @@ public class EmbodiedAgent extends Agent {
 
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
-				case DETECTED_EXTRACTED_RESOURCE :
-				case DETECTED_RAW_RESOURCE :
-				case DETECTED_PROCESSED_RESOURCE :
-				case RECEIVED_DETECTOR_REWARDS :
-					result += activeAgent.eventStats.getValue(event);
-					break;
-				default :
-					break;
+			case DETECTED_EXTRACTED_RESOURCE:
+			case DETECTED_RAW_RESOURCE:
+			case DETECTED_PROCESSED_RESOURCE:
+			case RECEIVED_DETECTOR_REWARDS:
+				result += activeAgent.eventStats.getValue(event);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -405,12 +406,12 @@ public class EmbodiedAgent extends Agent {
 
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
-				case RECEIVED_EXTRACTOR_REWARDS :
-				case EXTRACTED_RESOURCE :
-					result += activeAgent.eventStats.getValue(event);
-					break;
-				default :
-					break;
+			case RECEIVED_EXTRACTOR_REWARDS:
+			case EXTRACTED_RESOURCE:
+				result += activeAgent.eventStats.getValue(event);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -422,12 +423,12 @@ public class EmbodiedAgent extends Agent {
 
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
-				case RECEIVED_PROCESSOR_REWARDS :
-				case PROCESSED_RESOURCE :
-					result += activeAgent.eventStats.getValue(event);
-					break;
-				default :
-					break;
+			case RECEIVED_PROCESSOR_REWARDS:
+			case PROCESSED_RESOURCE:
+				result += activeAgent.eventStats.getValue(event);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -440,11 +441,11 @@ public class EmbodiedAgent extends Agent {
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
 
-				case COLLECTED_RESOURCE :
-					result += activeAgent.eventStats.getValue(event);
-					break;
-				default :
-					break;
+			case COLLECTED_RESOURCE:
+				result += activeAgent.eventStats.getValue(event);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -584,7 +585,7 @@ public class EmbodiedAgent extends Agent {
 
 				// now do the actual switching
 				// first get the evolver
-				
+
 				EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
 
 				targetEvolver.generation = activeEvolver.generation;
@@ -660,7 +661,7 @@ public class EmbodiedAgent extends Agent {
 						// we give the new species some boost
 						previousAncestorFitnessMean = 0.0;
 						ancestorFitnessStats.clear();
-					
+
 					} else {
 						// reset all stats
 						ancestorFitnessStats.clear();
@@ -668,7 +669,7 @@ public class EmbodiedAgent extends Agent {
 						ancestorSignalBStats.clear();
 						ancestorSignalCStats.clear();
 					}
-					
+
 				}
 
 			}
