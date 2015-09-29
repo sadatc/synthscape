@@ -59,13 +59,13 @@ public class EmbodiedAgent extends Agent {
 			Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
 	double previousAncestorFitnessMean = 0.0;
 
-	DescriptiveStatistics ancestorSignalAStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
+	DescriptiveStatistics ancestorSignalAStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
 	double previousMeanA = 0;
 
-	DescriptiveStatistics ancestorSignalBStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
+	DescriptiveStatistics ancestorSignalBStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
 	double previousMeanB = 0;
 
-	DescriptiveStatistics ancestorSignalCStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
+	DescriptiveStatistics ancestorSignalCStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
 	double previousMeanC = 0;
 
 	public EmbodiedAgentEvolver activeEvolver;

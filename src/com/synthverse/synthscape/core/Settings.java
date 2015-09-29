@@ -122,7 +122,7 @@ public class Settings implements Constants {
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
 	
-	public int DE_WINDOW_SIZE2 = 3;
+	public int DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = 3;
 
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
