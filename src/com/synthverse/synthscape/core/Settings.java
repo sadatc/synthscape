@@ -120,7 +120,7 @@ public class Settings implements Constants {
 
 	public boolean DYNAMIC_EVENNESS = false;
 
-	public int DE_WINDOW_SIZE1 = 50;
+	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
 	
 	public int DE_WINDOW_SIZE2 = 3;
 

@@ -55,7 +55,8 @@ public class EmbodiedAgent extends Agent {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
-	DescriptiveStatistics ancestorFitnessStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE1);
+	DescriptiveStatistics ancestorFitnessStats = new DescriptiveStatistics(
+			Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
 	double previousAncestorFitnessMean = 0.0;
 
 	DescriptiveStatistics ancestorSignalAStats = new DescriptiveStatistics(Main.settings.DE_WINDOW_SIZE2);
@@ -499,7 +500,7 @@ public class EmbodiedAgent extends Agent {
 			boolean shouldSwitchSpecies = false;
 			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
 
-			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE1) {
+			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
 				double mean = ancestorFitnessStats.getMean();
 				if (mean != 0.0 && mean >= previousAncestorFitnessMean) {
 					// no change needed -- situation is same or improving
@@ -635,7 +636,7 @@ public class EmbodiedAgent extends Agent {
 			 */
 
 			// this forces an evaluation every DE_WINDOW_SIZE generations
-			if (ancestorFitnessStats.getN() >= Main.settings.DE_WINDOW_SIZE1) {
+			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
 				// calculate the mean fitness of current window
 				double fitnessMean = ancestorFitnessStats.getMean();
 
