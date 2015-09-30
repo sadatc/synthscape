@@ -96,29 +96,29 @@ while [  $COUNTER -le ${EXPERIMENTS} ]; do
 	# actual qsub jobs
 	echo "scheduling batch : ${COUNTER}"
 	
-	echo "scheduling evn_brd_50_50_pln experiments"
-	qsub -N evn_brd_50_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 50 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_50_50_pln experiments"
+	qsub -N evn_50_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 50 -degosc 50 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_50_5_pln experiments"
-	qsub -N evn_brd_50_5_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 50 -degosc 5 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_50_5_pln experiments"
+	qsub -N evn_50_5_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 50 -degosc 5 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_5_50_pln experiments"
-	qsub -N evn_brd_5_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_5_50_pln experiments"
+	qsub -N evn_5_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_5_5_pln experiments"
-	qsub -N evn_brd_5_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_5_5_pln experiments"
+	qsub -N evn_5_5_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -de_msd -degofp 5 -degosc 5 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_50_50_dff experiments"
-	qsub -N evn_brd_50_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 50 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_50_50_dff experiments"
+	qsub -N evn_50_50_dff -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 50 -degosc 50 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_50_5_dff experiments"
-	qsub -N evn_brd_50_5_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter'  -env_diff -de_msd -degofp 50 -degosc 5 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_50_5_dff experiments"
+	qsub -N evn_50_5_dff -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter'  -env_diff -de_msd -degofp 50 -degosc 5 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_5_50_dff experiments"
-	qsub -N evn_brd_5_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_5_50_dff experiments"
+	qsub -N evn_5_50_dff -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
 
-	echo "scheduling evn_brd_5_5_dff experiments"
-	qsub -N evn_brd_5_50_pln -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 5 -degosc 50 -repeat ${SIMS}" qsub_script.sh
+	echo "scheduling evn_5_5_dff experiments"
+	qsub -N evn_5_5_dff -v SERVER=${SERVER},SIM_PARAMS="-model embodied -int broadcast -species 'detector,extractor,transporter' -env_diff -de_msd -degofp 5 -degosc 5 -repeat ${SIMS}" qsub_script.sh
 
 
 
