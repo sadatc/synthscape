@@ -2,7 +2,8 @@
 MAX_GENERATIONS <-999
 
 CSV_FIELDS_TO_GRAB <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
-	"TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION")
+	"TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION","NUM_DETECTORS",
+	"NUM_EXTRACTORS","NUM_TRANSPORTERS")
 
 FIELDS_TO_CHECK_FOR_NORMALITY <- CSV_FIELDS_TO_GRAB[-1] # just skip generations
 
@@ -16,8 +17,8 @@ processCSVS <-function(directory) {
 	aggregateData <- data.frame()
 
 	aggregatedFiles <- 0
-	#for(i in 1:length(csvFiles)){
-	for(i in 1:10){
+	for(i in 1:length(csvFiles)){
+	#for(i in 1:10){
 		csvFile <- paste(directory,csvFiles[i],sep="/") # concats
 		csvFileData <- read.csv(csvFile, header=TRUE)
  
@@ -58,5 +59,5 @@ processCSVS <-function(directory) {
 
 
 ### Main Program
-directory <- "/Users/sadat/richness_data/data/rich_broad_bi"
+directory <- "/Users/sadat/evenness_data/data/evn_50_50_dff"
 print(processCSVS(directory))
