@@ -366,13 +366,10 @@ public class EmbodiedAgent extends Agent {
 	final public int evolve() {
 
 		if (Main.settings.DYNAMIC_EVENNESS) {
-
 			return evolveWithProliferationOfFittest();
-
+		} else {
+			return evolveNoSpeciesSwitch();
 		}
-
-		return evolveNoSpeciesSwitch();
-
 	}
 
 	final public int evolveNoSpeciesSwitch() {
@@ -464,8 +461,6 @@ public class EmbodiedAgent extends Agent {
 		}
 		return returnValue;
 	}
-
-	
 
 	public int getGeneration() {
 		return activeEvolver.getGeneration();
