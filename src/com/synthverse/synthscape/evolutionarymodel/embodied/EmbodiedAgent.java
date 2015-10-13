@@ -84,7 +84,7 @@ public class EmbodiedAgent extends Agent {
 	protected long embodiedAgentId;
 
 	public double computedAlphaDistance;
-	
+
 	public boolean isProgenitor = true;
 
 	public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
@@ -97,20 +97,7 @@ public class EmbodiedAgent extends Agent {
 		setPoolSize(poolSize);
 
 		try {
-			if (Main.settings.DYNAMIC_EVENNESS) {
-				// create evolvers for every species
-				for (Species mapSpecies : simulation.speciesComposition) {
-
-					EmbodiedAgentEvolver mapEvolver = new EmbodiedAgentEvolver(this, simulation, agentFactory,
-							mapSpecies);
-					this.speciesEvolverMap.put(mapSpecies, mapEvolver);
-				}
-				activeEvolver = speciesEvolverMap.get(activeSpecies);
-				logger.info("activeSpecies set to:" + activeSpecies);
-
-			} else {
-				activeEvolver = new EmbodiedAgentEvolver(this, simulation, agentFactory, species);
-			}
+			activeEvolver = new EmbodiedAgentEvolver(this, simulation, agentFactory, species);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,20 +120,7 @@ public class EmbodiedAgent extends Agent {
 		embodiedAgentId = _optimizationEmbodiedAgentCounter;
 		setPoolSize(poolSize);
 		try {
-			if (Main.settings.DYNAMIC_EVENNESS) {
-				// create evolvers for every species
-				for (Species mapSpecies : sim.speciesComposition) {
-					D.p("dynamic evenness: creating species evolver for species:" + mapSpecies);
-					EmbodiedAgentEvolver mapEvolver = new EmbodiedAgentEvolver(this, sim, agentFactory, mapSpecies);
-					this.speciesEvolverMap.put(mapSpecies, mapEvolver);
-				}
-				activeEvolver = speciesEvolverMap.get(activeSpecies);
-				D.p("activeEvolver set to:" + activeEvolver);
-				D.p("activeSpecies set to:" + activeSpecies);
-
-			} else {
-				activeEvolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
-			}
+			activeEvolver = new EmbodiedAgentEvolver(this, sim, agentFactory, species);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -416,7 +390,17 @@ public class EmbodiedAgent extends Agent {
 
 	}
 
+	/**
+	 * If fitness has increased in the last
+	 * DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE generations create a child
+	 * agent of the same type. This child agent has isProgenitor = false If
+	 * fitness decreses, and this is NOT a progentor agent, destroy it.
+	 * 
+	 * @return
+	 */
 	final public int evolveWithProliferationOfFittest() {
+
+		// FIXME: change all of this...
 
 		if (generationsSinceLastMating < Integer.MAX_VALUE) {
 			generationsSinceLastMating++;
@@ -427,114 +411,61 @@ public class EmbodiedAgent extends Agent {
 		if (sim.matingEnabled) {
 			mateWithPotentiallyClosebyPartner();
 		}
+
 		// above, everything evolved as normal..
 		// if dynamic evenness is enabled, we now
 		// decide if this agent should switch
 		if (Main.settings.DYNAMIC_EVENNESS) {
-			boolean shouldSwitchSpecies = false;
+
+			boolean shouldReproduce = false;
+
 			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
 
 			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
-				double mean = ancestorFitnessStats.getMean();
-				if (mean != 0.0 && mean >= previousAncestorFitnessMean) {
-					// no change needed -- situation is same or improving
-					previousAncestorFitnessMean = mean;
+				// calculate the mean fitness of current window
+				double fitnessMean = ancestorFitnessStats.getMean();
+
+				// if mean fitness is improving or same, no need to change
+				// otherwise, switch with a 50% probability
+				if (fitnessMean != 0.0 && fitnessMean >= previousAncestorFitnessMean) {
+					// PROLIFERATE: create a new child agent
+					previousAncestorFitnessMean = fitnessMean;
+					shouldReproduce = true;
 				} else {
-					// next generation should switch with some probability
-					if (sim.random.nextBoolean(0.1)) {
-						shouldSwitchSpecies = true;
-						previousAncestorFitnessMean = 0.0;
-					}
-				}
-			}
-			if (shouldSwitchSpecies) {
-				// now do a species switch...
-				// first we decide what it will become...
-				Species targetSpecies = null;
-				if (this.sim.getProblemComplexity() == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
-					// 3-task problem
-
-					if (activeSpecies == Species.TRANSPORTER) {
-						if (sim.random.nextBoolean(0.5)) {
-							targetSpecies = Species.EXTRACTOR;
-						} else {
-							targetSpecies = Species.DETECTOR;
-						}
-
-					} else if (activeSpecies == Species.EXTRACTOR) {
-						if (sim.random.nextBoolean(0.5)) {
-							targetSpecies = Species.TRANSPORTER;
-						} else {
-							targetSpecies = Species.DETECTOR;
-						}
-					} else {
-						// I am a detector
-						if (sim.random.nextBoolean(0.5)) {
-							targetSpecies = Species.EXTRACTOR;
-						} else {
-							targetSpecies = Species.TRANSPORTER;
-						}
-					}
-				} else {
-					// 4 -task
-					if (activeSpecies == Species.TRANSPORTER) {
-						if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.EXTRACTOR;
-						} else if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.DETECTOR;
-						} else {
-							targetSpecies = Species.PROCESSOR;
-						}
-
-					} else if (activeSpecies == Species.PROCESSOR) {
-						if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.TRANSPORTER;
-						} else if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.DETECTOR;
-						} else {
-							targetSpecies = Species.EXTRACTOR;
-						}
-					} else if (activeSpecies == Species.EXTRACTOR) {
-						if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.PROCESSOR;
-						} else if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.DETECTOR;
-						} else {
-							targetSpecies = Species.TRANSPORTER;
-						}
-					} else {
-						// I am a detector
-						if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.PROCESSOR;
-						} else if (sim.random.nextBoolean(0.3333333333)) {
-							targetSpecies = Species.EXTRACTOR;
-						} else {
-							targetSpecies = Species.TRANSPORTER;
-						}
-					}
+					// decrease numbers
 				}
 
-				// now do the actual switching
-				// first get the evolver
+			}
+			if (shouldReproduce) {
+				D.p(this.species.toString() + this.embodiedAgentId + "is ready to reproduce!!");
+				/*
+				 * EmbodiedAgentEvolver targetEvolver =
+				 * speciesEvolverMap.get(targetSpecies);
+				 * 
+				 * targetEvolver.generation = activeEvolver.generation;
+				 * activeEvolver = targetEvolver; this.species = targetSpecies;
+				 * this.activeSpecies = targetSpecies;
+				 * 
+				 * activeAgent = activeEvolver.getAgent(species, 0, 0);
+				 * activeAgent.setHostAgent(this); this.isHostAgent = true;
+				 * activeAgent.isProxyAgent = true;
+				 * 
+				 * // since we have switched, we reset all counters
+				 */
+				previousAncestorFitnessMean = 0;
 
-				EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
-
-				targetEvolver.generation = activeEvolver.generation;
-				activeEvolver = targetEvolver;
-				this.species = targetSpecies;
-				this.activeSpecies = targetSpecies;
-
-				activeAgent = activeEvolver.getAgent(species, 0, 0);
-				activeAgent.setHostAgent(this);
-				this.isHostAgent = true;
-				activeAgent.isProxyAgent = true;
+				// reset all stat counters
+				ancestorFitnessStats.clear();
 
 			}
+
+		} else {
+			D.p(this.species.toString() + this.embodiedAgentId + "is ready to self-terminate!!");
 		}
-
 		return returnValue;
-
 	}
+
+	
 
 	public int getGeneration() {
 		return activeEvolver.getGeneration();
