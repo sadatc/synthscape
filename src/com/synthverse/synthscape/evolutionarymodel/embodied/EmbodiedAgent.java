@@ -59,15 +59,6 @@ public class EmbodiedAgent extends Agent {
 			Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
 	double previousAncestorFitnessMean = 0.0;
 
-	DescriptiveStatistics ancestorSignalAStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
-	double previousMeanA = 0;
-
-	DescriptiveStatistics ancestorSignalBStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
-	double previousMeanB = 0;
-
-	DescriptiveStatistics ancestorSignalCStats = new DescriptiveStatistics(Main.settings.DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
-	double previousMeanC = 0;
-
 	public EmbodiedAgentEvolver activeEvolver;
 	public Species activeSpecies;
 	public Species progenitorSpecies;
@@ -90,13 +81,11 @@ public class EmbodiedAgent extends Agent {
 
 	public EventStats passivelyReceivedSignals = new EventStats();
 
-	public long passivelyReceivedBroadcastA = 0;
-	public long passivelyReceivedBroadcastB = 0;
-	public long passivelyReceivedBroadcastC = 0;
-
 	protected long embodiedAgentId;
 
 	public double computedAlphaDistance;
+	
+	public boolean isProgenitor = true;
 
 	public EmbodiedAgent(Simulation simulation, AgentFactory agentFactory, Species species, int poolSize) {
 		super(simulation, species);
@@ -193,59 +182,6 @@ public class EmbodiedAgent extends Agent {
 		activeAgent.getVirtualMachine().step();
 		// synchronize location
 		synchronizeLocationFromActiveAgent();
-
-		if (Main.settings.DYNAMIC_EVENNESS
-				&& (Main.settings.DE_ALGORITHM == DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH)) {
-			passivelyListenForBroadcasts();
-
-		}
-
-	}
-
-	/**
-	 * an agent can passively listen for signals, even if it doesn't use it
-	 * directly. However, it may be used in dynamic evenness experiments
-	 */
-	final public void passivelyListenForBroadcasts() {
-		// Event passiveListenEvent = null;
-		long senderId = 0;
-		long receiverId = this.embodiedAgentId;
-
-		// deal with broadcast, if any
-
-		if (!sim.registeredBroadcasts.isEmpty()) {
-			for (Broadcast broadcast : sim.registeredBroadcasts.values()) {
-				switch (broadcast.getSignalType()) {
-				case SIGNAL_A:
-					// passiveListenEvent =
-					// Event.PASSIVE_RECEIVE_BROADCAST_A;
-					senderId = broadcast.getSenderAgent().getId();
-					if (senderId != receiverId) {
-						passivelyReceivedBroadcastA++;
-					}
-
-					break;
-				case SIGNAL_B:
-					// passiveListenEvent =
-					// Event.PASSIVE_RECEIVE_BROADCAST_B;
-					senderId = broadcast.getSenderAgent().getId();
-					if (senderId != receiverId) {
-						passivelyReceivedBroadcastB++;
-					}
-
-					break;
-				case SIGNAL_C:
-					// passiveListenEvent =
-					// Event.PASSIVE_RECEIVE_BROADCAST_C;
-					senderId = broadcast.getSenderAgent().getId();
-					if (senderId != receiverId) {
-						passivelyReceivedBroadcastC++;
-					}
-
-					break;
-				}
-			}
-		}
 
 	}
 
@@ -456,11 +392,9 @@ public class EmbodiedAgent extends Agent {
 	final public int evolve() {
 
 		if (Main.settings.DYNAMIC_EVENNESS) {
-			if (Main.settings.DE_ALGORITHM == DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH) {
-				return evolveWithSignalSupplyDemandSwitching();
-			} else {
-				return evolveWithRandomSwitching();
-			}
+
+			return evolveWithProliferationOfFittest();
+
 		}
 
 		return evolveNoSpeciesSwitch();
@@ -482,7 +416,7 @@ public class EmbodiedAgent extends Agent {
 
 	}
 
-	final public int evolveWithRandomSwitching() {
+	final public int evolveWithProliferationOfFittest() {
 
 		if (generationsSinceLastMating < Integer.MAX_VALUE) {
 			generationsSinceLastMating++;
@@ -597,167 +531,6 @@ public class EmbodiedAgent extends Agent {
 
 			}
 		}
-
-		return returnValue;
-
-	}
-
-	final public int evolveWithSignalSupplyDemandSwitching() {
-
-		// FIXME: change all of this...
-
-		if (generationsSinceLastMating < Integer.MAX_VALUE) {
-			generationsSinceLastMating++;
-		}
-
-		int returnValue = activeEvolver.evolve();
-
-		if (sim.matingEnabled) {
-			mateWithPotentiallyClosebyPartner();
-		}
-
-		// above, everything evolved as normal..
-		// if dynamic evenness is enabled, we now
-		// decide if this agent should switch
-		if (Main.settings.DYNAMIC_EVENNESS) {
-
-			boolean shouldSwitchSpecies = false;
-
-			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
-			ancestorSignalAStats.addValue(passivelyReceivedBroadcastA);
-			ancestorSignalBStats.addValue(passivelyReceivedBroadcastB);
-			ancestorSignalCStats.addValue(passivelyReceivedBroadcastC);
-			/*
-			 * D.p(this.species.toString() + this.embodiedAgentId +
-			 * " fitness.mean=" + this.fitnessStats.getMean() + " s.A=" +
-			 * passivelyReceivedBroadcastA + " s.B=" +
-			 * passivelyReceivedBroadcastB + " s.C=" +
-			 * passivelyReceivedBroadcastC);
-			 */
-
-			// this forces an evaluation every DE_WINDOW_SIZE generations
-			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
-				// calculate the mean fitness of current window
-				double fitnessMean = ancestorFitnessStats.getMean();
-
-				// if mean fitness is improving or same, no need to change
-				// otherwise, switch with a 50% probability
-				if (fitnessMean != 0.0 && fitnessMean >= previousAncestorFitnessMean) {
-					// no change needed -- situation is same or improving
-					// but retain all the old means...
-					previousAncestorFitnessMean = fitnessMean;
-					previousMeanA = ancestorSignalAStats.getMean();
-					previousMeanB = ancestorSignalBStats.getMean();
-					previousMeanC = ancestorSignalCStats.getMean();
-				} else {
-					// conditions didn't improve...
-					// either switch or reset stats
-					if (sim.random.nextBoolean(0.25)) {
-						shouldSwitchSpecies = true;
-					}
-
-				}
-
-			}
-			if (shouldSwitchSpecies) {
-
-				Species targetSpecies = null;
-
-				// calculate the mean signals received for the current window
-				double currentMeanA = ancestorSignalAStats.getMean();
-				double currentMeanB = ancestorSignalBStats.getMean();
-				double currentMeanC = ancestorSignalCStats.getMean();
-
-				// D.p("currentMeanA=" + currentMeanA + " previousMeanA=" +
-				// previousMeanA);
-				// D.p("currentMeanB=" + currentMeanB + " previousMeanB=" +
-				// previousMeanB);
-				// D.p("currentMeanC=" + currentMeanC + " previousMeanC=" +
-				// previousMeanC);
-
-				if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS) {
-					// 3-task problem
-					if (currentMeanA == 0 && currentMeanB == 0) {
-						// no detectors or extractors
-						if (sim.random.nextBoolean(0.5)) {
-							targetSpecies = Species.DETECTOR;
-						} else {
-							targetSpecies = Species.EXTRACTOR;
-						}
-					} else if (currentMeanA == 0 && currentMeanB > 0) {
-						// no detectors
-						targetSpecies = Species.DETECTOR;
-					} else if (currentMeanB == 0 && currentMeanA > 0) {
-						// b=0, a>0 no extractors
-						targetSpecies = Species.EXTRACTOR;
-					} else if (currentMeanA > previousMeanA && currentMeanB < previousMeanB) {
-						// a++ and b--
-						targetSpecies = Species.EXTRACTOR;
-					} else if (currentMeanA < previousMeanA && currentMeanB > previousMeanB) {
-						// a-- and b++
-						targetSpecies = Species.TRANSPORTER;
-					} else if (currentMeanA >= previousMeanA && currentMeanB >= previousMeanB) {
-						// a++ and b++
-						targetSpecies = Species.TRANSPORTER;
-					} else if (currentMeanA < previousMeanA && currentMeanB < previousMeanB) {
-						// a-- and b--
-						targetSpecies = Species.DETECTOR;
-					}
-
-				} else {
-					// 4-task problem
-
-				}
-
-				if (targetSpecies != null && targetSpecies != this.species) {
-					// YES SWITCHING
-					// now do the actual switching
-					// first get the evolver
-					D.p(this.species.toString() + this.embodiedAgentId + "is SWITCHING TO  ===>  " + targetSpecies);
-					EmbodiedAgentEvolver targetEvolver = speciesEvolverMap.get(targetSpecies);
-
-					targetEvolver.generation = activeEvolver.generation;
-					activeEvolver = targetEvolver;
-					this.species = targetSpecies;
-					this.activeSpecies = targetSpecies;
-
-					activeAgent = activeEvolver.getAgent(species, 0, 0);
-					activeAgent.setHostAgent(this);
-					this.isHostAgent = true;
-					activeAgent.isProxyAgent = true;
-
-					// since we have switched, we reset all counters
-
-					previousMeanA = 0;
-					previousMeanB = 0;
-					previousMeanC = 0;
-					previousAncestorFitnessMean = 0;
-
-					// reset all stat counters
-					ancestorFitnessStats.clear();
-					ancestorSignalAStats.clear();
-					ancestorSignalBStats.clear();
-					ancestorSignalCStats.clear();
-
-				} else {
-					// NOT SWITCHING
-
-					previousMeanA = ancestorSignalAStats.getMean();
-					previousMeanB = ancestorSignalBStats.getMean();
-					previousMeanC = ancestorSignalCStats.getMean();
-
-					// how about preserving previous fitness stats
-
-				}
-
-			}
-
-		}
-
-		// passivelyReceivedSignals.clear();
-		passivelyReceivedBroadcastA = 0;
-		passivelyReceivedBroadcastB = 0;
-		passivelyReceivedBroadcastC = 0;
 
 		return returnValue;
 

@@ -175,21 +175,12 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("slr", "species level report [default: do not report at species level]"));
 
-		options.addOption(new Option("de_ar",
-				"use dynamic evenness with random switch algo [default: do not use dynamic evenness]"));
-
-		options.addOption(new Option("de_msd",
-				"use dynamic evenness with msg supply demand algo[default: do not use dynamic evenness]"));
+		options.addOption(new Option("de", "use dynamic evenness"));
 
 		options.addOption(OptionBuilder.withArgName("degofp").hasArg().withType(Integer.class)
 				.withDescription("dynamic evenness param: gen. to observe fitness performance ["
 						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE + "]")
 				.create("degofp"));
-
-		options.addOption(OptionBuilder.withArgName("degosc").hasArg().withType(Integer.class)
-				.withDescription("dynamic evenness param: gen. to observe signal changes ["
-						+ DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES + "]")
-				.create("degosc"));
 
 		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
 
@@ -498,12 +489,6 @@ public class Settings implements Constants {
 
 			printAndStore("PRESET.GENOTYPE = " + SEED_GENOTYPE_PRESET_INSTRUCTIONS);
 
-			if (line.hasOption("clones")) {
-				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
-
-			}
-			printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
-
 			if (line.hasOption("psize")) {
 				GENE_POOL_SIZE = new Integer(line.getOptionValue("psize")).intValue();
 				EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
@@ -590,7 +575,7 @@ public class Settings implements Constants {
 			}
 			printAndStore("JOB_NAME = " + JOB_NAME);
 
-			if (line.hasOption("de_ar") || line.hasOption("de_msd")) {
+			if (line.hasOption("de")) {
 				boolean validOptions = false;
 				Set<Species> parsedSpecies = parseSpeciesString(MODEL_SPECIES);
 
@@ -601,25 +586,19 @@ public class Settings implements Constants {
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
+						CLONES_PER_SPECIES = 1;
 					} else if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
 							&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
+						CLONES_PER_SPECIES = 1;
 					}
 				}
 
 				if (!validOptions) {
 					D.p("Dynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
 					System.exit(1);
-				}
-
-				// message based is only valied with broadcast
-				if (line.hasOption("de_msd")) {
-					if (!MODEL_INTERACTIONS.toLowerCase().contains("broadcast")) {
-						D.p("Dynamic Evenness that uses the algorithm based on message based supply & demand works with BROADCASTS only!");
-						System.exit(1);
-					}
 				}
 
 			}
@@ -634,13 +613,14 @@ public class Settings implements Constants {
 				printAndStore("DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = "
 						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
 
-				if (line.hasOption("degosc")) {
-					DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = new Integer(line.getOptionValue("degosc")).intValue();
+			}
 
-				}
-				printAndStore("DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = " + DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES);
+			if (line.hasOption("clones")) {
+
+				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
 
 			}
+			printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
 			// some calculated values
 			if (ENVIRONMENT == Environment.DIFFICULT) {

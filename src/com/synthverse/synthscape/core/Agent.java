@@ -108,6 +108,8 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	// these two are needed in the embodied/alife model
 	public Agent hostAgent = null;
 	public Agent activeAgent = null;
+	
+	
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
