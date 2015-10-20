@@ -470,7 +470,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	private void addNewAgentsFromReplicationQue() {
-		for (Agent agent : replicationQueue) {
+		for (Agent agent : birthQueue) {
 			addNewAgent(agent.getSpecies(), false);
 		}
 
@@ -555,7 +555,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 							// the evolutionary process will create new entries
 							// in replication
 							// queue
-							replicationQueue.clear();
+							birthQueue.clear();
 							evolveEmbodiedAgents();
 							addNewAgentsFromReplicationQue();
 							simsRunForThisGeneration = 0;
