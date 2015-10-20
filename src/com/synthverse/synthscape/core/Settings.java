@@ -124,6 +124,8 @@ public class Settings implements Constants {
 
 	public int DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = 5;
 
+	public int DE_MAX_POPULATION = 24;
+
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
 	public Environment ENVIRONMENT = Environment.RANDOM;
@@ -181,6 +183,9 @@ public class Settings implements Constants {
 				.withDescription("dynamic evenness param: gen. to observe fitness performance ["
 						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE + "]")
 				.create("degofp"));
+
+		options.addOption(OptionBuilder.withArgName("demp").hasArg().withType(Integer.class)
+				.withDescription("dynamic evenness param: max population [" + DE_MAX_POPULATION + "]").create("demp"));
 
 		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
 
@@ -586,13 +591,13 @@ public class Settings implements Constants {
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
-						CLONES_PER_SPECIES = 1;
+						CLONES_PER_SPECIES = 4;
 					} else if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
 							&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
-						CLONES_PER_SPECIES = 1;
+						CLONES_PER_SPECIES = 4;
 					}
 				}
 
@@ -612,6 +617,12 @@ public class Settings implements Constants {
 				}
 				printAndStore("DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = "
 						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE);
+
+				if (line.hasOption("demp")) {
+					DE_MAX_POPULATION = new Integer(line.getOptionValue("demp")).intValue();
+
+				}
+				printAndStore("DE_MAX_POPULATION = " + DE_MAX_POPULATION);
 
 			}
 

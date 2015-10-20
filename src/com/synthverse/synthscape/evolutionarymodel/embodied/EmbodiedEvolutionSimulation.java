@@ -246,37 +246,39 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	protected void addNewAgent(Species species, boolean isProgenitor) {
 
-		MersenneTwisterFast randomPrime = this.random;
+		if (agents.size() < Main.settings.DE_MAX_POPULATION) {
 
-		int randomX = randomPrime.nextInt(gridWidth);
-		int randomY = randomPrime.nextInt(gridHeight);
+			MersenneTwisterFast randomPrime = this.random;
 
-		while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
-			randomX = randomPrime.nextInt(gridWidth);
-			randomY = randomPrime.nextInt(gridHeight);
-		}
-		GridUtils.set(collisionGrid, randomX, randomY, true);
+			int randomX = randomPrime.nextInt(gridWidth);
+			int randomY = randomPrime.nextInt(gridHeight);
 
-		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
-		//embodiedAgent.setGeneration(generation + 1);
-		embodiedAgent.activeEvolver.generation = generation;
-		
-		
-		embodiedAgent.isProgenitor = isProgenitor;
-		embodiedAgent.setLocation(randomX, randomY);
-		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+			while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
+				randomX = randomPrime.nextInt(gridWidth);
+				randomY = randomPrime.nextInt(gridHeight);
+			}
+			GridUtils.set(collisionGrid, randomX, randomY, true);
 
-		embodiedAgent.synchronizeLocationToActiveAgent();
+			EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+			// embodiedAgent.setGeneration(generation + 1);
+			embodiedAgent.activeEvolver.generation = generation;
 
-		team.addMember(embodiedAgent);
-		embodiedAgent.setTeam(team);
+			embodiedAgent.isProgenitor = isProgenitor;
+			embodiedAgent.setLocation(randomX, randomY);
+			agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
 
-		agents.add(embodiedAgent);
+			embodiedAgent.synchronizeLocationToActiveAgent();
 
-		if (!embodiedAgent.isScheduled()) {
-			schedule.scheduleRepeating(embodiedAgent);
+			team.addMember(embodiedAgent);
+			embodiedAgent.setTeam(team);
 
-			embodiedAgent.setScheduled(true);
+			agents.add(embodiedAgent);
+
+			if (!embodiedAgent.isScheduled()) {
+				schedule.scheduleRepeating(embodiedAgent);
+
+				embodiedAgent.setScheduled(true);
+			}
 		}
 
 	}
@@ -537,7 +539,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 					doEndOfSimulationTasks();
 
-					//logger.info("---- end of simulation: collected=" + numberOfCollectedResources);
+					// logger.info("---- end of simulation: collected=" +
+					// numberOfCollectedResources);
 
 					simStepCounter = 0;
 					simulationCounter++;
