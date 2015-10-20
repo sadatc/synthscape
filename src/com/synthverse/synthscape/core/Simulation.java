@@ -98,6 +98,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public ArrayList<Agent> agents;
 
 	public ArrayList<Agent> birthQueue = new ArrayList<Agent>();
+	public ArrayList<Agent> deathQueue = new ArrayList<Agent>();
 
 	protected boolean isToroidalWorld;
 
@@ -866,6 +867,7 @@ public abstract class Simulation extends SimState implements Constants {
 							// evolving the evolutionary process will create new
 							// entries in replication queue
 							birthQueue.clear();
+							deathQueue.clear();
 							evolver.evolve();
 							simsRunForThisGeneration = 0;
 						}

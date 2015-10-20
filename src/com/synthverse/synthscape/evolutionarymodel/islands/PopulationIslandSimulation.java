@@ -265,6 +265,7 @@ public class PopulationIslandSimulation extends Simulation {
 							// in replication
 							// queue
 							birthQueue.clear();
+							deathQueue.clear();
 							evolvePopulationIslands();
 							simsRunForThisGeneration = 0;
 						}

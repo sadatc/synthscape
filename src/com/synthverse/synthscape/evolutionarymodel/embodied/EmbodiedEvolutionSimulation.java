@@ -283,6 +283,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
+	protected void destroyAgent(Agent agent) {
+
+		agentGrid.remove(agent);
+	
+		agents.remove(agent);
+
+	}
+
 	protected void initNextAgents() {
 		// we already have embodied agents, we just get load the agents with the
 		// next genes from their respective gene pools
@@ -469,9 +477,16 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	private void addNewAgentsFromReplicationQue() {
+	private void createAgentsFromBirthQueue() {
 		for (Agent agent : birthQueue) {
 			addNewAgent(agent.getSpecies(), false);
+		}
+
+	}
+
+	private void destroyAgentsFromDeathQueue() {
+		for (Agent agent : deathQueue) {
+			destroyAgent(agent);
 		}
 
 	}
@@ -556,8 +571,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 							// in replication
 							// queue
 							birthQueue.clear();
+							deathQueue.clear();
 							evolveEmbodiedAgents();
-							addNewAgentsFromReplicationQue();
+							destroyAgentsFromDeathQueue();
+							createAgentsFromBirthQueue();
 							simsRunForThisGeneration = 0;
 						}
 

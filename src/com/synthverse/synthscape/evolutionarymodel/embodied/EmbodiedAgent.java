@@ -438,25 +438,17 @@ public class EmbodiedAgent extends Agent {
 				D.p(this.species.toString() + this.embodiedAgentId + "is ready to reproduce!!");
 				this.getSim().birthQueue.add(this);
 
-				/*
-				 * EmbodiedAgentEvolver targetEvolver =
-				 * speciesEvolverMap.get(targetSpecies);
-				 * 
-				 * targetEvolver.generation = activeEvolver.generation;
-				 * activeEvolver = targetEvolver; this.species = targetSpecies;
-				 * this.activeSpecies = targetSpecies;
-				 * 
-				 * activeAgent = activeEvolver.getAgent(species, 0, 0);
-				 * activeAgent.setHostAgent(this); this.isHostAgent = true;
-				 * activeAgent.isProxyAgent = true;
-				 * 
-				 * // since we have switched, we reset all counters
-				 */
+	
 				previousAncestorFitnessMean = 0;
 
 				// reset all stat counters
 				ancestorFitnessStats.clear();
 
+			} else {
+				if(!isProgenitor) {
+					D.p(this.species.toString() + this.embodiedAgentId + "is ready to remove itself!!");
+					this.getSim().deathQueue.add(this);
+				}
 			}
 
 		} else {
