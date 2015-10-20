@@ -97,6 +97,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 	public ArrayList<Agent> agents;
 
+	public ArrayList<Agent> replicationQueue = new ArrayList<Agent>();
+
 	protected boolean isToroidalWorld;
 
 	protected int numberOfObstacles;
@@ -859,6 +861,11 @@ public abstract class Simulation extends SimState implements Constants {
 					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+
+							// we clear up the replication queue prior to start
+							// evolving the evolutionary process will create new
+							// entries in replication queue
+							replicationQueue.clear();
 							evolver.evolve();
 							simsRunForThisGeneration = 0;
 						}
