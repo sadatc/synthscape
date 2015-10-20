@@ -435,6 +435,8 @@ public class EmbodiedAgent extends Agent {
 			}
 			if (shouldReproduce) {
 				D.p(this.species.toString() + this.embodiedAgentId + "is ready to reproduce!!");
+				this.getSim().replicationQueue.add(this);
+				
 				/*
 				 * EmbodiedAgentEvolver targetEvolver =
 				 * speciesEvolverMap.get(targetSpecies);
