@@ -65,6 +65,7 @@ public class PopulationIslandSimulation extends Simulation {
 	EnumMap<Species, EventStats> speciesEventStatsMap = new EnumMap<Species, EventStats>(Species.class);
 
 	private static Logger logger = Logger.getLogger(PopulationIslandSimulation.class.getName());
+
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
@@ -197,7 +198,6 @@ public class PopulationIslandSimulation extends Simulation {
 
 	@Override
 	protected void startSimulation() {
-		
 
 		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
@@ -219,20 +219,16 @@ public class PopulationIslandSimulation extends Simulation {
 		experimentReporter.initReporter();
 
 		reportTime = System.currentTimeMillis();
-		
+
 		attachVisualizationGrids();
 
-		
 		// before we start stepping, let's synchronize with visualizer, if any
 		unlockGenerationalVisualizer();
 
-		
 		// this is run at the end of each step
 		Main.settings.__simulationStarted = true;
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, new Steppable() {
 			public void step(SimState state) {
-			    
-				
 
 				simStepCounter++;
 
@@ -263,6 +259,12 @@ public class PopulationIslandSimulation extends Simulation {
 					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+							// we clear up the replication queue prior to start
+							// evolving
+							// the evolutionary process will create new entries
+							// in replication
+							// queue
+							replicationQueue.clear();
 							evolvePopulationIslands();
 							simsRunForThisGeneration = 0;
 						}
