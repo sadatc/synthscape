@@ -243,6 +243,39 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
+	protected void addNewAgent(Species species, boolean isProgenitor) {
+
+		MersenneTwisterFast randomPrime = this.random;
+
+		int randomX = randomPrime.nextInt(gridWidth);
+		int randomY = randomPrime.nextInt(gridHeight);
+
+		while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
+			randomX = randomPrime.nextInt(gridWidth);
+			randomY = randomPrime.nextInt(gridHeight);
+		}
+		GridUtils.set(collisionGrid, randomX, randomY, true);
+
+		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+		embodiedAgent.isProgenitor = isProgenitor;
+		embodiedAgent.setLocation(randomX, randomY);
+		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
+
+		embodiedAgent.synchronizeLocationToActiveAgent();
+
+		team.addMember(embodiedAgent);
+		embodiedAgent.setTeam(team);
+
+		agents.add(embodiedAgent);
+
+		if (!embodiedAgent.isScheduled()) {
+			schedule.scheduleRepeating(embodiedAgent);
+
+			embodiedAgent.setScheduled(true);
+		}
+
+	}
+
 	protected void initNextAgents() {
 		// we already have embodied agents, we just get load the agents with the
 		// next genes from their respective gene pools
@@ -502,6 +535,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					if (!collectedAllResources() && simulationCounter < simulationsPerExperiment) {
 
 						if (simulationCounter % settings.GENE_POOL_SIZE == 0) {
+
+							// we clear up the replication queue prior to start
+							// evolving
+							// the evolutionary process will create new entries
+							// in replication
+							// queue
+							replicationQueue.clear();
 							evolveEmbodiedAgents();
 							simsRunForThisGeneration = 0;
 						}
