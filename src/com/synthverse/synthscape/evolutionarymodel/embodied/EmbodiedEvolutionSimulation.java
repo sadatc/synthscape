@@ -10,6 +10,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
@@ -257,6 +258,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		GridUtils.set(collisionGrid, randomX, randomY, true);
 
 		EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+		//embodiedAgent.setGeneration(generation + 1);
+		embodiedAgent.activeEvolver.generation = generation;
+		
+		
 		embodiedAgent.isProgenitor = isProgenitor;
 		embodiedAgent.setLocation(randomX, randomY);
 		agentGrid.setObjectLocation(embodiedAgent, new Int2D(randomX, randomY));
@@ -462,6 +467,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
+	private void addNewAgentsFromReplicationQue() {
+		for (Agent agent : replicationQueue) {
+			addNewAgent(agent.getSpecies(), false);
+		}
+
+	}
+
 	@Override
 	protected boolean evaluateSimulationTerminateCondition() {
 
@@ -525,8 +537,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 					doEndOfSimulationTasks();
 
-					// logger.info("---- end of simulation: collected=" +
-					// numberOfCollectedResources);
+					//logger.info("---- end of simulation: collected=" + numberOfCollectedResources);
 
 					simStepCounter = 0;
 					simulationCounter++;
@@ -543,6 +554,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 							// queue
 							replicationQueue.clear();
 							evolveEmbodiedAgents();
+							addNewAgentsFromReplicationQue();
 							simsRunForThisGeneration = 0;
 						}
 

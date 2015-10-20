@@ -365,10 +365,12 @@ public class EmbodiedAgent extends Agent {
 
 	final public int evolve() {
 
+		int returnValue = -1;
+		
 		if (Main.settings.DYNAMIC_EVENNESS) {
-			return evolveWithProliferationOfFittest();
+			returnValue =  evolveWithProliferationOfFittest();
 		} else {
-			return evolveNoSpeciesSwitch();
+			returnValue = evolveNoSpeciesSwitch();
 		}
 	}
 
