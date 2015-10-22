@@ -2,6 +2,7 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -30,6 +31,7 @@ import ec.util.MersenneTwisterFast;
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.util.Bag;
 import sim.util.Int2D;
 
 @SuppressWarnings("serial")
@@ -286,7 +288,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	protected void destroyAgent(Agent agent) {
 
 		agentGrid.remove(agent);
-	
+
 		agents.remove(agent);
 
 	}
@@ -332,6 +334,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	 * report the statistics
 	 */
 	protected void evolveEmbodiedAgents() {
+		D.p("=====> starting evolution for generation:" + generation);
 
 		populationFitnessStats.clear();
 
@@ -478,17 +481,64 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	private void createAgentsFromBirthQueue() {
+		// birthQueue is a list of all the agent creation requests that were
+		// made by all the current agents
+		// we will be careful how we add new agents...
+		// rule 1:
+		// to control population explosion, we only allow one new agent per
+		// species -- otherwise a particular species will excessively dominate
+		// rule 2: if fewer spots are available than requests made, there will
+		// be
+		// a toss -- this will give all requesters an equal chance to grow
+
+		// first figure out all possible species to add
+		HashSet<Species> requestedSpecies = new HashSet<Species>();
+		
 		for (Agent agent : birthQueue) {
-			addNewAgent(agent.getSpecies(), false);
+			if (!requestedSpecies.contains(agent.getSpecies())) {
+				requestedSpecies.add(agent.getSpecies());
+			}
+		}
+		// figure out spots left
+		
+		int openSpots = Main.settings.DE_MAX_POPULATION - agents.size();
+		
+		if (requestedSpecies.size() <= openSpots) {
+			// enough spots available -- no need to worry about random
+			// selection
+			for (Species species : requestedSpecies) {
+				addNewAgent(species, false);
+			}
+		} else {
+			// fewer spots are available, we need to be picky
+			// shuffle
+			Bag speciesBag = new Bag(requestedSpecies.toArray());
+			speciesBag.shuffle(random);
+			for (int i = 0; i < openSpots; i++) {
+				addNewAgent((Species) speciesBag.get(i), false);
+			}
 		}
 
 	}
 
 	private void destroyAgentsFromDeathQueue() {
-		for (Agent agent : deathQueue) {
-			destroyAgent(agent);
-		}
+		// the rules of death are similar to the birth rules...
+		// if many agents from many different species wants to die
+		// we only pick one agent per species to be killed
+		// this way we have a smoother death rate...
+		// we also shuffle the death queue
+		Bag agentBag = new Bag(deathQueue.toArray());
+		agentBag.shuffle(random);
 
+		HashSet<Species> speciesKilled = new HashSet<Species>();
+
+		for (int i = 0; i < agentBag.numObjs; i++) {
+			Agent agent = (Agent) agentBag.get(i);
+			if (!speciesKilled.contains(agent.getSpecies())) {
+				destroyAgent(agent);
+				speciesKilled.add(agent.getSpecies());
+			}
+		}
 	}
 
 	@Override
