@@ -119,6 +119,8 @@ public class Settings implements Constants {
 	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
+	
+	public int DYNAMIC_EVENNESS_INITIAL_CLONES = 6;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
 
@@ -591,13 +593,13 @@ public class Settings implements Constants {
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
-						CLONES_PER_SPECIES = 4;
+						CLONES_PER_SPECIES = DYNAMIC_EVENNESS_INITIAL_CLONES;
 					} else if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
 							&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
 							&& parsedSpecies.contains(Species.TRANSPORTER)) {
 						DYNAMIC_EVENNESS = true;
 						validOptions = true;
-						CLONES_PER_SPECIES = 4;
+						CLONES_PER_SPECIES = DYNAMIC_EVENNESS_INITIAL_CLONES;
 					}
 				}
 
