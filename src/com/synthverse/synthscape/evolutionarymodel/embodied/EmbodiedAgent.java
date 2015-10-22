@@ -415,7 +415,8 @@ public class EmbodiedAgent extends Agent {
 		// decide if this agent should switch
 		if (Main.settings.DYNAMIC_EVENNESS) {
 
-			boolean shouldReproduce = false;
+			boolean reproduce = false;
+			boolean die = false;
 
 			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
 
@@ -428,32 +429,26 @@ public class EmbodiedAgent extends Agent {
 				if (fitnessMean != 0.0 && fitnessMean >= previousAncestorFitnessMean) {
 					// PROLIFERATE: create a new child agent
 					previousAncestorFitnessMean = fitnessMean;
-					shouldReproduce = true;
+					reproduce = true;
 				} else {
 					// decrease numbers
+					die = true;
 				}
 
 			}
-			if (shouldReproduce) {
+			if (reproduce) {
 				D.p(this.species.toString() + this.embodiedAgentId + "is ready to reproduce!!");
 				this.getSim().birthQueue.add(this);
 
-	
-				previousAncestorFitnessMean = 0;
-
-				// reset all stat counters
-				ancestorFitnessStats.clear();
-
-			} else {
-				if(!isProgenitor) {
-					D.p(this.species.toString() + this.embodiedAgentId + "is ready to remove itself!!");
-					this.getSim().deathQueue.add(this);
-				}
 			}
 
-		} else {
-			D.p(this.species.toString() + this.embodiedAgentId + "is ready to self-terminate!!");
+			if (die && !isProgenitor) {
+
+				D.p(this.species.toString() + this.embodiedAgentId + "is ready to remove itself!!");
+				this.getSim().deathQueue.add(this);
+			}
 		}
+
 		return returnValue;
 	}
 
