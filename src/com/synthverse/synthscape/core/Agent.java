@@ -1495,12 +1495,14 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 					} else {
 						canTransport = this.detectedBroadcastB || this.detectedUnicastB;
 					}
+					
 				} else {
 					if (this.isProxyAgent) {
 						canTransport = this.getHostAgent().detectedBroadcastC || this.getHostAgent().detectedUnicastC;
 					} else {
 						canTransport = this.detectedBroadcastC || this.detectedUnicastC;
 					}
+					
 				}
 
 				if (canTransport) {
@@ -1583,6 +1585,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	public final void operationUnLoadResource_Unconstrained() {
 		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 		if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
+			sim.recordEvent(this, Event.ATTEMPT_TO_UNLOAD_HELD_RESOURCE, NA, NA);
 			updateLocationStatus(x, y);
 			if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
@@ -1679,6 +1682,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 	public final void operationUnLoadResource_Constrained() {
 		sim.recordEvent(this, Event.ATTEMPT_TRANSPORT, NA, NA);
 		if (species.getTraits().contains(Trait.TRANSPORTATION) && isCarryingResource) {
+			
 			updateLocationStatus(x, y);
 
 			boolean canTransport = false;
@@ -1697,6 +1701,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			}
 
 			if (canTransport) {
+				sim.recordEvent(this, Event.ATTEMPT_TO_UNLOAD_HELD_RESOURCE, NA, NA);
 
 				if (!locationHasExtractedResource && !locationHasProcessedResource && !locationHasRawResource) {
 
