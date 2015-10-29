@@ -1,8 +1,10 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -246,7 +248,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
-	protected void addNewAgent(Species species, boolean isProgenitor) {
+	protected void addNewAgentBySpecies(Species species, boolean isProgenitor) {
 
 		if (agents.size() < Main.settings.DE_MAX_POPULATION) {
 
@@ -275,6 +277,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			embodiedAgent.setTeam(team);
 
 			agents.add(embodiedAgent);
+			D.p("****  Added new agent of species: "+species+" ******");
 
 			if (!embodiedAgent.isScheduled()) {
 				schedule.scheduleRepeating(embodiedAgent);
@@ -290,6 +293,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		agentGrid.remove(agent);
 
 		agents.remove(agent);
+		D.p("****  DESTROYED agent of species: "+agent.getSpecies()+" ******");
 
 	}
 
@@ -493,30 +497,96 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		// first figure out all possible species to add
 		HashSet<Species> requestedSpecies = new HashSet<Species>();
-		
+		HashSet<Agent> requesterAgent = new HashSet<Agent>();
 		for (Agent agent : birthQueue) {
 			if (!requestedSpecies.contains(agent.getSpecies())) {
 				requestedSpecies.add(agent.getSpecies());
+				requesterAgent.add(agent);
 			}
 		}
+		// requesterAgent now contains one agent from each species
+		// that has requested to create new agents
+
 		// figure out spots left
-		
+
 		int openSpots = Main.settings.DE_MAX_POPULATION - agents.size();
-		
+
 		if (requestedSpecies.size() <= openSpots) {
 			// enough spots available -- no need to worry about random
 			// selection
-			for (Species species : requestedSpecies) {
-				addNewAgent(species, false);
+			for (Agent agent : requesterAgent) {
+				addNewAgentByCreatorAgent(agent, false);
 			}
 		} else {
 			// fewer spots are available, we need to be picky
 			// shuffle
-			Bag speciesBag = new Bag(requestedSpecies.toArray());
+			Bag speciesBag = new Bag(requesterAgent.toArray());
 			speciesBag.shuffle(random);
 			for (int i = 0; i < openSpots; i++) {
-				addNewAgent((Species) speciesBag.get(i), false);
+				addNewAgentByCreatorAgent((Agent) speciesBag.get(i), false);
 			}
+		}
+
+	}
+
+	private void addNewAgentByCreatorAgent(Agent parentAgent, boolean isProgenitor) {
+		if (agents.size() < Main.settings.DE_MAX_POPULATION) {
+
+			Species species = parentAgent.getSpecies();
+
+			MersenneTwisterFast randomPrime = this.random;
+
+			int randomX = randomPrime.nextInt(gridWidth);
+			int randomY = randomPrime.nextInt(gridHeight);
+
+			while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
+				randomX = randomPrime.nextInt(gridWidth);
+				randomY = randomPrime.nextInt(gridHeight);
+			}
+			GridUtils.set(collisionGrid, randomX, randomY, true);
+
+			EmbodiedAgent childAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+			// embodiedAgent.setGeneration(generation + 1);
+			childAgent.activeEvolver.generation = generation;
+
+			childAgent.isProgenitor = isProgenitor;
+			childAgent.setLocation(randomX, randomY);
+			agentGrid.setObjectLocation(childAgent, new Int2D(randomX, randomY));
+
+			childAgent.synchronizeLocationToActiveAgent();
+
+			team.addMember(childAgent);
+			childAgent.setTeam(team);
+
+			// now we also transfer the genepool of the parent to the child
+			copyGenePool((EmbodiedAgent) parentAgent, childAgent);
+			D.p("****  Added new agent of species: "+species+" AND copied over genepool!! ******");
+
+			agents.add(childAgent);
+
+			if (!childAgent.isScheduled()) {
+				schedule.scheduleRepeating(childAgent);
+
+				childAgent.setScheduled(true);
+			}
+		}
+
+	}
+
+	private void copyGenePool(EmbodiedAgent parentAgent, EmbodiedAgent childAgent) {
+
+		int parentPoolSize = parentAgent.activeEvolver.activeBuffer.size();
+		int childPoolSize = childAgent.activeEvolver.activeBuffer.size();
+
+		if (parentPoolSize != childPoolSize) {
+			logger.info("buffer sizes should never be different -- investigate");
+			System.exit(1);
+		}
+
+		// make a deep copy of parents's pool into child's
+		for (int i = 0; i < parentPoolSize; i++) {
+			Program parentGeneProgramCloned = new Program(parentAgent.activeEvolver.activeBuffer.get(i).getProgram());
+			childAgent.activeEvolver.activeBuffer.get(i).setProgram(parentGeneProgramCloned);
 		}
 
 	}
