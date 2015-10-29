@@ -116,11 +116,11 @@ public class Settings implements Constants {
 
 	public boolean COMPRESS_DNA_PROGRESSION = false;
 
-	public boolean SPECIES_LEVEL_REPORT = false;
+	public boolean SPECIES_LEVEL_REPORT = true;
 
 	public boolean DYNAMIC_EVENNESS = false;
-	
-	public int DYNAMIC_EVENNESS_INITIAL_CLONES = 6;
+
+	public int DYNAMIC_EVENNESS_INITIAL_CLONES = 4;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
 
@@ -131,6 +131,8 @@ public class Settings implements Constants {
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
 	public Environment ENVIRONMENT = Environment.RANDOM;
+	
+	public int HOLD_EVENT_THRESHOLD = 1;
 
 	public int lastReportedCaptures = 0;
 	public int lastReportedGeneration = 0;
