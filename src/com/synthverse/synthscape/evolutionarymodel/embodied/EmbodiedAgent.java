@@ -351,7 +351,10 @@ public class EmbodiedAgent extends Agent {
 
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
-
+			case ATTEMPT_TO_UNLOAD_HELD_RESOURCE:
+				//D.p("applying small reward for holding resource...");
+				result += 0.00125; // tiny reward for being able to hold on to a resource
+				break;
 			case COLLECTED_RESOURCE:
 				result += activeAgent.eventStats.getValue(event);
 				break;
@@ -367,6 +370,7 @@ public class EmbodiedAgent extends Agent {
 		int returnValue = -1;
 		if (Main.settings.DYNAMIC_EVENNESS) {
 			returnValue = evolveWithProliferationOfFittest();
+			// returnValue = evolveWithProliferationOfUnFittest();
 		} else {
 			returnValue = evolveNoSpeciesSwitch();
 		}
@@ -424,27 +428,85 @@ public class EmbodiedAgent extends Agent {
 				// calculate the mean fitness of current window
 				double fitnessMean = ancestorFitnessStats.getMean();
 
-				// if mean fitness is improving or same, no need to change
-				// otherwise, switch with a 50% probability
-				if (fitnessMean != 0.0 && fitnessMean >= previousAncestorFitnessMean) {
+				// if mean fitness is improving reproduce; if it's reducing, die
+				if (fitnessMean != 0.0 && fitnessMean > previousAncestorFitnessMean) {
+					reproduce = true;
+				} else {
+					die = true;
+				}
+
+				previousAncestorFitnessMean = fitnessMean;
+			}
+			if (reproduce && isProgenitor) {
+				this.getSim().birthQueue.add(this);
+			}
+
+			if (die && !isProgenitor) {
+
+				this.getSim().deathQueue.add(this);
+			}
+		}
+
+		return returnValue;
+	}
+
+	/**
+	 * If fitness has decreased in the last
+	 * DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE generations create a child
+	 * agent of the same type. This child agent has isProgenitor = false If
+	 * fitness decreses, and this is NOT a progentor agent, destroy it.
+	 * 
+	 * @return
+	 */
+	final public int evolveWithProliferationOfUnFittest() {
+
+		// FIXME: change all of this...
+
+		if (generationsSinceLastMating < Integer.MAX_VALUE) {
+			generationsSinceLastMating++;
+		}
+
+		int returnValue = activeEvolver.evolve();
+
+		if (sim.matingEnabled) {
+			mateWithPotentiallyClosebyPartner();
+		}
+
+		// above, everything evolved as normal..
+		// if dynamic evenness is enabled, we now
+		// decide if this agent should switch
+		if (Main.settings.DYNAMIC_EVENNESS) {
+
+			boolean reproduce = false;
+			boolean die = false;
+
+			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
+
+			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
+				// calculate the mean fitness of current window
+				double fitnessMean = ancestorFitnessStats.getMean();
+
+				// if mean fitness is decreasing, it will request for more
+				// re-inforcements
+
+				if ((fitnessMean != 0.0 && fitnessMean < previousAncestorFitnessMean) || fitnessMean == 0.0) {
 					// PROLIFERATE: create a new child agent
-					previousAncestorFitnessMean = fitnessMean;
 					reproduce = true;
 				} else {
 					// decrease numbers
 					die = true;
 				}
+				previousAncestorFitnessMean = fitnessMean;
 
 			}
 			if (reproduce) {
-				D.p(this.species.toString() + this.embodiedAgentId + "is ready to reproduce!!");
+
 				this.getSim().birthQueue.add(this);
 
 			}
 
 			if (die && !isProgenitor) {
 
-				D.p(this.species.toString() + this.embodiedAgentId + "is ready to remove itself!!");
 				this.getSim().deathQueue.add(this);
 			}
 		}
