@@ -20,13 +20,14 @@ package com.synthverse.stacks;
 import java.util.Arrays;
 
 import com.synthverse.synthscape.core.Constants;
+import com.synthverse.synthscape.core.D;
 
 import ec.util.MersenneTwisterFast;
 
 /**
  * This represents a program that is ready for execution. Programs are
- * internally represented as arrays of codes returned by {@link
- * com.synthverse.stacks.InstructionTranslator.#toCode(Instruction)}
+ * internally represented as arrays of codes returned by
+ * {@link com.synthverse.stacks.InstructionTranslator.#toCode(Instruction)}
  * 
  * Note: These programs are not able to contain values. For programs that
  * 
@@ -43,8 +44,7 @@ public class Program implements Constants {
 
 	public final void randomizeInstructions() {
 		for (int i = 0; i < this.size; i++) {
-			genotypeArray[i] = InstructionTranslator
-					.getRandomInstruction(randomNumberGenerator);
+			genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 		}
 	}
 
@@ -99,8 +99,7 @@ public class Program implements Constants {
 		if (csvString != null) {
 			String[] instructions = csvString.split(",");
 			for (String instruction : instructions) {
-				if (!addInstructionSafely(InstructionTranslator
-						.decodeFromString(instruction))) {
+				if (!addInstructionSafely(InstructionTranslator.decodeFromString(instruction))) {
 					result = false;
 				}
 			}
@@ -248,41 +247,33 @@ public class Program implements Constants {
 
 	public static class Factory {
 
-		public static final Program createDefault(
-				MersenneTwisterFast randomNumberGenerator) {
+		public static final Program createDefault(MersenneTwisterFast randomNumberGenerator) {
 			return createRandom(randomNumberGenerator);
 		}
 
-		public static final Program createEmpty(
-				MersenneTwisterFast randomNumberGenerator, int size) {
+		public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator, int size) {
 			Program program = new Program(randomNumberGenerator, size);
 			return program;
 		}
 
-		public static final Program createEmpty(
-				MersenneTwisterFast randomNumberGenerator) {
-			return createEmpty(randomNumberGenerator,
-					Config.DEFAULT_PROGRAM_ARRAY_SIZE);
+		public static final Program createEmpty(MersenneTwisterFast randomNumberGenerator) {
+			return createEmpty(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
 		}
 
-		public static final Program createRandom(
-				MersenneTwisterFast randomNumberGenerator, int size) {
+		public static final Program createRandom(MersenneTwisterFast randomNumberGenerator, int size) {
 
 			Program program = createEmpty(randomNumberGenerator, size);
 
 			for (int i = 0; i < size; i++) {
-				program.genotypeArray[i] = InstructionTranslator
-						.getRandomInstruction(randomNumberGenerator);
+				program.genotypeArray[i] = InstructionTranslator.getRandomInstruction(randomNumberGenerator);
 			}
 
 			return program;
 
 		}
 
-		public static final Program createRandom(
-				MersenneTwisterFast randomNumberGenerator) {
-			return createRandom(randomNumberGenerator,
-					Config.DEFAULT_PROGRAM_ARRAY_SIZE);
+		public static final Program createRandom(MersenneTwisterFast randomNumberGenerator) {
+			return createRandom(randomNumberGenerator, Config.DEFAULT_PROGRAM_ARRAY_SIZE);
 		}
 
 	}

@@ -338,6 +338,17 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	 * report the statistics
 	 */
 	protected void evolveEmbodiedAgents() {
+		// we might as well free some memory now
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+		if(allocatedMemory>Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) {
+			System.gc();
+			long allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+			long memorySaved = allocatedMemory -  allocatedMemoryAfter;
+			if(memorySaved>0) {
+				D.p("****** FREED :"+memorySaved +" MB ");
+			}
+		}
+		
 		D.p("=====> starting evolution for generation:" + generation);
 
 		populationFitnessStats.clear();
@@ -399,9 +410,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		// resourceCaptureStats.printStats();
 
-		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+		
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - reportTime;
+		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
 
 		experimentReporter.reportPerformanceEmbodiedModel(generation, intervalStats, generationEventStats,
 				speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
@@ -431,7 +443,10 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		intervalStats.clear();
 		clearSpeciesEventStats();
 		resourceCaptureStats.clearAll();
+		
+	
 
+		
 	}
 
 	@Override

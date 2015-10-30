@@ -163,6 +163,8 @@ public class Settings implements Constants {
 	public int __numTransporters = 0;
 	public int __numProcessors = 0;
 
+	public long ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
+
 	private Settings() {
 
 	}
@@ -192,6 +194,8 @@ public class Settings implements Constants {
 				.withDescription("dynamic evenness param: max population [" + DE_MAX_POPULATION + "]").create("demp"));
 
 		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
+		
+		options.addOption(new Option("env_vdiff", "use very difficult environment [default: random environment]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
 
@@ -324,6 +328,14 @@ public class Settings implements Constants {
 			}
 			printAndStore("ENVIRONMENT = " + ENVIRONMENT);
 
+			if (line.hasOption("env_vdiff")) {
+				ENVIRONMENT = Environment.VERY_DIFFICULT;
+			}
+			printAndStore("ENVIRONMENT = " + ENVIRONMENT);
+
+			
+			
+			
 			if (line.hasOption("no_randomization")) {
 				RANDOMIZE_SIM_SEED = false;
 			}
@@ -638,7 +650,7 @@ public class Settings implements Constants {
 			printAndStore("CLONES_PER_SPECIES = " + CLONES_PER_SPECIES);
 
 			// some calculated values
-			if (ENVIRONMENT == Environment.DIFFICULT) {
+			if (ENVIRONMENT == Environment.DIFFICULT || ENVIRONMENT == Environment.VERY_DIFFICULT) {
 				PRIMARY_COLLECTION_SITE_X = 0;
 				PRIMARY_COLLECTION_SITE_Y = 0;
 			} else {

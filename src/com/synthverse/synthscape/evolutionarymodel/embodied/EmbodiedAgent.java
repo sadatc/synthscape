@@ -352,8 +352,9 @@ public class EmbodiedAgent extends Agent {
 		for (Event event : activeAgent.eventStats.getEvents()) {
 			switch (event) {
 			case ATTEMPT_TO_UNLOAD_HELD_RESOURCE:
-				//D.p("applying small reward for holding resource...");
-				result += 0.00125; // tiny reward for being able to hold on to a resource
+				// D.p("applying small reward for holding resource...");
+				result += 0.00125; // tiny reward for being able to hold on to a
+									// resource
 				break;
 			case COLLECTED_RESOURCE:
 				result += activeAgent.eventStats.getValue(event);
@@ -416,13 +417,15 @@ public class EmbodiedAgent extends Agent {
 
 		// above, everything evolved as normal..
 		// if dynamic evenness is enabled, we now
-		// decide if this agent should switch
+		// decide if this agent should continue or make way for more fit agents
+
 		if (Main.settings.DYNAMIC_EVENNESS) {
 
 			boolean reproduce = false;
 			boolean die = false;
 
 			ancestorFitnessStats.addValue(this.fitnessStats.getMean());
+			//D.p(this.species.getName()+": current fitness="+this.fitnessStats.getMean());
 
 			if (ancestorFitnessStats.getN() >= Main.settings.DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE) {
 				// calculate the mean fitness of current window
@@ -437,7 +440,7 @@ public class EmbodiedAgent extends Agent {
 
 				previousAncestorFitnessMean = fitnessMean;
 			}
-			if (reproduce && isProgenitor) {
+			if (reproduce) {
 				this.getSim().birthQueue.add(this);
 			}
 
