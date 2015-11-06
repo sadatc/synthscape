@@ -1,10 +1,8 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -277,7 +275,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			embodiedAgent.setTeam(team);
 
 			agents.add(embodiedAgent);
-			D.p("****  Added new agent of species: "+species+" ******");
 
 			if (!embodiedAgent.isScheduled()) {
 				schedule.scheduleRepeating(embodiedAgent);
@@ -289,11 +286,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	}
 
 	protected void destroyAgent(Agent agent) {
-
 		agentGrid.remove(agent);
-
 		agents.remove(agent);
-		D.p("****  DESTROYED agent of species: "+agent.getSpecies()+" ******");
+		logger.info("<==Removed agent of species: " + agent.getSpecies());
 
 	}
 
@@ -340,16 +335,17 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	protected void evolveEmbodiedAgents() {
 		// we might as well free some memory now
 		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
-		if(allocatedMemory>Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) {
+		if (allocatedMemory > Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) {
 			System.gc();
-			long allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
-			long memorySaved = allocatedMemory -  allocatedMemoryAfter;
-			if(memorySaved>0) {
-				D.p("****** FREED :"+memorySaved +" MB ");
+			long allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
+					/ (1024 * 1024);
+			long memorySaved = allocatedMemory - allocatedMemoryAfter;
+			if (memorySaved > 0) {
+				logger.info("****** FREED :" + memorySaved + " MB ");
 			}
 		}
-		
-		D.p("=====> starting evolution for generation:" + generation);
+
+		// D.p("=====> starting evolution for generation:" + generation);
 
 		populationFitnessStats.clear();
 
@@ -410,7 +406,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		// resourceCaptureStats.printStats();
 
-		
 		long currentTime = System.currentTimeMillis();
 		deltaTime = currentTime - reportTime;
 		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
@@ -419,18 +414,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				speciesEventStatsMap, agents, captureStats, populationFitnessStats, simsRunForThisGeneration,
 				resourceCaptureStats, this.simulationCounter, deltaTime, allocatedMemory);
 
-		if (Main.settings.DYNAMIC_EVENNESS) {
-			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + "; "
-					+ Main.settings.__numDetectors + ":" + Main.settings.__numExtractors + ":"
-					+ Main.settings.__numTransporters + ":" + Main.settings.__numProcessors + " ["
-					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
-		} else {
-
-			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
-					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
-		}
+		printGenerationalStats();
 		reportTime = currentTime;
 
 		// clear pool generation event stats for next generation...
@@ -443,10 +427,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		intervalStats.clear();
 		clearSpeciesEventStats();
 		resourceCaptureStats.clearAll();
-		
-	
 
-		
 	}
 
 	@Override
@@ -575,7 +556,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 			// now we also transfer the genepool of the parent to the child
 			copyGenePool((EmbodiedAgent) parentAgent, childAgent);
-			D.p("****  Added new agent of species: "+species+" AND copied over genepool!! ******");
+			logger.info("=>Added new agent of species: " + species);
 
 			agents.add(childAgent);
 
@@ -600,8 +581,21 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 		// make a deep copy of parents's pool into child's
 		for (int i = 0; i < parentPoolSize; i++) {
+			Program childsOldProgram = childAgent.activeEvolver.activeBuffer.get(i).getProgram();
+			//D.p("childs old program was="+childsOldProgram.getFingerPrint());
+			
+			childAgent.activeEvolver.activeBuffer.get(i).setProgram(null);
+			childsOldProgram = null;
+			
 			Program parentGeneProgramCloned = new Program(parentAgent.activeEvolver.activeBuffer.get(i).getProgram());
+			//D.p("parents program is="+parentGeneProgramCloned.getFingerPrint());
 			childAgent.activeEvolver.activeBuffer.get(i).setProgram(parentGeneProgramCloned);
+			childsOldProgram = childAgent.activeEvolver.activeBuffer.get(i).getProgram();
+			//D.p("childs new program is now="+childsOldProgram.getFingerPrint());
+			
+			
+			
+			
 		}
 
 	}
@@ -622,6 +616,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			if (!speciesKilled.contains(agent.getSpecies())) {
 				destroyAgent(agent);
 				speciesKilled.add(agent.getSpecies());
+				//((EmbodiedAgent)agent).reclaimActiveAgent();
+				this.agentFactory.reclaimAgent(agent);
 			}
 		}
 	}
@@ -853,6 +849,36 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	@Override
 	public AgentFactory configEmbodiedAgentFactory() {
 		return new IslanderAgentFactory(this);
+	}
+
+	@Override
+	public void printGenerationalStats() {
+		
+		if (Main.settings.DYNAMIC_EVENNESS) {
+
+			logger.info("gen: " + generation + "; allocMB=" + allocatedMemory + "; " + Main.settings.__numDetectors
+					+ ":" + Main.settings.__numExtractors + ":" + Main.settings.__numTransporters + ":"
+					+ Main.settings.__numProcessors + " ; agents=" + this.agentFactory.availableAgents.size());
+			
+			/*
+			 * logger.info("gen: " + generation + "; sims: " +
+			 * this.simulationCounter + "; fitness: " +
+			 * populationFitnessStats.getMean() + "; best_capture: " +
+			 * captureStats.getMax() + "; " + Main.settings.__numDetectors + ":"
+			 * + Main.settings.__numExtractors + ":" +
+			 * Main.settings.__numTransporters + ":" +
+			 * Main.settings.__numProcessors + " [" + settings.statusCache +
+			 * "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+			 */
+		} else {
+
+			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
+					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+		}
+		logger.info("emodiedAgent.count="+EmbodiedAgent._optimizationEmbodiedAgentCounter);
+		logger.info("islanderAgent.count="+IslanderAgent._optimizationIslanderAgentCounter);
+		
 	}
 
 }
