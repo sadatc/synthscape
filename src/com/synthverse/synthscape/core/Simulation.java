@@ -1138,6 +1138,9 @@ public abstract class Simulation extends SimState implements Constants {
 		return speciesSet;
 
 	}
+	
+	
+	public abstract void printGenerationalStats();
 
 	public abstract EnumSet<InteractionMechanism> configInteractionMechanisms();
 
