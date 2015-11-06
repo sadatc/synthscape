@@ -337,9 +337,7 @@ public class PopulationIslandSimulation extends Simulation {
 				captureStats, populationFitnessStats, simsRunForThisGeneration, resourceCaptureStats,
 				archipelagoEvolver.speciesIslandMap, this.simulationCounter, deltaTime, allocatedMemory);
 
-		logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
-				+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " time_delta_ms="
-				+ deltaTime + " allocMB=" + allocatedMemory);
+		printGenerationalStats();
 		reportTime = currentTime;
 
 		clearSpeciesEventStats();
@@ -470,6 +468,14 @@ public class PopulationIslandSimulation extends Simulation {
 	public AgentFactory configEmbodiedAgentFactory() {
 		// there is no internal agent factory
 		return null;
+	}
+
+	@Override
+	public void printGenerationalStats() {
+		logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+				+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " time_delta_ms="
+				+ deltaTime + " allocMB=" + allocatedMemory);
+
 	}
 
 }
