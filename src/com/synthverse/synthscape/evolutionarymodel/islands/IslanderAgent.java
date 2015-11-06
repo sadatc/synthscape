@@ -14,7 +14,7 @@ import com.synthverse.synthscape.core.Species;
 
 @SuppressWarnings("serial")
 public class IslanderAgent extends Agent {
-	protected static long _optimizationIslanderAgentCounter = 0;
+	public static long _optimizationIslanderAgentCounter = 0;
 
 	public IslanderAgent(Simulation simulation, Species species) {
 		super(simulation, species);
