@@ -203,8 +203,7 @@ public final class EvolutionEngine implements Constants {
 			offspringBuffer.add(agentFactory.getNewFactoryAgent(species));
 		}
 
-		logger.info("created gene pool [" + species.toString() + "] with "
-				+ genePoolSize + " agents...");
+		
 		topPerformers = new ArrayList<Agent>();
 		bottomPerformers = new ArrayList<Agent>();
 
