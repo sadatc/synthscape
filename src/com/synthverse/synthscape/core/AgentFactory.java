@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
+import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 
 public abstract class AgentFactory implements Constants {
@@ -17,10 +18,12 @@ public abstract class AgentFactory implements Constants {
 
 	protected Simulation simulation;
 
-	ArrayDeque<Agent> availableAgents = new ArrayDeque<Agent>();
+	public ArrayDeque<Agent> availableAgents = new ArrayDeque<Agent>();
 
 	public void reclaimAgent(Agent agent) {
 		availableAgents.add(agent);
+		
+	//	agent = null;
 	}
 
 	@SuppressWarnings("unused")
@@ -36,9 +39,15 @@ public abstract class AgentFactory implements Constants {
 	public Agent getNewFactoryAgent(Species species) {
 
 		Agent result = availableAgents.pollLast();
+		
+		//if(result instanceof EmbodiedAgent && result!=null) {
+		//	D.p("came here!");
+		//}
+		
 		if (result == null) {
 			result = createNewFactoryAgent(species);
-		}
+		} 
+		
 		result.setSpecies(species);
 		return result;
 	}
