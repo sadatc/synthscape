@@ -40,7 +40,7 @@ public class EmbodiedAgentEvolver extends PopulationIslandEvolver implements
 		super(ownerAgent, simulation, agentFactory, species);
 	}
 
-	public final void reclaimEmbodiedAgent(final Agent agent) {
+	public final void reclaimEmbodiedIslanderAgent(final Agent agent) {
 		agentFactory.reclaimAgent(agent);
 	}
 
