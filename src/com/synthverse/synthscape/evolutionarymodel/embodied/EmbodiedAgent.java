@@ -268,7 +268,7 @@ public class EmbodiedAgent extends Agent {
 
 	public final void reclaimActiveAgent() {
 		activeAgent.eventStats.clear();
-		activeEvolver.reclaimEmbodiedAgent(activeAgent);
+		activeEvolver.reclaimEmbodiedIslanderAgent(activeAgent);
 	}
 
 	private double computeFitness(Trait trait) {
