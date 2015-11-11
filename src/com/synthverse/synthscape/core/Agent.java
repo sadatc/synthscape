@@ -25,7 +25,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	protected static final long serialVersionUID = -5129827193602692370L;
 	protected static Logger logger = Logger.getLogger(Agent.class.getName());
-	protected static long _optimazationTotalAgentsCounters = 0;
+	public static long _optimazationTotalAgentsCounters = 0;
 	protected static int _agentCounter = 0;
 
 	private boolean scheduled = false;
@@ -2110,10 +2110,13 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 
 	@Override
 	public String toString() {
+		return "A[i:" + agentId + ",s:"+species+"]";
+		/*
 		return "Agent [agentId=" + agentId + ", teamId=" + ((team != null) ? team.getTeamId() : -1)
 				+ ", agentStepCounter=" + agentStepCounter + ", maxSteps=" + maxSteps + ", x=" + x + ", y=" + y
 				+ ", interactionMechanisms=" + interactionMechanisms + ", species=" + species + ", isCarryingResource="
 				+ isCarryingResource + ", generation=" + generation + ", program=" + program + "]";
+				*/
 	}
 
 	public String toString2() {
