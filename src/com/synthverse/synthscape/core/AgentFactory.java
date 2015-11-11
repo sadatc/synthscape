@@ -1,16 +1,16 @@
 package com.synthverse.synthscape.core;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.synthverse.Main;
-import com.synthverse.synthscape.evolutionarymodel.embodied.EmbodiedAgent;
 import com.synthverse.util.LogUtils;
 
 public abstract class AgentFactory implements Constants {
 
-	private static Logger logger = Logger.getLogger(AgentFactory.class
-			.getName());
+	private static Logger logger = Logger.getLogger(AgentFactory.class.getName());
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
@@ -18,12 +18,28 @@ public abstract class AgentFactory implements Constants {
 
 	protected Simulation simulation;
 
-	public ArrayDeque<Agent> availableAgents = new ArrayDeque<Agent>();
+	public HashMap<Species, ArrayDeque<Agent>> speciesAvailableAgentsMap = new HashMap<Species, ArrayDeque<Agent>>();
 
 	public void reclaimAgent(Agent agent) {
+		Species species = agent.getSpecies();
+		ArrayDeque<Agent> availableAgents = speciesAvailableAgentsMap.get(species);
+		if (availableAgents == null) {
+			logger.info("availableAgents sizes should never be different -- investigate");
+			System.exit(1);
+		}
 		availableAgents.add(agent);
-		
-	//	agent = null;
+	}
+	
+	
+	public void printStatus()  {
+		Set<Species> keys = speciesAvailableAgentsMap.keySet();
+		String msg = "agent cache:[";
+		for(Species key: keys) {
+			ArrayDeque<Agent> availableAgents = speciesAvailableAgentsMap.get(key);
+			msg += " " + key +":"+availableAgents.size();
+		}
+		msg += "]";
+		logger.info(msg);
 	}
 
 	@SuppressWarnings("unused")
@@ -37,18 +53,25 @@ public abstract class AgentFactory implements Constants {
 	}
 
 	public Agent getNewFactoryAgent(Species species) {
+		Agent result = null;
 
-		Agent result = availableAgents.pollLast();
-		
-		//if(result instanceof EmbodiedAgent && result!=null) {
-		//	D.p("came here!");
-		//}
-		
+		ArrayDeque<Agent> availableAgents = speciesAvailableAgentsMap.get(species);
+		if (availableAgents == null) {
+			availableAgents = new ArrayDeque<Agent>();
+			speciesAvailableAgentsMap.put(species, availableAgents);
+		} else {
+			result = availableAgents.pollLast();
+		}
+
+		// if(result instanceof EmbodiedAgent && result!=null) {
+		// D.p("about to return a recycled embodied agent -- must make sure its
+		// all reset internally");
+		// }
+
 		if (result == null) {
 			result = createNewFactoryAgent(species);
-		} 
-		
-		result.setSpecies(species);
+		}
+
 		return result;
 	}
 
