@@ -582,20 +582,19 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		// make a deep copy of parents's pool into child's
 		for (int i = 0; i < parentPoolSize; i++) {
 			Program childsOldProgram = childAgent.activeEvolver.activeBuffer.get(i).getProgram();
-			//D.p("childs old program was="+childsOldProgram.getFingerPrint());
-			
+			// D.p("childs old program was="+childsOldProgram.getFingerPrint());
+
 			childAgent.activeEvolver.activeBuffer.get(i).setProgram(null);
 			childsOldProgram = null;
-			
+
 			Program parentGeneProgramCloned = new Program(parentAgent.activeEvolver.activeBuffer.get(i).getProgram());
-			//D.p("parents program is="+parentGeneProgramCloned.getFingerPrint());
+			// D.p("parents program
+			// is="+parentGeneProgramCloned.getFingerPrint());
 			childAgent.activeEvolver.activeBuffer.get(i).setProgram(parentGeneProgramCloned);
 			childsOldProgram = childAgent.activeEvolver.activeBuffer.get(i).getProgram();
-			//D.p("childs new program is now="+childsOldProgram.getFingerPrint());
-			
-			
-			
-			
+			// D.p("childs new program is
+			// now="+childsOldProgram.getFingerPrint());
+
 		}
 
 	}
@@ -616,7 +615,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			if (!speciesKilled.contains(agent.getSpecies())) {
 				destroyAgent(agent);
 				speciesKilled.add(agent.getSpecies());
-				//((EmbodiedAgent)agent).reclaimActiveAgent();
+				// ((EmbodiedAgent)agent).reclaimActiveAgent();
 				this.agentFactory.reclaimAgent(agent);
 			}
 		}
@@ -853,32 +852,25 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	public void printGenerationalStats() {
-		
+
 		if (Main.settings.DYNAMIC_EVENNESS) {
 
-			logger.info("gen: " + generation + "; allocMB=" + allocatedMemory + "; " + Main.settings.__numDetectors
-					+ ":" + Main.settings.__numExtractors + ":" + Main.settings.__numTransporters + ":"
-					+ Main.settings.__numProcessors + " ; agents=" + this.agentFactory.availableAgents.size());
-			
-			/*
-			 * logger.info("gen: " + generation + "; sims: " +
-			 * this.simulationCounter + "; fitness: " +
-			 * populationFitnessStats.getMean() + "; best_capture: " +
-			 * captureStats.getMax() + "; " + Main.settings.__numDetectors + ":"
-			 * + Main.settings.__numExtractors + ":" +
-			 * Main.settings.__numTransporters + ":" +
-			 * Main.settings.__numProcessors + " [" + settings.statusCache +
-			 * "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
-			 */
+			logger.info("======> gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
+					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + "; "
+					+ Main.settings.__numDetectors + ":" + Main.settings.__numExtractors + ":"
+					+ Main.settings.__numTransporters + ":" + Main.settings.__numProcessors + " ["
+					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
+			this.agentFactory.printStatus();
+
 		} else {
 
 			logger.info("gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
 					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + " ["
 					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
 		}
-		logger.info("emodiedAgent.count="+EmbodiedAgent._optimizationEmbodiedAgentCounter);
-		logger.info("islanderAgent.count="+IslanderAgent._optimizationIslanderAgentCounter);
-		
+		logger.info("emodiedAgent.count=" + EmbodiedAgent._optimizationEmbodiedAgentCounter + " ; islanderAgent.count="
+				+ IslanderAgent._optimizationIslanderAgentCounter);
+
 	}
 
 }
