@@ -120,7 +120,7 @@ public class Settings implements Constants {
 
 	public boolean DYNAMIC_EVENNESS = false;
 
-	public int DYNAMIC_EVENNESS_INITIAL_CLONES = 4;
+	public int DYNAMIC_EVENNESS_INITIAL_CLONES = 1;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
 
