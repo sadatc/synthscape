@@ -1,8 +1,10 @@
 package com.synthverse.synthscape.evolutionarymodel.embodied;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -11,7 +13,6 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
-import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
@@ -188,6 +189,26 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	}
 
+	protected void initCachedAgents() {
+
+		int cacheSize = Main.settings.DE_MAX_POPULATION - ((speciesComposition.size()-1) * Main.settings.DE_INITIAL_CLONES);
+
+		List<EmbodiedAgent> agentList = new ArrayList<EmbodiedAgent>();
+		for (Species species : speciesComposition) {
+
+			for (int i = 0; i < cacheSize; i++) {
+				EmbodiedAgent embodiedAgent = (EmbodiedAgent) agentFactory.getNewFactoryAgent(species);
+				agentList.add(embodiedAgent);
+
+			}
+			for(EmbodiedAgent agent: agentList) {
+				agentFactory.reclaimAgent(agent);
+			}
+
+		}
+		logger.info("done");
+	}
+
 	@Override
 	protected void initAgents() {
 		// populate with agents
@@ -288,7 +309,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	protected void destroyAgent(Agent agent) {
 		agentGrid.remove(agent);
 		agents.remove(agent);
-		logger.info("<==Removed agent of species: " + agent.getSpecies());
+		// logger.info("<==Removed agent of species: " + agent.getSpecies());
 
 	}
 
@@ -335,6 +356,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	protected void evolveEmbodiedAgents() {
 		// we might as well free some memory now
 		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
+		/*
 		if (allocatedMemory > Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) {
 			System.gc();
 			long allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
@@ -344,7 +366,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				logger.info("****** FREED :" + memorySaved + " MB ");
 			}
 		}
-
+		*/
 		// D.p("=====> starting evolution for generation:" + generation);
 
 		populationFitnessStats.clear();
@@ -556,7 +578,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 			// now we also transfer the genepool of the parent to the child
 			copyGenePool((EmbodiedAgent) parentAgent, childAgent);
-			logger.info("=>Added new agent of species: " + species);
+			// logger.info("=>Added new agent of species: " + species);
 
 			agents.add(childAgent);
 
@@ -639,6 +661,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		initEnvironment();
 		saveEnvironmentForBenchmark();
 
+		if (Main.settings.DYNAMIC_EVENNESS) {
+			initCachedAgents();
+		}
 		initAgents();
 
 		logger.info("---- starting simulation (" + simulationCounter + ") with: world=" + (gridHeight * gridWidth)
@@ -860,7 +885,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					+ Main.settings.__numDetectors + ":" + Main.settings.__numExtractors + ":"
 					+ Main.settings.__numTransporters + ":" + Main.settings.__numProcessors + " ["
 					+ settings.statusCache + "] time_delta_ms=" + deltaTime + " allocMB=" + allocatedMemory);
-			this.agentFactory.printStatus();
 
 		} else {
 

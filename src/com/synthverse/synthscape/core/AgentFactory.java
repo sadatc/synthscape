@@ -1,6 +1,7 @@
 package com.synthverse.synthscape.core;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -28,18 +29,7 @@ public abstract class AgentFactory implements Constants {
 			System.exit(1);
 		}
 		availableAgents.add(agent);
-	}
-	
-	
-	public void printStatus()  {
-		Set<Species> keys = speciesAvailableAgentsMap.keySet();
-		String msg = "agent cache:[";
-		for(Species key: keys) {
-			ArrayDeque<Agent> availableAgents = speciesAvailableAgentsMap.get(key);
-			msg += " " + key +":"+availableAgents.size();
-		}
-		msg += "]";
-		logger.info(msg);
+
 	}
 
 	@SuppressWarnings("unused")
@@ -49,7 +39,6 @@ public abstract class AgentFactory implements Constants {
 
 	protected AgentFactory(Simulation simulation) {
 		this.simulation = simulation;
-
 	}
 
 	public Agent getNewFactoryAgent(Species species) {
