@@ -1,1 +1,2 @@
 java -cp "../lib/commons-cli-1.2.jar:../lib/commons-math3-3.0.jar:../lib/mason17_mod.jar:." com.synthverse.Main -model embodied -interactions none -species hetero -pool_size 2000
+
