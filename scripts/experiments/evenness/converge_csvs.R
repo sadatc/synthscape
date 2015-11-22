@@ -1,21 +1,20 @@
 # Constants
-MAX_GENERATIONS <-999
-NUM_RESOURCES <- 16
-NUM_SPECIES <- 3
+
 REPORT_PROGRESS_ITEMS <- 25
 
-CSV_FIELDS_TO_GRAB <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
-	"CAPTURES_MEAN","TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION",
-	"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
-	"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN","CAPTURES_BEST_CASE_PERC","TOT_POP",
-	"E")
+#CSV_FIELDS_TO_GRAB <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
+#	"CAPTURES_MEAN","TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION",
+#	"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
+#	"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN","CAPTURES_BEST_CASE_PERC","TOT_POP",
+#	"E")
 
-FIELDS_TO_CHECK_FOR_NORMALITY <- CSV_FIELDS_TO_GRAB[-1] # just skip generations
+#FIELDS_TO_CHECK_FOR_NORMALITY <- CSV_FIELDS_TO_GRAB[-1] # just skip generations
 
 
 ###### PROGRAM STARTS HERE
 
-summarizeEvennessData <-function(directory, filePattern, summaryFile, populationSizeFilter) {
+summarizeEvennessData <-function(directory, filePattern, summaryFile, 
+	populationSizeFilter, maxGenerations, numSpecies, numResources) {
 	print(paste("directory:",directory))
 	print(paste("filePattern:",filePattern))
 	print(paste("populationSizeFilter:",populationSizeFilter))
@@ -35,36 +34,36 @@ summarizeEvennessData <-function(directory, filePattern, summaryFile, population
 		csvFileData <- read.csv(csvFile, header=TRUE)
  
 		# after reading in the raw data, and checking that we have records for at least
-		# MAX_GENERATIONS, we do some transformations:
+		# maxGenerations, we do some transformations:
 		# a. trim off excess rows and rows with low populations
 		# b. add in some computed columns regarding evenness measures
 		# c. only grab the fields we are really interested in
 		
-		# only gather data if there is at least MAX_GENERATIONS amount of rows
-		if(nrow(csvFileData) >= MAX_GENERATIONS) { 
+		# only gather data if there is at least maxGenerations amount of rows
+		if(nrow(csvFileData) >= maxGenerations) { 
 			# a)  we trim off excess rows
-			csvFileData <- csvFileData[1:MAX_GENERATIONS,] 
+			csvFileData <- csvFileData[1:maxGenerations,] 
 
 			csvFileData$TOT_POP <- csvFileData$NUM_DETECTORS+ csvFileData$NUM_EXTRACTORS+ csvFileData$NUM_TRANSPORTERS
 			csvFileData <- csvFileData[csvFileData$TOT_POP==populationSizeFilter,] 
 
 			
 			# b) add in some computed columns
-			csvFileData$CAPTURES_BEST_CASE_PERC <- csvFileData$CAPTURES_BEST_CASE/NUM_RESOURCES
+			csvFileData$CAPTURES_BEST_CASE_PERC <- csvFileData$CAPTURES_BEST_CASE/numResources
 
 			#csvFileData$P1 <- csvFileData$NUM_DETECTORS/csvFileData$TOT_POP
 			#csvFileData$P2 <- csvFileData$NUM_EXTRACTORS/csvFileData$TOT_POP
 			#csvFileData$P3 <- csvFileData$NUM_TRANSPORTERS/csvFileData$TOT_POP
 
 			#csvFileData$H <- -((csvFileData$P1*log(csvFileData$P1)) + (csvFileData$P2*log(csvFileData$P2)) + (csvFileData$P3*log(csvFileData$P3)) )
-			#csvFileData$E <- csvFileData$H/log(NUM_SPECIES)
+			#csvFileData$E <- csvFileData$H/log(numSpecies)
 
 			P1 <- csvFileData$NUM_DETECTORS/csvFileData$TOT_POP
 			P2 <- csvFileData$NUM_EXTRACTORS/csvFileData$TOT_POP
 			P3 <- csvFileData$NUM_TRANSPORTERS/csvFileData$TOT_POP
 
 			H <- -((P1*log(P1)) + (P2*log(P2)) + (P3*log(P3)) )
-			csvFileData$E <- H/log(NUM_SPECIES)
+			csvFileData$E <- H/log(numSpecies)
 
 
 
@@ -90,7 +89,7 @@ summarizeEvennessData <-function(directory, filePattern, summaryFile, population
 
 	summaryData <- data.frame()
 
-	for(generation in 1:MAX_GENERATIONS) {
+	for(generation in 1:maxGenerations) {
 		print(paste("averaging generation=",generation))
 		numDataCols <- ncol(aggregateData)
 
@@ -114,7 +113,6 @@ summarizeEvennessData <-function(directory, filePattern, summaryFile, population
 	write.csv(summaryData,file=paste(directory,summaryFile,sep="/"),row.names=F)
 }
 	
-
 
 ### Main Program
 
