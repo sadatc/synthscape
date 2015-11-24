@@ -236,11 +236,14 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			speciesCount++;
 
 			if (Main.settings.MANUAL_EVENNESS) {
-				// if we are running with manual evenness settings, then we can have
+				// if we are running with manual evenness settings, then we can
+				// have
 				// two possible cases: random evennness or fixed evenness
-				// depending on either of these two cases, we pick the appropriate number
+				// depending on either of these two cases, we pick the
+				// appropriate number
 				// of clones
 				if (Main.settings.ME_RANDOM_POP_RATIO) {
+					// case 1: random ratio
 					if (speciesCount != numSpecies) {
 						numClones = random.nextInt(Main.settings.ME_MAX_POPULATION - totalPop - numSpecies) + 1;
 					} else {
@@ -248,6 +251,35 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 					}
 					totalPop += numClones;
 				} else {
+					// case 2: fixed ratio
+					String ratioString = Main.settings.ME_POP_RATIO;
+					String[] speciesProportions = ratioString.split(":");
+					try {
+						int detectorRatio = Integer.parseInt(speciesProportions[0]);
+						int extractorRatio = Integer.parseInt(speciesProportions[1]);
+						int transporterRatio = Integer.parseInt(speciesProportions[2]);
+						int processorRatio = 0;
+						int total = detectorRatio + extractorRatio + transporterRatio;
+
+						if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+							processorRatio = Integer.parseInt(speciesProportions[3]);
+							total += processorRatio;
+						}
+
+						if (species == Species.DETECTOR) {
+							numClones = (int) (((double) detectorRatio / total) * Main.settings.ME_MAX_POPULATION);
+						} else if (species == Species.EXTRACTOR) {
+							numClones = (int) (((double) extractorRatio / total) * Main.settings.ME_MAX_POPULATION);
+						} else if (species == Species.TRANSPORTER) {
+							numClones = (int) (((double) transporterRatio / total) * Main.settings.ME_MAX_POPULATION);
+						} else if (species == Species.PROCESSOR) {
+							numClones = (int) (((double) processorRatio / total) * Main.settings.ME_MAX_POPULATION);
+						}
+
+					} catch (Exception e) {
+						logger.severe("unable to parse rato string:" + ratioString + "  "+e.getMessage()+" ... exitiing!");
+						System.exit(1);
+					}
 
 				}
 
@@ -265,7 +297,6 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 			speciesCloneCreateMap.put(species, numClones);
 
 		}
-
 
 		for (Species species : speciesComposition) {
 

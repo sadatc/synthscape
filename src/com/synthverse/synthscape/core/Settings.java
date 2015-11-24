@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -18,7 +19,9 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.synthverse.Main;
 import com.synthverse.synthscape.core.gui.BridgeState;
+import com.synthverse.util.LogUtils;
 
 public class Settings implements Constants {
 
@@ -125,7 +128,7 @@ public class Settings implements Constants {
 	public boolean ME_RANDOM_POP_RATIO = false;
 
 	public String ME_POP_RATIO = "1:1:1:1"; // d:e:t:p default ratio
-	
+
 	public int DE_INITIAL_CLONES = 4;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
@@ -633,6 +636,7 @@ public class Settings implements Constants {
 				}
 
 				if (!validOptions) {
+
 					D.p("Dynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
 					System.exit(1);
 				}
@@ -691,33 +695,33 @@ public class Settings implements Constants {
 			}
 
 			printAndStore("MANUAL_EVENNESS = " + MANUAL_EVENNESS);
-			
+
 			if (MANUAL_EVENNESS) {
 				if (line.hasOption("ranpr")) {
 					ME_RANDOM_POP_RATIO = true;
-				} 
+				}
 				printAndStore("ME_RANDOM_POP_RATIO = " + ME_RANDOM_POP_RATIO);
-				
-				if(line.hasOption("manpr")) {
-					if(ME_RANDOM_POP_RATIO) {
+
+				if (line.hasOption("manpr")) {
+					if (ME_RANDOM_POP_RATIO) {
 						D.p("Cannot use both ranpr and manpr picky only one...exiting!");
 						System.exit(1);
 					}
 					ME_POP_RATIO = line.getOptionValue("manpr");
 					printAndStore("ME_POP_RATIO = " + ME_POP_RATIO);
 				} else {
-					if(!ME_RANDOM_POP_RATIO) {
+					if (!ME_RANDOM_POP_RATIO) {
 						D.p("Neither ranpr nor manpr used...exiting!");
 						System.exit(1);
 					}
 				}
-				
+
 				if (line.hasOption("memp")) {
 					ME_MAX_POPULATION = new Integer(line.getOptionValue("memp")).intValue();
 				}
 				printAndStore("ME_MAX_POPULATION = " + ME_MAX_POPULATION);
 			}
-			
+
 			if (line.hasOption("clones")) {
 
 				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();
