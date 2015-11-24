@@ -124,7 +124,7 @@ public class Settings implements Constants {
 
 	public boolean ME_RANDOM_POP_RATIO = false;
 
-	public String ME_POP_RATIO = "1:1:1";
+	public String ME_POP_RATIO = "1:1:1:1"; // d:e:t:p default ratio
 	
 	public int DE_INITIAL_CLONES = 4;
 
