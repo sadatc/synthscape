@@ -120,6 +120,12 @@ public class Settings implements Constants {
 
 	public boolean DYNAMIC_EVENNESS = false;
 
+	public boolean MANUAL_EVENNESS = false;
+
+	public boolean ME_RANDOM_POP_RATIO = false;
+
+	public String ME_POP_RATIO = "1:1:1";
+	
 	public int DE_INITIAL_CLONES = 4;
 
 	public int DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
@@ -128,10 +134,12 @@ public class Settings implements Constants {
 
 	public int DE_MAX_POPULATION = 24;
 
+	public int ME_MAX_POPULATION = 24;
+
 	public DynamicEvennessAlgorithm DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
 
 	public Environment ENVIRONMENT = Environment.RANDOM;
-	
+
 	public int HOLD_EVENT_THRESHOLD = 1;
 
 	public int lastReportedCaptures = 0;
@@ -185,6 +193,13 @@ public class Settings implements Constants {
 
 		options.addOption(new Option("de", "use dynamic evenness"));
 
+		options.addOption(new Option("me", "use manual evenness"));
+
+		options.addOption(new Option("ranpr", "in manual evenness use random population ratio"));
+
+		options.addOption(OptionBuilder.withArgName("manpr").hasArg()
+				.withDescription("manual pop ratio [" + ME_POP_RATIO + "]").create("manpr"));
+
 		options.addOption(OptionBuilder.withArgName("degofp").hasArg().withType(Integer.class)
 				.withDescription("dynamic evenness param: gen. to observe fitness performance ["
 						+ DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE + "]")
@@ -193,8 +208,11 @@ public class Settings implements Constants {
 		options.addOption(OptionBuilder.withArgName("demp").hasArg().withType(Integer.class)
 				.withDescription("dynamic evenness param: max population [" + DE_MAX_POPULATION + "]").create("demp"));
 
+		options.addOption(OptionBuilder.withArgName("memp").hasArg().withType(Integer.class)
+				.withDescription("manual evenness param: max population [" + ME_MAX_POPULATION + "]").create("memp"));
+
 		options.addOption(new Option("env_diff", "use difficult environment [default: random environment]"));
-		
+
 		options.addOption(new Option("env_vdiff", "use very difficult environment [default: random environment]"));
 
 		options.addOption(new Option("no_randomization", "do not randomize each sim [default: randomize]"));
@@ -333,9 +351,6 @@ public class Settings implements Constants {
 			}
 			printAndStore("ENVIRONMENT = " + ENVIRONMENT);
 
-			
-			
-			
 			if (line.hasOption("no_randomization")) {
 				RANDOMIZE_SIM_SEED = false;
 			}
@@ -642,6 +657,67 @@ public class Settings implements Constants {
 
 			}
 
+			if (line.hasOption("me")) {
+				if (!DYNAMIC_EVENNESS) {
+					boolean validOptions = false;
+					Set<Species> parsedSpecies = parseSpeciesString(MODEL_SPECIES);
+
+					if (EVOLUTIONARY_MODEL == EvolutionaryModel.ALIFE_MODEL
+							|| EVOLUTIONARY_MODEL == EvolutionaryModel.EMBODIED_MODEL) {
+						if (parsedSpecies.size() == 3 && parsedSpecies.contains(Species.DETECTOR)
+								&& parsedSpecies.contains(Species.EXTRACTOR)
+								&& parsedSpecies.contains(Species.TRANSPORTER)) {
+							MANUAL_EVENNESS = true;
+							validOptions = true;
+
+						} else if (parsedSpecies.size() == 4 && parsedSpecies.contains(Species.PROCESSOR)
+								&& parsedSpecies.contains(Species.DETECTOR) && parsedSpecies.contains(Species.EXTRACTOR)
+								&& parsedSpecies.contains(Species.TRANSPORTER)) {
+							MANUAL_EVENNESS = true;
+							validOptions = true;
+
+						}
+					}
+
+					if (!validOptions) {
+						D.p("Mynamic Evenness is only implemented for non-island models with detectors,extractors,transporters and processors");
+						System.exit(1);
+					}
+
+				} else {
+					D.p("Manual Evenness can only be used when not using Dynamic Evenness...exiting!");
+					System.exit(1);
+				}
+			}
+
+			printAndStore("MANUAL_EVENNESS = " + MANUAL_EVENNESS);
+			
+			if (MANUAL_EVENNESS) {
+				if (line.hasOption("ranpr")) {
+					ME_RANDOM_POP_RATIO = true;
+				} 
+				printAndStore("ME_RANDOM_POP_RATIO = " + ME_RANDOM_POP_RATIO);
+				
+				if(line.hasOption("manpr")) {
+					if(ME_RANDOM_POP_RATIO) {
+						D.p("Cannot use both ranpr and manpr picky only one...exiting!");
+						System.exit(1);
+					}
+					ME_POP_RATIO = line.getOptionValue("manpr");
+					printAndStore("ME_POP_RATIO = " + ME_POP_RATIO);
+				} else {
+					if(!ME_RANDOM_POP_RATIO) {
+						D.p("Neither ranpr nor manpr used...exiting!");
+						System.exit(1);
+					}
+				}
+				
+				if (line.hasOption("memp")) {
+					ME_MAX_POPULATION = new Integer(line.getOptionValue("memp")).intValue();
+				}
+				printAndStore("ME_MAX_POPULATION = " + ME_MAX_POPULATION);
+			}
+			
 			if (line.hasOption("clones")) {
 
 				CLONES_PER_SPECIES = new Integer(line.getOptionValue("clones")).intValue();

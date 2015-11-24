@@ -572,7 +572,7 @@ public class ExperimentReporter implements Constants {
 
 				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 
-				if (Main.settings.DYNAMIC_EVENNESS) {
+				if (Main.settings.DYNAMIC_EVENNESS || Main.settings.MANUAL_EVENNESS) {
 					columnHeader += ", NUM_DETECTORS";
 					columnHeader += ", NUM_EXTRACTORS";
 					columnHeader += ", NUM_TRANSPORTERS";
@@ -883,7 +883,7 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, Unicast.getUsed());
 				Unicast.resetSendReceiveCounters();
 
-				if (Main.settings.DYNAMIC_EVENNESS) {
+				if (Main.settings.DYNAMIC_EVENNESS || Main.settings.MANUAL_EVENNESS) {
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, Main.settings.__numDetectors);
 

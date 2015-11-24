@@ -3,6 +3,7 @@ package com.synthverse.synthscape.evolutionarymodel.embodied;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,6 +14,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
 import com.synthverse.synthscape.core.ExperimentReporter;
@@ -191,7 +193,8 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	protected void initCachedAgents() {
 
-		int cacheSize = Main.settings.DE_MAX_POPULATION - ((speciesComposition.size()-1) * Main.settings.DE_INITIAL_CLONES);
+		int cacheSize = Main.settings.DE_MAX_POPULATION
+				- ((speciesComposition.size() - 1) * Main.settings.DE_INITIAL_CLONES);
 
 		List<EmbodiedAgent> agentList = new ArrayList<EmbodiedAgent>();
 		for (Species species : speciesComposition) {
@@ -201,7 +204,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				agentList.add(embodiedAgent);
 
 			}
-			for(EmbodiedAgent agent: agentList) {
+			for (EmbodiedAgent agent : agentList) {
 				agentFactory.reclaimAgent(agent);
 			}
 
@@ -211,6 +214,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 
 	@Override
 	protected void initAgents() {
+
+		HashMap<Species, Integer> speciesCloneCreateMap = new HashMap<Species, Integer>();
+
 		// populate with agents
 		initTeam();
 
@@ -220,9 +226,50 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		int previousX = 0;
 		int previousY = 0;
 
+		int numSpecies = speciesComposition.size();
+		int totalPop = 0;
+		int speciesCount = 0;
+
+		for (Species species : speciesComposition) {
+			// by default the number of clones is what has been set by default
+			int numClones = clonesPerSpecies;
+			speciesCount++;
+
+			if (Main.settings.MANUAL_EVENNESS) {
+				// if we are running with manual evenness settings, then we can have
+				// two possible cases: random evennness or fixed evenness
+				// depending on either of these two cases, we pick the appropriate number
+				// of clones
+				if (Main.settings.ME_RANDOM_POP_RATIO) {
+					if (speciesCount != numSpecies) {
+						numClones = random.nextInt(Main.settings.ME_MAX_POPULATION - totalPop - numSpecies) + 1;
+					} else {
+						numClones = Main.settings.ME_MAX_POPULATION - totalPop;
+					}
+					totalPop += numClones;
+				} else {
+
+				}
+
+				if (species == Species.DETECTOR) {
+					Main.settings.__numDetectors = numClones;
+				} else if (species == Species.EXTRACTOR) {
+					Main.settings.__numExtractors = numClones;
+				} else if (species == Species.TRANSPORTER) {
+					Main.settings.__numTransporters = numClones;
+				} else if (species == Species.PROCESSOR) {
+					Main.settings.__numProcessors = numClones;
+				}
+
+			}
+			speciesCloneCreateMap.put(species, numClones);
+
+		}
+
+
 		for (Species species : speciesComposition) {
 
-			for (int i = 0; i < clonesPerSpecies; i++) {
+			for (int i = 0; i < speciesCloneCreateMap.get(species); i++) {
 
 				int randomX = randomPrime.nextInt(gridWidth);
 				int randomY = randomPrime.nextInt(gridHeight);
@@ -357,16 +404,13 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 		// we might as well free some memory now
 		allocatedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
 		/*
-		if (allocatedMemory > Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) {
-			System.gc();
-			long allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())
-					/ (1024 * 1024);
-			long memorySaved = allocatedMemory - allocatedMemoryAfter;
-			if (memorySaved > 0) {
-				logger.info("****** FREED :" + memorySaved + " MB ");
-			}
-		}
-		*/
+		 * if (allocatedMemory >
+		 * Main.settings.ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP) { System.gc(); long
+		 * allocatedMemoryAfter = (Runtime.getRuntime().totalMemory() -
+		 * Runtime.getRuntime().freeMemory()) / (1024 * 1024); long memorySaved
+		 * = allocatedMemory - allocatedMemoryAfter; if (memorySaved > 0) {
+		 * logger.info("****** FREED :" + memorySaved + " MB "); } }
+		 */
 		// D.p("=====> starting evolution for generation:" + generation);
 
 		populationFitnessStats.clear();
@@ -878,7 +922,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 	@Override
 	public void printGenerationalStats() {
 
-		if (Main.settings.DYNAMIC_EVENNESS) {
+		if (Main.settings.DYNAMIC_EVENNESS || Main.settings.MANUAL_EVENNESS) {
 
 			logger.info("======> gen: " + generation + "; sims: " + this.simulationCounter + "; fitness: "
 					+ populationFitnessStats.getMean() + "; best_capture: " + captureStats.getMax() + "; "
