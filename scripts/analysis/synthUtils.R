@@ -170,7 +170,9 @@ analyzeCSVFiles <-function(directory, filePattern, csvFieldsToGrab, maxFiles,
 	numDataCols <- ncol(aggregateData)
 	
 	generation <- 800
-	observations <- aggregateData[aggregateData$GENERATION==generation,3:numDataCols]
+#	observations <- aggregateData[aggregateData$GENERATION==generation,3:numDataCols]
+
+	observations <- aggregateData[aggregateData$CAPTURES_TOTAL>=10,3:numDataCols]
 
 
 	pdf("/tmp/histograms.pdf")
@@ -242,7 +244,7 @@ analyzeEvennessData <-function() {
 		"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
 		"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN")
 
-	analyzeCSVFiles("/Users/sadat/aggregated_data","env_reg_24*", CSV_FIELDS_TO_GRAB, 200,999)
+	analyzeCSVFiles("/Users/sadat/aggregated_data","env_reg_24*", CSV_FIELDS_TO_GRAB, 60,999)
 }
 	
 	
