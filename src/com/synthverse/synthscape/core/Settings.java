@@ -450,7 +450,7 @@ public class Settings implements Constants {
 
 				String speciesNames = line.getOptionValue("species").toLowerCase();
 				if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
-						|| speciesNames.contains("detector") || speciesNames.contains("transporter")
+						|| speciesNames.contains("detector") || speciesNames.contains("transporter") || speciesNames.contains("processor")
 						|| speciesNames.contains("+d") || speciesNames.contains("+e") || speciesNames.contains("+t")
 						|| speciesNames.contains("^de") || speciesNames.contains("^dt") || speciesNames.contains("^et")
 						|| speciesNames.contains("*det"))) {
@@ -812,6 +812,12 @@ public class Settings implements Constants {
 
 		}
 
+		if (speciesString.contains("+p")) {
+			speciesSet.add(Species.P);
+
+		}
+
+		
 		if (speciesString.contains("+e")) {
 			speciesSet.add(Species.E);
 
@@ -854,6 +860,11 @@ public class Settings implements Constants {
 
 		if (speciesString.contains("transporter")) {
 			speciesSet.add(Species.TRANSPORTER);
+
+		}
+		
+		if (speciesString.contains("processor")) {
+			speciesSet.add(Species.PROCESSOR);
 
 		}
 

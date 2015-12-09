@@ -220,31 +220,89 @@ analyzeCSVFiles <-function(directory, filePattern, csvFieldsToGrab, maxFiles,
 
 
 
-convergeEvennessData <-function() {
+convergeEvennessData_DE <-function() {
 	
-	CSV_FIELDS_TO_GRAB <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
+	pCsvFieldsToGrab <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
 		"CAPTURES_MEAN","TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION",
 		"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
 		"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN","CAPTURES_BEST_CASE_PERC","TOT_POP",
 		"E")
 
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_reg_24*", "/tmp/summ_env_reg_24.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_diff_24*", "/tmp/summ_env_diff_24.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_vdiff_24*", "/tmp/summ_env_vdiff_24.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)
+	pDirectory <- "~/ExperimentResults/Evenness/DE/aggregated_data"
+	pMaxGenerations <-999
+	pNumResources <- 16
+	pMaxFiles <- 30
+	pShouldComputeE <- TRUE
+	pPopulationSizeFilter <- 24
+ 	pNumSpecies <-3
+	
 
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_reg_36*", "/tmp/summ_env_reg_36.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_diff_36*", "/tmp/summ_env_diff_36.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)
-	summarizeCSVFiles("/Users/sadat/aggregated_data","env_vdiff_36*", "/tmp/summ_env_vdiff_36.csv", CSV_FIELDS_TO_GRAB,999,16,30,TRUE,24,3)	
+	summarizeCSVFiles(pDirectory,"env_reg_24*", "/tmp/summ_env_reg_24.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"env_diff_24*", "/tmp/summ_env_diff_24.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"env_vdiff_24*", "/tmp/summ_env_vdiff_24.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+
+
+	pPopulationSizeFilter <- 36
+	summarizeCSVFiles(pDirectory,"env_reg_36*", "/tmp/summ_env_reg_36.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"env_diff_36*", "/tmp/summ_env_diff_36.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"env_vdiff_36*", "/tmp/summ_env_vdiff_36.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+
 }
 
-analyzeEvennessData <-function() {
+
+analyzeEvennessData_DE <-function() {
 	
-	CSV_FIELDS_TO_GRAB <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
+	pCsvFieldsToGrab <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
 		"CAPTURES_MEAN","TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION",
 		"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
 		"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN")
 
-	analyzeCSVFiles("/Users/sadat/aggregated_data","env_reg_24*", CSV_FIELDS_TO_GRAB, 60,999)
+	pDirectory <- "~/ExperimentResults/Evenness/DE/aggregated_data"
+	pMaxFiles <- 30
+	pMaxGenerations <-999
+	
+	analyzeCSVFiles(pDirectory,"env_reg_24*", pCsvFieldsToGrab, pMaxFiles,pMaxGenerations)
+}
+
+convergeEvennessData_ME <-function() {
+	
+	pCsvFieldsToGrab <- c("GENERATION","CAPTURES_TOTAL","CAPTURES_BEST_CASE",
+		"CAPTURES_MEAN","TOT_FITNESS_MEAN","RATE_COMMUNICATION","INTERVAL_TRANSPORTATION",
+		"NUM_DETECTORS", "NUM_EXTRACTORS","NUM_TRANSPORTERS", "TRANSPORTER_FITNESS_MEAN", 
+		"DETECTOR_FITNESS_MEAN","EXTRACTOR_FITNESS_MEAN","CAPTURES_BEST_CASE_PERC","TOT_POP",
+		"E")
+
+	pDirectory <- "~/ExperimentResults/Evenness/ME/aggregated_data"
+	pMaxGenerations <-1999
+	pNumResources <- 16
+	pMaxFiles <- 30
+	pShouldComputeE <- TRUE
+	pPopulationSizeFilter <- 24
+ 	pNumSpecies <-3
+	
+	# the random population cannot be averaged like this
+	# instead it needs to be averaged according to
+	# ratio: generation: rate of growth of metrices
+	# summarizeCSVFiles(pDirectory,"me_reg_24_r*", "/tmp/me_reg_24_r.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+
+
+	#summarizeCSVFiles(pDirectory,"me_reg_24_m111*", "/tmp/sum_me_reg_24_m111.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	#summarizeCSVFiles(pDirectory,"me_reg_24_m112*", "/tmp/sum_me_reg_24_m112.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	#summarizeCSVFiles(pDirectory,"me_reg_24_m121*", "/tmp/sum_me_reg_24_m121.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	#summarizeCSVFiles(pDirectory,"me_reg_24_m211*", "/tmp/sum_me_reg_24_m211.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+
+
+	summarizeCSVFiles(pDirectory,"me_reg_24_m123*", "/tmp/sum_me_reg_24_m123.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"me_reg_24_m132*", "/tmp/sum_me_reg_24_m132.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"me_reg_24_m213*", "/tmp/sum_me_reg_24_m213.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"me_reg_24_m231*", "/tmp/sum_me_reg_24_m231.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"me_reg_24_m312*", "/tmp/sum_me_reg_24_m312.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+	summarizeCSVFiles(pDirectory,"me_reg_24_m321*", "/tmp/sum_me_reg_24_m321.csv", pCsvFieldsToGrab,pMaxGenerations,pNumResources,pMaxFiles,pShouldComputeE,pPopulationSizeFilter,pNumSpecies)
+
+
+
+
+
 }
 	
 	
@@ -252,8 +310,11 @@ analyzeEvennessData <-function() {
 ### Main Program
 ###
 
-#convergeEvennessData()
-analyzeEvennessData()
+#convergeEvennessData_DE()
+#analyzeEvennessData_DE()
+
+convergeEvennessData_ME()
+#analyzeEvennessData_DE()
 
 
 

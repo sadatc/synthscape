@@ -33,7 +33,7 @@ else
 	export PATH=/opt/jdk1.8.0_45/bin:${PATH}
 fi	
 
-export CLASSPATH=/home/s.chowdhury
+export CLASSPATH=/scratch/s.chowdhury
 DATA_DIR="${PBS_O_WORKDIR}/data/${PBS_JOBNAME}"
 
 # create data directory based on job name
