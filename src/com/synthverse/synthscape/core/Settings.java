@@ -177,14 +177,25 @@ public class Settings implements Constants {
 	//public long _ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
 	
 	public int _RESOURCE_BOX_WIDTH = 0;
+	public int _RESOURCE_BOX_WIDTH_PADDING = 0;
+	
+	public int _RESOURCE_BOX_WIDTH_HALF1 = 0;
+	public int _RESOURCE_BOX_WIDTH_HALF2 = 0;
+	
 	public int _ACTUAL_RESOURCES = 0;
 	public int _ACTUAL_OBSTACLES = 0;
 	
 	public int _RESOURCE_BOX_LEFT = 0;
 	public int _RESOURCE_BOX_RIGHT = 0;
+	public int _RESOURCE_BOX_UP = 0;
+	public int _RESOURCE_BOX_DOWN = 0;
 	
 	public int _RESOURCE_BOX_LEFT_PERIM = 0;
 	public int _RESOURCE_BOX_RIGHT_PERIM = 0;
+	
+	public int _RESOURCE_BOX_UP_PERIM = 0;
+	public int _RESOURCE_BOX_DOWN_PERIM = 0;
+	
 	
 	public int _WIDTH_EDGE = 0;
 	public int _HEIGHT_EDGE = 0;
@@ -766,7 +777,9 @@ public class Settings implements Constants {
 			_ACTUAL_OBSTACLES = numberOfObstacles;
 			
 			_RESOURCE_BOX_WIDTH = (int)Math.ceil(Math.sqrt((double) numberOfResources));
-			
+			_RESOURCE_BOX_WIDTH_PADDING = _RESOURCE_BOX_WIDTH+2;
+			_RESOURCE_BOX_WIDTH_HALF1 = _RESOURCE_BOX_WIDTH/2;
+			_RESOURCE_BOX_WIDTH_HALF2 = _RESOURCE_BOX_WIDTH_HALF1+1;
 
 			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
 				PERC_RESOURCE_CAPTURE_GOAL = Integer.MAX_VALUE;
@@ -775,6 +788,24 @@ public class Settings implements Constants {
 
 			NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
 
+			
+			
+			// these computations will help make difficult environment generator 
+			// work faster by pre-computing these values
+			// extra numbers account for the obstruction walls
+			_RESOURCE_BOX_LEFT = (WORLD_WIDTH - (_RESOURCE_BOX_WIDTH + 2)) / 2;
+			_RESOURCE_BOX_RIGHT = _RESOURCE_BOX_LEFT + _RESOURCE_BOX_WIDTH + 1;
+			_RESOURCE_BOX_UP = (WORLD_HEIGHT - (_RESOURCE_BOX_WIDTH + 2)) / 2;
+			_RESOURCE_BOX_DOWN = _RESOURCE_BOX_UP + _RESOURCE_BOX_WIDTH + 1;
+			
+			_RESOURCE_BOX_LEFT_PERIM = _RESOURCE_BOX_LEFT-1;
+			_RESOURCE_BOX_RIGHT_PERIM = _RESOURCE_BOX_RIGHT+1;
+			_RESOURCE_BOX_UP_PERIM = _RESOURCE_BOX_UP-1;
+			_RESOURCE_BOX_DOWN_PERIM = _RESOURCE_BOX_DOWN+1;
+			
+			_WIDTH_EDGE = WORLD_WIDTH-1;
+			_HEIGHT_EDGE = WORLD_HEIGHT-1;
+			
 			printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 			printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
 
