@@ -502,15 +502,13 @@ public abstract class Simulation extends SimState implements Constants {
 		int currentCollectionSiteCount = 0;
 
 		// now box in an area
-		int startX = (gridWidth - (settings._RESOURCE_BOX_WIDTH + 2)) / 2;
-		int endX = startX + settings._RESOURCE_BOX_WIDTH +1; 
-		int startY = (gridHeight - (settings._RESOURCE_BOX_WIDTH + 2)) / 2;
-		int endY = startY + settings._RESOURCE_BOX_WIDTH +1;
-		int x = startX;
-		int y = startY;
+		
+		 
+		int x = settings._RESOURCE_BOX_LEFT;
+		int y = settings._RESOURCE_BOX_UP;
 
-		for (int i = 0; i < settings._RESOURCE_BOX_WIDTH + 2; i++) {
-			if (i == (settings._RESOURCE_BOX_WIDTH / 2) || i == ((settings._RESOURCE_BOX_WIDTH / 2) + 1)) {
+		for (int i = 0; i < settings._RESOURCE_BOX_WIDTH_PADDING; i++) {
+			if (i == settings._RESOURCE_BOX_WIDTH_HALF1 || i == settings._RESOURCE_BOX_WIDTH_HALF2) {
 				// this leaves an opening at the top
 			} else {
 				GridUtils.set(collisionGrid, x, y, true);
@@ -521,7 +519,7 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		for (int j = 0; j < settings._RESOURCE_BOX_WIDTH; j++) {
 			y++;
-			x = startX;
+			x = settings._RESOURCE_BOX_LEFT;
 			GridUtils.set(collisionGrid, x, y, true);
 			GridUtils.set(obstacleGrid, x, y, true);
 			currentObstacleCount++;
@@ -547,9 +545,9 @@ public abstract class Simulation extends SimState implements Constants {
 			currentObstacleCount++;
 		}
 		y++;
-		x = startX;
-		for (int i = 0; i < settings._RESOURCE_BOX_WIDTH + 2; i++) {
-			if (i == (settings._RESOURCE_BOX_WIDTH / 2) || i == ((settings._RESOURCE_BOX_WIDTH / 2) + 1)) {
+		x = settings._RESOURCE_BOX_LEFT;
+		for (int i = 0; i <  settings._RESOURCE_BOX_WIDTH_PADDING; i++) {
+			if (i == settings._RESOURCE_BOX_WIDTH_HALF1 || i == settings._RESOURCE_BOX_WIDTH_HALF2) {
 				// this leaves an opening in the bottom
 			} else {
 				GridUtils.set(collisionGrid, x, y, true);
@@ -651,8 +649,8 @@ public abstract class Simulation extends SimState implements Constants {
 				
 				if(!GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
 					// check if the random is blocking..
-					if(randomX<startX-1 || randomX>endY) {
-						if(randomY<startY-1 || randomY>endY) {
+					if(randomX<settings._RESOURCE_BOX_LEFT_PERIM || randomX>settings._RESOURCE_BOX_RIGHT_PERIM) {
+						if(randomY<settings._RESOURCE_BOX_UP_PERIM || randomY>settings._RESOURCE_BOX_DOWN_PERIM) {
 							isLocationOk = true;
 						}
 					}
