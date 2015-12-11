@@ -502,15 +502,15 @@ public abstract class Simulation extends SimState implements Constants {
 		int currentCollectionSiteCount = 0;
 
 		// now box in an area
-		int startX = (gridWidth - (settings.RESOURCE_BOX_WIDTH + 2)) / 2;
-		int endX = startX + settings.RESOURCE_BOX_WIDTH +1; 
-		int startY = (gridHeight - (settings.RESOURCE_BOX_WIDTH + 2)) / 2;
-		int endY = startY + settings.RESOURCE_BOX_WIDTH +1;
+		int startX = (gridWidth - (settings._RESOURCE_BOX_WIDTH + 2)) / 2;
+		int endX = startX + settings._RESOURCE_BOX_WIDTH +1; 
+		int startY = (gridHeight - (settings._RESOURCE_BOX_WIDTH + 2)) / 2;
+		int endY = startY + settings._RESOURCE_BOX_WIDTH +1;
 		int x = startX;
 		int y = startY;
 
-		for (int i = 0; i < settings.RESOURCE_BOX_WIDTH + 2; i++) {
-			if (i == (settings.RESOURCE_BOX_WIDTH / 2) || i == ((settings.RESOURCE_BOX_WIDTH / 2) + 1)) {
+		for (int i = 0; i < settings._RESOURCE_BOX_WIDTH + 2; i++) {
+			if (i == (settings._RESOURCE_BOX_WIDTH / 2) || i == ((settings._RESOURCE_BOX_WIDTH / 2) + 1)) {
 				// this leaves an opening at the top
 			} else {
 				GridUtils.set(collisionGrid, x, y, true);
@@ -519,7 +519,7 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 			x++;
 		}
-		for (int j = 0; j < settings.RESOURCE_BOX_WIDTH; j++) {
+		for (int j = 0; j < settings._RESOURCE_BOX_WIDTH; j++) {
 			y++;
 			x = startX;
 			GridUtils.set(collisionGrid, x, y, true);
@@ -527,8 +527,8 @@ public abstract class Simulation extends SimState implements Constants {
 			currentObstacleCount++;
 
 			x++;
-			for (int i = 0; i < settings.RESOURCE_BOX_WIDTH; i++) {
-				if (currentResourceCount < settings.ACTUAL_RESOURCES) {
+			for (int i = 0; i < settings._RESOURCE_BOX_WIDTH; i++) {
+				if (currentResourceCount < settings._ACTUAL_RESOURCES) {
 					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
 
 					resourceStatusArray[x][y].state = ResourceState.RAW;
@@ -548,8 +548,8 @@ public abstract class Simulation extends SimState implements Constants {
 		}
 		y++;
 		x = startX;
-		for (int i = 0; i < settings.RESOURCE_BOX_WIDTH + 2; i++) {
-			if (i == (settings.RESOURCE_BOX_WIDTH / 2) || i == ((settings.RESOURCE_BOX_WIDTH / 2) + 1)) {
+		for (int i = 0; i < settings._RESOURCE_BOX_WIDTH + 2; i++) {
+			if (i == (settings._RESOURCE_BOX_WIDTH / 2) || i == ((settings._RESOURCE_BOX_WIDTH / 2) + 1)) {
 				// this leaves an opening in the bottom
 			} else {
 				GridUtils.set(collisionGrid, x, y, true);
@@ -639,7 +639,7 @@ public abstract class Simulation extends SimState implements Constants {
 			
 			
 		}
-		int remainingObstacles = settings.ACTUAL_OBSTACLES - currentObstacleCount;
+		int remainingObstacles = settings._ACTUAL_OBSTACLES - currentObstacleCount;
 		
 		for (int i = 0; i < remainingObstacles; i++) {
 			int randomX = 0;
@@ -667,8 +667,6 @@ public abstract class Simulation extends SimState implements Constants {
 			
 		
 		}
-		
-		D.p("here");
 
 	}
 

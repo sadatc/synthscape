@@ -176,9 +176,16 @@ public class Settings implements Constants {
 
 	public long ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
 	
-	public int RESOURCE_BOX_WIDTH = 0;
-	public int ACTUAL_RESOURCES = 0;
-	public int ACTUAL_OBSTACLES = 0;
+	public int _RESOURCE_BOX_WIDTH = 0;
+	public int _ACTUAL_RESOURCES = 0;
+	public int _ACTUAL_OBSTACLES = 0;
+	
+	public int RESOURCE_BOX_LEFT = 0;
+	public int RESOURCE_BOX_RIGHT = 0;
+	
+	public int RESOURCE_BOX_LEFT_PERIM = 0;
+	public int RESOURCE_BOX_RIGHT_PERIM = 0;
+	
 	
 
 	private Settings() {
@@ -752,10 +759,10 @@ public class Settings implements Constants {
 
 			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
-			ACTUAL_RESOURCES = numberOfResources;
-			ACTUAL_OBSTACLES = numberOfObstacles;
+			_ACTUAL_RESOURCES = numberOfResources;
+			_ACTUAL_OBSTACLES = numberOfObstacles;
 			
-			RESOURCE_BOX_WIDTH = (int)Math.ceil(Math.sqrt((double) numberOfResources));
+			_RESOURCE_BOX_WIDTH = (int)Math.ceil(Math.sqrt((double) numberOfResources));
 			
 
 			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
