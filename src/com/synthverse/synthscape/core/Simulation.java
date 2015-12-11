@@ -565,19 +565,19 @@ public abstract class Simulation extends SimState implements Constants {
 		currentCollectionSiteCount++;
 
 		// now we setup for north-east, south-west and south-east corner
-		GridUtils.set(collectionSiteGrid, gridWidth - 1, 0, true);
-		GridUtils.set(collisionGrid, gridWidth - 1, 0, true);
-		collectionSiteList.add(new Int2D(gridWidth - 1, 0));
+		GridUtils.set(collectionSiteGrid, settings._WIDTH_EDGE, 0, true);
+		GridUtils.set(collisionGrid, settings._WIDTH_EDGE, 0, true);
+		collectionSiteList.add(new Int2D(settings._WIDTH_EDGE, 0));
 		currentCollectionSiteCount++;
 
-		GridUtils.set(collectionSiteGrid, 0, gridHeight - 1, true);
-		GridUtils.set(collisionGrid, 0, gridHeight - 1, true);
-		collectionSiteList.add(new Int2D(0, gridHeight - 1));
+		GridUtils.set(collectionSiteGrid, 0, settings._HEIGHT_EDGE, true);
+		GridUtils.set(collisionGrid, 0, settings._HEIGHT_EDGE, true);
+		collectionSiteList.add(new Int2D(0, settings._HEIGHT_EDGE));
 		currentCollectionSiteCount++;
 
-		GridUtils.set(collectionSiteGrid, gridWidth - 1, gridHeight - 1, true);
-		GridUtils.set(collisionGrid, gridWidth - 1, gridHeight - 1, true);
-		collectionSiteList.add(new Int2D(gridWidth - 1, gridHeight - 1));
+		GridUtils.set(collectionSiteGrid, settings._WIDTH_EDGE, settings._HEIGHT_EDGE, true);
+		GridUtils.set(collisionGrid, settings._WIDTH_EDGE, settings._HEIGHT_EDGE, true);
+		collectionSiteList.add(new Int2D(settings._WIDTH_EDGE, settings._HEIGHT_EDGE));
 		currentCollectionSiteCount++;
 
 		// cluster the remaining collection sites around the corners
@@ -606,9 +606,9 @@ public abstract class Simulation extends SimState implements Constants {
 					randomX = randomPrime.nextInt(gridWidth);
 				} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, 0));
 				
-				GridUtils.set(collectionSiteGrid, randomX, gridHeight-1, true);
-				GridUtils.set(collisionGrid, randomX, gridHeight-1, true);
-				collectionSiteList.add(new Int2D(randomX, gridHeight-1));
+				GridUtils.set(collectionSiteGrid, randomX, settings._HEIGHT_EDGE, true);
+				GridUtils.set(collisionGrid, randomX, settings._HEIGHT_EDGE, true);
+				collectionSiteList.add(new Int2D(randomX, settings._HEIGHT_EDGE));
 				currentCollectionSiteCount++;
 			}
 
@@ -628,9 +628,9 @@ public abstract class Simulation extends SimState implements Constants {
 					randomY = randomPrime.nextInt(gridHeight);
 				} while (GridUtils.gridHasAnObjectAt(collisionGrid, 0, randomY));
 				
-				GridUtils.set(collectionSiteGrid, gridWidth-1, randomY, true);
-				GridUtils.set(collisionGrid, gridWidth-1, randomY, true);
-				collectionSiteList.add(new Int2D(gridWidth-1,randomY));
+				GridUtils.set(collectionSiteGrid, settings._WIDTH_EDGE, randomY, true);
+				GridUtils.set(collisionGrid, settings._WIDTH_EDGE, randomY, true);
+				collectionSiteList.add(new Int2D(settings._WIDTH_EDGE,randomY));
 				currentCollectionSiteCount++;
 			}
 			
@@ -676,9 +676,9 @@ public abstract class Simulation extends SimState implements Constants {
 		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
 
 		// now we setup for north-east, south-west and south-east corner
-		GridUtils.set(collectionSiteGrid, gridWidth - 1, 0, true);
-		GridUtils.set(collisionGrid, gridWidth - 1, 0, true);
-		collectionSiteList.add(new Int2D(gridWidth - 1, 0));
+		GridUtils.set(collectionSiteGrid, settings._WIDTH_EDGE, 0, true);
+		GridUtils.set(collisionGrid, settings._WIDTH_EDGE, 0, true);
+		collectionSiteList.add(new Int2D(settings._WIDTH_EDGE, 0));
 
 		// now box in an area
 		int startX = (gridWidth - 6) / 2;
