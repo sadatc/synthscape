@@ -496,69 +496,179 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void initDifficultEnvironment() {
+
+		int currentObstacleCount = 0;
+		int currentResourceCount = 0;
+		int currentCollectionSiteCount = 0;
+
+		// now box in an area
+		int startX = (gridWidth - (settings.RESOURCE_BOX_WIDTH + 2)) / 2;
+		int endX = startX + settings.RESOURCE_BOX_WIDTH +1; 
+		int startY = (gridHeight - (settings.RESOURCE_BOX_WIDTH + 2)) / 2;
+		int endY = startY + settings.RESOURCE_BOX_WIDTH +1;
+		int x = startX;
+		int y = startY;
+
+		for (int i = 0; i < settings.RESOURCE_BOX_WIDTH + 2; i++) {
+			if (i == (settings.RESOURCE_BOX_WIDTH / 2) || i == ((settings.RESOURCE_BOX_WIDTH / 2) + 1)) {
+				// this leaves an opening at the top
+			} else {
+				GridUtils.set(collisionGrid, x, y, true);
+				GridUtils.set(obstacleGrid, x, y, true);
+				currentObstacleCount++;
+			}
+			x++;
+		}
+		for (int j = 0; j < settings.RESOURCE_BOX_WIDTH; j++) {
+			y++;
+			x = startX;
+			GridUtils.set(collisionGrid, x, y, true);
+			GridUtils.set(obstacleGrid, x, y, true);
+			currentObstacleCount++;
+
+			x++;
+			for (int i = 0; i < settings.RESOURCE_BOX_WIDTH; i++) {
+				if (currentResourceCount < settings.ACTUAL_RESOURCES) {
+					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
+
+					resourceStatusArray[x][y].state = ResourceState.RAW;
+					resourceStatusArray[x][y].originX = x;
+					resourceStatusArray[x][y].originY = y;
+					resourceStatusArray[x][y].currentX = x;
+					resourceStatusArray[x][y].currentY = y;
+					GridUtils.set(collisionGrid, x, y, true);
+					currentResourceCount++;
+				}
+
+				x++;
+			}
+			GridUtils.set(collisionGrid, x, y, true);
+			GridUtils.set(obstacleGrid, x, y, true);
+			currentObstacleCount++;
+		}
+		y++;
+		x = startX;
+		for (int i = 0; i < settings.RESOURCE_BOX_WIDTH + 2; i++) {
+			if (i == (settings.RESOURCE_BOX_WIDTH / 2) || i == ((settings.RESOURCE_BOX_WIDTH / 2) + 1)) {
+				// this leaves an opening in the bottom
+			} else {
+				GridUtils.set(collisionGrid, x, y, true);
+				GridUtils.set(obstacleGrid, x, y, true);
+				currentObstacleCount++;
+			}
+			x++;
+		}
+
 		// PRIMARY_COLLECTION_SITE = (0,0)
 		// this is the north-west corner
 		GridUtils.set(collectionSiteGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
 		GridUtils.set(collisionGrid, settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y, true);
 		collectionSiteList.add(new Int2D(settings.PRIMARY_COLLECTION_SITE_X, settings.PRIMARY_COLLECTION_SITE_Y));
+		currentCollectionSiteCount++;
 
 		// now we setup for north-east, south-west and south-east corner
 		GridUtils.set(collectionSiteGrid, gridWidth - 1, 0, true);
 		GridUtils.set(collisionGrid, gridWidth - 1, 0, true);
 		collectionSiteList.add(new Int2D(gridWidth - 1, 0));
+		currentCollectionSiteCount++;
 
 		GridUtils.set(collectionSiteGrid, 0, gridHeight - 1, true);
 		GridUtils.set(collisionGrid, 0, gridHeight - 1, true);
 		collectionSiteList.add(new Int2D(0, gridHeight - 1));
+		currentCollectionSiteCount++;
 
 		GridUtils.set(collectionSiteGrid, gridWidth - 1, gridHeight - 1, true);
 		GridUtils.set(collisionGrid, gridWidth - 1, gridHeight - 1, true);
 		collectionSiteList.add(new Int2D(gridWidth - 1, gridHeight - 1));
+		currentCollectionSiteCount++;
 
-		// now box in an area
-		int startX = (gridWidth - 6) / 2;
-		int startY = (gridHeight - 6) / 2;
-		int x = startX;
-		int y = startY;
-		for (int i = 0; i < 6; i++) {
-			if (i == 2 || i == 3) {
-				// this leaves an opening at the top
-			} else {
-				GridUtils.set(collisionGrid, x, y, true);
-				GridUtils.set(obstacleGrid, x, y, true);
+		// cluster the remaining collection sites around the corners
+		int remainingCollectionSites = settings.NUMBER_OF_COLLECTION_SITES - currentCollectionSiteCount;
+
+		MersenneTwisterFast randomPrime = this.random;
+
+		for (int i = 0; i < remainingCollectionSites; i++) {
+			int newsSide = randomPrime.nextInt(4);
+			int randomX = 0;
+			int randomY = 0;
+
+			if (newsSide == 0) { // north line
+				do {
+					randomX = randomPrime.nextInt(gridWidth);
+				} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, 0));
+				
+				GridUtils.set(collectionSiteGrid, randomX, 0, true);
+				GridUtils.set(collisionGrid, randomX, 0, true);
+				collectionSiteList.add(new Int2D(randomX, 0));
+				currentCollectionSiteCount++;
 			}
-			x++;
-		}
-		for (int j = 0; j < 4; j++) {
-			y++;
-			x = startX;
-			GridUtils.set(collisionGrid, x, y, true);
-			GridUtils.set(obstacleGrid, x, y, true);
-			x++;
-			for (int i = 0; i < 4; i++) {
-				GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
-				resourceStatusArray[x][y].state = ResourceState.RAW;
-				resourceStatusArray[x][y].originX = x;
-				resourceStatusArray[x][y].originY = y;
-				resourceStatusArray[x][y].currentX = x;
-				resourceStatusArray[x][y].currentY = y;
-				GridUtils.set(collisionGrid, x, y, true);
-				x++;
+
+			if (newsSide == 1) { // south line
+				do {
+					randomX = randomPrime.nextInt(gridWidth);
+				} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, 0));
+				
+				GridUtils.set(collectionSiteGrid, randomX, gridHeight-1, true);
+				GridUtils.set(collisionGrid, randomX, gridHeight-1, true);
+				collectionSiteList.add(new Int2D(randomX, gridHeight-1));
+				currentCollectionSiteCount++;
 			}
-			GridUtils.set(collisionGrid, x, y, true);
-			GridUtils.set(obstacleGrid, x, y, true);
-		}
-		y++;
-		x = startX;
-		for (int i = 0; i < 6; i++) {
-			if (i == 2 || i == 3) {
-				// this leaves an opening in the bottom
-			} else {
-				GridUtils.set(collisionGrid, x, y, true);
-				GridUtils.set(obstacleGrid, x, y, true);
+
+			if (newsSide == 2) { // east line
+				do {
+					randomY = randomPrime.nextInt(gridHeight);
+				} while (GridUtils.gridHasAnObjectAt(collisionGrid, 0, randomY));
+				
+				GridUtils.set(collectionSiteGrid, 0, randomY, true);
+				GridUtils.set(collisionGrid, 0, randomY, true);
+				collectionSiteList.add(new Int2D(0,randomY));
+				currentCollectionSiteCount++;
 			}
-			x++;
+			
+			if (newsSide == 3) { // west line
+				do {
+					randomY = randomPrime.nextInt(gridHeight);
+				} while (GridUtils.gridHasAnObjectAt(collisionGrid, 0, randomY));
+				
+				GridUtils.set(collectionSiteGrid, gridWidth-1, randomY, true);
+				GridUtils.set(collisionGrid, gridWidth-1, randomY, true);
+				collectionSiteList.add(new Int2D(gridWidth-1,randomY));
+				currentCollectionSiteCount++;
+			}
+			
+			
+			
 		}
+		int remainingObstacles = settings.ACTUAL_OBSTACLES - currentObstacleCount;
+		
+		for (int i = 0; i < remainingObstacles; i++) {
+			int randomX = 0;
+			int randomY = 0;
+			boolean isLocationOk = false;
+			do {
+				randomX = randomPrime.nextInt(gridWidth);
+				randomY = randomPrime.nextInt(gridHeight);
+				
+				if(!GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY)) {
+					// check if the random is blocking..
+					if(randomX<startX-1 || randomX>endY) {
+						if(randomY<startY-1 || randomY>endY) {
+							isLocationOk = true;
+						}
+					}
+					
+				}
+				
+			} while (!isLocationOk);
+			
+			GridUtils.set(collisionGrid, randomX, randomY, true);
+			GridUtils.set(obstacleGrid, randomX, randomY, true);
+			currentObstacleCount++;
+			
+		
+		}
+		
+		D.p("here");
 
 	}
 
@@ -1138,8 +1248,7 @@ public abstract class Simulation extends SimState implements Constants {
 		return speciesSet;
 
 	}
-	
-	
+
 	public abstract void printGenerationalStats();
 
 	public abstract EnumSet<InteractionMechanism> configInteractionMechanisms();
