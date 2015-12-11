@@ -47,7 +47,7 @@ public class Settings implements Constants {
 
 	public int GENE_POOL_SIZE = 512;
 
-	public double COLLECTION_SITE_DENSITY = 0.015625;
+	public double COLLECTION_SITE_DENSITY = 0.02;
 	// public double COLLECTION_SITE_DENSITY = 0.031250;
 
 	public int NUMBER_OF_COLLECTION_SITES = 8;
@@ -64,9 +64,9 @@ public class Settings implements Constants {
 
 	public String MODEL_INTERACTIONS = "none";
 
-	public int WORLD_WIDTH = 16;
+	public int WORLD_WIDTH = 15;
 
-	public int WORLD_HEIGHT = 16;
+	public int WORLD_HEIGHT = 15;
 
 	public double OBSTACLE_DENSITY = 0.125;
 
@@ -175,6 +175,11 @@ public class Settings implements Constants {
 	public int __numProcessors = 0;
 
 	public long ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
+	
+	public int RESOURCE_BOX_WIDTH = 0;
+	public int ACTUAL_RESOURCES = 0;
+	public int ACTUAL_OBSTACLES = 0;
+	
 
 	private Settings() {
 
@@ -747,6 +752,11 @@ public class Settings implements Constants {
 
 			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
 			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
+			ACTUAL_RESOURCES = numberOfResources;
+			ACTUAL_OBSTACLES = numberOfObstacles;
+			
+			RESOURCE_BOX_WIDTH = (int)Math.ceil(Math.sqrt((double) numberOfResources));
+			
 
 			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
 				PERC_RESOURCE_CAPTURE_GOAL = Integer.MAX_VALUE;
