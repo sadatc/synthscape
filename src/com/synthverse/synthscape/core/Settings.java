@@ -174,17 +174,20 @@ public class Settings implements Constants {
 	public int __numTransporters = 0;
 	public int __numProcessors = 0;
 
-	public long ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
+	//public long _ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
 	
 	public int _RESOURCE_BOX_WIDTH = 0;
 	public int _ACTUAL_RESOURCES = 0;
 	public int _ACTUAL_OBSTACLES = 0;
 	
-	public int RESOURCE_BOX_LEFT = 0;
-	public int RESOURCE_BOX_RIGHT = 0;
+	public int _RESOURCE_BOX_LEFT = 0;
+	public int _RESOURCE_BOX_RIGHT = 0;
 	
-	public int RESOURCE_BOX_LEFT_PERIM = 0;
-	public int RESOURCE_BOX_RIGHT_PERIM = 0;
+	public int _RESOURCE_BOX_LEFT_PERIM = 0;
+	public int _RESOURCE_BOX_RIGHT_PERIM = 0;
+	
+	public int _WIDTH_EDGE = 0;
+	public int _HEIGHT_EDGE = 0;
 	
 	
 
