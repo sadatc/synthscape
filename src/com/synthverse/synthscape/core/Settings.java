@@ -48,7 +48,6 @@ public class Settings implements Constants {
 	public int GENE_POOL_SIZE = 512;
 
 	public double COLLECTION_SITE_DENSITY = 0.02;
-	// public double COLLECTION_SITE_DENSITY = 0.031250;
 
 	public int NUMBER_OF_COLLECTION_SITES = 8;
 
@@ -70,7 +69,7 @@ public class Settings implements Constants {
 
 	public double OBSTACLE_DENSITY = 0.125;
 
-	public double RESOURCE_DENSITY = 0.0625;
+	public double RESOURCE_DENSITY = 0.05;
 
 	public double MATING_SUCCESS_RATE = 0.3;
 
