@@ -66,6 +66,8 @@ public class Settings implements Constants {
 	public int WORLD_WIDTH = 15;
 
 	public int WORLD_HEIGHT = 15;
+	
+	public int WORLD_GRIDS = WORLD_WIDTH*WORLD_HEIGHT;
 
 	public double OBSTACLE_DENSITY = 0.125;
 
@@ -768,10 +770,10 @@ public class Settings implements Constants {
 			printAndStore("PRIMARY_COLLECTION_SITE_Y = " + PRIMARY_COLLECTION_SITE_Y);
 			printAndStore("MAX_SIMS_PER_EXPERIMENT = " + SIMS_PER_EXPERIMENT);
 
-			double gridArea = WORLD_WIDTH * WORLD_HEIGHT;
+			WORLD_GRIDS = WORLD_WIDTH * WORLD_HEIGHT;
 
-			int numberOfObstacles = (int) (gridArea * OBSTACLE_DENSITY);
-			int numberOfResources = (int) (gridArea * RESOURCE_DENSITY);
+			int numberOfObstacles = (int) (WORLD_GRIDS * OBSTACLE_DENSITY);
+			int numberOfResources = (int) (WORLD_GRIDS * RESOURCE_DENSITY);
 			_ACTUAL_RESOURCES = numberOfResources;
 			_ACTUAL_OBSTACLES = numberOfObstacles;
 			
@@ -785,7 +787,7 @@ public class Settings implements Constants {
 			}
 			int resourceCaptureGoal = (int) ((double) numberOfResources * PERC_RESOURCE_CAPTURE_GOAL);
 
-			NUMBER_OF_COLLECTION_SITES = (int) ((double) gridArea * COLLECTION_SITE_DENSITY);
+			NUMBER_OF_COLLECTION_SITES = (int) ((double) WORLD_GRIDS * COLLECTION_SITE_DENSITY);
 
 			
 			

@@ -66,6 +66,7 @@ public class ExperimentReporter implements Constants {
 	FileOutputStream fileOutputStream = null;
 
 	private final boolean flushAlways;
+	String EXPERIMENT_CSV_METADATA = "";
 
 	@SuppressWarnings("unused")
 	private ExperimentReporter() {
@@ -502,7 +503,8 @@ public class ExperimentReporter implements Constants {
 			if (simulation.isReportPerformance()) {
 				numberOfSpecies = simulation.speciesComposition.size();
 
-				String columnHeader = "GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+				String columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+				preComputeExperimentCsvMetadata();
 				for (EventType type : EventType.values()) {
 					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
 							&& type == EventType.PROCESSING)) {
@@ -595,6 +597,36 @@ public class ExperimentReporter implements Constants {
 
 	}
 
+	private void preComputeExperimentCsvMetadata() {
+
+		String interactions = "n";
+
+		if (Main.settings.MODEL_INTERACTIONS.equalsIgnoreCase("trail")) {
+			interactions = "t";
+		}
+
+		if (Main.settings.MODEL_INTERACTIONS.equalsIgnoreCase("broadcast")) {
+			interactions = "b";
+		}
+
+		if (Main.settings.MODEL_INTERACTIONS.equalsIgnoreCase("unicast_n")) {
+			interactions = "u";
+		}
+
+		String model = "g";
+
+		if (!Main.settings.MODEL_SPECIES.trim().equalsIgnoreCase("homogenous")) {
+			model = "s";
+		}
+
+		this.EXPERIMENT_CSV_METADATA = Main.settings.WORLD_GRIDS + "," + Main.settings._ACTUAL_RESOURCES + ","
+				+ Main.settings.NUMBER_OF_COLLECTION_SITES + "," + Main.settings._ACTUAL_OBSTACLES + ","
+				+ Main.settings.PROBLEM_COMPLEXITY.getShortName() + "," + Main.settings.ENVIRONMENT.shortName + ","
+				+ Main.settings.CLONES_PER_SPECIES + "," + Main.settings.EVOLUTIONARY_MODEL.shortName + ","
+				+ interactions + "," + model + ",";
+
+	}
+
 	public void reportPerformanceEmbodiedModel(int generationCounter, IntervalStats intervalStats,
 			EventStats generationEventStats, EnumMap<Species, EventStats> speciesEventStatsMap, ArrayList<Agent> agents,
 			SummaryStatistics captureStats, SummaryStatistics populationFitnessStats, long simsRun,
@@ -605,6 +637,7 @@ public class ExperimentReporter implements Constants {
 
 				sbPerformance.delete(0, sbPerformance.length());
 
+				sbPerformance.append(this.EXPERIMENT_CSV_METADATA);
 				formattedAppend(sbPerformance, generationCounter);
 
 				formattedAppend(sbPerformance, COMMA);
@@ -898,7 +931,6 @@ public class ExperimentReporter implements Constants {
 						formattedAppend(sbPerformance, Main.settings.__numProcessors);
 					}
 
-			
 				}
 
 				performanceWriter.write(sbPerformance.toString());
@@ -947,10 +979,10 @@ public class ExperimentReporter implements Constants {
 			long simCounter, long timeDelta, long allocatedMemory) {
 		try {
 			if (simulation.isReportPerformance()) {
-
 				sbPerformance.delete(0, sbPerformance.length());
 
-				formattedAppend(sbPerformance, generationCounter);
+				sbPerformance.append(this.EXPERIMENT_CSV_METADATA);
+				formattedAppend(sbPerformance, generationCounter);				
 				formattedAppend(sbPerformance, COMMA);
 
 				formattedAppend(sbPerformance, simCounter);
