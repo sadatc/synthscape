@@ -198,6 +198,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 				// check various status and update accordingly
 				sim.agentGrid.setObjectLocation(this, new Int2D(newX, newY));
 				updateLocationStatus(newX, newY);
+				sim.recordEvent(this, Event.TRAVEL, NA, NA);
 			}
 		}
 
@@ -220,6 +221,7 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 				// check various status and update accordingly
 				sim.agentGrid.setObjectLocation(this, new Int2D(newX, newY));
 				updateLocationStatus(newX, newY);
+				sim.recordEvent(this, Event.TRAVEL, NA, NA);
 			}
 		}
 
