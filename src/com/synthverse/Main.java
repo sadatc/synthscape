@@ -77,7 +77,7 @@ public class Main {
 							settings.processCommandLineInput(modifiedArgs);
 							startSimulation(modifiedArgs);
 							settings.resetSettings();
-							D.p("completed run block...");
+							//D.p("completed run block...");
 							
 
 						}
@@ -103,7 +103,7 @@ public class Main {
 		for(String arg: args) {
 			params += arg+" ";
 		}
-		D.p("running block with params:"+params);
+		D.p("BLOCK PARAMS:"+params);
 		
 		if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
 			// island model
