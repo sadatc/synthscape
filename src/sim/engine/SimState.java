@@ -703,7 +703,7 @@ public class SimState implements java.io.Serializable
             {
             try { threads[thread].join(); } catch (InterruptedException ex) {  }  // do nothing
             }
-        System.exit(0);
+        //System.exit(0);
         }
         
     static Object printLock = new Object[0];
