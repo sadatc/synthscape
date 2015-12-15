@@ -12,7 +12,7 @@ public class TrailGridWrapper {
 	public SparseGrid2D objectGrid = null;
 
 	public TrailGridWrapper() {
-		D.p("created new TrailGridWrapper");
+		//D.p("created new TrailGridWrapper");
 	}
 
 	final public void createNew(int gridWidth, int gridHeight) {

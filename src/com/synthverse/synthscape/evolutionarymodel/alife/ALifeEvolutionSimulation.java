@@ -48,11 +48,13 @@ public class ALifeEvolutionSimulation extends EmbodiedEvolutionSimulation {
 	public static void main(String[] arg) {
 		String[] manualArgs = StringUtils.parseArguments("-repeat " + settings.REPEAT + " -seed " + settings.SEED);
 		doLoop(ALifeEvolutionSimulation.class, manualArgs);
+		/*
 		logger.info("Diagnosis: total # of agents created: " + Agent.get_optimazationTotalAgentsCounters());
 		logger.info("Diagnosis: total # of islander agents created: "
 				+ IslanderAgent.get_optimizationIslanderAgentCounter());
 		logger.info("Diagnosis: total # of embodied agents created: "
 				+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
+		*/
 		//System.exit(0);
 	}
 

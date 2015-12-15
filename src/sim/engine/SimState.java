@@ -714,7 +714,7 @@ public class SimState implements java.io.Serializable
             
             //sadatc@gmail.com: 6/14/2015: suppressing usual print to error
             //System.err.println(val);
-            D.p("MASON: "+val);
+            //D.p("MASON: "+val);
             }
         }
     

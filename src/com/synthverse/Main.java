@@ -76,7 +76,9 @@ public class Main {
 							settings.originalArgs = modifiedArgs;
 							settings.processCommandLineInput(modifiedArgs);
 							startSimulation(modifiedArgs);
-							D.p("Came Here!!!!");
+							settings.resetSettings();
+							D.p("completed run block...");
+							
 
 						}
 					}
@@ -96,7 +98,13 @@ public class Main {
 	}
 
 	public static void startSimulation(String[] args) {
-
+		
+		String params = "";
+		for(String arg: args) {
+			params += arg+" ";
+		}
+		D.p("running block with params:"+params);
+		
 		if (settings.EVOLUTIONARY_MODEL == EvolutionaryModel.ISLAND_MODEL) {
 			// island model
 			PopulationIslandSimulation.main(args);

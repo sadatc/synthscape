@@ -200,7 +200,7 @@ public class Settings implements Constants {
 	}
 
 	private void printAndStore(String msg) {
-		D.p(msg);
+		//D.p(msg);
 		EXPERIMENT_DETAILS.add(msg);
 	}
 
@@ -377,7 +377,7 @@ public class Settings implements Constants {
 			// parse the command line arguments
 			CommandLine line = parser.parse(options, args);
 
-			D.p("=============== INPUT PARAMETERS ===============");
+			//D.p("=============== INPUT PARAMETERS ===============");
 
 			if (line.hasOption("blocks")) {
 				runBlocks = new Integer(line.getOptionValue("blocks")).intValue();
@@ -652,7 +652,7 @@ public class Settings implements Constants {
 				SEED = Settings.getSecureRandom();
 			}
 
-			D.p("SEED = " + SEED);
+			//D.p("SEED = " + SEED);
 
 			if (line.hasOption("ddir")) {
 				DATA_DIR = line.getOptionValue("ddir");
@@ -858,7 +858,7 @@ public class Settings implements Constants {
 			printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
 			printAndStore("ACTUAL COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
 
-			D.p("=================================================");
+			//D.p("=================================================");
 
 		} catch (ParseException exp) {
 			// oops, something went wrong
@@ -898,6 +898,180 @@ public class Settings implements Constants {
 		}
 
 		return instance;
+
+	}
+
+	public static void reset() {
+		if (instance != null) {
+			instance.resetSettings();
+		}
+
+	}
+
+	public void resetSettings() {
+		SHOW_GRAPHICS = false;
+
+		CLUSTERED = false;
+
+		PEER_REWARDS = false;
+
+		SEED = 1;
+
+		GENERATIONS = 1000;
+
+		BENCHMARK_GENERATION = 100;
+
+		CLONES_PER_SPECIES = 8;
+
+		GENE_POOL_SIZE = 512;
+
+		COLLECTION_SITE_DENSITY = 0.02;
+
+		NUMBER_OF_COLLECTION_SITES = 8;
+
+		PERC_RESOURCE_CAPTURE_GOAL = 0.0;
+
+		SIMS_PER_EXPERIMENT = GENERATIONS * GENE_POOL_SIZE;
+
+		PROBLEM_COMPLEXITY = ProblemComplexity.THREE_SEQUENTIAL_TASKS;
+
+		EVOLUTIONARY_MODEL = EvolutionaryModel.ISLAND_MODEL;
+
+		MODEL_SPECIES = "homogenous";
+
+		MODEL_INTERACTIONS = "none";
+
+		WORLD_WIDTH = 15;
+
+		WORLD_HEIGHT = 15;
+
+		WORLD_GRIDS = WORLD_WIDTH * WORLD_HEIGHT;
+
+		OBSTACLE_DENSITY = 0.125;
+
+		RESOURCE_DENSITY = 0.05;
+
+		MATING_SUCCESS_RATE = 0.3;
+
+		MATING_PROXIMITY_RADIUS = 1;
+
+		MATING_GENERATION_FREQUENCY = 10;
+
+		PRIMARY_COLLECTION_SITE_X = (int) (WORLD_WIDTH * 0.50);
+
+		PRIMARY_COLLECTION_SITE_Y = (int) (WORLD_HEIGHT * 0.50);
+
+		REQUESTED_LOG_LEVEL = Level.ALL;
+
+		SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.RANDOM;
+
+		EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
+
+		MAX_STEPS_PER_AGENT = 1024;
+
+		REPEAT = 1;
+
+		DATA_DIR = File.separator + "tmp";
+
+		JOB_NAME = "test";
+
+		RANDOMIZE_SIM_SEED = true;
+
+		PERFORMANCE_DATA_FILE = "perf_dat.csv";
+
+		EVENT_DATA_FILE = "evnt_dat.csv";
+
+		DNA_PROGRESSION_FILE = "dna_dat.gz";
+
+		EXPERIMENT_DETAILS_FILE = "exp_det.txt";
+
+		EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
+
+		EXPERIMENT_DETAILS = new ArrayList<String>();
+
+		INTERACTION_QUALITY = InteractionQuality.HIGHEST;
+
+		CONSTRAINED_INTERACTIONS = true;
+
+		REPORT_DNA_PROGRESSION = false;
+
+		COMPRESS_DNA_PROGRESSION = false;
+
+		SPECIES_LEVEL_REPORT = true;
+
+		DYNAMIC_EVENNESS = false;
+
+		MANUAL_EVENNESS = false;
+
+		ME_RANDOM_POP_RATIO = false;
+
+		ME_POP_RATIO = "1:1:1:1"; // d:e:t:p default ratio
+
+		DE_INITIAL_CLONES = 4;
+
+		DE_GENERATIONS_TO_OBSERVE_FITNESS_PERFORMANCE = 50;
+
+		DE_GENERATIONS_TO_OBSERVE_SIGNAL_CHANGES = 5;
+
+		DE_MAX_POPULATION = 24;
+
+		ME_MAX_POPULATION = 24;
+
+		DE_ALGORITHM = DynamicEvennessAlgorithm.DE_SIGNAL_DEMAND_BASED_SWITCH;
+
+		ENVIRONMENT = Environment.RANDOM;
+
+		HOLD_EVENT_THRESHOLD = 1;
+
+		lastReportedCaptures = 0;
+		lastReportedGeneration = 0;
+		lastLoggedGeneration = 0;
+
+		experimentNumber = 0;
+
+		statusCache = EMPTY_STRING;
+
+		generationCounter = 0;
+
+		originalArgs = null;
+
+		__showGraphics = false;
+		__useSoundEffects = false;
+		__guiStarted = false;
+
+		__renderStageLock = new Integer(0);
+		__simulationStarted = false;
+		__bridgeState = null;
+
+		__animationDelay = Constants.SHORT_PAUSE;
+
+		__numDetectors = 0;
+		__numExtractors = 0;
+		__numTransporters = 0;
+		__numProcessors = 0;
+
+		_RESOURCE_BOX_WIDTH = 0;
+		_RESOURCE_BOX_WIDTH_PADDING = 0;
+
+		_RESOURCE_BOX_WIDTH_HALF1 = 0;
+		_RESOURCE_BOX_WIDTH_HALF2 = 0;
+
+		_ACTUAL_RESOURCES = 0;
+		_ACTUAL_OBSTACLES = 0;
+
+		_RESOURCE_BOX_LEFT = 0;
+		_RESOURCE_BOX_RIGHT = 0;
+		_RESOURCE_BOX_UP = 0;
+		_RESOURCE_BOX_DOWN = 0;
+
+		_RESOURCE_BOX_LEFT_PERIM = 0;
+		_RESOURCE_BOX_RIGHT_PERIM = 0;
+
+		_RESOURCE_BOX_UP_PERIM = 0;
+		_RESOURCE_BOX_DOWN_PERIM = 0;
+
+		_WIDTH_EDGE = 0;
+		_HEIGHT_EDGE = 0;
 
 	}
 
