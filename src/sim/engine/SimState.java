@@ -462,7 +462,7 @@ public class SimState implements java.io.Serializable
         java.text.NumberFormat n = java.text.NumberFormat.getInstance();
         n.setMinimumFractionDigits(0);
                
-        if (!quiet) System.err.println("MASON Version " + n.format(version()) + ".  For further options, try adding ' -help' at end.");
+        //if (!quiet) System.err.println("MASON Version " + n.format(version()) + ".  For further options, try adding ' -help' at end.");
      
         
         // figure the checkpoint modulo
@@ -627,7 +627,7 @@ public class SimState implements java.io.Serializable
                             state.nameThread();
                             state.job = job;
                             state.seed = seed;                           
-                            if (!quiet) printlnSynchronized("Job: " + state.job() + " Seed: " + state.seed());
+                            //if (!quiet) printlnSynchronized("Job: " + state.job() + " Seed: " + state.seed());
                             state.start();
                             }
                         
