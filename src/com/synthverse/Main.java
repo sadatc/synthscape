@@ -32,7 +32,7 @@ public class Main {
 			if (runBlocks > 0) {
 				String worldWidths[] = { "15", "25" };
 				String resourceDensities[] = { "0.05", "0.15" };
-				String difficulties[] = { "", "-env_diff" };
+				String difficulties[] = { " ", "-env_diff" };
 
 				for (String width : worldWidths) {
 					for (String rdensity : resourceDensities) {
