@@ -88,7 +88,6 @@ public class Settings implements Constants {
 	public SeedType SEED_GENOTYPE_PRESET_INSTRUCTIONS = SeedType.RANDOM;
 
 	public int EMBODIED_AGENT_POOL_SIZE = GENE_POOL_SIZE;
-	// TODO: separate this, if needed
 
 	public int MAX_STEPS_PER_AGENT = 1024;
 
@@ -161,9 +160,7 @@ public class Settings implements Constants {
 	public boolean __showGraphics = false;
 	public boolean __useSoundEffects = false;
 	public boolean __guiStarted = false;
-	// __renderStageLock = 0 (initial value)
-	// __renderStageLock = 1 (grids copied over, ready to render)
-	// __renderStageLock = 2 (rendering completed, ready to update grid)
+
 	public Integer __renderStageLock = new Integer(0);
 	public boolean __simulationStarted = false;
 	public BridgeState __bridgeState = null;
@@ -174,8 +171,6 @@ public class Settings implements Constants {
 	public int __numExtractors = 0;
 	public int __numTransporters = 0;
 	public int __numProcessors = 0;
-
-	// public long _ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
 
 	public int _RESOURCE_BOX_WIDTH = 0;
 	public int _RESOURCE_BOX_WIDTH_PADDING = 0;
@@ -253,10 +248,9 @@ public class Settings implements Constants {
 		// build up all the command line options
 		int runBlocks = 0;
 		Options options = new Options();
-		
+
 		options.addOption(OptionBuilder.withArgName("blocks").hasArg().withType(Integer.class)
 				.withDescription("final run blocks (e.g. 5)").create("blocks"));
-
 
 		options.addOption(new Option("help", "print this message"));
 
@@ -384,13 +378,12 @@ public class Settings implements Constants {
 			CommandLine line = parser.parse(options, args);
 
 			D.p("=============== INPUT PARAMETERS ===============");
-			
-			
+
 			if (line.hasOption("blocks")) {
 				runBlocks = new Integer(line.getOptionValue("blocks")).intValue();
-				
-				if(runBlocks>0) {
-					D.p("going to do run "+runBlocks+" blocks...");
+
+				if (runBlocks > 0) {
+					D.p("going to do run " + runBlocks + " blocks...");
 					return runBlocks;
 				} else {
 					D.p("No run blocks...direct run...");
