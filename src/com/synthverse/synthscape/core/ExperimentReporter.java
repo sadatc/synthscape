@@ -95,9 +95,11 @@ public class ExperimentReporter implements Constants {
 			performanceWriter = openFile(performanceFileName);
 		}
 
-		String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
-				settings.JOB_NAME, seedString);
-		dnaWriter = openCompressedFile(dnaProgressionFileName);
+		if (settings.REPORT_DNA_PROGRESSION) {
+			String dnaProgressionFileName = constructFileName(settings.DATA_DIR, settings.DNA_PROGRESSION_FILE,
+					settings.JOB_NAME, seedString);
+			dnaWriter = openCompressedFile(dnaProgressionFileName);
+		}
 
 	}
 
@@ -309,16 +311,18 @@ public class ExperimentReporter implements Constants {
 	}
 
 	private void writeDnaFieldDescription() {
-		try {
+		if (settings.REPORT_DNA_PROGRESSION) {
+			try {
 
-			dnaWriter.write("SIMULATION,GENERATION,SPECIES,POOL_ID,GENOTYPE");
-			dnaWriter.newLine();
+				dnaWriter.write("SIMULATION,GENERATION,SPECIES,POOL_ID,GENOTYPE");
+				dnaWriter.newLine();
 
-		} catch (Exception e) {
-			logger.severe("Exception while reporting dna:" + e.getMessage());
-			e.printStackTrace();
-			System.exit(0);
+			} catch (Exception e) {
+				logger.severe("Exception while reporting dna:" + e.getMessage());
+				e.printStackTrace();
+				System.exit(0);
 
+			}
 		}
 
 	}
@@ -982,7 +986,7 @@ public class ExperimentReporter implements Constants {
 				sbPerformance.delete(0, sbPerformance.length());
 
 				sbPerformance.append(this.EXPERIMENT_CSV_METADATA);
-				formattedAppend(sbPerformance, generationCounter);				
+				formattedAppend(sbPerformance, generationCounter);
 				formattedAppend(sbPerformance, COMMA);
 
 				formattedAppend(sbPerformance, simCounter);

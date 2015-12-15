@@ -98,7 +98,7 @@ public class PopulationIslandSimulation extends Simulation {
 		logger.info("Diagnosis: total # of embodied agents created: "
 				+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
 
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	private void initTeam() {

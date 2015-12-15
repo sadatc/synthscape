@@ -97,7 +97,7 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 				+ IslanderAgent.get_optimizationIslanderAgentCounter());
 		logger.info("Diagnosis: total # of embodied agents created: "
 				+ EmbodiedAgent.get_optimizationEmbodiedAgentCounter());
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	public final void clearSpeciesEventStats() {

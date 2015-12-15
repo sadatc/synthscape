@@ -66,8 +66,8 @@ public class Settings implements Constants {
 	public int WORLD_WIDTH = 15;
 
 	public int WORLD_HEIGHT = 15;
-	
-	public int WORLD_GRIDS = WORLD_WIDTH*WORLD_HEIGHT;
+
+	public int WORLD_GRIDS = WORLD_WIDTH * WORLD_HEIGHT;
 
 	public double OBSTACLE_DENSITY = 0.125;
 
@@ -175,33 +175,30 @@ public class Settings implements Constants {
 	public int __numTransporters = 0;
 	public int __numProcessors = 0;
 
-	//public long _ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
-	
+	// public long _ALLOC_MEMORY_TO_TRIGGER_GC_CLEANUP = 900;
+
 	public int _RESOURCE_BOX_WIDTH = 0;
 	public int _RESOURCE_BOX_WIDTH_PADDING = 0;
-	
+
 	public int _RESOURCE_BOX_WIDTH_HALF1 = 0;
 	public int _RESOURCE_BOX_WIDTH_HALF2 = 0;
-	
+
 	public int _ACTUAL_RESOURCES = 0;
 	public int _ACTUAL_OBSTACLES = 0;
-	
+
 	public int _RESOURCE_BOX_LEFT = 0;
 	public int _RESOURCE_BOX_RIGHT = 0;
 	public int _RESOURCE_BOX_UP = 0;
 	public int _RESOURCE_BOX_DOWN = 0;
-	
+
 	public int _RESOURCE_BOX_LEFT_PERIM = 0;
 	public int _RESOURCE_BOX_RIGHT_PERIM = 0;
-	
+
 	public int _RESOURCE_BOX_UP_PERIM = 0;
 	public int _RESOURCE_BOX_DOWN_PERIM = 0;
-	
-	
+
 	public int _WIDTH_EDGE = 0;
 	public int _HEIGHT_EDGE = 0;
-	
-	
 
 	private Settings() {
 
@@ -213,9 +210,53 @@ public class Settings implements Constants {
 	}
 
 	@SuppressWarnings("static-access")
-	public void processCommandLineInput(String[] args) {
-		// build up all the command line options
+
+	public int processRunBlocks(String[] args) {
+		int result = 0;
+
 		Options options = new Options();
+
+		options.addOption(OptionBuilder.withArgName("blocks").hasArg().withType(Integer.class)
+				.withDescription("final run blocks (e.g. 5)").create("blocks"));
+
+		HelpFormatter formatter = new HelpFormatter();
+
+		// create the parser
+		CommandLineParser parser = new BasicParser();
+
+		try {
+			// parse the command line arguments
+			CommandLine line = parser.parse(options, args);
+
+			if (line.hasOption("blocks")) {
+				result = new Integer(line.getOptionValue("blocks")).intValue();
+
+			}
+		} catch (ParseException exp) {
+			// oops, something went wrong
+			if (args.length == 1 && args[0].toLowerCase().contains("help")) {
+				// check if this was a request for help...
+				formatter.printHelp("com.synthverse.Main", options);
+				System.exit(0);
+			} else {
+				System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+				// formatter.printHelp("com.synthverse.Main", options);
+				System.exit(1);
+			}
+		}
+
+		return result;
+	}
+
+	@SuppressWarnings("static-access")
+	public int processCommandLineInput(String[] args) {
+		// build up all the command line options
+		int runBlocks = 0;
+		Options options = new Options();
+		
+		options.addOption(OptionBuilder.withArgName("blocks").hasArg().withType(Integer.class)
+				.withDescription("final run blocks (e.g. 5)").create("blocks"));
+
 
 		options.addOption(new Option("help", "print this message"));
 
@@ -343,6 +384,18 @@ public class Settings implements Constants {
 			CommandLine line = parser.parse(options, args);
 
 			D.p("=============== INPUT PARAMETERS ===============");
+			
+			
+			if (line.hasOption("blocks")) {
+				runBlocks = new Integer(line.getOptionValue("blocks")).intValue();
+				
+				if(runBlocks>0) {
+					D.p("going to do run "+runBlocks+" blocks...");
+					return runBlocks;
+				} else {
+					D.p("No run blocks...direct run...");
+				}
+			}
 
 			if (line.hasOption("model")) {
 				String modelName = line.getOptionValue("model").toLowerCase();
@@ -477,9 +530,10 @@ public class Settings implements Constants {
 
 				String speciesNames = line.getOptionValue("species").toLowerCase();
 				if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
-						|| speciesNames.contains("detector") || speciesNames.contains("transporter") || speciesNames.contains("processor")
-						|| speciesNames.contains("+d") || speciesNames.contains("+e") || speciesNames.contains("+t")
-						|| speciesNames.contains("^de") || speciesNames.contains("^dt") || speciesNames.contains("^et")
+						|| speciesNames.contains("detector") || speciesNames.contains("transporter")
+						|| speciesNames.contains("processor") || speciesNames.contains("+d")
+						|| speciesNames.contains("+e") || speciesNames.contains("+t") || speciesNames.contains("^de")
+						|| speciesNames.contains("^dt") || speciesNames.contains("^et")
 						|| speciesNames.contains("*det"))) {
 					throw new ParseException("species: " + speciesNames + " was not recognized");
 				}
@@ -776,11 +830,11 @@ public class Settings implements Constants {
 			int numberOfResources = (int) (WORLD_GRIDS * RESOURCE_DENSITY);
 			_ACTUAL_RESOURCES = numberOfResources;
 			_ACTUAL_OBSTACLES = numberOfObstacles;
-			
-			_RESOURCE_BOX_WIDTH = (int)Math.ceil(Math.sqrt((double) numberOfResources));
-			_RESOURCE_BOX_WIDTH_PADDING = _RESOURCE_BOX_WIDTH+2;
-			_RESOURCE_BOX_WIDTH_HALF1 = _RESOURCE_BOX_WIDTH/2;
-			_RESOURCE_BOX_WIDTH_HALF2 = _RESOURCE_BOX_WIDTH_HALF1+1;
+
+			_RESOURCE_BOX_WIDTH = (int) Math.ceil(Math.sqrt((double) numberOfResources));
+			_RESOURCE_BOX_WIDTH_PADDING = _RESOURCE_BOX_WIDTH + 2;
+			_RESOURCE_BOX_WIDTH_HALF1 = _RESOURCE_BOX_WIDTH / 2;
+			_RESOURCE_BOX_WIDTH_HALF2 = _RESOURCE_BOX_WIDTH_HALF1 + 1;
 
 			if (PERC_RESOURCE_CAPTURE_GOAL == 0.0) {
 				PERC_RESOURCE_CAPTURE_GOAL = Integer.MAX_VALUE;
@@ -789,24 +843,22 @@ public class Settings implements Constants {
 
 			NUMBER_OF_COLLECTION_SITES = (int) ((double) WORLD_GRIDS * COLLECTION_SITE_DENSITY);
 
-			
-			
-			// these computations will help make difficult environment generator 
+			// these computations will help make difficult environment generator
 			// work faster by pre-computing these values
 			// extra numbers account for the obstruction walls
 			_RESOURCE_BOX_LEFT = (WORLD_WIDTH - (_RESOURCE_BOX_WIDTH + 2)) / 2;
 			_RESOURCE_BOX_RIGHT = _RESOURCE_BOX_LEFT + _RESOURCE_BOX_WIDTH + 1;
 			_RESOURCE_BOX_UP = (WORLD_HEIGHT - (_RESOURCE_BOX_WIDTH + 2)) / 2;
 			_RESOURCE_BOX_DOWN = _RESOURCE_BOX_UP + _RESOURCE_BOX_WIDTH + 1;
-			
-			_RESOURCE_BOX_LEFT_PERIM = _RESOURCE_BOX_LEFT-1;
-			_RESOURCE_BOX_RIGHT_PERIM = _RESOURCE_BOX_RIGHT+1;
-			_RESOURCE_BOX_UP_PERIM = _RESOURCE_BOX_UP-1;
-			_RESOURCE_BOX_DOWN_PERIM = _RESOURCE_BOX_DOWN+1;
-			
-			_WIDTH_EDGE = WORLD_WIDTH-1;
-			_HEIGHT_EDGE = WORLD_HEIGHT-1;
-			
+
+			_RESOURCE_BOX_LEFT_PERIM = _RESOURCE_BOX_LEFT - 1;
+			_RESOURCE_BOX_RIGHT_PERIM = _RESOURCE_BOX_RIGHT + 1;
+			_RESOURCE_BOX_UP_PERIM = _RESOURCE_BOX_UP - 1;
+			_RESOURCE_BOX_DOWN_PERIM = _RESOURCE_BOX_DOWN + 1;
+
+			_WIDTH_EDGE = WORLD_WIDTH - 1;
+			_HEIGHT_EDGE = WORLD_HEIGHT - 1;
+
 			printAndStore("ACTUAL_OBSTACLES = " + numberOfObstacles);
 			printAndStore("ACTUAL_RESOURCES = " + numberOfResources);
 
@@ -827,6 +879,7 @@ public class Settings implements Constants {
 				System.exit(1);
 			}
 		}
+		return 0;
 
 	}
 
@@ -869,7 +922,6 @@ public class Settings implements Constants {
 
 		}
 
-		
 		if (speciesString.contains("+e")) {
 			speciesSet.add(Species.E);
 
@@ -914,7 +966,7 @@ public class Settings implements Constants {
 			speciesSet.add(Species.TRANSPORTER);
 
 		}
-		
+
 		if (speciesString.contains("processor")) {
 			speciesSet.add(Species.PROCESSOR);
 
