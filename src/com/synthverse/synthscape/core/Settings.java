@@ -200,7 +200,7 @@ public class Settings implements Constants {
 	}
 
 	private void printAndStore(String msg) {
-		//D.p(msg);
+		// D.p(msg);
 		EXPERIMENT_DETAILS.add(msg);
 	}
 
@@ -377,7 +377,7 @@ public class Settings implements Constants {
 			// parse the command line arguments
 			CommandLine line = parser.parse(options, args);
 
-			//D.p("=============== INPUT PARAMETERS ===============");
+			// D.p("=============== INPUT PARAMETERS ===============");
 
 			if (line.hasOption("blocks")) {
 				runBlocks = new Integer(line.getOptionValue("blocks")).intValue();
@@ -389,6 +389,17 @@ public class Settings implements Constants {
 					D.p("No run blocks...direct run...");
 				}
 			}
+
+			//
+			// If we are here, then all pre-processing as far as run-blocks are
+			// concerned have been taken care of
+			//
+			
+			String argsToString = "";
+			for(String anArg: args) {
+				argsToString += anArg+" ";
+			}
+			printAndStore("ARG = " + argsToString);
 
 			if (line.hasOption("model")) {
 				String modelName = line.getOptionValue("model").toLowerCase();
@@ -420,7 +431,6 @@ public class Settings implements Constants {
 			if (line.hasOption("env_diff")) {
 				ENVIRONMENT = Environment.DIFFICULT;
 			}
-			printAndStore("ENVIRONMENT = " + ENVIRONMENT);
 
 			if (line.hasOption("env_vdiff")) {
 				ENVIRONMENT = Environment.VERY_DIFFICULT;
@@ -652,7 +662,7 @@ public class Settings implements Constants {
 				SEED = Settings.getSecureRandom();
 			}
 
-			//D.p("SEED = " + SEED);
+			// D.p("SEED = " + SEED);
 
 			if (line.hasOption("ddir")) {
 				DATA_DIR = line.getOptionValue("ddir");
@@ -858,7 +868,7 @@ public class Settings implements Constants {
 			printAndStore("ACTUAL RESOURCE_CAPTURE_GOAL = " + resourceCaptureGoal);
 			printAndStore("ACTUAL COLLECTION_SITES = " + NUMBER_OF_COLLECTION_SITES);
 
-			//D.p("=================================================");
+			// D.p("=================================================");
 
 		} catch (ParseException exp) {
 			// oops, something went wrong

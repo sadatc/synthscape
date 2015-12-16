@@ -458,7 +458,7 @@ public class ExperimentReporter implements Constants {
 			closeFiles();
 		}
 
-		writeExperimentEndDate();
+		//writeExperimentEndDate();
 	}
 
 	public void initReporter() {
