@@ -96,6 +96,8 @@ public class Settings implements Constants {
 	public String DATA_DIR = File.separator + "tmp";
 
 	public String JOB_NAME = "test";
+	
+	public String EXPERIMENT_NAME = "";
 
 	public static boolean RANDOMIZE_SIM_SEED = true;
 
@@ -106,6 +108,8 @@ public class Settings implements Constants {
 	public String DNA_PROGRESSION_FILE = "dna_dat.gz";
 
 	public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
+	
+	public boolean REPORT_EXPERIMENT_DETAILS = false;
 
 	public String EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
 
@@ -200,7 +204,7 @@ public class Settings implements Constants {
 	}
 
 	private void printAndStore(String msg) {
-		// D.p(msg);
+		D.p(msg);
 		EXPERIMENT_DETAILS.add(msg);
 	}
 
@@ -352,6 +356,9 @@ public class Settings implements Constants {
 
 		options.addOption(OptionBuilder.withArgName("job_name").hasArg().withDescription("job name [" + JOB_NAME + "]")
 				.create("job_name"));
+		
+		options.addOption(OptionBuilder.withArgName("experiment").hasArg().withDescription("used to run experiment blocks")
+				.create("experiment"));
 
 		options.addOption(OptionBuilder.withArgName("preset").hasArg()
 				.withDescription("(noops, actions, random) [random]").create("preset"));
@@ -400,6 +407,20 @@ public class Settings implements Constants {
 				argsToString += anArg+" ";
 			}
 			printAndStore("ARG = " + argsToString);
+			
+			
+			if (line.hasOption("experiment")) {
+				String experimentName = line.getOptionValue("experiment");
+				if (!experimentName.trim().equals(EMPTY_STRING)) {
+					EXPERIMENT_NAME = experimentName;
+					printAndStore("EXPERIMENT_NAME = " + EXPERIMENT_NAME);
+				}
+
+				
+
+			}
+			
+			
 
 			if (line.hasOption("model")) {
 				String modelName = line.getOptionValue("model").toLowerCase();

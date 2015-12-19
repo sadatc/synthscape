@@ -458,12 +458,14 @@ public class ExperimentReporter implements Constants {
 			closeFiles();
 		}
 
-		//writeExperimentEndDate();
+		// writeExperimentEndDate();
 	}
 
 	public void initReporter() {
 
-		writeExperimentDetails();
+		if (settings.REPORT_EXPERIMENT_DETAILS) {
+			writeExperimentDetails();
+		}
 
 		if (simulation.isReportEvents() || simulation.isReportPerformance()) {
 
