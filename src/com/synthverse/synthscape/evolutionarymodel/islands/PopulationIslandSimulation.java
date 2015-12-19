@@ -201,7 +201,9 @@ public class PopulationIslandSimulation extends Simulation {
 	@Override
 	protected void startSimulation() {
 
-		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+		String seedString = Integer.toString(settings.SEED, 16);
+
+		logger.info("EXPERIMENT STARTS ["+seedString+"]: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();

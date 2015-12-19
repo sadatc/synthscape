@@ -1079,8 +1079,9 @@ public abstract class Simulation extends SimState implements Constants {
 	}
 
 	protected void startSimulation() {
+		String seedString = Integer.toString(settings.SEED, 16);
 
-		logger.info("EXPERIMENT STARTS: expected maxium simulations =" + simulationsPerExperiment
+		logger.info("EXPERIMENT STARTS ["+seedString+"]: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();
