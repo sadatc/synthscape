@@ -97,6 +97,8 @@ public interface Constants {
 	
 	public static final long LONG_PAUSE = 5;
 	
+	public static final String EXPERIMENT_MAP_FILE = "experiment_map.txt";
+	
 	
 	
 

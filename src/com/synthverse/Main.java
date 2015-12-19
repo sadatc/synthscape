@@ -1,11 +1,14 @@
 package com.synthverse;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.synthverse.synthscape.core.Constants;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EvolutionaryModel;
 import com.synthverse.synthscape.core.Settings;
@@ -23,13 +26,35 @@ public class Main {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
 	}
 
+	@SuppressWarnings("unused")
+	public static HashMap<String, String> readExperimentMapFromFile() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		if (map != null) {
+			try {
+				BufferedReader reader = new BufferedReader(new FileReader(Constants.EXPERIMENT_MAP_FILE));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					String keyValuePair[] = line.split(":");
+					if (keyValuePair.length == 2) {
+						map.put(keyValuePair[0].trim(), keyValuePair[1].trim());
+					}
+				}
+				reader.close();
+
+			} catch (Exception e) {
+				D.p("WARNING! " + Constants.EXPERIMENT_MAP_FILE + " was not found; expecting all simulation params...");
+			}
+
+		}
+
+		return map;
+	}
+
 	@SuppressWarnings("static-access")
 	public static String[] transformArgsForNamedExperiment(String[] args) {
 		String[] result = args;
 
-		HashMap<String, String> experimentMap = new HashMap<String, String>();
-		experimentMap.put("abc",
-				"-model island -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 5 -blocks 5");
+		HashMap<String, String> experimentMap = readExperimentMapFromFile();
 
 		int i = 0;
 		String experimentArgs = null;
@@ -40,7 +65,8 @@ public class Main {
 				if (experimentMap.containsKey(experimentName)) {
 					experimentArgs = experimentMap.get(experimentName);
 				} else {
-					logger.severe("-experiment <param>: <param> was not understood");
+					logger.severe("ERROR: Experiment '"+experimentName +"' was not found! aborting...");
+					System.exit(1);
 				}
 			}
 			i++;
