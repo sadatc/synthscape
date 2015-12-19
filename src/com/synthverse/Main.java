@@ -33,12 +33,18 @@ public class Main {
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(Constants.EXPERIMENT_MAP_FILE));
 				String line;
+				int num = 0;
 				while ((line = reader.readLine()) != null) {
-					String keyValuePair[] = line.split(":");
-					if (keyValuePair.length == 2) {
-						map.put(keyValuePair[0].trim(), keyValuePair[1].trim());
+					if (!line.trim().equals("") && !line.trim().startsWith("#")) {
+						String keyValuePair[] = line.split(":");
+						if (keyValuePair.length == 2) {
+							//D.p("read key:"+keyValuePair[0].trim());
+							map.put(keyValuePair[0].trim(), keyValuePair[1].trim());
+							num++;
+						}
 					}
 				}
+				D.p("read "+num+" experiment labels from : "+Constants.EXPERIMENT_MAP_FILE);
 				reader.close();
 
 			} catch (Exception e) {
@@ -65,7 +71,7 @@ public class Main {
 				if (experimentMap.containsKey(experimentName)) {
 					experimentArgs = experimentMap.get(experimentName);
 				} else {
-					logger.severe("ERROR: Experiment '"+experimentName +"' was not found! aborting...");
+					logger.severe("ERROR: Experiment '" + experimentName + "' was not found! aborting...");
 					System.exit(1);
 				}
 			}
