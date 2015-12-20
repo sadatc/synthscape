@@ -4,9 +4,6 @@
 # {island,embodied,alife} x {none,trail,broadcast,unicast} x {homo, hetero}
 # runs 24 scenarios for 3 task using "run blocks" of 5 experiments each
 
-# number of repeats
-SIMS=5
-
 # grab server param
 while [[ $# > 0 ]]
 do
@@ -27,35 +24,39 @@ done
 
 
 # island homo/hetero 
-	 qsub -N i_ho_n_4 -v S=${S},P="-model island -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_ho_t_4 -v S=${S},P="-model island -int trail -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_ho_b_4 -v S=${S},P="-model island -int broadcast -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_ho_u_4 -v S=${S},P="-model island -int unicast_n -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
+	 qsub -N e1_ign_4_10 -v S=${S},P="-experiment e1_ign_4_10" qsub_script.sh
+	 qsub -N e1_igt_4_10 -v S=${S},P="-experiment e1_igt_4_10" qsub_script.sh
+	 qsub -N e1_igb_4_10 -v S=${S},P="-experiment e1_igb_4_10" qsub_script.sh
+	 qsub -N e1_igu_4_10 -v S=${S},P="-experiment e1_igu_4_10" qsub_script.sh	 
 
-	 qsub -N i_he_n_4 -v S=${S},P="-model island -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_he_t_4 -v S=${S},P="-model island -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_he_b_4 -v S=${S},P="-model island -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N i_he_u_4 -v S=${S},P="-model island -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
+	 qsub -N e1_isn_4_10 -v S=${S},P="-experiment e1_isn_4_10" qsub_script.sh
+	 qsub -N e1_ist_4_10 -v S=${S},P="-experiment e1_ist_4_10" qsub_script.sh
+	 qsub -N e1_isb_4_10 -v S=${S},P="-experiment e1_isb_4_10" qsub_script.sh
+	 qsub -N e1_isu_4_10 -v S=${S},P="-experiment e1_isu_4_10" qsub_script.sh	
 
 # embodied homo/hetero
-	 qsub -N e_ho_n_4 -v S=${S},P="-model embodied -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_ho_t_4 -v S=${S},P="-model embodied -int trail -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_ho_b_4 -v S=${S},P="-model embodied -int broadcast -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_ho_u_4 -v S=${S},P="-model embodied -int unicast_n -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
 
-	 qsub -N e_he_n_4 -v S=${S},P="-model embodied -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_he_t_4 -v S=${S},P="-model embodied -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_he_b_4 -v S=${S},P="-model embodied -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N e_he_u_4 -v S=${S},P="-model embodied -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
+	 qsub -N e1_egn_4_10 -v S=${S},P="-experiment e1_egn_4_10" qsub_script.sh
+	 qsub -N e1_egt_4_10 -v S=${S},P="-experiment e1_egt_4_10" qsub_script.sh
+	 qsub -N e1_egb_4_10 -v S=${S},P="-experiment e1_egb_4_10" qsub_script.sh
+	 qsub -N e1_egu_4_10 -v S=${S},P="-experiment e1_egu_4_10" qsub_script.sh	 
+
+	 qsub -N e1_esn_4_10 -v S=${S},P="-experiment e1_esn_4_10" qsub_script.sh
+	 qsub -N e1_est_4_10 -v S=${S},P="-experiment e1_est_4_10" qsub_script.sh
+	 qsub -N e1_esb_4_10 -v S=${S},P="-experiment e1_esb_4_10" qsub_script.sh
+	 qsub -N e1_esu_4_10 -v S=${S},P="-experiment e1_esu_4_10" qsub_script.sh	
+
 
 # alife homo/hetero
-	 qsub -N a_ho_n_4 -v S=${S},P="-model alife -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_ho_t_4 -v S=${S},P="-model alife -int trail -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_ho_b_4 -v S=${S},P="-model alife -int broadcast -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_ho_u_4 -v S=${S},P="-model alife -int unicast_n -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
+
+	 qsub -N e1_agn_4_10 -v S=${S},P="-experiment e1_agn_4_10" qsub_script.sh
+	 qsub -N e1_agt_4_10 -v S=${S},P="-experiment e1_agt_4_10" qsub_script.sh
+	 qsub -N e1_agb_4_10 -v S=${S},P="-experiment e1_agb_4_10" qsub_script.sh
+	 qsub -N e1_agu_4_10 -v S=${S},P="-experiment e1_agu_4_10" qsub_script.sh	 
+
+	 qsub -N e1_asn_4_10 -v S=${S},P="-experiment e1_asn_4_10" qsub_script.sh
+	 qsub -N e1_ast_4_10 -v S=${S},P="-experiment e1_ast_4_10" qsub_script.sh
+	 qsub -N e1_asb_4_10 -v S=${S},P="-experiment e1_asb_4_10" qsub_script.sh
+	 qsub -N e1_asu_4_10 -v S=${S},P="-experiment e1_asu_4_10" qsub_script.sh	
 
 
-	 qsub -N a_he_n_4 -v S=${S},P="-model alife -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_he_t_4 -v S=${S},P="-model alife -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_he_b_4 -v S=${S},P="-model alife -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh
-	 qsub -N a_he_u_4 -v S=${S},P="-model alife -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks ${SIMS}" qsub_script.sh	 
