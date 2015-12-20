@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.core;
 
-import java.util.BitSet;
+import org.apache.lucene.util.OpenBitSet;
 
 /**
  * An interaction that has a source agent, location, and a signal type
@@ -10,9 +10,9 @@ import java.util.BitSet;
  */
 public class Broadcast {
 
-	static int idCounter = 0;
-	static BitSet sent = new BitSet(Constants.DEFAULT_BITSET_SIZE);
-	int id;
+	static long idCounter = 0;
+	static OpenBitSet sent = new OpenBitSet(Constants.DEFAULT_BITSET_SIZE);
+	long id;
 
 	private Agent senderAgent;
 
@@ -79,7 +79,8 @@ public class Broadcast {
 
 	final public static void resetSendReceiveCounters() {
 		Broadcast.idCounter = 0;
-		sent.clear();
+		sent = null;
+		sent = new OpenBitSet(Constants.DEFAULT_BITSET_SIZE);
 	}
 
 	final public static long getCounter() {
@@ -94,9 +95,9 @@ public class Broadcast {
 		sent.clear(this.id);
 	}
 
-	final static public int getUsed() {
+	final static public long getUsed() {
 
-		return sent.cardinality();
+		return Broadcast.idCounter-sent.cardinality();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package com.synthverse.synthscape.core;
 
-import java.util.BitSet;
+import org.apache.lucene.util.OpenBitSet;
 
 /**
  * An interaction that has a location and a signal type
@@ -15,9 +15,9 @@ public class Trail {
 
 
 
-	static int idCounter = 0;
-	static BitSet sent = new BitSet(Constants.DEFAULT_BITSET_SIZE);
-	int id;
+	static long idCounter = 0;
+	static OpenBitSet sent = new OpenBitSet(Constants.DEFAULT_BITSET_SIZE);
+	long id;
 
 	public Trail(SignalType signalType, int x, int y) {
 		super();
@@ -40,7 +40,8 @@ public class Trail {
 
 	final public static void resetSendReceiveCounters() {
 		Trail.idCounter = 0;
-		sent.clear();
+		sent = null;
+		sent = new OpenBitSet(Constants.DEFAULT_BITSET_SIZE);
 	}
 
 	final public static long getCounter() {
@@ -55,9 +56,9 @@ public class Trail {
 		sent.clear(this.id);
 	}
 
-	final static public int getUsed() {
+	final static public long getUsed() {
 
-		return sent.cardinality();
+		return Trail.idCounter-sent.cardinality();
 	}
 
 }
