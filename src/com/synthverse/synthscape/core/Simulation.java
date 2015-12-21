@@ -1164,6 +1164,9 @@ public abstract class Simulation extends SimState implements Constants {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
+						Trail.resetSendReceiveCounters();
+						Broadcast.resetSendReceiveCounters();
+						Unicast.resetSendReceiveCounters();
 						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}

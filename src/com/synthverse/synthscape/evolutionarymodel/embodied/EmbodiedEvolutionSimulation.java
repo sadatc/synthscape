@@ -14,6 +14,7 @@ import com.synthverse.Main;
 import com.synthverse.stacks.Program;
 import com.synthverse.synthscape.core.Agent;
 import com.synthverse.synthscape.core.AgentFactory;
+import com.synthverse.synthscape.core.Broadcast;
 import com.synthverse.synthscape.core.D;
 import com.synthverse.synthscape.core.EventStats;
 import com.synthverse.synthscape.core.Evolver;
@@ -24,6 +25,8 @@ import com.synthverse.synthscape.core.Settings;
 import com.synthverse.synthscape.core.Simulation;
 import com.synthverse.synthscape.core.Species;
 import com.synthverse.synthscape.core.Team;
+import com.synthverse.synthscape.core.Trail;
+import com.synthverse.synthscape.core.Unicast;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgent;
 import com.synthverse.synthscape.evolutionarymodel.islands.IslanderAgentFactory;
 import com.synthverse.util.GridUtils;
@@ -824,6 +827,9 @@ public class EmbodiedEvolutionSimulation extends Simulation {
 						experimentReporter.cleanupReporter();
 						finish();
 						logger.info("<=====  EXPERIMENT ENDS\n");
+						Trail.resetSendReceiveCounters();
+						Broadcast.resetSendReceiveCounters();
+						Unicast.resetSendReceiveCounters();
 						// settings.resetRandomSeedIfNeeded(state);
 					}
 				}
