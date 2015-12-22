@@ -133,5 +133,132 @@ e1_ast_3_10:-model alife -int trail -species 'detector,extractor,transporter' -u
 e1_asb_3_10:-model alife -int broadcast -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 5
 e1_asu_3_10:-model alife -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 5
 
+## 	experiment 2
+
+e2_agts_3_10:-iquality highest -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agth_3_10:-iquality high -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agtm_3_10:-iquality medium -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agtl_3_10:-iquality poor -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+
+e2_agbs_3_10:-iquality highest -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbh_3_10:-iquality high -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbm_3_10:-iquality medium -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbl_3_10:-iquality poor -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+
+e2_agus_3_10:-iquality highest -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_aguh_3_10:-iquality high -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_agum_3_10:-iquality medium -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_agul_3_10:-iquality poor -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+
+e2_asts_3_10:-iquality highest -model alife -int trail -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asth_3_10:-iquality high -model alife -int trail -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_astm_3_10:-iquality medium -model alife -int trail -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_astl_3_10:-iquality poor -model alife -int trail -species 'detector,extractor,transporter'-clones 10 -blocks 5
+
+e2_asbs_3_10:-iquality highest -model alife -int broadcast -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asbh_3_10:-iquality high -model alife -int broadcast -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asbm_3_10:-iquality medium -model alife -int broadcast -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asbl_3_10:-iquality poor -model alife -int broadcast -species 'detector,extractor,transporter'-clones 10 -blocks 5
+
+e2_asus_3_10:-iquality highest -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asuh_3_10:-iquality high -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asum_3_10:-iquality medium -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 10 -blocks 5
+e2_asul_3_10:-iquality poor -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 10 -blocks 5
+
+
+e2_agts_3_5:-iquality highest -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agth_3_5:-iquality high -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agtm_3_5:-iquality medium -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agtl_3_5:-iquality poor -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+
+e2_agbs_3_5:-iquality highest -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbh_3_5:-iquality high -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbm_3_5:-iquality medium -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbl_3_5:-iquality poor -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+
+e2_agus_3_5:-iquality highest -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_aguh_3_5:-iquality high -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_agum_3_5:-iquality medium -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_agul_3_5:-iquality poor -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+
+e2_asts_3_5:-iquality highest -model alife -int trail -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asth_3_5:-iquality high -model alife -int trail -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_astm_3_5:-iquality medium -model alife -int trail -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_astl_3_5:-iquality poor -model alife -int trail -species 'detector,extractor,transporter'-clones 5 -blocks 5
+
+e2_asbs_3_5:-iquality highest -model alife -int broadcast -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asbh_3_5:-iquality high -model alife -int broadcast -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asbm_3_5:-iquality medium -model alife -int broadcast -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asbl_3_5:-iquality poor -model alife -int broadcast -species 'detector,extractor,transporter'-clones 5 -blocks 5
+
+e2_asus_3_5:-iquality highest -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asuh_3_5:-iquality high -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asum_3_5:-iquality medium -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 5 -blocks 5
+e2_asul_3_5:-iquality poor -model alife -int unicast_n -species 'detector,extractor,transporter'-clones 5 -blocks 5
+
+
+e2_agts_4_10:-use_4_tasks -iquality highest -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agth_4_10:-use_4_tasks -iquality high -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agtm_4_10:-use_4_tasks -iquality medium -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+e2_agtl_4_10:-use_4_tasks -iquality poor -model alife -int trail -species 'homogenous'-clones 10 -blocks 5
+
+e2_agbs_4_10:-use_4_tasks -iquality highest -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbh_4_10:-use_4_tasks -iquality high -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbm_4_10:-use_4_tasks -iquality medium -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+e2_agbl_4_10:-use_4_tasks -iquality poor -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 5
+
+e2_agus_4_10:-use_4_tasks -iquality highest -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_aguh_4_10:-use_4_tasks -iquality high -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_agum_4_10:-use_4_tasks -iquality medium -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+e2_agul_4_10:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 5
+
+e2_asts_4_10:-use_4_tasks -iquality highest -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asth_4_10:-use_4_tasks -iquality high -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_astm_4_10:-use_4_tasks -iquality medium -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_astl_4_10:-use_4_tasks -iquality poor -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+
+e2_asbs_4_10:-use_4_tasks -iquality highest -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asbh_4_10:-use_4_tasks -iquality high -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asbm_4_10:-use_4_tasks -iquality medium -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asbl_4_10:-use_4_tasks -iquality poor -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+
+e2_asus_4_10:-use_4_tasks -iquality highest -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asuh_4_10:-use_4_tasks -iquality high -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asum_4_10:-use_4_tasks -iquality medium -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+e2_asul_4_10:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 10 -blocks 5
+
+
+e2_agts_4_5:-use_4_tasks -iquality highest -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agth_4_5:-use_4_tasks -iquality high -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agtm_4_5:-use_4_tasks -iquality medium -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+e2_agtl_4_5:-use_4_tasks -iquality poor -model alife -int trail -species 'homogenous'-clones 5 -blocks 5
+
+e2_agbs_4_5:-use_4_tasks -iquality highest -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbh_4_5:-use_4_tasks -iquality high -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbm_4_5:-use_4_tasks -iquality medium -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+e2_agbl_4_5:-use_4_tasks -iquality poor -model alife -int broadcast -species 'homogenous'-clones 5 -blocks 5
+
+e2_agus_4_5:-use_4_tasks -iquality highest -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_aguh_4_5:-use_4_tasks -iquality high -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_agum_4_5:-use_4_tasks -iquality medium -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+e2_agul_4_5:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'homogenous'-clones 5 -blocks 5
+
+e2_asts_4_5:-use_4_tasks -iquality highest -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asth_4_5:-use_4_tasks -iquality high -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_astm_4_5:-use_4_tasks -iquality medium -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_astl_4_5:-use_4_tasks -iquality poor -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+
+e2_asbs_4_5:-use_4_tasks -iquality highest -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asbh_4_5:-use_4_tasks -iquality high -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asbm_4_5:-use_4_tasks -iquality medium -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asbl_4_5:-use_4_tasks -iquality poor -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+
+e2_asus_4_5:-use_4_tasks -iquality highest -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asuh_4_5:-use_4_tasks -iquality high -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asum_4_5:-use_4_tasks -iquality medium -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+e2_asul_4_5:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 5 -blocks 5
+
+
+
  
 
