@@ -38,13 +38,13 @@ public class Main {
 					if (!line.trim().equals("") && !line.trim().startsWith("#")) {
 						String keyValuePair[] = line.split(":");
 						if (keyValuePair.length == 2) {
-							//D.p("read key:"+keyValuePair[0].trim());
+							// D.p("read key:"+keyValuePair[0].trim());
 							map.put(keyValuePair[0].trim(), keyValuePair[1].trim());
 							num++;
 						}
 					}
 				}
-				D.p("read "+num+" experiment labels from : "+Constants.EXPERIMENT_MAP_FILE);
+				D.p("read " + num + " experiment labels from : " + Constants.EXPERIMENT_MAP_FILE);
 				reader.close();
 
 			} catch (Exception e) {
