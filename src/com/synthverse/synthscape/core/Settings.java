@@ -96,7 +96,7 @@ public class Settings implements Constants {
 	public String DATA_DIR = File.separator + "tmp";
 
 	public String JOB_NAME = "test";
-	
+
 	public String EXPERIMENT_NAME = "";
 
 	public static boolean RANDOMIZE_SIM_SEED = true;
@@ -108,7 +108,7 @@ public class Settings implements Constants {
 	public String DNA_PROGRESSION_FILE = "dna_dat.gz";
 
 	public String EXPERIMENT_DETAILS_FILE = "exp_det.txt";
-	
+
 	public boolean REPORT_EXPERIMENT_DETAILS = false;
 
 	public String EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
@@ -356,9 +356,9 @@ public class Settings implements Constants {
 
 		options.addOption(OptionBuilder.withArgName("job_name").hasArg().withDescription("job name [" + JOB_NAME + "]")
 				.create("job_name"));
-		
-		options.addOption(OptionBuilder.withArgName("experiment").hasArg().withDescription("used to run experiment blocks")
-				.create("experiment"));
+
+		options.addOption(OptionBuilder.withArgName("experiment").hasArg()
+				.withDescription("used to run experiment blocks").create("experiment"));
 
 		options.addOption(OptionBuilder.withArgName("preset").hasArg()
 				.withDescription("(noops, actions, random) [random]").create("preset"));
@@ -401,14 +401,13 @@ public class Settings implements Constants {
 			// If we are here, then all pre-processing as far as run-blocks are
 			// concerned have been taken care of
 			//
-			
+
 			String argsToString = "";
-			for(String anArg: args) {
-				argsToString += anArg+" ";
+			for (String anArg : args) {
+				argsToString += anArg + " ";
 			}
 			printAndStore("ARG = " + argsToString);
-			
-			
+
 			if (line.hasOption("experiment")) {
 				String experimentName = line.getOptionValue("experiment");
 				if (!experimentName.trim().equals(EMPTY_STRING)) {
@@ -416,11 +415,7 @@ public class Settings implements Constants {
 					printAndStore("EXPERIMENT_NAME = " + EXPERIMENT_NAME);
 				}
 
-				
-
 			}
-			
-			
 
 			if (line.hasOption("model")) {
 				String modelName = line.getOptionValue("model").toLowerCase();
@@ -556,9 +551,12 @@ public class Settings implements Constants {
 				if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
 						|| speciesNames.contains("detector") || speciesNames.contains("transporter")
 						|| speciesNames.contains("processor") || speciesNames.contains("+d")
-						|| speciesNames.contains("+e") || speciesNames.contains("+t") || speciesNames.contains("^de")
-						|| speciesNames.contains("^dt") || speciesNames.contains("^et")
-						|| speciesNames.contains("*det"))) {
+						|| speciesNames.contains("+e") || speciesNames.contains("+t") || speciesNames.contains("+p")
+						|| speciesNames.contains("^de") || speciesNames.contains("^dt") || speciesNames.contains("^et")
+						|| speciesNames.contains("^dp") || speciesNames.contains("^ep") || speciesNames.contains("^pt")
+						|| speciesNames.contains("*det") || speciesNames.contains("*dep")
+						|| speciesNames.contains("*dpt") || speciesNames.contains("*ept")
+						|| speciesNames.contains("#dept"))) {
 					throw new ParseException("species: " + speciesNames + " was not recognized");
 				}
 				MODEL_SPECIES = speciesNames;
@@ -1144,21 +1142,18 @@ public class Settings implements Constants {
 			speciesSet.add(Species.ET);
 
 		}
-		
+
 		if (speciesString.contains("^dp")) {
 			speciesSet.add(Species.DP);
 		}
 
-
 		if (speciesString.contains("^ep")) {
 			speciesSet.add(Species.EP);
 		}
-		
+
 		if (speciesString.contains("^pt")) {
 			speciesSet.add(Species.PT);
 		}
-
-		
 
 		if (speciesString.contains("*det")) {
 			speciesSet.add(Species.DET);
@@ -1166,11 +1161,25 @@ public class Settings implements Constants {
 		}
 
 		if (speciesString.contains("*dep")) {
+			speciesSet.add(Species.DEP);
+
+		}
+
+		if (speciesString.contains("*dpt")) {
+			speciesSet.add(Species.DPT);
+
+		}
+
+		if (speciesString.contains("*ept")) {
+			speciesSet.add(Species.EPT);
+
+		}
+
+		if (speciesString.contains("#dept")) {
 			speciesSet.add(Species.DEPT);
 
 		}
 
-		
 		if (speciesString.contains("detector")) {
 			speciesSet.add(Species.DETECTOR);
 

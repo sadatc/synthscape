@@ -126,16 +126,11 @@ public enum Species {
 			traits.add(Trait.DETECTION);
 			traits.add(Trait.EXTRACTION);
 			traits.add(Trait.TRANSPORTATION);
-			
 
 			return traits;
 		}
 
 	}),
-	
-	
-	
-	
 
 	DEPT(10, "dept", new TraitsDefiner() {
 
@@ -146,7 +141,6 @@ public enum Species {
 			traits.add(Trait.DETECTION);
 			traits.add(Trait.EXTRACTION);
 			traits.add(Trait.TRANSPORTATION);
-			
 
 			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				traits.add(Trait.PROCESSING);
@@ -234,10 +228,60 @@ public enum Species {
 		}
 
 	}),
+
+	DEP(17, "dep", new TraitsDefiner() {
+
+		@Override
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.DETECTION);
+			traits.add(Trait.EXTRACTION);
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+
+			return traits;
+		}
+
+	}),
+
+	DPT(18, "dpt", new TraitsDefiner() {
+
+		@Override
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.DETECTION);
+
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+			traits.add(Trait.TRANSPORTATION);
+
+			return traits;
+		}
+
+	}),
 	
-	
-	
-	
+	EPT(19, "ept", new TraitsDefiner() {
+
+		@Override
+		public LinkedHashSet<Trait> define() {
+			LinkedHashSet<Trait> traits = new LinkedHashSet<Trait>();
+
+			traits.add(Trait.EXTRACTION);
+
+			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
+				traits.add(Trait.PROCESSING);
+			}
+			traits.add(Trait.TRANSPORTATION);
+
+			return traits;
+		}
+
+	}),
+
 	;
 
 	private String name;
