@@ -627,7 +627,7 @@ public class ExperimentReporter implements Constants {
 
 		this.EXPERIMENT_CSV_METADATA = Main.settings.WORLD_GRIDS + "," + Main.settings._ACTUAL_RESOURCES + ","
 				+ Main.settings.NUMBER_OF_COLLECTION_SITES + "," + Main.settings._ACTUAL_OBSTACLES + ","
-				+ Main.settings.PROBLEM_COMPLEXITY.getShortName() + "," + Main.settings.ENVIRONMENT.shortName + ","
+				+ Main.settings.ENVIRONMENT.shortName + "," + Main.settings.PROBLEM_COMPLEXITY.getShortName() + ","
 				+ Main.settings.CLONES_PER_SPECIES + "," + Main.settings.EVOLUTIONARY_MODEL.shortName + ","
 				+ interactions + "," + model + ",";
 
