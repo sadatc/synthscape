@@ -249,8 +249,8 @@ public class EmbodiedAgent extends Agent {
 		Set<Trait> traits = this.species.getTraits();
 
 		// if its multicapable -- then evalate as a homogenous
-		if (traits.contains(Trait.MULTICAPABLE)) {
-			this.fitness += computeFitness(Trait.MULTICAPABLE);
+		if (traits.contains(Trait.HOMOGENOUS)) {
+			this.fitness += computeFitness(Trait.HOMOGENOUS);
 		} else {
 			for (Trait trait : traits) {
 				this.fitness += computeFitness(trait);
@@ -286,7 +286,7 @@ public class EmbodiedAgent extends Agent {
 			result += computeProcessingFitness();
 		}
 
-		if (trait == Trait.MULTICAPABLE || trait == Trait.TRANSPORTATION) {
+		if (trait == Trait.HOMOGENOUS || trait == Trait.TRANSPORTATION) {
 			result += computeTransportationFitness();
 		}
 
