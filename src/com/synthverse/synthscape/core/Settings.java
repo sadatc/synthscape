@@ -1144,12 +1144,33 @@ public class Settings implements Constants {
 			speciesSet.add(Species.ET);
 
 		}
+		
+		if (speciesString.contains("^dp")) {
+			speciesSet.add(Species.DP);
+		}
+
+
+		if (speciesString.contains("^ep")) {
+			speciesSet.add(Species.EP);
+		}
+		
+		if (speciesString.contains("^pt")) {
+			speciesSet.add(Species.PT);
+		}
+
+		
 
 		if (speciesString.contains("*det")) {
 			speciesSet.add(Species.DET);
 
 		}
 
+		if (speciesString.contains("*dep")) {
+			speciesSet.add(Species.DEPT);
+
+		}
+
+		
 		if (speciesString.contains("detector")) {
 			speciesSet.add(Species.DETECTOR);
 

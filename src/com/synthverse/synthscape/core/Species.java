@@ -106,7 +106,7 @@ public enum Species {
 			traits.add(Trait.DETECTION);
 			traits.add(Trait.EXTRACTION);
 			traits.add(Trait.TRANSPORTATION);
-			traits.add(Trait.MULTICAPABLE);
+			traits.add(Trait.HOMOGENOUS);
 
 			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				traits.add(Trait.PROCESSING);
@@ -126,12 +126,16 @@ public enum Species {
 			traits.add(Trait.DETECTION);
 			traits.add(Trait.EXTRACTION);
 			traits.add(Trait.TRANSPORTATION);
-			traits.add(Trait.MULTICAPABLE);
+			
 
 			return traits;
 		}
 
 	}),
+	
+	
+	
+	
 
 	DEPT(10, "dept", new TraitsDefiner() {
 
@@ -142,7 +146,7 @@ public enum Species {
 			traits.add(Trait.DETECTION);
 			traits.add(Trait.EXTRACTION);
 			traits.add(Trait.TRANSPORTATION);
-			traits.add(Trait.MULTICAPABLE);
+			
 
 			if (Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.FOUR_SEQUENTIAL_TASKS) {
 				traits.add(Trait.PROCESSING);
@@ -229,7 +233,12 @@ public enum Species {
 			return traits;
 		}
 
-	});
+	}),
+	
+	
+	
+	
+	;
 
 	private String name;
 	private int id;
