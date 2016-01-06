@@ -261,30 +261,103 @@ e2_asul_4_5:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'de
 
 ## 	experiment 3
 
-e3_mo_3_4:-model alife -int trail  -species '+d,+e,+t' -clones 4 -blocks 5
-e3_bi_3_4:-model alife -int trail  -species '^de,^dt,^et' -clones 2 -blocks 5
-e3_po_3_4:-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 1 -blocks 5
-e3_tr_3_4:-model alife -int trail  -species '*det' -clones 4 -blocks 5
-e3_ho_3_4:-model alife -int trail  -species 'homogenous' -clones 4 -blocks 5
+e3_tmo_3_4:-model alife -int trail  -species '+d,+e,+t' -clones 4 -blocks 5
+e3_tbi_3_4:-model alife -int trail  -species '^de,^dt,^et' -clones 2 -blocks 5
+e3_tpo_3_4:-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 1 -blocks 5
+e3_ttr_3_4:-model alife -int trail  -species '*det' -clones 4 -blocks 5
+e3_tho_3_4:-model alife -int trail  -species 'homogenous' -clones 4 -blocks 5
 
-e3_mo_4_24:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p' -clones 24 -blocks 5
-e3_bi_4_24:-use_4_tasks -model alife -int trail  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 8 -blocks 5
-e3_tr_4_24:-use_4_tasks -model alife -int trail  -species '*det,*dep,*dpt,*ept' -clones 8 -blocks 5
-e3_po_4_24:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 3 -blocks 5
-e3_qu_4_24:-use_4_tasks -model alife -int trail  -species '#dept' -clones 24 -blocks 5
-e3_ho_4_24:-use_4_tasks -model alife -int trail  -species 'homogenous' -clones 24 -blocks 5
+e3_bmo_3_4:-model alife -int broadcast  -species '+d,+e,+t' -clones 4 -blocks 5
+e3_bbi_3_4:-model alife -int broadcast  -species '^de,^dt,^et' -clones 2 -blocks 5
+e3_bpo_3_4:-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 1 -blocks 5
+e3_btr_3_4:-model alife -int broadcast  -species '*det' -clones 4 -blocks 5
+e3_bho_3_4:-model alife -int broadcast  -species 'homogenous' -clones 4 -blocks 5
 
-e3_mo_3_8:-model alife -int trail  -species '+d,+e,+t' -clones 8 -blocks 5
-e3_bi_3_8:-model alife -int trail  -species '^de,^dt,^et' -clones 4 -blocks 5
-e3_po_3_8:-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 5
-e3_tr_3_8:-model alife -int trail  -species '*det' -clones 8 -blocks 5
-e3_ho_3_8:-model alife -int trail  -species 'homogenous' -clones 8 -blocks 5
+e3_umo_3_4:-model alife -int unicast_n  -species '+d,+e,+t' -clones 4 -blocks 5
+e3_ubi_3_4:-model alife -int unicast_n  -species '^de,^dt,^et' -clones 2 -blocks 5
+e3_upo_3_4:-model alife -int unicast_n  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 1 -blocks 5
+e3_utr_3_4:-model alife -int unicast_n  -species '*det' -clones 4 -blocks 5
+e3_uho_3_4:-model alife -int unicast_n  -species 'homogenous' -clones 4 -blocks 5
 
-e3_mo_4_48:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p' -clones 48 -blocks 5
-e3_bi_4_48:-use_4_tasks -model alife -int trail  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 16 -blocks 5
-e3_tr_4_48:-use_4_tasks -model alife -int trail  -species '*det,*dep,*dpt,*ept' -clones 16 -blocks 5
-e3_po_4_48:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 6 -blocks 5
-e3_qu_4_48:-use_4_tasks -model alife -int trail  -species '#dept' -clones 48 -blocks 5
-e3_ho_4_48:-use_4_tasks -model alife -int trail  -species 'homogenous' -clones 48 -blocks 5
+###
+
+e3_tmo_3_8:-model alife -int trail  -species '+d,+e,+t' -clones 8 -blocks 5
+e3_tbi_3_8:-model alife -int trail  -species '^de,^dt,^et' -clones 4 -blocks 5
+e3_tpo_3_8:-model alife -int trail  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 5
+e3_ttr_3_8:-model alife -int trail  -species '*det' -clones 8 -blocks 5
+e3_tho_3_8:-model alife -int trail  -species 'homogenous' -clones 8 -blocks 5
+
+e3_bmo_3_8:-model alife -int broadcast  -species '+d,+e,+t' -clones 8 -blocks 5
+e3_bbi_3_8:-model alife -int broadcast  -species '^de,^dt,^et' -clones 4 -blocks 5
+e3_bpo_3_8:-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 5
+e3_btr_3_8:-model alife -int broadcast  -species '*det' -clones 8 -blocks 5
+e3_bho_3_8:-model alife -int broadcast  -species 'homogenous' -clones 8 -blocks 5
+
+e3_umo_3_8:-model alife -int unicast_n  -species '+d,+e,+t' -clones 8 -blocks 5
+e3_ubi_3_8:-model alife -int unicast_n  -species '^de,^dt,^et' -clones 4 -blocks 5
+e3_upo_3_8:-model alife -int unicast_n  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 5
+e3_utr_3_8:-model alife -int unicast_n  -species '*det' -clones 8 -blocks 5
+e3_uho_3_8:-model alife -int unicast_n  -species 'homogenous' -clones 8 -blocks 5
+
+###
+
+e3_tmo_4_24:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p' -clones 24 -blocks 5
+e3_tbi_4_24:-use_4_tasks -model alife -int trail  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 8 -blocks 5
+e3_ttr_4_24:-use_4_tasks -model alife -int trail  -species '*det,*dep,*dpt,*ept' -clones 8 -blocks 5
+e3_tpo_4_24:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 3 -blocks 5
+e3_tqu_4_24:-use_4_tasks -model alife -int trail  -species '#dept' -clones 24 -blocks 5
+e3_tho_4_24:-use_4_tasks -model alife -int trail  -species 'homogenous' -clones 24 -blocks 5
+
+e3_bmo_4_24:-use_4_tasks -model alife -int broadcast  -species '+d,+e,+t,+p' -clones 24 -blocks 5
+e3_bbi_4_24:-use_4_tasks -model alife -int broadcast  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 8 -blocks 5
+e3_btr_4_24:-use_4_tasks -model alife -int broadcast  -species '*det,*dep,*dpt,*ept' -clones 8 -blocks 5
+e3_bpo_4_24:-use_4_tasks -model alife -int broadcast  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 3 -blocks 5
+e3_bqu_4_24:-use_4_tasks -model alife -int broadcast  -species '#dept' -clones 24 -blocks 5
+e3_bho_4_24:-use_4_tasks -model alife -int broadcast  -species 'homogenous' -clones 24 -blocks 5
+
+e3_umo_4_24:-use_4_tasks -model alife -int unicast_n  -species '+d,+e,+t,+p' -clones 24 -blocks 5
+e3_ubi_4_24:-use_4_tasks -model alife -int unicast_n  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 8 -blocks 5
+e3_utr_4_24:-use_4_tasks -model alife -int unicast_n  -species '*det,*dep,*dpt,*ept' -clones 8 -blocks 5
+e3_upo_4_24:-use_4_tasks -model alife -int unicast_n  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 3 -blocks 5
+e3_uqu_4_24:-use_4_tasks -model alife -int unicast_n  -species '#dept' -clones 24 -blocks 5
+e3_uho_4_24:-use_4_tasks -model alife -int unicast_n  -species 'homogenous' -clones 24 -blocks 5
+
+###
+
+e3_tmo_4_48:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p' -clones 48 -blocks 5
+e3_tbi_4_48:-use_4_tasks -model alife -int trail  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 16 -blocks 5
+e3_ttr_4_48:-use_4_tasks -model alife -int trail  -species '*det,*dep,*dpt,*ept' -clones 16 -blocks 5
+e3_tpo_4_48:-use_4_tasks -model alife -int trail  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 6 -blocks 5
+e3_tqu_4_48:-use_4_tasks -model alife -int trail  -species '#dept' -clones 48 -blocks 5
+e3_tho_4_48:-use_4_tasks -model alife -int trail  -species 'homogenous' -clones 48 -blocks 5
+
+e3_bmo_4_48:-use_4_tasks -model alife -int broadcast  -species '+d,+e,+t,+p' -clones 48 -blocks 5
+e3_bbi_4_48:-use_4_tasks -model alife -int broadcast  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 16 -blocks 5
+e3_btr_4_48:-use_4_tasks -model alife -int broadcast  -species '*det,*dep,*dpt,*ept' -clones 16 -blocks 5
+e3_bpo_4_48:-use_4_tasks -model alife -int broadcast  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 6 -blocks 5
+e3_bqu_4_48:-use_4_tasks -model alife -int broadcast  -species '#dept' -clones 48 -blocks 5
+e3_bho_4_48:-use_4_tasks -model alife -int broadcast  -species 'homogenous' -clones 48 -blocks 5
+
+e3_umo_4_48:-use_4_tasks -model alife -int unicast_n  -species '+d,+e,+t,+p' -clones 48 -blocks 5
+e3_ubi_4_48:-use_4_tasks -model alife -int unicast_n  -species '^de,^dt,^et,^dp,^ep,^pt' -clones 16 -blocks 5
+e3_utr_4_48:-use_4_tasks -model alife -int unicast_n  -species '*det,*dep,*dpt,*ept' -clones 16 -blocks 5
+e3_upo_4_48:-use_4_tasks -model alife -int unicast_n  -species '+d,+e,+t,+p,^de,^dt,^et,^dp,^ep,^pt,*det,*dep,*dpt,*ept,#dept' -clones 6 -blocks 5
+e3_uqu_4_48:-use_4_tasks -model alife -int unicast_n  -species '#dept' -clones 48 -blocks 5
+e3_uho_4_48:-use_4_tasks -model alife -int unicast_n  -species 'homogenous' -clones 48 -blocks 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 
