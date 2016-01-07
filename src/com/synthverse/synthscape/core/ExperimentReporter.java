@@ -874,8 +874,7 @@ public class ExperimentReporter implements Constants {
 								formattedAppend(sbPerformance, COMMA);
 								formattedAppend(sbPerformance, receivedUnicastClosestC);
 							}
-							D.p("XXX:" + species + ":A:" + sentUnicastClosestA + ":" + receivedUnicastClosestA + "--B:"
-									+ sentUnicastClosestB + ":" + receivedUnicastClosestB);
+							
 						}
 
 						settings.statusCache += species + ":" + summaryFitnessStats.getMean() + " ";
