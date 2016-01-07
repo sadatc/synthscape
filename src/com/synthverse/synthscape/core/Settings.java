@@ -547,19 +547,26 @@ public class Settings implements Constants {
 
 			if (line.hasOption("species")) {
 
-				String speciesNames = line.getOptionValue("species").toLowerCase();
-				if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
-						|| speciesNames.contains("detector") || speciesNames.contains("transporter")
-						|| speciesNames.contains("processor") || speciesNames.contains("+d")
-						|| speciesNames.contains("+e") || speciesNames.contains("+t") || speciesNames.contains("+p")
-						|| speciesNames.contains("^de") || speciesNames.contains("^dt") || speciesNames.contains("^et")
-						|| speciesNames.contains("^dp") || speciesNames.contains("^ep") || speciesNames.contains("^pt")
-						|| speciesNames.contains("*det") || speciesNames.contains("*dep")
-						|| speciesNames.contains("*dpt") || speciesNames.contains("*ept")
-						|| speciesNames.contains("#dept"))) {
-					throw new ParseException("species: " + speciesNames + " was not recognized");
+				String speciesNamesArg = line.getOptionValue("species").toLowerCase();
+
+				String[] speciesNamesList = speciesNamesArg.split(",");
+
+				// go over each CSV entry and verify that they are valid
+				for (String speciesNames : speciesNamesList) {
+					if (!(speciesNames.contains("homogenous") || speciesNames.contains("extractor")
+							|| speciesNames.contains("detector") || speciesNames.contains("transporter")
+							|| speciesNames.contains("processor") || speciesNames.contains("+d")
+							|| speciesNames.contains("+e") || speciesNames.contains("+t") || speciesNames.contains("+p")
+							|| speciesNames.contains("^de") || speciesNames.contains("^dt")
+							|| speciesNames.contains("^et") || speciesNames.contains("^dp")
+							|| speciesNames.contains("^ep") || speciesNames.contains("^pt")
+							|| speciesNames.contains("*det") || speciesNames.contains("*dep")
+							|| speciesNames.contains("*dpt") || speciesNames.contains("*ept")
+							|| speciesNames.contains("#dept"))) {
+						throw new ParseException("species: " + speciesNames + " was not recognized");
+					}
 				}
-				MODEL_SPECIES = speciesNames;
+				MODEL_SPECIES = speciesNamesArg;
 
 			}
 			printAndStore("MODEL_SPECIES = " + MODEL_SPECIES);

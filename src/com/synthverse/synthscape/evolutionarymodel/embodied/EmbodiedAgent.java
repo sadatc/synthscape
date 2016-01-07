@@ -247,6 +247,7 @@ public class EmbodiedAgent extends Agent {
 		this.fitness = 0.0;
 
 		Set<Trait> traits = this.species.getTraits();
+		//D.p("XXX: evaluating for "+this.species);
 
 		// if its multicapable -- then evalate as a homogenous
 		if (traits.contains(Trait.HOMOGENOUS)) {
