@@ -12,6 +12,7 @@ CSV_FIELDS_TO_GRAB <- c("GRIDS","RESOURCES","SITES","OBSTACLES","DIFFICULTY",
 
 CSV_FIELDS_TO_GRAB_S <- c("EXPERIMENT",CSV_FIELDS_TO_GRAB,"SIGNAL_SENT","SIGNAL_RECEIVED")
 
+EXPERIMENT_NUMBER <- 0
 
 
 
@@ -222,13 +223,9 @@ summarizeExp1Data <-function(dataDir, outputDir) {
 
 
 
-meanifyCSVS <-function(directory) {
+meanifyCSVS <-function(directory, aggregateData) {
 
 	csvFiles <- list.files(directory,pattern="*perf_dat.csv")
-
-	#aggregateData will contain the data from ALL csv files.
-	aggregateData <- data.frame()
-
 	aggregatedFiles <- 0
 
 	MODEL <- ""	
@@ -238,21 +235,19 @@ meanifyCSVS <-function(directory) {
 	CLONES <- 0
 
 	
-	# for(i in 1:length(csvFiles)) {
+	#for(i in 1:length(csvFiles)) {
 	for(i in 1:2) {
+		assign("EXPERIMENT_NUMBER",EXPERIMENT_NUMBER + 1,.GlobalEnv)
 		csvFileName <- csvFiles[i]
 		correctedSpecies <- substr(csvFileName,5,5)
 		interactionType <- substr(csvFileName,6,6)
-		correctedModel <-substr(csvFiles[i],4,4)
+		correctedModel <-substr(csvFileName,4,4)
 
 		
-		csvFile <- paste(directory,csvFiles[i],sep="/") # concats
+		csvFile <- paste(directory,csvFileName,sep="/") # concats
 		print(csvFile)
 		csvFileData <- read.csv(csvFile, header=TRUE)
-		
 	
-		
- 
 		# only gather data if there is at least MAX_GENERATIONS amount of rows
 		if(nrow(csvFileData) >= MAX_GENERATIONS) { 
 
@@ -275,9 +270,6 @@ meanifyCSVS <-function(directory) {
 				# nothing to do...
 			}
 
-
-
-
 			csvFileData <- csvFileData[1:MAX_GENERATIONS,] # we trim off excess rows
 			fileData <- data.frame(EXPERIMENT=i,csvFileData[CSV_FIELDS_TO_GRAB])
 			
@@ -293,8 +285,6 @@ meanifyCSVS <-function(directory) {
 				fileData$DIFFICULTY <- fileData$COMPLEXITY
 				fileData$COMPLEXITY <- tmp
 			}
-			
-			
 			
 			if(interactionType == "b") {
 				fileData$SIGNAL_SENT <- fileData$TOT_BROADCAST_SENT 
@@ -321,10 +311,12 @@ meanifyCSVS <-function(directory) {
 				fileData$SIGNAL_SENT <- 0
 				fileData$SIGNAL_RECEIVED <- 0
 			}
-			
-			
 
 			fileDataS <- data.frame(fileData[CSV_FIELDS_TO_GRAB_S])
+			
+			COMPLEXITY <- fileDataS$COMPLEXITY[[1]]
+			CLONES <- fileDataS$CLONES[[1]]
+
 			
 			# fix the captures best case and mean to percentages
 
@@ -339,19 +331,20 @@ meanifyCSVS <-function(directory) {
 			observations <- fileDataS[,13:numDataCols]
 			meanObservations <-lapply(observations,mean, na.rm=TRUE)
 			
-			meanData <- data.frame(GENERATION=generation,meanObservations)
+			meanData <- data.frame(EXPERIMENT=EXPERIMENT_NUMBER,
+				MODEL=correctedModel,
+				SPECIES = correctedSpecies,
+				INTERACTIONS = interactionType,
+				COMPLEXITY=COMPLEXITY,
+				CLONES = CLONES,
+				GRIDS = fileDataS$GRIDS[[1]],
+				RESOURCES = fileDataS$RESOURCES[[1]],			
+				SITES = fileDataS$SITES[[1]],
+				OBSTACLES = fileDataS$OBSTACLES[[1]],
+				DIFFICULTY = fileDataS$DIFFICULTY[[1]],
+				meanObservations)
 			
-
-
-			fileDataS$MODEL <- correctedModel
-			MODEL <- correctedModel
-			SPECIES <- fileDataS$SPECIES
-			INTERACTIONS <- fileDataS$INTERACTIONS
-			COMPLEXITY <- fileDataS$COMPLEXITY
-			CLONES <- fileDataS$CLONES
-			
-			
-			aggregateData <- rbind(aggregateData,fileDataS)    
+			aggregateData <- rbind(aggregateData,meanData)    
 			
 			rm(fileDataS)
 			rm(fileData)
@@ -359,22 +352,36 @@ meanifyCSVS <-function(directory) {
 			
 			print(paste("done aggregating data from:",csvFiles[i]))
 			aggregatedFiles <- aggregatedFiles + 1 
-			
-
 		}
 	}
-	print(paste("number of experiments aggregated:",aggregatedFiles))
-	print(aggregateData)
-	exit
+	return(aggregateData)
 }
 
-
-
-
-
-
-
 meanifyExp1Data <-function(dataDir, meanFile) {	
+
+	N <- 4000
+	aggregateData <- data.frame(
+		EXPERIMENT=numeric(N),
+		MODEL=character(N),
+		SPECIES=character(N),
+		INTERACTIONS=character(N),
+		COMPLEXITY=numeric(N),
+		CLONES=numeric(N),
+		GRIDS=numeric(N),
+		RESOURCES=numeric(N),
+		SITES=numeric(N),
+		OBSTACLES=numeric(N),
+		DIFFICULTY=character(N),
+		CAPTURES_TOTAL=numeric(N),
+		CAPTURES_BEST_CASE=numeric(N),
+		CAPTURES_MEAN=numeric(N),
+		TOT_FITNESS_MEAN=numeric(N),
+		RATE_COMMUNICATION=numeric(N),
+		RATE_MOTION=numeric(N),
+		RES_D2C_STEPS_MEAN=numeric(N),
+		SIGNAL_SENT=numeric(N),
+		SIGNAL_RECEIVED=numeric(N)
+	)
 	
 	dataSubDirs <- list.dirs(dataDir,  full.names = FALSE)
 	print(dataSubDirs)
@@ -391,11 +398,14 @@ meanifyExp1Data <-function(dataDir, meanFile) {
 			print("processing ...")
 			print(dataSubDirFullPath)	
 			print(meanFile)
-			meanifyCSVS(dataSubDirFullPath)
+			aggregateData <- meanifyCSVS(dataSubDirFullPath,aggregateData)
 			print("======")
 		}
-	
 	}
+	
+	write.csv(aggregateData,file=meanFile,row.names=F)
+
+	
 
 }
 
@@ -417,9 +427,11 @@ meanifyExp1Data <-function(dataDir, meanFile) {
 #	"/tmp/summ.csv")
 
 
-meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/penzias_4t/data/",
-	"/Users/sadat/ExperimentResults/GeneralTrends/msiccSummaries/4t_mean.csv")
-	
+
+#meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/penzias_4t/data/",
+#	"/Users/sadat/ExperimentResults/GeneralTrends/msiccSummaries/4t_mean.csv")
+meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/test_combined/",
+	"/Users/sadat/ExperimentResults/GeneralTrends/all_experiments_mean_fast.csv")	
 
 
 
