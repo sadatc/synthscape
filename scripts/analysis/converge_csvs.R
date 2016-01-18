@@ -59,5 +59,4 @@ processCSVS <-function(directory) {
 
 
 ### Main Program
-directory <- "/Users/sadat/evenness_data/data/evn_50_50_dff"
-print(processCSVS(directory))
+processCSVS("/Users/sadat/ExperimentResults/GeneralTrends/andy_3t/data/e1_agt_3_10","e1_agt_3_10_summ.csv")
