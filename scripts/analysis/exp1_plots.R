@@ -191,6 +191,49 @@ plotGraphs <-function() {
 }
 
 
+
+plotGeneralHistograms <-function(dataFrame, colName, fileName) {
+
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(dataFrame,aes_string(x=colName)) +
+		geom_histogram() +
+		facet_grid( SPECIES ~ MODEL) 
+	)
+	dev.off()
+
+
+}
+
+
+plotGeneralHistogramsSingleModel <-function(dataFrame, colName, fileName) {
+
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(dataFrame,aes_string(x=colName)) +
+		geom_histogram() +
+		facet_grid( ~ SPECIES) 
+	)
+	dev.off()
+
+
+}
+
+
+
+
+
+
 compareTTest <-function(msg,x,y) {
 	print(msg)
 	
@@ -220,13 +263,12 @@ exp1.df$OBSTACLES <- factor(exp1.df$OBSTACLES)
 exp1.df$DIFFICULTY <- factor(exp1.df$DIFFICULTY)
 
 
-# some analysis
-#gmeans <- subset(exp1.df, select=CAPTURES_MEAN, subset=(SPECIES=="g"))
-#gmeans <- as.numeric(exp1.df[exp1.df$SPECIES=="g",exp1.df$CAPTURES_MEAN])
 
-# generalists vs. communicating specalists
-#gdata <- exp1.df[exp1.df$SPECIES=="g" ,]
-#sdata <- exp1.df[exp1.df$SPECIES=="s" ,]
+
+
+
+
+
 
 print("========== ISLAND ========")
 gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="i" & exp1.df$INTERACTIONS=="n"   ,]
@@ -237,6 +279,7 @@ compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
 compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
 compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
 compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+
 
 
 print("========== EMBODIED ========")
@@ -262,38 +305,66 @@ compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
 
 
 
-
-
-
-
-
-
-
-
-
-
 # generalists vs. communicating specalists
 #gdata <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$INTERACTION=="n",]
 #sdata <- exp1.df[exp1.df$SPECIES=="s" & ,]
 
 #compareTTest("CAPTURES_MEAN: g (no comm) vs. s (comm) ",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
 
+#print("========= NORMALITY TEST =========")
 
-
-#gmeansf <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a"  &  exp1.df$INTERACTIONS=="b" &  exp1.df$COMPLEXITY=="3"  &  exp1.df$CLONES=="5"  ,]
+#dist_s <- exp1.df[exp1.df$SPECIES=="s" & exp1.df$DIFFICULTY=="r" & exp1.df$CAPTURES_MEAN >0,]
+#dist_g <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$DIFFICULTY=="r" & exp1.df$CAPTURES_MEAN >0,]
 
 #print(length(gmeansf$CAPTURES_MEAN))
-#shapiro.test(gmeansf$CAPTURES_MEAN)
+#ks.test(dist_s$CAPTURES_BEST_CASE,dist_g$CAPTURES_BEST_CASE)
 
 
 
-#smeans <- subset(exp1.df, select=CAPTURES_MEAN, subset=(SPECIES=="s" && CAPTURES_MEAN!=NA))
-#print(head(gmeans))
-#
+#pdf("/tmp/exp1_plots.pdf")
+
+
+
+#print(
+#	qplot(dist_s$CAPTURES_BEST_CASE, geom="histogram") 
+#)
+
+#print(
+#	qplot(dist_g$CAPTURES_BEST_CASE, geom="histogram") 
+#)
+
+#dev.off()
+
+
+
+
+
 #shapiro.test(smeans)
 
+# == plot general distributions ===
+
+plotGeneralHistograms(exp1.df,"CAPTURES_MEAN", "/tmp/gen_dist_captures_mean.png")
+plotGeneralHistograms(exp1.df,"CAPTURES_BEST_CASE", "/tmp/gen_dist_captures_best.png")
+plotGeneralHistograms(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/gen_dist_d2c_steps_mean.png")
+plotGeneralHistograms(exp1.df,"RATE_MOTION", "/tmp/gen_dist_rate_motion.png")
+plotGeneralHistogramsSingleModel(exp1.df,"RATE_MOTION", "/tmp/gen_dist_rate_motion_single.png")
+plotGeneralHistograms(exp1.df,"RATE_COMMUNICATION", "/tmp/gen_dist_rate_comm.png")
+plotGeneralHistogramsSingleModel(exp1.df,"RATE_COMMUNICATION", "/tmp/gen_dist_rate_comm_single.png")
 
 
+# == plot  distributions minus lower values ===
 
+exp1.df2 <-  exp1.df[exp1.df$CAPTURES_MEAN >0.1,]
+
+plotGeneralHistograms(exp1.df2,"CAPTURES_MEAN", "/tmp/n_dist_captures_mean.png")
+plotGeneralHistograms(exp1.df2,"CAPTURES_BEST_CASE", "/tmp/n_dist_captures_best.png")
+plotGeneralHistograms(exp1.df2,"RES_D2C_STEPS_MEAN", "/tmp/n_dist_d2c_steps_mean.png")
+plotGeneralHistograms(exp1.df2,"RATE_MOTION", "/tmp/n_dist_rate_motion.png")
+plotGeneralHistogramsSingleModel(exp1.df2,"RATE_MOTION", "/tmp/n_dist_rate_motion_single.png")
+plotGeneralHistograms(exp1.df2,"RATE_COMMUNICATION", "/tmp/n_dist_rate_comm.png")
+plotGeneralHistogramsSingleModel(exp1.df2,"RATE_COMMUNICATION", "/tmp/n_dist_rate_comm_single.png")
+
+testData <- exp1.df[exp1.df$MODEL=="i",]
+print(summary(testData$RATE_MOTION))
 
 
