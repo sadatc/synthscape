@@ -191,9 +191,22 @@ plotGraphs <-function() {
 }
 
 
+compareTTest <-function(msg,x,y) {
+	print(msg)
+	
+	print(length(x))
+	print(summary(x))
+	
+	print(length(y))
+	print(summary(y))
+	
+	t.test(x,y)
+}
+
+
 ## main function
 
-exp1.df <- read.csv(file="/Users/sadat/ExperimentResults/GeneralTrends/all_experiments_mean.csv")
+exp1.df <- read.csv(file="/Users/sadat/ExperimentResults/GeneralTrends/all_experiments_mean_300.csv")
 
 exp1.df$MODEL <- factor(exp1.df$MODEL)
 exp1.df$SPECIES <- factor(exp1.df$SPECIES)
@@ -211,13 +224,69 @@ exp1.df$DIFFICULTY <- factor(exp1.df$DIFFICULTY)
 #gmeans <- subset(exp1.df, select=CAPTURES_MEAN, subset=(SPECIES=="g"))
 #gmeans <- as.numeric(exp1.df[exp1.df$SPECIES=="g",exp1.df$CAPTURES_MEAN])
 
-#gmeans <- exp1.df[exp1.df$SPECIES=="g",]
-gmeans <- exp1.df[exp1.df$SPECIES=="g" & ,]
+# generalists vs. communicating specalists
+#gdata <- exp1.df[exp1.df$SPECIES=="g" ,]
+#sdata <- exp1.df[exp1.df$SPECIES=="s" ,]
 
-print(summary(gmeans$CAPTURES_MEAN))
-print(class(gmeans$CAPTURES_MEAN))
-print(length(gmeans$CAPTURES_MEAN))
-shapiro.test(gmeans$CAPTURES_MEAN)
+print("========== ISLAND ========")
+gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="i" & exp1.df$INTERACTIONS=="n"   ,]
+
+sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="i" & exp1.df$INTERACTIONS!="n"  ,]
+
+compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+
+
+print("========== EMBODIED ========")
+gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="e" & exp1.df$INTERACTIONS=="n"   ,]
+
+sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="e" & exp1.df$INTERACTIONS!="n"  ,]
+
+compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+
+
+print("========== ALIFE ========")
+gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="a" & exp1.df$INTERACTIONS=="n"   ,]
+
+sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a" & exp1.df$INTERACTIONS!="n"  ,]
+
+compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# generalists vs. communicating specalists
+#gdata <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$INTERACTION=="n",]
+#sdata <- exp1.df[exp1.df$SPECIES=="s" & ,]
+
+#compareTTest("CAPTURES_MEAN: g (no comm) vs. s (comm) ",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+
+
+
+#gmeansf <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a"  &  exp1.df$INTERACTIONS=="b" &  exp1.df$COMPLEXITY=="3"  &  exp1.df$CLONES=="5"  ,]
+
+#print(length(gmeansf$CAPTURES_MEAN))
+#shapiro.test(gmeansf$CAPTURES_MEAN)
+
+
+
 #smeans <- subset(exp1.df, select=CAPTURES_MEAN, subset=(SPECIES=="s" && CAPTURES_MEAN!=NA))
 #print(head(gmeans))
 #
