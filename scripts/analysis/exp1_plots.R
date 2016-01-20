@@ -238,7 +238,7 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 
 
 
-compareTTest <-function(msg,x,y) {
+analyzePair <-function(msg,x,y) {
 	print(msg)
 	
 	print(length(x))
@@ -253,14 +253,15 @@ compareTTest <-function(msg,x,y) {
 
 doAnalytics <- function(exp1.df) {
 	print("========== ISLAND ========")
+	
 	gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="i" & exp1.df$INTERACTIONS=="n"   ,]
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="i" & exp1.df$INTERACTIONS!="n"  ,]
 
-	compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
 
 
 
@@ -269,10 +270,10 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="e" & exp1.df$INTERACTIONS!="n"  ,]
 
-	compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
 
 
 	print("========== ALIFE ========")
@@ -280,10 +281,10 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a" & exp1.df$INTERACTIONS!="n"  ,]
 
-	compareTTest("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	compareTTest("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	compareTTest("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	compareTTest("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
 
 
 
@@ -291,7 +292,7 @@ doAnalytics <- function(exp1.df) {
 	#gdata <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$INTERACTION=="n",]
 	#sdata <- exp1.df[exp1.df$SPECIES=="s" & ,]
 
-	#compareTTest("CAPTURES_MEAN: g (no comm) vs. s (comm) ",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	#analyzePair("CAPTURES_MEAN: g (no comm) vs. s (comm) ",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
 
 	#print("========= NORMALITY TEST =========")
 
@@ -485,9 +486,9 @@ plotBoxPlots <- function(exp1.df) {
 	
 
 	# analyze, plot...
-	#doAnalytics(exp1.df)
-	plotHists(exp1.df)
-	plotBoxPlots(exp1.df)
+	doAnalytics(exp1.df)
+	#plotHists(exp1.df)
+	#plotBoxPlots(exp1.df)
 	
 	#plot the totals
 
