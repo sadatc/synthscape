@@ -238,16 +238,24 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 
 
 
-analyzePair <-function(msg,x,y) {
+analyzePair <-function(msg,g,s) {
+	print("**** Analyzing Pair (G vs. S)****")
 	print(msg)
 	
-	print(length(x))
-	print(summary(x))
+
+	print("performing shapiro test. if p<0.05, sample likely non-normal")
+	print(shapiro.test(g))
 	
-	print(length(y))
-	print(summary(y))
+
+
+	print(shapiro.test(s))
+	print("performing mann-whitney u test. if p<0.05, the samples are non-identical populations...")
 	
-	t.test(x,y)
+	print(wilcox.test(g,s))
+
+	
+
+	print("******* Done Analyzing Pair ******")
 }
 
 
@@ -258,10 +266,11 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="i" & exp1.df$INTERACTIONS!="n"  ,]
 
-	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
 
 
 
@@ -270,22 +279,22 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="e" & exp1.df$INTERACTIONS!="n"  ,]
 
-	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
-
+	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
 
 	print("========== ALIFE ========")
 	gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="a" & exp1.df$INTERACTIONS=="n"   ,]
 
 	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a" & exp1.df$INTERACTIONS!="n"  ,]
 
-	analyzePair("CAPTURES_MEAN: g vs. s",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-	analyzePair("CAPTURES_BEST_CASE: g vs. s",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	analyzePair("RES_D2C_STEPS_MEAN: g vs. s",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	analyzePair("RATE_MOTION: g vs. s",gdata$RATE_MOTION,sdata$RATE_MOTION)
-
+	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
 
 
 	# generalists vs. communicating specalists
@@ -462,6 +471,9 @@ plotBoxPlots <- function(exp1.df) {
 	
 }
 
+
+
+
 ## main function
 
 	# read main data
@@ -486,6 +498,7 @@ plotBoxPlots <- function(exp1.df) {
 	
 
 	# analyze, plot...
+	#doTmpAnalytics(exp1.df)
 	doAnalytics(exp1.df)
 	#plotHists(exp1.df)
 	#plotBoxPlots(exp1.df)
