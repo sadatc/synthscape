@@ -195,6 +195,7 @@ renameFactors <- function(dataFrame) {
 	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
 	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
 	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
 	return(dataFrame)
 }
 
@@ -211,7 +212,7 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
 		geom_histogram() +
-		facet_grid( SPECIES ~ MODEL) 
+		facet_grid( POPULATION ~ MODEL) 
 	)
 	dev.off()
 }
@@ -227,7 +228,7 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
 		geom_histogram() +
-		facet_grid( ~ SPECIES) 
+		facet_grid( ~ POPULATION) 
 	)
 	dev.off()
 }
@@ -327,10 +328,12 @@ plotHists <- function(exp1.df) {
 	plotHistBy_S_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/hist_sm_captures_best.png")
 	plotHistBy_S_M(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/hist_sm_d2c_steps_mean.png")
 	plotHistBy_S_M(exp1.df,"RATE_MOTION", "/tmp/hist_sm_rate_motion.png")
-	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/hist_sm_rate_motion_single.png")
 	plotHistBy_S_M(exp1.df,"RATE_COMMUNICATION", "/tmp/hist_sm_rate_comm.png")
-	plotHistBy_S(exp1.df,"RATE_COMMUNICATION", "/tmp/hist_s_rate_comm.png")
 
+	
+	
+	plotHistBy_S(exp1.df,"RATE_COMMUNICATION", "/tmp/hist_s_rate_comm.png")
+	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/hist_sm_rate_motion_single.png")
 
 	# == plot  distributions minus lower values ===
 
@@ -343,6 +346,7 @@ plotHists <- function(exp1.df) {
 	plotHistBy_S(exp1.df2,"RATE_MOTION", "/tmp/x_hist_sm_rate_motion_single.png")
 	plotHistBy_S_M(exp1.df2,"RATE_COMMUNICATION", "/tmp/x_hist_sm_rate_comm.png")
 	plotHistBy_S(exp1.df2,"RATE_COMMUNICATION", "/tmp/x_hist_s_rate_comm.png")
+
 
 	testData <- exp1.df[exp1.df$MODEL=="i",]
 	print(summary(testData$RATE_MOTION))
@@ -362,8 +366,8 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName) {
 	dataFrame <- renameFactors(dataFrame)
 
 	print(
-		ggplot(dataFrame, aes_string(x="SPECIES", y=colName)) +
-		geom_boxplot(aes(fill=SPECIES), notch=TRUE) +
+		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+		geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
 		facet_grid( MODEL ~ INTERACTIONS ) 
 	)
 	dev.off()
@@ -380,8 +384,8 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName) {
 	dataFrame <- renameFactors(dataFrame)
 
 	print(
-		ggplot(dataFrame, aes_string(x="SPECIES", y=colName)) +
-		geom_boxplot(aes(fill=SPECIES), notch=TRUE) +
+		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+		geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
 		facet_grid( ~ MODEL ) 
 	)
 	dev.off()
@@ -398,8 +402,8 @@ plotBoxPlot <-function(dataFrame, colName, fileName) {
 	dataFrame <- renameFactors(dataFrame)
 
 	print(
-		ggplot(dataFrame, aes_string(x="SPECIES", y=colName)) +
-		geom_boxplot(aes(fill=SPECIES), notch=TRUE) 
+		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+		geom_boxplot(aes(fill=POPULATION), notch=TRUE) 
 	)
 	dev.off()
 }
@@ -413,11 +417,13 @@ plotBoxPlots <- function(exp1.df) {
 	
 	
 	
+	
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/box_mi_captures_best.png")
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/box_mi_captures_mean.png")
 	plotBoxPlot_M_I(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/box_mi_d2c.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/box_mi_rate_motion.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/box_mi_rate_comm.png")
+
 	
 	# filter out island model
 	exp1.df <-  exp1.df[exp1.df$MODEL!="i",]
@@ -427,19 +433,20 @@ plotBoxPlots <- function(exp1.df) {
 	plotBoxPlot_M_I(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/ea_box_mi_d2c_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/ea_box_mi_rate_motion_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/ea_box_mi_rate_comm_ea.png")
+
 	
 	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/ea_box_m_captures_best.png")
 	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/ea_box_m_captures_mean_ea.png")
 	plotBoxPlot_M(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/ea_box_m_d2c_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/ea_box_m_rate_motion_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/ea_box_m_rate_comm_ea.png")
+	
 
 	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/gr_box_m_captures_best.png")
 	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/gr_box_m_captures_mean.png")
 	plotBoxPlot(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/gr_ea_box_m_d2c.png")
 	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/gr_box_m_rate_motion.png")
 	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/gr_box_m_rate_comm.png")
-
 
 	exp1.df <-  orig[orig$MODEL!="i",]
 
@@ -459,6 +466,7 @@ plotBoxPlots <- function(exp1.df) {
 	# read main data
 	exp1.df <- read.csv(file="/Users/sadat/ExperimentResults/GeneralTrends/all_experiments_mean_300.csv")
 	
+	exp1.df$POPULATION <- exp1.df$SPECIES
 
 
 	# set all factors
@@ -480,4 +488,6 @@ plotBoxPlots <- function(exp1.df) {
 	#doAnalytics(exp1.df)
 	plotHists(exp1.df)
 	plotBoxPlots(exp1.df)
+	
+	#plot the totals
 
