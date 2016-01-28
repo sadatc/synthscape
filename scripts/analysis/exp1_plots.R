@@ -2,54 +2,9 @@
 library(ggplot2)
 library(plyr)
 
-plotGraphs <-function() {
-	row_data <- read.csv(file="isl_het_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, no interaction",row_data)
-	data <- row_data
-
-	row_data <- read.csv(file="isl_het_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="isl_het_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="isl_het_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="isl_hom_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, no interaction",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="isl_hom_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="isl_hom_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="isl_hom_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-	data$type <- factor(data$type)
-
-	# pdf("isl_capture.pdf")
-	png("isl_capture.png",  
+plotGraphs <-function(data) {
+	data <- renameFactors(data)
+	png("/tmp/isl_capture.png",  
 	  width     = 6,
 	  height    = 6,
 	  units     = "in",
@@ -57,7 +12,7 @@ plotGraphs <-function() {
 
 	print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
 	geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-	facet_wrap( ~ type, scale="free", ncol=2) + 
+	facet_wrap( INTERACTIONS ~ MODEL, scale="free", ncol=2) + 
 	ggtitle("Island Model Capture Trends") +  
 	theme_bw() +
 	theme(text = element_text(size = 9)))
@@ -65,130 +20,6 @@ plotGraphs <-function() {
 	dev.off()
 
 
-
-	row_data <- read.csv(file="emb_het_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, no interaction",row_data)
-	data <- row_data
-
-	row_data <- read.csv(file="emb_het_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="emb_het_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="emb_het_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-
-
-	row_data <- read.csv(file="emb_hom_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, no interaction",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="emb_hom_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="emb_hom_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="emb_hom_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-	data$type <- factor(data$type)
-
-
-	png("emb_capture.png",  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
-	print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
-	geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-	facet_wrap( ~ type, scale="free", ncol=2) + 
-	ggtitle("Embodied Model Capture Trends") +  
-	theme_bw() +
-	theme(text = element_text(size = 9)))
-
-	dev.off()
-
-
-	row_data <- read.csv(file="ali_het_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, no interaction",row_data)
-	data <- row_data
-
-	row_data <- read.csv(file="ali_het_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="ali_het_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="ali_het_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="heterogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="ali_hom_none.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, no interaction",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="ali_hom_trail.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, trail",row_data)
-	data <- rbind(data,row_data)
-
-
-	row_data <- read.csv(file="ali_hom_broad.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, broadcast",row_data)
-	data <- rbind(data,row_data)
-
-	row_data <- read.csv(file="ali_hom_uni.csv")
-	row_data <- row_data[,c("GENERATION","CAPTURES_TOTAL")]
-	row_data <- cbind(type="homogenous, unicast",row_data)
-	data <- rbind(data,row_data)
-
-	data$type <- factor(data$type)
-
-
-	png("ali_capture.png",  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
-	print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
-	geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
-	facet_wrap( ~ type, scale="free", ncol=2) + 
-	ggtitle("ALife Model Capture Tends") +  
-	theme_bw() +
-	theme(text = element_text(size = 9)))
-
-	dev.off()
 }
 
 renameFactors <- function(dataFrame) {
@@ -243,20 +74,21 @@ analyzePair <-function(msg,g,s) {
 	print(msg)
 	
 
+
 	print("performing shapiro test. if p<0.05, sample likely non-normal")
+	print(length(g))
 	print(shapiro.test(g))
-	
 
-
+	print(length(s))
 	print(shapiro.test(s))
-	print("performing mann-whitney u test. if p<0.05, the samples are non-identical populations...")
-	
-	print(wilcox.test(g,s))
 
-	
+	print("performing mann-whitney u test. if p<0.05, the samples are non-identical populations...")
+	print(wilcox.test(g,s))
 
 	print("******* Done Analyzing Pair ******")
 }
+
+
 
 
 doAnalytics <- function(exp1.df) {
@@ -268,10 +100,12 @@ doAnalytics <- function(exp1.df) {
 
 	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
 	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
-	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
-	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
-	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
 
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
+	
+	
 
 
 	print("========== EMBODIED ========")
@@ -283,7 +117,6 @@ doAnalytics <- function(exp1.df) {
 	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
 	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
 	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
-	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
 
 	print("========== ALIFE ========")
 	gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="a" & exp1.df$INTERACTIONS=="n"   ,]
@@ -294,40 +127,30 @@ doAnalytics <- function(exp1.df) {
 	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
 	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
 	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
-	analyzePair("RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION)
+	
+	
+		print("========== EMBODIED (both comm and non-comm) ========")
+	gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="e" ,]
+
+	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="e" ,]
+
+	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
+
+	print("========== ALIFE ========")
+	gdata <- exp1.df[exp1.df$SPECIES=="g"  & exp1.df$MODEL=="a"    ,]
+
+	sdata <- exp1.df[exp1.df$SPECIES=="s" &  exp1.df$MODEL=="a"  ,]
+
+	analyzePair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
+	analyzePair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE)
+	analyzePair("RES_D2C_STEPS_MEAN",gdata$RES_D2C_STEPS_MEAN,sdata$RES_D2C_STEPS_MEAN)
+	analyzePair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION)
 
 
-	# generalists vs. communicating specalists
-	#gdata <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$INTERACTION=="n",]
-	#sdata <- exp1.df[exp1.df$SPECIES=="s" & ,]
-
-	#analyzePair("CAPTURES_MEAN: g (no comm) vs. s (comm) ",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN)
-
-	#print("========= NORMALITY TEST =========")
-
-	#dist_s <- exp1.df[exp1.df$SPECIES=="s" & exp1.df$DIFFICULTY=="r" & exp1.df$CAPTURES_MEAN >0,]
-	#dist_g <- exp1.df[exp1.df$SPECIES=="g" & exp1.df$DIFFICULTY=="r" & exp1.df$CAPTURES_MEAN >0,]
-
-	#print(length(gmeansf$CAPTURES_MEAN))
-	#ks.test(dist_s$CAPTURES_BEST_CASE,dist_g$CAPTURES_BEST_CASE)
-
-
-
-	#pdf("/tmp/exp1_plots.pdf")
-
-
-
-	#print(
-	#	qplot(dist_s$CAPTURES_BEST_CASE, geom="histogram") 
-	#)
-
-	#print(
-	#	qplot(dist_g$CAPTURES_BEST_CASE, geom="histogram") 
-	#)
-
-	#dev.off()
-
-	#shapiro.test(smeans)
+	
 }
 
 
@@ -472,12 +295,65 @@ plotBoxPlots <- function(exp1.df) {
 }
 
 
+plotBoxPlots2 <- function(exp1.df) {
+	orig <- exp1.df
+	
+	exp1.df <-  exp1.df[(exp1.df$SPECIES=="g") |  (exp1.df$SPECIES=="s")  ,]
+	
+	
+	
+	
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/tmp/box_mi_captures_best.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/tmp/box_mi_captures_mean.png")
+	plotBoxPlot_M_I(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/tmp/box_mi_d2c.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/tmp/box_mi_rate_motion.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/tmp/box_mi_rate_comm.png")
+
+
+	
+	# filter out island model
+	exp1.df <-  exp1.df[exp1.df$MODEL!="i",]
+	
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/tmp/ea_box_mi_captures_best.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/tmp/ea_box_mi_captures_mean_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/tmp/ea_box_mi_d2c_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/tmp/ea_box_mi_rate_motion_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/tmp/ea_box_mi_rate_comm_ea.png")
+
+	
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/tmp/ea_box_m_captures_best.png")
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/tmp/ea_box_m_captures_mean_ea.png")
+	plotBoxPlot_M(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/tmp/ea_box_m_d2c_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/tmp/ea_box_m_rate_motion_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/tmp/ea_box_m_rate_comm_ea.png")
+	
+
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/tmp/gr_box_m_captures_best.png")
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/tmp/gr_box_m_captures_mean.png")
+	plotBoxPlot(exp1.df,"RES_D2C_STEPS_MEAN", "/tmp/tmp/gr_ea_box_m_d2c.png")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/tmp/gr_box_m_rate_motion.png")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/tmp/gr_box_m_rate_comm.png")
+
+	exp1.df <-  orig[orig$MODEL!="i",]
+
+	plotBoxPlot(orig,"CAPTURES_BEST_CASE", "/tmp/tmp/ult_box_m_captures_best.png")
+	plotBoxPlot(orig,"CAPTURES_MEAN", "/tmp/tmp/ult_box_m_captures_mean.png")
+	plotBoxPlot(orig,"RES_D2C_STEPS_MEAN", "/tmp/tmp/ult_ea_box_m_d2c.png")
+	plotBoxPlot(orig,"RATE_MOTION", "/tmp/tmp/ult_box_m_rate_motion.png")
+	plotBoxPlot(orig,"RATE_COMMUNICATION", "/tmp/tmp/ult_box_m_rate_comm.png")
+
+
+	
+	
+}
+
+
 
 
 ## main function
 
 	# read main data
-	exp1.df <- read.csv(file="/Users/sadat/ExperimentResults/GeneralTrends/all_experiments_mean_300.csv")
+	exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
 	
 	exp1.df$POPULATION <- exp1.df$SPECIES
 
@@ -495,13 +371,14 @@ plotBoxPlots <- function(exp1.df) {
 	exp1.df$DIFFICULTY <- factor(exp1.df$DIFFICULTY)
 	
 	exp1.df$RES_D2C_STEPS_MEAN <- (exp1.df$RES_D2C_STEPS_MEAN*exp1.df$CAPTURES_MEAN)
-	
+
+	plotGraphs(exp1.df)
 
 	# analyze, plot...
 	#doTmpAnalytics(exp1.df)
-	doAnalytics(exp1.df)
+	#doAnalytics(exp1.df)
 	#plotHists(exp1.df)
-	#plotBoxPlots(exp1.df)
+	#plotBoxPlots2(exp1.df)
 	
 	#plot the totals
 
