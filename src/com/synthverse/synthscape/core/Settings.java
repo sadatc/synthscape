@@ -39,7 +39,7 @@ public class Settings implements Constants {
 
 	public int SEED = 1;
 
-	public int GENERATIONS = 1000;
+	public int GENERATIONS = 300;
 
 	public int BENCHMARK_GENERATION = 100;
 

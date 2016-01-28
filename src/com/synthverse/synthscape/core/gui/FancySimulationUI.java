@@ -77,7 +77,7 @@ public class FancySimulationUI extends SimulationUI {
 
 	super.init(controller);
 
-	display = new Display2D(400, 300, this);
+	display = new Display2D(400, 350, this);
 	//display = new Display2D(400, 350, this);
 	display.setScale(1.0);
 	display.setClipping(false);
