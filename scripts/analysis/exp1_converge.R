@@ -406,7 +406,7 @@ meanifyExp1Data <-function(dataDir, meanFile) {
 
 
 
-### Main Program
+##############################   MAIN PROCESS BEGINS ###############################
 
 
 #summarizeExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/penzias_4t/data/",

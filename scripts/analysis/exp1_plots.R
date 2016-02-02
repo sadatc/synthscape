@@ -3,7 +3,7 @@ library(ggplot2)
 library(plyr)
 
 plotGraphs <-function(data) {
-	data <- renameFactors(data)
+
 	png("/tmp/isl_capture.png",  
 	  width     = 6,
 	  height    = 6,
@@ -19,16 +19,9 @@ plotGraphs <-function(data) {
 
 	dev.off()
 
-
 }
 
-renameFactors <- function(dataFrame) {
-	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
-	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
-	return(dataFrame)
-}
+
 
 plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 
@@ -38,7 +31,7 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 
-	dataFrame <- renameFactors(dataFrame)
+
 
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
@@ -55,7 +48,6 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 
-	dataFrame <- renameFactors(dataFrame)
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
 		geom_histogram() +
@@ -196,7 +188,6 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 
-	dataFrame <- renameFactors(dataFrame)
 
 	print(
 		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
@@ -214,7 +205,6 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 	  
-	dataFrame <- renameFactors(dataFrame)
 
 	print(
 		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
@@ -232,7 +222,6 @@ plotBoxPlot <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 	  
-	dataFrame <- renameFactors(dataFrame)
 
 	print(
 		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
@@ -341,26 +330,28 @@ plotBoxPlots2 <- function(exp1.df) {
 	plotBoxPlot(orig,"RES_D2C_STEPS_MEAN", "/tmp/tmp/ult_ea_box_m_d2c.png")
 	plotBoxPlot(orig,"RATE_MOTION", "/tmp/tmp/ult_box_m_rate_motion.png")
 	plotBoxPlot(orig,"RATE_COMMUNICATION", "/tmp/tmp/ult_box_m_rate_comm.png")
-
-
-	
-	
 }
 
 
+# Function turns the internal abbreviated values to full expansions
+# the values were abbreviated in data files to save space
+renameFactorValues <- function(dataFrame) {
+	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
+	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
+	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
+	return(dataFrame)
+}
 
-
-## main function
-
-	# read main data
-	exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
-	
-	exp1.df$POPULATION <- exp1.df$SPECIES
-
-
+# this function:
+# 1. makes POPULATION a synonym for species
+# 2. sets RES_D2C_STEPS_MEAN = RES_D2C_STEPS_MEAN * CAPTURES_MEAN
+preProcessData <- function(exp1.df) {
 	# set all factors
 	exp1.df$MODEL <- factor(exp1.df$MODEL)
 	exp1.df$SPECIES <- factor(exp1.df$SPECIES)
+	exp1.df$POPULATION <- exp1.df$SPECIES
+	exp1.df$POPULATION <- factor(exp1.df$POPULATION)	
 	exp1.df$INTERACTIONS <- factor(exp1.df$INTERACTIONS)
 	exp1.df$COMPLEXITY <- factor(exp1.df$COMPLEXITY)
 	exp1.df$CLONES <- factor(exp1.df$CLONES)
@@ -372,13 +363,21 @@ plotBoxPlots2 <- function(exp1.df) {
 	
 	exp1.df$RES_D2C_STEPS_MEAN <- (exp1.df$RES_D2C_STEPS_MEAN*exp1.df$CAPTURES_MEAN)
 
-	plotGraphs(exp1.df)
+	return(exp1.df)
+}
+##############################   MAIN PROCESS BEGINS ###############################
+exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
 
-	# analyze, plot...
-	#doTmpAnalytics(exp1.df)
-	#doAnalytics(exp1.df)
-	#plotHists(exp1.df)
-	#plotBoxPlots2(exp1.df)
-	
-	#plot the totals
+exp1.df <- preProcessData(exp1.df)
+exp1.df <- renameFactorValues(exp1.df)
+
+plotGraphs(exp1.df)
+
+# analyze, plot...
+#doTmpAnalytics(exp1.df)
+#doAnalytics(exp1.df)
+#plotHists(exp1.df)
+#plotBoxPlots2(exp1.df)
+
+#plot the totals
 
