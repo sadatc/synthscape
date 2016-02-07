@@ -122,8 +122,10 @@ public class Settings implements Constants {
 	public boolean REPORT_DNA_PROGRESSION = false;
 
 	public boolean COMPRESS_DNA_PROGRESSION = false;
+	
+	public boolean REDUCED_LOGGING = true;
 
-	public boolean SPECIES_LEVEL_REPORT = true;
+	public boolean SPECIES_LEVEL_REPORT = false;
 
 	public boolean DYNAMIC_EVENNESS = false;
 

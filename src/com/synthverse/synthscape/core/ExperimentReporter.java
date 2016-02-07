@@ -510,14 +510,25 @@ public class ExperimentReporter implements Constants {
 				numberOfSpecies = simulation.speciesComposition.size();
 
 				String columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
+
+				if (Main.settings.REDUCED_LOGGING) {
+					columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN";
+				}
+
 				preComputeExperimentCsvMetadata();
-				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
-							&& type == EventType.PROCESSING)) {
-						continue;
-					} else {
-						columnHeader += ", RATE_" + type;
-						columnHeader += ", INTERVAL_" + type;
+
+				if (Main.settings.REDUCED_LOGGING) {
+					columnHeader += ", RATE_COMMUNICATION, RATE_MOTION";
+				} else {
+
+					for (EventType type : EventType.values()) {
+						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+								&& type == EventType.PROCESSING)) {
+							continue;
+						} else {
+							columnHeader += ", RATE_" + type;
+							columnHeader += ", INTERVAL_" + type;
+						}
 					}
 				}
 
@@ -578,7 +589,11 @@ public class ExperimentReporter implements Constants {
 					}
 				}
 
-				columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+				if (Main.settings.REDUCED_LOGGING) {
+					columnHeader += ", RES_D2C_STEPS_MEAN, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+				} else {
+					columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+				}
 
 				if (Main.settings.DYNAMIC_EVENNESS || Main.settings.MANUAL_EVENNESS) {
 					columnHeader += ", NUM_DETECTORS";
@@ -667,27 +682,42 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, populationFitnessStats.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, populationFitnessStats.getVariance());
+				if (!Main.settings.REDUCED_LOGGING) {
 
-				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
-							&& type == EventType.PROCESSING)) {
-						continue;
-					} else {
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, populationFitnessStats.getVariance());
+				}
 
-						formattedAppend(sbPerformance, COMMA);
+				if (Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance,
+							(double) generationEventStats.getTypeValue(EventType.COMMUNICATION) / simsRun);
 
-						SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance,
+							(double) generationEventStats.getTypeValue(EventType.MOTION) / simsRun);
 
-						if (stats != null) {
-							formattedAppend(sbPerformance, stats.getMean());
+				} else {
+
+					for (EventType type : EventType.values()) {
+						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+								&& type == EventType.PROCESSING)) {
+							continue;
 						} else {
-							formattedAppend(sbPerformance, EMPTY_STRING);
-						}
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
 
+							formattedAppend(sbPerformance, COMMA);
+
+							SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+
+							if (stats != null) {
+								formattedAppend(sbPerformance, stats.getMean());
+							} else {
+								formattedAppend(sbPerformance, EMPTY_STRING);
+							}
+
+						}
 					}
 				}
 
@@ -874,7 +904,7 @@ public class ExperimentReporter implements Constants {
 								formattedAppend(sbPerformance, COMMA);
 								formattedAppend(sbPerformance, receivedUnicastClosestC);
 							}
-							
+
 						}
 
 						settings.statusCache += species + ":" + summaryFitnessStats.getMean() + " ";
@@ -885,20 +915,23 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
+
+				}
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, Trail.getCounter());
@@ -1009,28 +1042,42 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 
 				formattedAppend(sbPerformance, populationFitnessStats.getMean());
-				formattedAppend(sbPerformance, COMMA);
 
-				formattedAppend(sbPerformance, populationFitnessStats.getVariance());
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, populationFitnessStats.getVariance());
+				}
 
-				for (EventType type : EventType.values()) {
-					if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
-							&& type == EventType.PROCESSING)) {
-						continue;
-					} else {
-						formattedAppend(sbPerformance, COMMA);
-						formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
+				if (Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance,
+							(double) generationEventStats.getTypeValue(EventType.COMMUNICATION) / simsRun);
 
-						formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance,
+							(double) generationEventStats.getTypeValue(EventType.MOTION) / simsRun);
 
-						SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+				} else {
 
-						if (stats != null) {
-							formattedAppend(sbPerformance, stats.getMean());
+					for (EventType type : EventType.values()) {
+						if ((Main.settings.PROBLEM_COMPLEXITY == ProblemComplexity.THREE_SEQUENTIAL_TASKS
+								&& type == EventType.PROCESSING)) {
+							continue;
 						} else {
-							formattedAppend(sbPerformance, EMPTY_STRING);
-						}
+							formattedAppend(sbPerformance, COMMA);
+							formattedAppend(sbPerformance, (double) generationEventStats.getTypeValue(type) / simsRun);
 
+							formattedAppend(sbPerformance, COMMA);
+
+							SummaryStatistics stats = intervalStats.getTypeIntervalStats(type);
+
+							if (stats != null) {
+								formattedAppend(sbPerformance, stats.getMean());
+							} else {
+								formattedAppend(sbPerformance, EMPTY_STRING);
+							}
+
+						}
 					}
 				}
 
@@ -1139,20 +1186,22 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.loads.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.unloads.getMean());
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.touchedResources.getMean());
+				}
 
 				performanceWriter.write(sbPerformance.toString());
 
