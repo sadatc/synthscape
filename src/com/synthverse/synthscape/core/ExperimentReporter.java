@@ -512,7 +512,7 @@ public class ExperimentReporter implements Constants {
 				String columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN, TOT_FITNESS_VAR";
 
 				if (Main.settings.REDUCED_LOGGING) {
-					columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, TDELTA, MEM, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN";
+					columnHeader = "GRIDS, RESOURCES, SITES, OBSTACLES, DIFFICULTY, COMPLEXITY, CLONES, MODEL, INTERACTIONS, SPECIES, GENERATION, SIMS, CAPTURES_TOTAL, CAPTURES_BEST_CASE, CAPTURES_MEAN, TOT_FITNESS_MEAN";
 				}
 
 				preComputeExperimentCsvMetadata();
@@ -590,7 +590,7 @@ public class ExperimentReporter implements Constants {
 				}
 
 				if (Main.settings.REDUCED_LOGGING) {
-					columnHeader += ", RES_D2C_STEPS_MEAN, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+					columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 				} else {
 					columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 				}
@@ -664,11 +664,14 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, simCounter);
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, timeDelta);
+				if (!Main.settings.REDUCED_LOGGING) {
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, allocatedMemory);
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, timeDelta);
+
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, allocatedMemory);
+				}
 
 				formattedAppend(sbPerformance, COMMA);
 				formattedAppend(sbPerformance, captureStats.getSum());
@@ -914,10 +917,12 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, COMMA);
 				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
+				
+				formattedAppend(sbPerformance, COMMA);
+				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				if (!Main.settings.REDUCED_LOGGING) {
-					formattedAppend(sbPerformance, COMMA);
-					sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+					
 
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
@@ -1026,11 +1031,13 @@ public class ExperimentReporter implements Constants {
 				formattedAppend(sbPerformance, simCounter);
 				formattedAppend(sbPerformance, COMMA);
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, timeDelta);
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, timeDelta);
 
-				formattedAppend(sbPerformance, COMMA);
-				formattedAppend(sbPerformance, allocatedMemory);
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, allocatedMemory);
+				}
 
 				formattedAppend(sbPerformance, captureStats.getSum());
 				formattedAppend(sbPerformance, COMMA);
@@ -1185,10 +1192,12 @@ public class ExperimentReporter implements Constants {
 
 				formattedAppend(sbPerformance, COMMA);
 				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
+				
+				formattedAppend(sbPerformance, COMMA);
+				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				if (!Main.settings.REDUCED_LOGGING) {
-					formattedAppend(sbPerformance, COMMA);
-					sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+
 
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
