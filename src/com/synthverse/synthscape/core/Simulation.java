@@ -321,6 +321,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public final void collectResouceCaptureStats() {
 		if (touchedResources.size() > 0) {
 			for (ResourceStatus status : touchedResources) {
+				//D.p(""+status);
 				resourceCaptureStats.addData(status);
 			}
 		}

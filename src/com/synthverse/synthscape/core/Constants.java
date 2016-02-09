@@ -49,7 +49,8 @@ public interface Constants {
 	public static final boolean TOROIDAL_FLAG = true;
 
 	public static final double DEFAULT_TRAIL_EVAPORATION_CONSTANT = 0.913;
-	// 0.60 => trail stays for 10 steps, 0.79=20 steps, 0.795=> 21 steps 0.913=>51
+	// 0.60 => trail stays for 10 steps, 0.79=20 steps, 0.795=> 21 steps
+	// 0.913=>51
 
 	public static final double DEFAULT_REWARD_EVAPORATION_CONSTANT = 0.50;
 
@@ -70,7 +71,7 @@ public interface Constants {
 	public static final String GRID_ICON_EXTRACTED_RESOURCE = "images/extracted_resource.png";
 
 	public static final String GRID_ICON_PROCESSED_RESOURCE = "images/processed_resource.png";
-	
+
 	public static final String GRID_ICON_COLLECTED_RESOURCE = "images/collected_resource.png";
 
 	public static final int FILE_IO_BUFFER_SIZE = 8192;
@@ -87,19 +88,18 @@ public interface Constants {
 
 	public static final int DEFAULT_BITSET_SIZE = 1000000;
 
-	public static final String CSV_DOUBLE_FORMAT = "%.6f";
+	public static final int CSV_DOUBLE_FORMAT = 6;
 	
+	public static final int CSV_INT_DIGITS = 15;
+
 	public static final String EMPTY_STRING = "";
-	
+
 	public static final int MAX_TRIES_TO_FIND_EMPTY_MOVE_LOCATION = 1000;
 
 	public static final long SHORT_PAUSE = 1;
-	
+
 	public static final long LONG_PAUSE = 5;
-	
+
 	public static final String EXPERIMENT_MAP_FILE = "experiment_map.txt";
-	
-	
-	
 
 }

@@ -1315,9 +1315,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			updateLocationStatus(x, y);
 			if (this.locationHasExtractedResource) {
 				sim.recordEvent(this, Event.DETECTED_EXTRACTED_RESOURCE, NA, NA);
+				/*
 				if (sim.resourceStatusArray[x][y].detectionStep == INVALID) {
 					sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
 				}
+				*/
 				sim.resourceStatusArray[x][y].numTimesDetected++;
 				sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 			}
@@ -1333,9 +1335,11 @@ public abstract class Agent implements Constants, Steppable, Valuable, Comparabl
 			updateLocationStatus(x, y);
 			if (this.locationHasProcessedResource) {
 				sim.recordEvent(this, Event.DETECTED_PROCESSED_RESOURCE, NA, NA);
+				/*
 				if (sim.resourceStatusArray[x][y].detectionStep == INVALID) {
 					sim.resourceStatusArray[x][y].detectionStep = sim.simStepCounter;
 				}
+				*/
 				sim.resourceStatusArray[x][y].numTimesDetected++;
 				sim.touchedResources.add(sim.resourceStatusArray[x][y]);
 			}

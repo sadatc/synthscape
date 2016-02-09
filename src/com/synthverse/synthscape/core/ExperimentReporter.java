@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
@@ -33,11 +36,17 @@ import com.synthverse.util.LogUtils;
 public class ExperimentReporter implements Constants {
 
 	private static Logger logger = Logger.getLogger(ExperimentReporter.class.getName());
-
+	public static NumberFormat fileNumberFormat;
 	Settings settings = Settings.getInstance();
 
 	static {
 		LogUtils.applyDefaultSettings(logger, Main.settings.REQUESTED_LOG_LEVEL);
+		fileNumberFormat = DecimalFormat.getInstance();
+		fileNumberFormat.setRoundingMode(RoundingMode.FLOOR);
+		fileNumberFormat.setMinimumFractionDigits(0);
+		fileNumberFormat.setMaximumFractionDigits(CSV_DOUBLE_FORMAT);
+		fileNumberFormat.setMaximumIntegerDigits(CSV_INT_DIGITS);
+		fileNumberFormat.setGroupingUsed(false);
 	}
 
 	private static int STRING_BUFFER_MAX_SIZE = 300;
@@ -590,9 +599,9 @@ public class ExperimentReporter implements Constants {
 				}
 
 				if (Main.settings.REDUCED_LOGGING) {
-					columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+					columnHeader += ", RES_E2C_STEPS_MEAN, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 				} else {
-					columnHeader += ", RES_D2C_STEPS_MEAN, RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
+					columnHeader += ", RES_E2C_STEPS_MEAN, RES_DETECTIONS_MEAN, RES_LOADS_MEAN, RES_UNLOADS_MEAN, RES_MEAN_TOUCHES_PER_SIM, TOT_TRAIL_SENT, TOT_TRAIL_RECEIVED, TOT_BROADCAST_SENT, TOT_BROADCAST_RECEIVED, TOT_UNICAST_SENT, TOT_UNICAST_RECEIVED";
 				}
 
 				if (Main.settings.DYNAMIC_EVENNESS || Main.settings.MANUAL_EVENNESS) {
@@ -671,6 +680,10 @@ public class ExperimentReporter implements Constants {
 
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, allocatedMemory);
+				}
+
+				if (captureStats.getSum() > 1000) {
+					D.p("hello");
 				}
 
 				formattedAppend(sbPerformance, COMMA);
@@ -915,14 +928,15 @@ public class ExperimentReporter implements Constants {
 					}
 				}
 
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.detectionToCaptureInterval.getMean());
+				}
+
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
-				
-				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				if (!Main.settings.REDUCED_LOGGING) {
-					
 
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
@@ -1012,7 +1026,12 @@ public class ExperimentReporter implements Constants {
 
 	public final void formattedAppend(StringBuilder sb, double value) {
 		// sb.append(value);
-		sb.append(String.format(Constants.CSV_DOUBLE_FORMAT, value));
+		if (!Double.isNaN(value)) {
+			sb.append(fileNumberFormat.format(value));
+		} else {
+			sb.append("NaN");
+		}
+		// sb.append(String.format(Constants.CSV_DOUBLE_FORMAT, value));
 	}
 
 	public void reportPerformanceIslandModel(int generationCounter, IntervalStats intervalStats,
@@ -1190,14 +1209,14 @@ public class ExperimentReporter implements Constants {
 					}
 				}
 
+				if (!Main.settings.REDUCED_LOGGING) {
+					formattedAppend(sbPerformance, COMMA);
+					formattedAppend(sbPerformance, resourceCaptureStats.detectionToCaptureInterval.getMean());
+				}
 				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.detectionToCaptureInterval.getMean());
-				
-				formattedAppend(sbPerformance, COMMA);
-				sbPerformance.append(resourceCaptureStats.extractionToCaptureInterval.getMean());
+				formattedAppend(sbPerformance, resourceCaptureStats.extractionToCaptureInterval.getMean());
 
 				if (!Main.settings.REDUCED_LOGGING) {
-
 
 					formattedAppend(sbPerformance, COMMA);
 					formattedAppend(sbPerformance, resourceCaptureStats.detections.getMean());
