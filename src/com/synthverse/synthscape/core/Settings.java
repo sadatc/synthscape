@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -19,9 +18,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import com.synthverse.Main;
 import com.synthverse.synthscape.core.gui.BridgeState;
-import com.synthverse.util.LogUtils;
 
 public class Settings implements Constants {
 
@@ -955,8 +952,6 @@ public class Settings implements Constants {
 
 		SEED = 1;
 
-		GENERATIONS = 1000;
-
 		BENCHMARK_GENERATION = 100;
 
 		CLONES_PER_SPECIES = 8;
@@ -1022,6 +1017,8 @@ public class Settings implements Constants {
 		DNA_PROGRESSION_FILE = "dna_dat.gz";
 
 		EXPERIMENT_DETAILS_FILE = "exp_det.txt";
+		
+		REPORT_EXPERIMENT_DETAILS = false;
 
 		EXPERIMENT_DETAILS_FILE_MAIN = "exp_det.txt";
 
@@ -1034,8 +1031,10 @@ public class Settings implements Constants {
 		REPORT_DNA_PROGRESSION = false;
 
 		COMPRESS_DNA_PROGRESSION = false;
+		
+		REDUCED_LOGGING = true;
 
-		SPECIES_LEVEL_REPORT = true;
+		SPECIES_LEVEL_REPORT = false;
 
 		DYNAMIC_EVENNESS = false;
 
