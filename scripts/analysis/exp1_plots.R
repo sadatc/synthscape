@@ -397,15 +397,15 @@ preProcessData <- function(exp1.df) {
 ##############################   MAIN PROCESS BEGINS ###############################
 exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
 
-exp1.df <- preProcessData(exp1.df)
-exp1.df <- renameFactorValues(exp1.df)
+exp1.df <- preProcessData(exp1.df)     # factorizes, as appropriate, adjusts E2C...
+exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 #plotGraphs(exp1.df)
 
 # analyze, plot...
 
-doAnalytics(exp1.df)
-plotHists(exp1.df)
-#plotBoxPlots2(exp1.df)
+doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
+plotHists(exp1.df)    # plots histograms
+plotBoxPlots(exp1.df) # boxplots to show difference
 
 #plot the totals
 
