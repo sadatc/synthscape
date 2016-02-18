@@ -57,49 +57,47 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 }
 
 
+#
+# given sample.data, computes mean based on r replicates 
+#
+boot.mean = function(sample.data, r) {
+	sample.data = na.omit(sample.data)
+	n = length(sample.data)
+	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
+	boot.statistics = apply(boot.samples,1,mean)
+	return(boot.statistics)
+}
 
 
-
-
+#
+# performs shapiro-wilk test and mann-whitney test
+# reports back a data.frame
+#
 analyzePair <-function(model,measure,g,s) {
-#	print("**** Analyzing Pair (G vs. S)****")
 	rMeasure <- measure
 
 #	print("performing shapiro test. if p<0.05, sample likely non-normal")
 	rGSampleSize <- length(g)
 	rGShapiro <- shapiro.test(g)
+
 	rGShapiroW <- rGShapiro$statistic[[1]]
 	rGShapiroP <- rGShapiro$p.value
-
-#	print(rGShapiro)
-#	print(rGShapiroW)
-#	print(rGShaoroP)
-
 
 	rSSampleSize <- length(s)
 	rSShapiro <- shapiro.test(s)
 	rSShapiroW <- rSShapiro$statistic[[1]]
 	rSShapiroP <- rSShapiro$p.value
 
-#	print(rSShapiro)
-#	print(rSShapiroW)
-#	print(rSShaoroP)
 
-
-	#print("performing mann-whitney u test. if p<0.05, the samples are non-identical populations...")
+#print("mann-whitney u test. if p<0.05, the samples are non-identical populations...")
 	rWilcox <- wilcox.test(g,s)
 	rWilcoxW <- rWilcox$statistic[[1]]
 	rWilcoxP <- rWilcox$p.value
-	
-#	print(rWilcox)
-#	print(rWilcoxW)
-#	print(rWilcoxP)
 
-#	print("******* Done Analyzing Pair ******")
-
-	result.frame <- data.frame(MODEL=model,MEASURE=measure, G_SIZE=rGSampleSize, G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, 
-		S_SIZE=rSSampleSize, S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, 
-		WILCOX_W=rWilcoxW, WILCOX_P=rWilcoxP)
+	result.frame <- data.frame(MODEL=model,MEASURE=measure, G_SIZE=rGSampleSize,
+		G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SIZE=rSSampleSize,
+		S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, WILCOX_W=rWilcoxW, 
+		WILCOX_P=rWilcoxP)
 		
 	return(result.frame)
 }
@@ -189,21 +187,6 @@ plotHists <- function(exp1.df) {
 	plotHistBy_S(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_rate_comm.png")
 	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion_single.png")
 
-	# == plot  distributions minus lower values ===
-
-	exp1.df2 <-  exp1.df[exp1.df$CAPTURES_MEAN >0.1,]
-
-	plotHistBy_S_M(exp1.df2,"CAPTURES_MEAN", "/tmp/exp1/x_hist_sm_captures_mean.png")
-	plotHistBy_S_M(exp1.df2,"CAPTURES_BEST_CASE", "/tmp/exp1/x_hist_sm_captures_best.png")
-	plotHistBy_S_M(exp1.df2,"RES_E2C_STEPS_MEAN", "/tmp/exp1/x_hist_sm_d2c_steps_mean.png")
-	plotHistBy_S_M(exp1.df2,"RATE_MOTION", "/tmp/exp1/x_hist_sm_rate_motion.png")
-	plotHistBy_S(exp1.df2,"RATE_MOTION", "/tmp/exp1/x_hist_sm_rate_motion_single.png")
-	plotHistBy_S_M(exp1.df2,"RATE_COMMUNICATION", "/tmp/exp1/x_hist_sm_rate_comm.png")
-	plotHistBy_S(exp1.df2,"RATE_COMMUNICATION", "/tmp/exp1/x_hist_s_rate_comm.png")
-
-
-	testData <- exp1.df[exp1.df$MODEL=="island",]
-	print(summary(testData$RATE_MOTION))
 }
 
 
