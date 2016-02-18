@@ -171,8 +171,8 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 	meanFile <- paste(meanFile,howManyGenerations,".csv",sep="")
 
 	if(file.exists(meanFile)) {
-		rm(meanFile)
-		print("previous meanFile was removed")
+		unlink(meanFile)
+		print(paste("previous meanFile was removed:",meanFile))
 	} else {
 		print("creating a new meanFile")
 	}
