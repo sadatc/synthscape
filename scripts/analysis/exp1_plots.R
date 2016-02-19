@@ -31,8 +31,6 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 
-
-
 	print(
 		ggplot(dataFrame,aes_string(x=colName, fill="INTERACTIONS")) +
 		geom_histogram(alpha=0.4) +
@@ -182,8 +180,6 @@ plotHists <- function(exp1.df) {
 	plotHistBy_S_M(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion.png")
 	plotHistBy_S_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_sm_rate_comm.png")
 
-	
-	
 	plotHistBy_S(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_rate_comm.png")
 	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion_single.png")
 
@@ -246,12 +242,13 @@ plotBoxPlot <-function(dataFrame, colName, fileName) {
 
 plotBoxPlots <- function(exp1.df) {
 	orig <- exp1.df
-	
+
+	# only look at non-communicating homogenous and communicating heterogenous	
 	exp1.df <-  exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |  (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none")  ,]
 	
+
 	
-	
-	
+	# do box plots by model and interaction
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png")
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png")
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_d2c.png")
@@ -262,13 +259,15 @@ plotBoxPlots <- function(exp1.df) {
 	# filter out island model
 	exp1.df <-  exp1.df[exp1.df$MODEL!="i",]
 	
+	# do box plots by model and interaction of just E and A
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png")
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_d2c_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rate_motion_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rate_comm_ea.png")
 
-	
+
+	# do box plots by model 
 	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png")
 	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png")
 	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_d2c_ea.png")
@@ -276,73 +275,21 @@ plotBoxPlots <- function(exp1.df) {
 	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rate_comm_ea.png")
 	
 
+	# do box plots of overall (including interactions)
 	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png")
 	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png")
 	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_d2c.png")
 	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/gr_box_m_rate_motion.png")
 	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/gr_box_m_rate_comm.png")
 
-	exp1.df <-  orig[orig$MODEL!="i",]
-
-	plotBoxPlot(orig,"CAPTURES_BEST_CASE", "/tmp/exp1/ult_box_m_captures_best.png")
-	plotBoxPlot(orig,"CAPTURES_MEAN", "/tmp/exp1/ult_box_m_captures_mean.png")
-	plotBoxPlot(orig,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ult_ea_box_m_d2c.png")
-	plotBoxPlot(orig,"RATE_MOTION", "/tmp/exp1/ult_box_m_rate_motion.png")
-	plotBoxPlot(orig,"RATE_COMMUNICATION", "/tmp/exp1/ult_box_m_rate_comm.png")
-
+	
 
 	
 	
 }
 
 
-plotBoxPlots2 <- function(exp1.df) {
-	orig <- exp1.df
-	
-	exp1.df <-  exp1.df[(exp1.df$SPECIES=="homogenous") |  (exp1.df$SPECIES=="heterogenous")  ,]
-	
-	
-	
-	
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png")
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png")
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_d2c.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rate_motion.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rate_comm.png")
 
-
-	
-	# filter out island model
-	exp1.df <-  exp1.df[exp1.df$MODEL!="i",]
-	
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png")
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_d2c_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rate_motion_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rate_comm_ea.png")
-
-	
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png")
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png")
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_d2c_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rate_motion_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rate_comm_ea.png")
-	
-
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png")
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png")
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_d2c.png")
-	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/gr_box_m_rate_motion.png")
-	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/gr_box_m_rate_comm.png")
-
-	exp1.df <-  orig[orig$MODEL!="i",]
-
-	plotBoxPlot(orig,"CAPTURES_BEST_CASE", "/tmp/exp1/ult_box_m_captures_best.png")
-	plotBoxPlot(orig,"CAPTURES_MEAN", "/tmp/exp1/ult_box_m_captures_mean.png")
-	plotBoxPlot(orig,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ult_ea_box_m_d2c.png")
-	plotBoxPlot(orig,"RATE_MOTION", "/tmp/exp1/ult_box_m_rate_motion.png")
-	plotBoxPlot(orig,"RATE_COMMUNICATION", "/tmp/exp1/ult_box_m_rate_comm.png")
-}
 
 
 # Function turns the internal abbreviated values to full expansions
