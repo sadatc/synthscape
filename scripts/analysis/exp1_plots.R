@@ -1,6 +1,7 @@
 # island model
 library(ggplot2)
 library(plyr)
+library(xtable)
 
 plotGraphs <-function(data) {
 
@@ -166,9 +167,13 @@ doAnalytics <- function(exp1.df) {
 	dist.table <- rbind(dist.table,	analyzePair("alife_general","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 
 	print(dist.table)
+	data(dist.table)
+	xtable(dist.table)
 
 	
 }
+
+
 
 
 plotHists <- function(exp1.df) {
@@ -176,7 +181,7 @@ plotHists <- function(exp1.df) {
 
 	plotHistBy_S_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_sm_captures_mean.png")
 	plotHistBy_S_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_sm_captures_best.png")
-	plotHistBy_S_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_sm_d2c_steps_mean.png")
+	plotHistBy_S_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_sm_e2c_steps_mean.png")
 	plotHistBy_S_M(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion.png")
 	plotHistBy_S_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_sm_rate_comm.png")
 
@@ -184,6 +189,8 @@ plotHists <- function(exp1.df) {
 	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion_single.png")
 
 }
+
+
 
 
 
@@ -251,7 +258,7 @@ plotBoxPlots <- function(exp1.df) {
 	# do box plots by model and interaction
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png")
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png")
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_d2c.png")
+	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_e2c.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rate_motion.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rate_comm.png")
 
@@ -262,7 +269,7 @@ plotBoxPlots <- function(exp1.df) {
 	# do box plots by model and interaction of just E and A
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png")
 	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_d2c_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_e2c_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rate_motion_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rate_comm_ea.png")
 
@@ -270,7 +277,7 @@ plotBoxPlots <- function(exp1.df) {
 	# do box plots by model 
 	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png")
 	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png")
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_d2c_ea.png")
+	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_e2c_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rate_motion_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rate_comm_ea.png")
 	
@@ -278,14 +285,10 @@ plotBoxPlots <- function(exp1.df) {
 	# do box plots of overall (including interactions)
 	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png")
 	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png")
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_d2c.png")
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_e2c.png")
 	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/gr_box_m_rate_motion.png")
 	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/gr_box_m_rate_comm.png")
 
-	
-
-	
-	
 }
 
 
@@ -324,6 +327,149 @@ preProcessData <- function(exp1.df) {
 
 	return(exp1.df)
 }
+
+
+
+plotBootHist <-function(bootSample, fileName) {
+
+	se <- sd(bootSample)
+	binWidth <- diff(range(bootSample))/30
+	
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(data.frame(x=bootSample), aes(x=x)) 
+		+ geom_histogram(aes(y=..density..), binwidth=binWidth) 
+		+ geom_density(color="red")
+		
+	)
+	dev.off()
+}
+
+
+plotBootHist2Pop <-function(pop.data.frame, colName, fileName) {
+
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+		+ geom_density(alpha = 0.2)
+		
+	)
+	dev.off()
+}
+
+
+
+plotBootedStats <- function(exp1.df) {
+
+	# now we will bootstrap the measures
+	bootSize <- 1000
+
+
+	ea.data.frame <-  exp1.df[exp1.df$MODEL!="i",]
+
+	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="homogenous" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="heterogenous" & ea.data.frame$INTERACTIONS!="none")  ,]
+
+	# extract data for s and g
+	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
+	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
+
+	# extract the measures
+	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+	s.RATE_MOTION <- s.data.frame$RATE_MOTION
+	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+	s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
+	s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
+	s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
+	s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
+	s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+
+	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
+	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
+	g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
+	g.RATE_MOTION <- g.data.frame$RATE_MOTION
+	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+
+	g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
+	g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
+	g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
+	g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
+	g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+
+	
+	s.pop.data.frame <- data.frame(
+		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+		CAPTURES_MEAN=s.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=s.RATE_MOTION,
+		POPULATION="heterogenous"
+	)
+
+
+	g.pop.data.frame <- data.frame(
+		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
+		CAPTURES_MEAN=g.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=g.RATE_MOTION,
+		POPULATION="homogenous"
+	)
+	
+	pop.data.frame <- rbind(s.pop.data.frame,g.pop.data.frame)
+	
+	
+	
+	print(shapiro.test(s.CAPTURES_BEST_CASE))
+	print(shapiro.test(g.CAPTURES_BEST_CASE))
+	
+	print(shapiro.test(s.CAPTURES_MEAN))
+	print(shapiro.test(g.CAPTURES_MEAN))
+
+	print(shapiro.test(s.RES_E2C_STEPS_MEAN))
+	print(shapiro.test(g.RES_E2C_STEPS_MEAN))
+
+	print(shapiro.test(s.RATE_MOTION))
+	print(shapiro.test(g.RATE_MOTION))
+
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_cbc.png")
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_cm.png")
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_e2c.png")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_rm.png")
+
+	if(1!=1) {
+		plotBootHist(s.CAPTURES_BEST_CASE, "/tmp/exp1/boot_s_cbc.png")
+		plotBootHist(g.CAPTURES_BEST_CASE, "/tmp/exp1/boot_g_cbc.png")
+	
+
+
+		plotBootHist(s.CAPTURES_MEAN, "/tmp/exp1/boot_s_cm.png")
+		plotBootHist(g.CAPTURES_MEAN, "/tmp/exp1/boot_g_cm.png")
+
+		plotBootHist(s.RES_E2C_STEPS_MEAN, "/tmp/exp1/boot_s_e2.png")
+		plotBootHist(g.RES_E2C_STEPS_MEAN, "/tmp/exp1/boot_g_e2.png")
+
+		plotBootHist(s.RATE_MOTION, "/tmp/exp1/boot_s_mo.png")
+		plotBootHist(g.RATE_MOTION, "/tmp/exp1/boot_g_mo.png")
+	}
+
+
+
+
+
+}
+
+
 ##############################   MAIN PROCESS BEGINS ###############################
 exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
 
@@ -333,9 +479,16 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 
 # analyze, plot...
 
-doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
 plotHists(exp1.df)    # plots histograms
-plotBoxPlots(exp1.df) # boxplots to show difference
+
+#doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
+#plotBoxPlots(exp1.df) # boxplots to show difference
+#plotBootedStats(exp1.df)
+
+
+
+
+
 
 #plot the totals
 

@@ -22,6 +22,11 @@
 # join output and error
 #PBS -j oe
 
+#echo "server: ${S}"
+#echo "server: ${P}"
+
+
+
 # Change to working directory
 cd ${PBS_O_WORKDIR}
 
