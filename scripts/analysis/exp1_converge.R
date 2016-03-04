@@ -2,7 +2,7 @@
 library(data.table)
 
 
-MAX_GENERATIONS <-999
+MAX_GENERATIONS <-299
 
 CSV_FIELDS_TO_GRAB <- c("GRIDS","RESOURCES","SITES","OBSTACLES","DIFFICULTY",
 	"COMPLEXITY","CLONES","MODEL","INTERACTIONS","SPECIES",
@@ -42,12 +42,14 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 
 		
 		csvFile <- paste(directory,csvFileName,sep="/") # concats
+		print("reading data from: ")
 		print(csvFile)
 		csvFileData <- read.csv(csvFile, header=TRUE)
-		
+		print("done reading...")		
 	
 	
 		# only gather data if there is at least MAX_GENERATIONS amount of rows
+
 		if(nrow(csvFileData) >= MAX_GENERATIONS) { 
 
 			if(interactionType == "b") {
@@ -151,7 +153,8 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 		
 
 			
-			aggregateData <- rbind(aggregateData,meanData)    
+			aggregateData <- rbind(aggregateData,meanData)   
+
 
 			
 			rm(fileDataS)
@@ -167,14 +170,14 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 
 meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {	
 
-	meanFile <- paste(dataDir,MEAN_FILE_NAME,sep="")
+	meanFile <- paste(meanDir,MEAN_FILE_NAME,sep="")
 	meanFile <- paste(meanFile,howManyGenerations,".csv",sep="")
 
 	if(file.exists(meanFile)) {
 		unlink(meanFile)
 		print(paste("previous meanFile was removed:",meanFile))
 	} else {
-		print("creating a new meanFile")
+		print("will create new meanFile")
 	}
 
 	
@@ -182,6 +185,8 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 	
 	dataSubDirs <- list.dirs(dataDir,  full.names = FALSE)
 	print(dataSubDirs)
+	
+	aggregateData <- data.frame()
 
 	for(directoryIndex in 1:length(dataSubDirs)) {
 		dataSubDir <- dataSubDirs[directoryIndex]
@@ -194,21 +199,17 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 
 			print("processing ...")
 			print(dataSubDirFullPath)	
-			print(meanFile)
-			
-			if(file.exists(meanFile)) {
-				aggregateData <- read.csv(file=meanFile)
-			} else {
-				aggregateData <- data.frame()
-			}
+
 			
 			aggregateData <- meanifyCSVS(dataSubDirFullPath,aggregateData, howManyGenerations)
-			write.csv(aggregateData,file=meanFile,row.names=F)
+			
+			#print(length(aggregateData))
+
 			print("======")
 		}
 	}
 	print("done")
-
+	write.csv(aggregateData,file=meanFile,row.names=F)
 
 	
 
@@ -233,8 +234,8 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 
 
 
-meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/combined/",
-	"/Users/sadat/ExperimentResults/GeneralTrends/", 300)	
+meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/final_data/",
+	"/Users/sadat/analysis/data/exp1/", 300)	
 
 
 
