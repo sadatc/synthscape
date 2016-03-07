@@ -2,6 +2,13 @@
 library(ggplot2)
 library(plyr)
 library(xtable)
+library(extrafont)
+library(scales)
+library(extrafont)
+#library(tikzDevice)
+
+
+#library(scale)
 
 plotGraphs <-function(data) {
 
@@ -20,24 +27,6 @@ plotGraphs <-function(data) {
 
 	dev.off()
 
-}
-
-
-
-plotHistBy_S_M <-function(dataFrame, colName, fileName) {
-
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
-	print(
-		ggplot(dataFrame,aes_string(x=colName, fill="INTERACTIONS")) +
-		geom_histogram(alpha=0.4) +
-		facet_grid( POPULATION ~ MODEL) 
-	)
-	dev.off()
 }
 
 plotHistBy_S <-function(dataFrame, colName, fileName) {
@@ -93,11 +82,19 @@ analyzePair <-function(model,measure,g,s) {
 	rWilcoxW <- rWilcox$statistic[[1]]
 	rWilcoxP <- rWilcox$p.value
 
-	result.frame <- data.frame(MODEL=model,MEASURE=measure, G_SIZE=rGSampleSize,
-		G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SIZE=rSSampleSize,
-		S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, WILCOX_W=rWilcoxW, 
-		WILCOX_P=rWilcoxP)
+	#result.frame <- data.frame(MODEL=model,MEASURE=measure, G_SIZE=rGSampleSize,
+	#	G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SIZE=rSSampleSize,
+	#	S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, WILCOX_W=rWilcoxW, 
+	#	WILCOX_P=rWilcoxP)
 		
+	
+	result.frame <- data.frame(MODEL=model,MEASURE=measure,
+		G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP)
+	
+	
+	
+	
+	
 	return(result.frame)
 }
 
@@ -168,7 +165,7 @@ doAnalytics <- function(exp1.df) {
 
 	print(dist.table)
 	data(dist.table)
-	xtable(dist.table)
+	print(xtable(dist.table, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
 }
@@ -176,17 +173,224 @@ doAnalytics <- function(exp1.df) {
 
 
 
+plotHistByPM <-function(pInteraction, dataFrame, colName, fileName) {
+
+	dataFrame <- dataFrame[dataFrame$INTERACTION==pInteraction,]
+	#dataFrame <- dataFrame[dataFrame$CAPTURES_MEAN>0.05,]
+
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(dataFrame,aes_string(x=colName)) +
+		geom_histogram(fill="lightblue", color="black") +
+		facet_grid( POPULATION ~ MODEL) +
+		theme_bw()
+	
+	)
+	dev.off()
+}
+
+
+
+plotHistBy_S_M <-function(dataFrame, colName, fileName) {
+
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	print(
+		ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+		geom_histogram(color="black", alpha = 0.85) +
+		facet_grid( MODEL ~ INTERACTIONS) +
+		theme_bw()
+	)
+	dev.off()
+}
+
+percentFormatter <- function(x) {
+	y <- paste(round(x*100),"%",sep="")
+	return(y)
+}
+
+
+getMeasurePrettyName <- function(colName) {
+	result <- colName
+	
+	if(colName == "CAPTURES_MEAN") {
+		result <- expression(italic(M[mean]) ~ ":  Mean Captures (% of total)")
+	}
+
+	if(colName == "CAPTURES_BEST_CASE") {
+		result <- expression(italic(M[best]) ~ ":  Best Captures (% of total)")
+	}
+
+	if(colName == "RES_E2C_STEPS_MEAN") {
+		result <- expression(italic(M[effort]) ~ ":  Mean Steps between Extraction & Capture")
+	}
+
+	if(colName == "RATE_COMMUNICATION") {
+		result <- expression(italic(M[comm]) ~ ":  Communication Instructions")
+	}
+
+	if(colName == "RATE_MOTION") {
+		result <- expression(italic(M[move]) ~ ":  Movement Instructions")
+	}
+	
+	
+
+	return(result)
+}
+
+
+
+
+
+plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
+	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
+	
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
+
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
+
+	xAxisLabel <- getMeasurePrettyName(colName)
+	
+	
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+				#axis.title.x = element_text(family="cmsy10"),
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+
+}
+
+plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
+	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
+	
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "non-interacting homogenous"
+
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "interacting heterogenous"
+
+	xAxisLabel <- getMeasurePrettyName(colName)
+	
+	
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( POPULATION ~ ., labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+#			axis.title.x = element_text(family="cmsy10"),
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( POPULATION ~ ., labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+ # 			axis.title.x = element_text(family="cmsy10"),
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+
+}
+
+
+
+
+
 plotHists <- function(exp1.df) {
 	# == plot general distributions ===
+	
+	
+	plotHistByModel("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_island_cm.png", TRUE)
+	plotHistByModel("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_island_cb.png", TRUE)
+	plotHistByModel("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_island_e2c.png")
+	plotHistByModel("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_island_rm.png")
+	plotHistByModel("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_island_rc.png")
+	
+	
+	plotHistByModel("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_embodied_cm.png", TRUE)
+	plotHistByModel("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_embodied_cb.png", TRUE)
+	plotHistByModel("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_embodied_e2c.png")
+	plotHistByModel("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_embodied_rm.png")
+	plotHistByModel("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_embodied_rc.png")
+	
+	
+	plotHistByModel("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_alife_cm.png", TRUE)
+	plotHistByModel("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_alife_cb.png", TRUE)
+	plotHistByModel("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_alife_e2c.png")
+	plotHistByModel("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_alife_rm.png")
+	plotHistByModel("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_alife_rc.png")
 
-	plotHistBy_S_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_sm_captures_mean.png")
-	plotHistBy_S_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_sm_captures_best.png")
-	plotHistBy_S_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_sm_e2c_steps_mean.png")
-	plotHistBy_S_M(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion.png")
-	plotHistBy_S_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_sm_rate_comm.png")
 
-	plotHistBy_S(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_rate_comm.png")
-	plotHistBy_S(exp1.df,"RATE_MOTION", "/tmp/exp1/hist_sm_rate_motion_single.png")
+
+	exp1.df <-  exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |  (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none")  ,]
+
+
+	plotHistByModelSpecific("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_island_cm.png", TRUE)
+	plotHistByModelSpecific("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_island_cb.png", TRUE)
+	plotHistByModelSpecific("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_island_e2c.png")
+	plotHistByModelSpecific("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_island_rm.png")
+	plotHistByModelSpecific("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_island_rc.png")
+	
+	
+	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_embodied_cm.png", TRUE)
+	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_embodied_cb.png", TRUE)
+	plotHistByModelSpecific("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_embodied_e2c.png")
+	plotHistByModelSpecific("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_embodied_rm.png")
+	plotHistByModelSpecific("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_embodied_rc.png")
+	
+	
+	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_alife_cm.png", TRUE)
+	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_alife_cb.png", TRUE)
+	plotHistByModelSpecific("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_alife_e2c.png")
+	plotHistByModelSpecific("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_alife_rm.png")
+	plotHistByModelSpecific("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_alife_rc.png")
+
+
+
+
+
 
 }
 
@@ -195,24 +399,7 @@ plotHists <- function(exp1.df) {
 
 
 
-plotBoxPlot_M_I <-function(dataFrame, colName, fileName) {
-
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
-
-	print(
-		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-		geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
-		facet_grid( MODEL ~ INTERACTIONS ) 
-	)
-	dev.off()
-}
-
-plotBoxPlot_M <-function(dataFrame, colName, fileName) {
+plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	png(fileName,  
 	  width     = 6,
@@ -220,16 +407,45 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 	  
+	yAxisLabel <- getMeasurePrettyName(colName)
+	
+	
+	
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			theme_bw() +
+			theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+				)
+		)
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			theme_bw() + 			theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
 
-	print(
-		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-		geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
-		facet_grid( ~ MODEL ) 
-	)
+				)
+		)
+	}
+
 	dev.off()
 }
 
-plotBoxPlot <-function(dataFrame, colName, fileName) {
+plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	png(fileName,  
 	  width     = 6,
@@ -237,15 +453,72 @@ plotBoxPlot <-function(dataFrame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 	  
+	yAxisLabel <- getMeasurePrettyName(colName)
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			facet_grid(  ~ MODEL , labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			xlab("Population") +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			facet_grid( ~ MODEL, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			xlab("Population") +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_y_continuous(labels=percentFormatter)
+		)
+	}
 
-	print(
-		ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-		geom_boxplot(aes(fill=POPULATION), notch=TRUE) 
-	)
 	dev.off()
 }
 
+plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
+	png(fileName,  
+	  width     = 6,
+	  height    = 6,
+	  units     = "in",
+	  res=360)
+	  
+	  
+	  
+	yAxisLabel <- getMeasurePrettyName(colName)
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			#facet_grid(  ~ MODEL , labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			xlab("Population") +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			#facet_grid( ~ MODEL, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			xlab("Population") +
+			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_y_continuous(labels=percentFormatter)
+		)
+	}
+	  
+
+	dev.off()
+}
 
 plotBoxPlots <- function(exp1.df) {
 	orig <- exp1.df
@@ -256,35 +529,40 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png")
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png", TRUE)
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_e2c.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rate_motion.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rate_comm.png")
 
 	
 	# filter out island model
-	exp1.df <-  exp1.df[exp1.df$MODEL!="i",]
+
+	exp1.df <-  exp1.df[exp1.df$MODEL!="island",]
+	
+	exp1.df <- exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |
+	   (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none") ,]
+
 	
 	# do box plots by model and interaction of just E and A
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png")
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png", TRUE)
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_e2c_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rate_motion_ea.png")
 	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rate_comm_ea.png")
 
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png")
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png")
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png", TRUE)
 	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_e2c_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rate_motion_ea.png")
 	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rate_comm_ea.png")
 	
 
 	# do box plots of overall (including interactions)
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png")
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png", TRUE)
 	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_e2c.png")
 	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/gr_box_m_rate_motion.png")
 	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/gr_box_m_rate_comm.png")
@@ -292,16 +570,27 @@ plotBoxPlots <- function(exp1.df) {
 }
 
 
-
-
-
-# Function turns the internal abbreviated values to full expansions
+# Function turns the internal abbreviated values to full expansions and re-ordered
 # the values were abbreviated in data files to save space
 renameFactorValues <- function(dataFrame) {
+	
 	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
+	
+	dataFrame$MODEL <- factor(dataFrame$MODEL,c("island","embodied","alife"))
+	
+	
 	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
+	
+	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("none","trail","broadcast","unicast"))
+	
 	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+
+	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("homogenous","heterogenous"))
+	
 	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
+	
+	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("homogenous","heterogenous"))
+	
 	return(dataFrame)
 }
 
@@ -361,7 +650,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName) {
 
 	print(
 		ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-		+ geom_density(alpha = 0.2)
+		+ geom_density(alpha = 0.9)
 		
 	)
 	dev.off()
@@ -375,7 +664,7 @@ plotBootedStats <- function(exp1.df) {
 	bootSize <- 1000
 
 
-	ea.data.frame <-  exp1.df[exp1.df$MODEL!="i",]
+	ea.data.frame <-  exp1.df[exp1.df$MODEL!="island",]
 
 	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="homogenous" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="heterogenous" & ea.data.frame$INTERACTIONS!="none")  ,]
 
@@ -426,7 +715,7 @@ plotBootedStats <- function(exp1.df) {
 		POPULATION="homogenous"
 	)
 	
-	pop.data.frame <- rbind(s.pop.data.frame,g.pop.data.frame)
+	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
 	
 	
 	
@@ -471,19 +760,21 @@ plotBootedStats <- function(exp1.df) {
 
 
 ##############################   MAIN PROCESS BEGINS ###############################
+
+
 exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/all_experiments_mean_300.csv")
 
 exp1.df <- preProcessData(exp1.df)     # factorizes, as appropriate, adjusts E2C...
 exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
-#plotGraphs(exp1.df)
 
-# analyze, plot...
+##### not using these....plotGraphs(exp1.df)
 
-plotHists(exp1.df)    # plots histograms
+# Using these...
+#plotHists(exp1.df)    # plots histograms
 
 #doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
 #plotBoxPlots(exp1.df) # boxplots to show difference
-#plotBootedStats(exp1.df)
+plotBootedStats(exp1.df)
 
 
 
