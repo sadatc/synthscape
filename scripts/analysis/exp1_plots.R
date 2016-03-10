@@ -70,6 +70,8 @@ analyzePair <-function(model,measure,g,s) {
 
 	rGShapiroW <- rGShapiro$statistic[[1]]
 	rGShapiroP <- rGShapiro$p.value
+	
+
 
 	rSSampleSize <- length(s)
 	rSShapiro <- shapiro.test(s)
@@ -481,7 +483,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	dev.off()
 }
 
-plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=TRUE) {
 
 	png(fileName,  
 	  width     = 6,
@@ -496,7 +498,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
@@ -506,7 +508,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
@@ -640,7 +642,9 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
-plotBootHist2Pop <-function(pop.data.frame, colName, fileName) {
+plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	xAxisLabel <- getMeasurePrettyName(colName)
 
 	png(fileName,  
 	  width     = 6,
@@ -648,21 +652,155 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName) {
 	  units     = "in",
 	  res=360)
 
-	print(
-		ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-		+ geom_density(alpha = 0.9)
-		
-	)
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			+ geom_density(alpha = 0.9)
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			+ geom_density(alpha = 0.9)
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 				
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
 	dev.off()
 }
 
 
+#
+# performs t-tests
+# reports back a data.frame
+#
+performTTest <-function(measure,g.v,s.v) {
 
-plotBootedStats <- function(exp1.df) {
+	t.result <- t.test(g.v,s.v)
+	
+	tValue <- t.result$statistic[[1]]
+	dFreedom <- t.result$parameter[[1]]
+	pValue <- as.double(t.result$p.value)
+
+	#print(measure)
+	#print(t.result)
+	#print(summary(t.result))
+	#print(pValue)	
+
+	
+	result.frame <- data.frame(MEASURE=measure,
+		T_VALUE=tValue, D_FREEDOM=dFreedom, P_VALUE=pValue)
+	
+	return(result.frame)
+}
+
+
+
+
+plotBootedStatsFull <- function(exp1.df) {
 
 	# now we will bootstrap the measures
 	bootSize <- 1000
 
+	ea.data.frame <-  exp1.df
+
+	sg.data.frame <-  ea.data.frame
+
+	# extract data for s and g
+	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
+	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
+
+	# extract the measures
+	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+	s.RATE_MOTION <- s.data.frame$RATE_MOTION
+	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+	s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
+	s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
+	s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
+	s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
+	s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+
+	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
+	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
+	g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
+	g.RATE_MOTION <- g.data.frame$RATE_MOTION
+	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+
+	g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
+	g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
+	g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
+	g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
+	g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+
+	
+	s.pop.data.frame <- data.frame(
+		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+		CAPTURES_MEAN=s.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=s.RATE_MOTION,
+		POPULATION="heterogenous"
+	)
+
+
+	g.pop.data.frame <- data.frame(
+		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
+		CAPTURES_MEAN=g.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=g.RATE_MOTION,
+		POPULATION="homogenous"
+	)
+	
+	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
+	
+	
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_full_cb.png", TRUE)
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_full_cm.png", TRUE)
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_full_e2c.png")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_full_rm.png")
+	
+	
+	
+	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_full_box_cb.png", TRUE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_full_box_cm .png", TRUE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_full_box_e2c.png", FALSE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_full_box_rm.png", FALSE, FALSE)
+
+	t.table <- data.frame()
+
+
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",s.CAPTURES_BEST_CASE,g.CAPTURES_BEST_CASE))
+	
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
+
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
+
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
+
+	data(t.table)
+	print("data table for pg vs ps")
+	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
+	#print(xtable(t.table, include.rownames=FALSE))
+
+}
+
+
+
+plotBootedStatsPartial <- function(exp1.df) {
+
+	# now we will bootstrap the measures
+	bootSize <- 1000
 
 	ea.data.frame <-  exp1.df[exp1.df$MODEL!="island",]
 
@@ -718,45 +856,42 @@ plotBootedStats <- function(exp1.df) {
 	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
 	
 	
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_partial_cb.png", TRUE)
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_partial_cm.png", TRUE)
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_partial_e2c.png")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_partial_rm.png")
 	
-	print(shapiro.test(s.CAPTURES_BEST_CASE))
-	print(shapiro.test(g.CAPTURES_BEST_CASE))
 	
-	print(shapiro.test(s.CAPTURES_MEAN))
-	print(shapiro.test(g.CAPTURES_MEAN))
-
-	print(shapiro.test(s.RES_E2C_STEPS_MEAN))
-	print(shapiro.test(g.RES_E2C_STEPS_MEAN))
-
-	print(shapiro.test(s.RATE_MOTION))
-	print(shapiro.test(g.RATE_MOTION))
-
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_cbc.png")
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_cm.png")
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_e2c.png")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_rm.png")
-
-	if(1!=1) {
-		plotBootHist(s.CAPTURES_BEST_CASE, "/tmp/exp1/boot_s_cbc.png")
-		plotBootHist(g.CAPTURES_BEST_CASE, "/tmp/exp1/boot_g_cbc.png")
 	
+	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_partial_box_cb.png", TRUE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_partial_box_cm .png", TRUE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_partial_box_e2c.png", FALSE, FALSE)
+
+	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_partial_box_rm.png", FALSE, FALSE)
+
+	t.table <- data.frame()
 
 
-		plotBootHist(s.CAPTURES_MEAN, "/tmp/exp1/boot_s_cm.png")
-		plotBootHist(g.CAPTURES_MEAN, "/tmp/exp1/boot_g_cm.png")
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",s.CAPTURES_BEST_CASE,g.CAPTURES_BEST_CASE))
+	
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
 
-		plotBootHist(s.RES_E2C_STEPS_MEAN, "/tmp/exp1/boot_s_e2.png")
-		plotBootHist(g.RES_E2C_STEPS_MEAN, "/tmp/exp1/boot_g_e2.png")
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
 
-		plotBootHist(s.RATE_MOTION, "/tmp/exp1/boot_s_mo.png")
-		plotBootHist(g.RATE_MOTION, "/tmp/exp1/boot_g_mo.png")
-	}
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
 
+	data(t.table)
+	print("data table for png vs pis")
+	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
+	#print(xtable(t.table, include.rownames=FALSE))
 
 
 
 
 }
+
 
 
 ##############################   MAIN PROCESS BEGINS ###############################
@@ -772,9 +907,10 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 # Using these...
 #plotHists(exp1.df)    # plots histograms
 
-#doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
+doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
 #plotBoxPlots(exp1.df) # boxplots to show difference
-plotBootedStats(exp1.df)
+#plotBootedStatsFull(exp1.df)
+#plotBootedStatsPartial(exp1.df)
 
 
 
