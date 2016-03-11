@@ -10,6 +10,12 @@ library(extrafont)
 options(width=150)
 
 #library(scale)
+p <- function(msg) {
+	print("**************************************************************************", quote=FALSE)
+	print(msg, quote=FALSE)
+	print("**************************************************************************", quote=FALSE)
+
+}
 
 plotGraphs <-function(data) {
 
@@ -58,11 +64,24 @@ boot.mean = function(sample.data, r) {
 }
 
 
+pValueString <- function(val) {
+	result <- val
+
+	if(val < 0.05) {
+		result <- "p < 0.05"
+	} 
+
+	if(val < 0.01) {
+		result <- "p < 0.01"
+	} 
+	
+	return(result)
+}
 #
 # performs shapiro-wilk test and mann-whitney test
 # reports back a data.frame
 #
-analyzePair <-function(model,measure,g,s) {
+analyzeNormailtyPair <-function(model,measure,g,s) {
 	rMeasure <- measure
 
 #	print("performing shapiro test. if p<0.05, sample likely non-normal")
@@ -89,10 +108,11 @@ analyzePair <-function(model,measure,g,s) {
 	#	G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SIZE=rSSampleSize,
 	#	S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, WILCOX_W=rWilcoxW, 
 	#	WILCOX_P=rWilcoxP)
-		
+	
+			
 	
 	result.frame <- data.frame(MODEL=model,MEASURE=measure,
-		G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP)
+		G_SHAP_W=rGShapiroW, G_SHAP_P=pValueString(rGShapiroP), S_SHAP_W=rSShapiroW, S_SHAP_P=pValueString(rSShapiroP))
 	
 	
 	
@@ -103,7 +123,7 @@ analyzePair <-function(model,measure,g,s) {
 
 
 
-doAnalytics <- function(exp1.df) {
+doNormalityAnalysisSubPop <- function(exp1.df) {
 	dist.table <- data.frame()
 
 #	print("========== ISLAND ========")
@@ -112,12 +132,12 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="island" & exp1.df$INTERACTIONS!="none"  ,]
 
-	dist.table <- rbind(dist.table, analyzePair("island","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("island","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	dist.table <- rbind(dist.table, analyzeNormailtyPair("island","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
 
-	dist.table <- rbind(dist.table,analyzePair("island","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
 
-	dist.table <- rbind(dist.table,analyzePair("island","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 	
 	
 
@@ -127,52 +147,79 @@ doAnalytics <- function(exp1.df) {
 
 	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="embodied" & exp1.df$INTERACTIONS!="none"  ,]
 
-	dist.table <- rbind(dist.table,analyzePair("embodied","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("embodied","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	dist.table <- rbind(dist.table,analyzePair("embodied","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("embodied","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 
 #	print("========== ALIFE ========")
 	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="alife" & exp1.df$INTERACTIONS=="none"   ,]
 
 	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="alife" & exp1.df$INTERACTIONS!="none"  ,]
 
-	dist.table <- rbind(dist.table,analyzePair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	dist.table <- rbind(dist.table,analyzePair("alife","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("alife","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 	
 	
-#		print("========== EMBODIED (both comm and non-comm) ========")
-	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="embodied" ,]
 
-	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="embodied" ,]
-
-	dist.table <- rbind(dist.table,analyzePair("embodied_general","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("embodied_general","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	dist.table <- rbind(dist.table,analyzePair("embodied_general","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	
-	dist.table <- rbind(dist.table,analyzePair("embodied_general","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-
-#	print("========== ALIFE ========")
-	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="alife"    ,]
-
-	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="alife"  ,]
-
-	dist.table <- rbind(dist.table,analyzePair("alife_general","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	dist.table <- rbind(dist.table,analyzePair("alife_general","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	
-	dist.table <- rbind(dist.table,analyzePair("alife_general","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	
-	dist.table <- rbind(dist.table,	analyzePair("alife_general","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-
-	#print(dist.table)
-	print("Normality test for model data")
+	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	data(dist.table)
 	print(xtable(dist.table, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
 }
+
+
+
+doNormalityAnalysisFullPop <- function(exp1.df) {
+	dist.table <- data.frame()
+
+#	print("========== ISLAND ========")
+	
+	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="island"   ,]
+
+	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="island"  ,]
+
+	dist.table <- rbind(dist.table, analyzeNormailtyPair("island","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("island","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	
+	
+
+
+#	print("========== EMBODIED ========")
+	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="embodied"  ,]
+
+	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="embodied" ,]
+
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("embodied","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+
+#	print("========== ALIFE ========")
+	gdata <- exp1.df[exp1.df$SPECIES=="homogenous"  & exp1.df$MODEL=="alife"  ,]
+
+	sdata <- exp1.df[exp1.df$SPECIES=="heterogenous" &  exp1.df$MODEL=="alife"  ,]
+
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	
+
+	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
+	data(dist.table)
+	print(xtable(dist.table, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+
+	
+}
+
 
 
 
@@ -553,9 +600,6 @@ compareMeans <-function(d.f,measure) {
 	s.ci1 <- s.t$conf.int[[1]]
 	s.ci2 <- s.t$conf.int[[2]]
 
-	
-
-
 
 	rWilcox <- wilcox.test(g,s)
 	rWilcoxW <- rWilcox$statistic[[1]]
@@ -567,9 +611,6 @@ compareMeans <-function(d.f,measure) {
 	s.f <- data.frame( POPULATION="heterogenous", MEAUSURE=measure, MEAN=s.mean,
 		VAR = s.var, MEDIAN = s.median, CI1 = s.ci1, CI2 = s.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
-
-
-
 
 
 	r.f <- rbind(g.f,s.f)
@@ -1027,8 +1068,9 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 # Using these...
 #plotHists(exp1.df)    # plots histograms
 
-#doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
-plotBoxPlots(exp1.df) # boxplots to show difference
+doNormalityAnalysisFullPop(exp1.df)
+doNormalityAnalysisSubPop(exp1.df)
+#plotBoxPlots(exp1.df) # boxplots to show difference
 #plotBootedStatsFull(exp1.df)
 #plotBootedStatsPartial(exp1.df)
 
