@@ -7,7 +7,7 @@ e1_igu_4_5:-model island -int unicast_n -species 'homogenous' -unconstrained -us
 e1_isn_4_5:-model island -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_ist_4_5:-model island -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_isb_4_5:-model island -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
-e1_isu_4_5:-model island -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15	 
+e1_isu_4_5:-model island -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15  
 
 
 e1_egn_4_5:-model embodied -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 5 -blocks 15
@@ -18,7 +18,7 @@ e1_egu_4_5:-model embodied -int unicast_n -species 'homogenous' -unconstrained -
 e1_esn_4_5:-model embodied -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_est_4_5:-model embodied -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_esb_4_5:-model embodied -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
-e1_esu_4_5:-model embodied -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15	 
+e1_esu_4_5:-model embodied -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15  
 
 
 e1_agn_4_5:-model alife -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 5 -blocks 15
@@ -29,7 +29,7 @@ e1_agu_4_5:-model alife -int unicast_n -species 'homogenous' -unconstrained -use
 e1_asn_4_5:-model alife -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_ast_4_5:-model alife -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
 e1_asb_4_5:-model alife -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15
-e1_asu_4_5:-model alife -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15	 
+e1_asu_4_5:-model alife -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 5 -blocks 15  
 
 ### 
 
@@ -41,7 +41,7 @@ e1_igu_4_10:-model island -int unicast_n -species 'homogenous' -unconstrained -u
 e1_isn_4_10:-model island -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
 e1_ist_4_10:-model island -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
 e1_isb_4_10:-model island -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
-e1_isu_4_10:-model island -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15	 
+e1_isu_4_10:-model island -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15  
 
 
 e1_egn_4_10:-model embodied -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks 15
@@ -52,7 +52,7 @@ e1_egu_4_10:-model embodied -int unicast_n -species 'homogenous' -unconstrained 
 e1_esn_4_10:-model embodied -int none -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
 e1_est_4_10:-model embodied -int trail -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
 e1_esb_4_10:-model embodied -int broadcast -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15
-e1_esu_4_10:-model embodied -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15	 
+e1_esu_4_10:-model embodied -int unicast_n -species 'detector,extractor,transporter,processor' -unconstrained -use_4_tasks -clones 10 -blocks 15  
 
 
 e1_agn_4_10:-model alife -int none -species 'homogenous' -unconstrained -use_4_tasks -clones 10 -blocks 15
@@ -86,7 +86,7 @@ e1_egu_3_5:-model embodied -int unicast_n -species 'homogenous' -unconstrained  
 e1_esn_3_5:-model embodied -int none -species 'detector,extractor,transporter' -unconstrained  -clones 5 -blocks 15
 e1_est_3_5:-model embodied -int trail -species 'detector,extractor,transporter' -unconstrained  -clones 5 -blocks 15
 e1_esb_3_5:-model embodied -int broadcast -species 'detector,extractor,transporter' -unconstrained  -clones 5 -blocks 15
-e1_esu_3_5:-model embodied -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 5 -blocks 15	 
+e1_esu_3_5:-model embodied -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 5 -blocks 15  
 
 
 e1_agn_3_5:-model alife -int none -species 'homogenous' -unconstrained  -clones 5 -blocks 15
@@ -109,7 +109,7 @@ e1_igu_3_10:-model island -int unicast_n -species 'homogenous' -unconstrained  -
 e1_isn_3_10:-model island -int none -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 e1_ist_3_10:-model island -int trail -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 e1_isb_3_10:-model island -int broadcast -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
-e1_isu_3_10:-model island -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15	 
+e1_isu_3_10:-model island -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15  
 
 
 e1_egn_3_10:-model embodied -int none -species 'homogenous' -unconstrained  -clones 10 -blocks 15
@@ -120,7 +120,7 @@ e1_egu_3_10:-model embodied -int unicast_n -species 'homogenous' -unconstrained 
 e1_esn_3_10:-model embodied -int none -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 e1_est_3_10:-model embodied -int trail -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 e1_esb_3_10:-model embodied -int broadcast -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
-e1_esu_3_10:-model embodied -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15	 
+e1_esu_3_10:-model embodied -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15  
 
 
 e1_agn_3_10:-model alife -int none -species 'homogenous' -unconstrained  -clones 10 -blocks 15
@@ -133,7 +133,7 @@ e1_ast_3_10:-model alife -int trail -species 'detector,extractor,transporter' -u
 e1_asb_3_10:-model alife -int broadcast -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 e1_asu_3_10:-model alife -int unicast_n -species 'detector,extractor,transporter' -unconstrained  -clones 10 -blocks 15
 
-## 	experiment 2
+## 		   experiment 2
 
 e2_agts_3_10:-iquality highest -model alife -int trail -species 'homogenous'-clones 10 -blocks 15
 e2_agth_3_10:-iquality high -model alife -int trail -species 'homogenous'-clones 10 -blocks 15
@@ -208,16 +208,7 @@ e2_agbm_4_10:-use_4_tasks -iquality medium -model alife -int broadcast -species 
 e2_agbl_4_10:-use_4_tasks -iquality poor -model alife -int broadcast -species 'homogenous'-clones 10 -blocks 15
 
 e2_agus_4_10:-use_4_tasks -iquality highest -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 15
-e2_aguh_4_10:-use_4_tasks -iquality high -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 15
-e2_agum_4_10:-use_4_tasks -iquality medium -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 15
-e2_agul_4_10:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'homogenous'-clones 10 -blocks 15
-
-e2_asts_4_10:-use_4_tasks -iquality highest -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
-e2_asth_4_10:-use_4_tasks -iquality high -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
-e2_astm_4_10:-use_4_tasks -iquality medium -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
-e2_astl_4_10:-use_4_tasks -iquality poor -model alife -int trail -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
-
-e2_asbs_4_10:-use_4_tasks -iquality highest -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
+e2_aguh_4_10:-use_4_tasks -iquality high -modelquality highest -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
 e2_asbh_4_10:-use_4_tasks -iquality high -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
 e2_asbm_4_10:-use_4_tasks -iquality medium -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
 e2_asbl_4_10:-use_4_tasks -iquality poor -model alife -int broadcast -species 'detector,extractor,transporter,processor'-clones 10 -blocks 15
@@ -259,7 +250,7 @@ e2_asum_4_5:-use_4_tasks -iquality medium -model alife -int unicast_n -species '
 e2_asul_4_5:-use_4_tasks -iquality poor -model alife -int unicast_n -species 'detector,extractor,transporter,processor'-clones 5 -blocks 15
 
 
-## 	experiment 3
+## 			 experiment 3
 
 e3_tmo_3_4:-model alife -int trail  -species '+d,+e,+t' -clones 4 -blocks 15
 e3_tbi_3_4:-model alife -int trail  -species '^de,^dt,^et' -clones 2 -blocks 15
@@ -290,7 +281,7 @@ e3_tho_3_8:-model alife -int trail  -species 'homogenous' -clones 8 -blocks 15
 e3_bmo_3_8:-model alife -int broadcast  -species '+d,+e,+t' -clones 8 -blocks 15
 e3_bbi_3_8:-model alife -int broadcast  -species '^de,^dt,^et' -clones 4 -blocks 15
 e3_bpo_3_8:-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 15
-e3_btr_3_8:-model alife -int broadcast  -species '*det' -clones 8 -blocks 15
+e3_btr_3_8:-model alife -int broadcast  -species '*det' -clones 8 -blocks 1
 e3_bho_3_8:-model alife -int broadcast  -species 'homogenous' -clones 8 -blocks 15
 
 e3_umo_3_8:-model alife -int unicast_n  -species '+d,+e,+t' -clones 8 -blocks 15
