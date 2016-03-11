@@ -7,6 +7,7 @@ library(scales)
 library(extrafont)
 #library(tikzDevice)
 
+options(width=150)
 
 #library(scale)
 
@@ -165,7 +166,8 @@ doAnalytics <- function(exp1.df) {
 	
 	dist.table <- rbind(dist.table,	analyzePair("alife_general","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 
-	print(dist.table)
+	#print(dist.table)
+	print("Normality test for model data")
 	data(dist.table)
 	print(xtable(dist.table, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
@@ -522,6 +524,62 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 	dev.off()
 }
 
+
+
+
+compareMeans <-function(d.f,measure) {
+	r.f <- data.frame()
+
+	g <- d.f[(d.f$SPECIES=="homogenous"),]
+	g <- g[[measure]]
+
+	g.mean <- mean(g, na.rm=TRUE)
+	g.var <- var(g, na.rm=TRUE)
+	g.median <- median(g, na.rm=TRUE)
+	g.t <- t.test(g)
+	g.ci1 <- g.t$conf.int[[1]]
+	g.ci2 <- g.t$conf.int[[2]]
+	
+	
+
+	
+	s <- d.f[(d.f$SPECIES=="heterogenous"),]
+	s <- s[[measure]]
+
+	s.mean <- mean(s, na.rm=TRUE)
+	s.var <- var(s, na.rm=TRUE)
+	s.median <- median(s, na.rm=TRUE)
+	s.t <- t.test(s)
+	s.ci1 <- s.t$conf.int[[1]]
+	s.ci2 <- s.t$conf.int[[2]]
+
+	
+
+
+
+	rWilcox <- wilcox.test(g,s)
+	rWilcoxW <- rWilcox$statistic[[1]]
+	rWilcoxP <- rWilcox$p.value
+
+	g.f <- data.frame( POPULATION="homogenous", MEAUSURE=measure, MEAN=g.mean,
+		VAR = g.var, MEDIAN = g.median, CI1 = g.ci1, CI2 = g.ci2, 
+		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
+	s.f <- data.frame( POPULATION="heterogenous", MEAUSURE=measure, MEAN=s.mean,
+		VAR = s.var, MEDIAN = s.median, CI1 = s.ci1, CI2 = s.ci2, 
+		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
+
+
+
+
+
+	r.f <- rbind(g.f,s.f)
+
+	print(r.f)
+
+}
+
+
+
 plotBoxPlots <- function(exp1.df) {
 	orig <- exp1.df
 
@@ -531,11 +589,11 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_captures_best.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_captures_mean.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_cb.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_cm.png", TRUE)
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_e2c.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rate_motion.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rate_comm.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rm.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rc.png")
 
 	
 	# filter out island model
@@ -547,27 +605,89 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction of just E and A
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_captures_best.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_captures_mean_ea.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_cb.png", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_cm_ea.png", TRUE)
 	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_e2c_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rate_motion_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rate_comm_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rm_ea.png")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rc_ea.png")
 
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_captures_best.png", TRUE)
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_captures_mean_ea.png", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_cb.png", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_cm_ea.png", TRUE)
 	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_e2c_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rate_motion_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rate_comm_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rm_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rc_ea.png")
 	
 
 	# do box plots of overall (including interactions)
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/gr_box_m_captures_best.png", TRUE)
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/gr_box_m_captures_mean.png", TRUE)
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/gr_ea_box_m_e2c.png")
-	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/gr_box_m_rate_motion.png")
-	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/gr_box_m_rate_comm.png")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_cb.png", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_cm.png", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_e2c.png")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_rm.png")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_rc.png")
+	
+	# do only island
+	exp1.df <-  orig[orig$MODEL=="island",]
+	exp1.df <- exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |
+	   (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none") ,]
+
+	# do box plots by model 
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/i_box_m_cb.png", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/i_box_m_cm_ea.png", TRUE)
+	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/i_box_m_e2c_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/i_box_m_rm_ea.png")
+	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/i_box_m_rc_ea.png")
+	
+	# consider all models... just png vs pis
+	exp1.df <-  orig
+
+	# show a comparison of the means...
+	print("comparing pg and ps...(non-parametric)")
+	compareMeans(exp1.df,"CAPTURES_BEST_CASE")
+	compareMeans(exp1.df,"CAPTURES_MEAN")
+	compareMeans(exp1.df,"RES_E2C_STEPS_MEAN")
+	compareMeans(exp1.df,"RATE_MOTION")
+	compareMeans(exp1.df,"RATE_COMMUNICATION")
+	print("DONE comparing pg and ps...(non-parametric)")
+	
+	# do box plots of overall (including interactions)
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/full_box_cb.png", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/full_box_cm.png", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/full_box_e2c.png")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/full_box_rm.png")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/full_box_rc.png")
+	
+	
+
+
+	# compare  just png vs pis in non-island
+	exp1.df <-  exp1.df[exp1.df$MODEL!="island",]
+	
+	exp1.df <- exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |
+	   (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none") ,]
+
+
+	# show a comparison of the means...
+	print("comparing png and pis...(non-parametric)")
+	compareMeans(exp1.df,"CAPTURES_BEST_CASE")
+	compareMeans(exp1.df,"CAPTURES_MEAN")
+	compareMeans(exp1.df,"RES_E2C_STEPS_MEAN")
+	compareMeans(exp1.df,"RATE_MOTION")
+	compareMeans(exp1.df,"RATE_COMMUNICATION")
+	print("DONE comparing pg and ps...(non-parametric)")
+
+
+	
+	# do box plots of overall (including interactions)
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/part_box_cb.png", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/part_box_cm.png", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/part_box_e2c.png")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/part_box_rm.png")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/part_box_rc.png")
+
+
+
 
 }
 
@@ -907,10 +1027,11 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 # Using these...
 #plotHists(exp1.df)    # plots histograms
 
-doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
-#plotBoxPlots(exp1.df) # boxplots to show difference
+#doAnalytics(exp1.df)  #does shapiro test for normality and wilcox test for diff
+plotBoxPlots(exp1.df) # boxplots to show difference
 #plotBootedStatsFull(exp1.df)
 #plotBootedStatsPartial(exp1.df)
+
 
 
 
