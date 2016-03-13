@@ -19,12 +19,8 @@ p <- function(msg) {
 
 plotGraphs <-function(data) {
 
-	png("/tmp/isl_capture.png",  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf("/tmp/isl_capture.pdf",  
+	  width = 6,height = 3, family="CMU Serif")
 	print(ggplot(data,aes(x=GENERATION,y=CAPTURES_TOTAL))+
 	geom_point(fill="white", color="black", size=0.75, shape=1, alpha=1/3)+
 	facet_wrap( INTERACTIONS ~ MODEL, scale="free", ncol=2) + 
@@ -37,12 +33,8 @@ plotGraphs <-function(data) {
 }
 
 plotHistBy_S <-function(dataFrame, colName, fileName) {
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
 		geom_histogram() +
@@ -229,12 +221,8 @@ plotHistByPM <-function(pInteraction, dataFrame, colName, fileName) {
 	dataFrame <- dataFrame[dataFrame$INTERACTION==pInteraction,]
 	#dataFrame <- dataFrame[dataFrame$CAPTURES_MEAN>0.05,]
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	print(
 		ggplot(dataFrame,aes_string(x=colName)) +
 		geom_histogram(fill="lightblue", color="black") +
@@ -249,12 +237,8 @@ plotHistByPM <-function(pInteraction, dataFrame, colName, fileName) {
 
 plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	print(
 		ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 		geom_histogram(color="black", alpha = 0.85) +
@@ -312,19 +296,16 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
 	
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
 		)
 	} else {
@@ -333,7 +314,8 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
 				axis.text.x = element_text(size=rel(0.7)))
 			+ scale_x_continuous(labels=percentFormatter)
@@ -353,19 +335,16 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
 	
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
 #			axis.title.x = element_text(family="cmsy10"),
 				axis.text.x = element_text(size=rel(0.7)))
 		)
@@ -375,7 +354,8 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
  # 			axis.title.x = element_text(family="cmsy10"),
 				axis.text.x = element_text(size=rel(0.7)))
 			+ scale_x_continuous(labels=percentFormatter)
@@ -393,50 +373,50 @@ plotHists <- function(exp1.df) {
 	# == plot general distributions ===
 	
 	
-	plotHistByModel("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_island_cm.png", TRUE)
-	plotHistByModel("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_island_cb.png", TRUE)
-	plotHistByModel("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_island_e2c.png")
-	plotHistByModel("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_island_rm.png")
-	plotHistByModel("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_island_rc.png")
+	plotHistByModel("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_island_cm.pdf", TRUE)
+	plotHistByModel("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_island_cb.pdf", TRUE)
+	plotHistByModel("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_island_e2c.pdf")
+	plotHistByModel("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_island_rm.pdf")
+	plotHistByModel("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_island_rc.pdf")
 	
 	
-	plotHistByModel("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_embodied_cm.png", TRUE)
-	plotHistByModel("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_embodied_cb.png", TRUE)
-	plotHistByModel("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_embodied_e2c.png")
-	plotHistByModel("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_embodied_rm.png")
-	plotHistByModel("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_embodied_rc.png")
+	plotHistByModel("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_embodied_cm.pdf", TRUE)
+	plotHistByModel("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_embodied_cb.pdf", TRUE)
+	plotHistByModel("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_embodied_e2c.pdf")
+	plotHistByModel("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_embodied_rm.pdf")
+	plotHistByModel("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_embodied_rc.pdf")
 	
 	
-	plotHistByModel("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_alife_cm.png", TRUE)
-	plotHistByModel("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_alife_cb.png", TRUE)
-	plotHistByModel("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_alife_e2c.png")
-	plotHistByModel("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_alife_rm.png")
-	plotHistByModel("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_alife_rc.png")
+	plotHistByModel("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_alife_cm.pdf", TRUE)
+	plotHistByModel("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_alife_cb.pdf", TRUE)
+	plotHistByModel("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_alife_e2c.pdf")
+	plotHistByModel("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_alife_rm.pdf")
+	plotHistByModel("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_alife_rc.pdf")
 
 
 
 	exp1.df <-  exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |  (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none")  ,]
 
 
-	plotHistByModelSpecific("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_island_cm.png", TRUE)
-	plotHistByModelSpecific("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_island_cb.png", TRUE)
-	plotHistByModelSpecific("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_island_e2c.png")
-	plotHistByModelSpecific("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_island_rm.png")
-	plotHistByModelSpecific("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_island_rc.png")
+	plotHistByModelSpecific("island", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_island_cm.pdf", TRUE)
+	plotHistByModelSpecific("island", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_island_cb.pdf", TRUE)
+	plotHistByModelSpecific("island", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_island_e2c.pdf")
+	plotHistByModelSpecific("island", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_island_rm.pdf")
+	plotHistByModelSpecific("island", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_island_rc.pdf")
 	
 	
-	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_embodied_cm.png", TRUE)
-	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_embodied_cb.png", TRUE)
-	plotHistByModelSpecific("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_embodied_e2c.png")
-	plotHistByModelSpecific("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_embodied_rm.png")
-	plotHistByModelSpecific("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_embodied_rc.png")
+	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_embodied_cm.pdf", TRUE)
+	plotHistByModelSpecific("embodied", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_embodied_cb.pdf", TRUE)
+	plotHistByModelSpecific("embodied", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_embodied_e2c.pdf")
+	plotHistByModelSpecific("embodied", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_embodied_rm.pdf")
+	plotHistByModelSpecific("embodied", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_embodied_rc.pdf")
 	
 	
-	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_alife_cm.png", TRUE)
-	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_alife_cb.png", TRUE)
-	plotHistByModelSpecific("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_alife_e2c.png")
-	plotHistByModelSpecific("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_alife_rm.png")
-	plotHistByModelSpecific("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_alife_rc.png")
+	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_MEAN", "/tmp/exp1/hist_s_alife_cm.pdf", TRUE)
+	plotHistByModelSpecific("alife", exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/hist_s_alife_cb.pdf", TRUE)
+	plotHistByModelSpecific("alife", exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/hist_s_alife_e2c.pdf")
+	plotHistByModelSpecific("alife", exp1.df,"RATE_MOTION", "/tmp/exp1/hist_s_alife_rm.pdf")
+	plotHistByModelSpecific("alife", exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/hist_s_alife_rc.pdf")
 
 
 
@@ -452,12 +432,8 @@ plotHists <- function(exp1.df) {
 
 plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-	  
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")	  
 	yAxisLabel <- getMeasurePrettyName(colName)
 	
 	
@@ -471,7 +447,8 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			theme_bw() +
-			theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
@@ -484,7 +461,9 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			theme_bw() + 			theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+			theme_bw() + 			
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
@@ -498,12 +477,8 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-	  
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")	  
 	yAxisLabel <- getMeasurePrettyName(colName)
 	
 	if( showPercent==FALSE ) {
@@ -513,7 +488,8 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid(  ~ MODEL , labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)))
 		)
 	} else {
@@ -523,7 +499,8 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( ~ MODEL, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
 				axis.text.y = element_text(size=rel(0.7)))
 			+ scale_y_continuous(labels=percentFormatter)
 		)
@@ -534,12 +511,8 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=TRUE) {
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-	  
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")	  
 	  
 	  
 	yAxisLabel <- getMeasurePrettyName(colName)
@@ -551,7 +524,8 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)))
 		)
 	} else {
@@ -561,7 +535,8 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			xlab("Population") +
-			theme_bw() + theme(text=element_text(family="CMUSerif-Roman"),legend.position="none", 				
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
 				axis.text.y = element_text(size=rel(0.7)))
 			+ scale_y_continuous(labels=percentFormatter)
 		)
@@ -630,11 +605,11 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_cb.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_cm.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_e2c.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rm.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rc.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/box_mi_cb.pdf", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/box_mi_cm.pdf", TRUE)
+	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/box_mi_e2c.pdf")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/box_mi_rm.pdf")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/box_mi_rc.pdf")
 
 	
 	# filter out island model
@@ -646,27 +621,27 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction of just E and A
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_cb.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_cm_ea.png", TRUE)
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_e2c_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rm_ea.png")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rc_ea.png")
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_mi_cb.pdf", TRUE)
+	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_mi_cm_ea.pdf", TRUE)
+	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_mi_e2c_ea.pdf")
+	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_mi_rm_ea.pdf")
+	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_mi_rc_ea.pdf")
 
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_cb.png", TRUE)
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_cm_ea.png", TRUE)
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_e2c_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rm_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rc_ea.png")
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_m_cb.pdf", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_m_cm_ea.pdf", TRUE)
+	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_m_e2c_ea.pdf")
+	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_m_rm_ea.pdf")
+	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_m_rc_ea.pdf")
 	
 
 	# do box plots of overall (including interactions)
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_cb.png", TRUE)
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_cm.png", TRUE)
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_e2c.png")
-	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_rm.png")
-	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_rc.png")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/ea_box_cb.pdf", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/ea_box_cm.pdf", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/ea_box_e2c.pdf")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/ea_box_rm.pdf")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/ea_box_rc.pdf")
 	
 	# do only island
 	exp1.df <-  orig[orig$MODEL=="island",]
@@ -674,13 +649,13 @@ plotBoxPlots <- function(exp1.df) {
 	   (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none") ,]
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/i_box_m_cb.png", TRUE)
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/i_box_m_cm_ea.png", TRUE)
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/i_box_m_e2c_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/i_box_m_rm_ea.png")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/i_box_m_rc_ea.png")
+	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/i_box_m_cb.pdf", TRUE)
+	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/i_box_m_cm_ea.pdf", TRUE)
+	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/i_box_m_e2c_ea.pdf")
+	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/tmp/exp1/i_box_m_rm_ea.pdf")
+	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/i_box_m_rc_ea.pdf")
 	
-	# consider all models... just png vs pis
+	# consider all models... just pdf vs pis
 	exp1.df <-  orig
 
 	# show a comparison of the means...
@@ -693,16 +668,16 @@ plotBoxPlots <- function(exp1.df) {
 	print("DONE comparing pg and ps...(non-parametric)")
 	
 	# do box plots of overall (including interactions)
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/full_box_cb.png", TRUE)
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/full_box_cm.png", TRUE)
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/full_box_e2c.png")
-	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/full_box_rm.png")
-	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/full_box_rc.png")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/full_box_cb.pdf", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/full_box_cm.pdf", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/full_box_e2c.pdf")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/full_box_rm.pdf")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/full_box_rc.pdf")
 	
 	
 
 
-	# compare  just png vs pis in non-island
+	# compare  just pdf vs pis in non-island
 	exp1.df <-  exp1.df[exp1.df$MODEL!="island",]
 	
 	exp1.df <- exp1.df[(exp1.df$SPECIES=="homogenous" & exp1.df$INTERACTIONS=="none") |
@@ -710,7 +685,7 @@ plotBoxPlots <- function(exp1.df) {
 
 
 	# show a comparison of the means...
-	print("comparing png and pis...(non-parametric)")
+	print("comparing pdf and pis...(non-parametric)")
 	compareMeans(exp1.df,"CAPTURES_BEST_CASE")
 	compareMeans(exp1.df,"CAPTURES_MEAN")
 	compareMeans(exp1.df,"RES_E2C_STEPS_MEAN")
@@ -721,11 +696,11 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots of overall (including interactions)
-	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/part_box_cb.png", TRUE)
-	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/part_box_cm.png", TRUE)
-	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/part_box_e2c.png")
-	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/part_box_rm.png")
-	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/part_box_rc.png")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/tmp/exp1/part_box_cb.pdf", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/tmp/exp1/part_box_cm.pdf", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/tmp/exp1/part_box_e2c.pdf")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/tmp/exp1/part_box_rm.pdf")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/tmp/exp1/part_box_rc.pdf")
 
 
 
@@ -787,12 +762,8 @@ plotBootHist <-function(bootSample, fileName) {
 	se <- sd(bootSample)
 	binWidth <- diff(range(bootSample))/30
 	
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	print(
 		ggplot(data.frame(x=bootSample), aes(x=x)) 
 		+ geom_histogram(aes(y=..density..), binwidth=binWidth) 
@@ -807,19 +778,16 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 
-	png(fileName,  
-	  width     = 6,
-	  height    = 6,
-	  units     = "in",
-	  res=360)
-
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
 				axis.text.x = element_text(size=rel(0.7)))
 		)
 	} else {
@@ -828,7 +796,8 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 			+ geom_density(alpha = 0.9)
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(text=element_text(family="CMUSerif-Roman"),legend.position="bottom", 				
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 				
 				axis.text.x = element_text(size=rel(0.7)))
 			+ scale_x_continuous(labels=percentFormatter)
 		)
@@ -923,20 +892,20 @@ plotBootedStatsFull <- function(exp1.df) {
 	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
 	
 	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_full_cb.png", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_full_cm.png", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_full_e2c.png")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_full_rm.png")
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_full_cb.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_full_cm.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_full_e2c.pdf")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_full_rm.pdf")
 	
 	
 	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_full_box_cb.png", TRUE, FALSE)
+	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_full_box_cb.pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_full_box_cm .png", TRUE, FALSE)
+	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_full_box_cm .pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_full_box_e2c.png", FALSE, FALSE)
+	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_full_box_e2c.pdf", FALSE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_full_box_rm.png", FALSE, FALSE)
+	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_full_box_rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
@@ -1017,20 +986,20 @@ plotBootedStatsPartial <- function(exp1.df) {
 	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
 	
 	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_partial_cb.png", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_partial_cm.png", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_partial_e2c.png")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_partial_rm.png")
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/tmp/exp1/boot_partial_cb.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/tmp/exp1/boot_partial_cm.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/tmp/exp1/boot_partial_e2c.pdf")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/tmp/exp1/boot_partial_rm.pdf")
 	
 	
 	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_partial_box_cb.png", TRUE, FALSE)
+	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/tmp/exp1/boot_partial_box_cb.pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_partial_box_cm .png", TRUE, FALSE)
+	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/tmp/exp1/boot_partial_box_cm .pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_partial_box_e2c.png", FALSE, FALSE)
+	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/tmp/exp1/boot_partial_box_e2c.pdf", FALSE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_partial_box_rm.png", FALSE, FALSE)
+	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/tmp/exp1/boot_partial_box_rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
@@ -1044,7 +1013,7 @@ plotBootedStatsPartial <- function(exp1.df) {
 	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
 
 	data(t.table)
-	print("data table for png vs pis")
+	print("data table for pdf vs pis")
 	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
 	#print(xtable(t.table, include.rownames=FALSE))
 
@@ -1066,13 +1035,13 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 ##### not using these....plotGraphs(exp1.df)
 
 # Using these...
-#plotHists(exp1.df)    # plots histograms
+plotHists(exp1.df)    # plots histograms
 
-doNormalityAnalysisFullPop(exp1.df)
-doNormalityAnalysisSubPop(exp1.df)
-#plotBoxPlots(exp1.df) # boxplots to show difference
-#plotBootedStatsFull(exp1.df)
-#plotBootedStatsPartial(exp1.df)
+#doNormalityAnalysisFullPop(exp1.df)
+#doNormalityAnalysisSubPop(exp1.df)
+plotBoxPlots(exp1.df) # boxplots to show difference
+plotBootedStatsFull(exp1.df)
+plotBootedStatsPartial(exp1.df)
 
 
 
