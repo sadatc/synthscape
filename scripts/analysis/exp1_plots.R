@@ -1039,9 +1039,9 @@ plotHists(exp1.df)    # plots histograms
 
 #doNormalityAnalysisFullPop(exp1.df)
 #doNormalityAnalysisSubPop(exp1.df)
-plotBoxPlots(exp1.df) # boxplots to show difference
-plotBootedStatsFull(exp1.df)
-plotBootedStatsPartial(exp1.df)
+#plotBoxPlots(exp1.df) # boxplots to show difference
+#plotBootedStatsFull(exp1.df)
+#plotBootedStatsPartial(exp1.df)
 
 
 
