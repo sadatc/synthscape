@@ -15,7 +15,7 @@ CSV_FIELDS_TO_GRAB_S <- c("EXPERIMENT",CSV_FIELDS_TO_GRAB,"SIGNAL_SENT","SIGNAL_
 
 EXPERIMENT_NUMBER <- 0
 
-MEAN_FILE_NAME <- "all_experiments_mean_"
+MEAN_FILE_NAME <- "exp1_experiments_mean_"
 
 
 ###### PROGRAM STARTS HERE
