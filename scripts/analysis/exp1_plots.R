@@ -330,6 +330,7 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -340,6 +341,7 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -369,6 +371,7 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 #			axis.title.x = element_text(family="cmsy10"),
@@ -380,6 +383,7 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
  # 			axis.title.x = element_text(family="cmsy10"),
@@ -472,6 +476,7 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -488,6 +493,7 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -514,6 +520,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid(  ~ MODEL , labeller=label_parsed) +
+			scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -525,6 +532,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( ~ MODEL, labeller=label_parsed) +
+			scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -555,6 +563,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -570,6 +579,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -822,6 +832,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 		print(
 			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -834,6 +845,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 		print(
 			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -1083,11 +1095,11 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 ##### not using these....plotGraphs(exp1.df)
 
 # Using these...
-#plotHists(exp1.df)    # plots histograms
+plotHists(exp1.df)    # plots histograms
 
-#doNormalityAnalysisFullPop(exp1.df)
-#doNormalityAnalysisSubPop(exp1.df)
-#plotBoxPlots(exp1.df) # boxplots to show difference
+doNormalityAnalysisFullPop(exp1.df)
+doNormalityAnalysisSubPop(exp1.df)
+plotBoxPlots(exp1.df) # boxplots to show difference
 plotBootedStatsFull(exp1.df)
 plotBootedStatsPartial(exp1.df)
 
