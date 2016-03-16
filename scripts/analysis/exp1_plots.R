@@ -9,6 +9,8 @@ library(extrafont)
 
 options(width=150)
 
+globalNotchValue <- FALSE
+
 #library(scale)
 p <- function(msg) {
 	print("**************************************************************************", quote=FALSE)
@@ -276,9 +278,33 @@ getMeasurePrettyName <- function(colName) {
 	if(colName == "RATE_MOTION") {
 		result <- expression(italic(M[move]) ~ ":  Movement Instructions")
 	}
-	
-	
+	return(result)
+}
 
+
+
+getMeasureShortName <- function(colName) {
+	result <- colName
+	
+	if(colName == "CAPTURES_MEAN") {
+		result <- expression(italic(M[mean]) )
+	}
+
+	if(colName == "CAPTURES_BEST_CASE") {
+		result <- expression(italic(M[best]))
+	}
+
+	if(colName == "RES_E2C_STEPS_MEAN") {
+		result <- expression(italic(M[effort]))
+	}
+
+	if(colName == "RATE_COMMUNICATION") {
+		result <- expression(italic(M[comm]) )
+	}
+
+	if(colName == "RATE_MOTION") {
+		result <- expression(italic(M[move]) )
+	}
 	return(result)
 }
 
@@ -433,8 +459,8 @@ plotHists <- function(exp1.df) {
 plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")	  
-	yAxisLabel <- getMeasurePrettyName(colName)
+	  width = 6,height = 3.5, family="CMU Serif")	  
+	yAxisLabel <- getMeasureShortName(colName)
 	
 	
 	
@@ -442,11 +468,12 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			theme_bw() +
+			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="bottom", 
 				axis.text.y = element_text(size=rel(0.7)),
@@ -457,10 +484,11 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
+			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="bottom", 
@@ -479,15 +507,15 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
 	  width = 6,height = 3, family="CMU Serif")	  
-	yAxisLabel <- getMeasurePrettyName(colName)
+	yAxisLabel <- getMeasureShortName(colName)
 	
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid(  ~ MODEL , labeller=label_parsed) +
 			ylab(yAxisLabel) +
-			xlab("Population") +
+			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)))
@@ -495,10 +523,10 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=TRUE) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( ~ MODEL, labeller=label_parsed) +
 			ylab(yAxisLabel) +
-			xlab("Population") +
+			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				axis.text.y = element_text(size=rel(0.7)))
@@ -509,13 +537,13 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	dev.off()
 }
 
-plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=TRUE) {
+plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=FALSE) {
 
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")	  
+	  width = 3,height = 2, family="CMU Serif")	  
 	  
 	  
-	yAxisLabel <- getMeasurePrettyName(colName)
+	yAxisLabel <- getMeasureShortName(colName)
 	
 	if( showPercent==FALSE ) {
 		print(
@@ -523,8 +551,9 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			ylab(yAxisLabel) +
-			xlab("Population") +
+			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			axis.title.x = element_blank(),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)))
 		)
@@ -534,8 +563,9 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			ylab(yAxisLabel) +
-			xlab("Population") +
+			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			axis.title.x = element_blank(),
 			legend.position="none", 				
 				axis.text.y = element_text(size=rel(0.7)))
 			+ scale_y_continuous(labels=percentFormatter)
@@ -621,19 +651,19 @@ plotBoxPlots <- function(exp1.df) {
 
 	
 	# do box plots by model and interaction of just E and A
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-cb.pdf", TRUE)
-	plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-cm-ea.pdf", TRUE)
-	plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-e2c-ea.pdf")
-	plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-rm-ea.pdf")
-	plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-rc-ea.pdf")
+	#plotBoxPlot_M_I(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-cb.pdf", TRUE)
+	#plotBoxPlot_M_I(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-cm-ea.pdf", TRUE)
+	#plotBoxPlot_M_I(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-e2c-ea.pdf")
+	#plotBoxPlot_M_I(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-rm-ea.pdf")
+	#plotBoxPlot_M_I(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-mi-rc-ea.pdf")
 
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-cb.pdf", TRUE)
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-cm-ea.pdf", TRUE)
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-e2c-ea.pdf")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-rm-ea.pdf")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-rc-ea.pdf")
+	#plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-cb.pdf", TRUE)
+	#plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-cm-ea.pdf", TRUE)
+	#plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-e2c-ea.pdf")
+	#plotBoxPlot_M(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-rm-ea.pdf")
+	#plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/ea-box-m-rc-ea.pdf")
 	
 
 	# do box plots of overall (including interactions)
@@ -649,11 +679,11 @@ plotBoxPlots <- function(exp1.df) {
 	   (exp1.df$SPECIES=="heterogenous" & exp1.df$INTERACTIONS!="none") ,]
 
 	# do box plots by model 
-	plotBoxPlot_M(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-m-cb.pdf", TRUE)
-	plotBoxPlot_M(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-m-cm-ea.pdf", TRUE)
-	plotBoxPlot_M(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-m-e2c-ea.pdf")
-	plotBoxPlot_M(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-m-rm-ea.pdf")
-	plotBoxPlot_M(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-m-rc-ea.pdf")
+	plotBoxPlot(exp1.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-cb.pdf", TRUE)
+	plotBoxPlot(exp1.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-cm.pdf", TRUE)
+	plotBoxPlot(exp1.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-e2c.pdf")
+	plotBoxPlot(exp1.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-rm.pdf")
+	plotBoxPlot(exp1.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/i-box-rc.pdf")
 	
 	# consider all models... just pdf vs pis
 	exp1.df <-  orig
@@ -1035,11 +1065,11 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 ##### not using these....plotGraphs(exp1.df)
 
 # Using these...
-plotHists(exp1.df)    # plots histograms
+#plotHists(exp1.df)    # plots histograms
 
 #doNormalityAnalysisFullPop(exp1.df)
 #doNormalityAnalysisSubPop(exp1.df)
-#plotBoxPlots(exp1.df) # boxplots to show difference
+plotBoxPlots(exp1.df) # boxplots to show difference
 #plotBootedStatsFull(exp1.df)
 #plotBootedStatsPartial(exp1.df)
 

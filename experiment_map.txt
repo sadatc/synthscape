@@ -281,7 +281,7 @@ e3_tho_3_8:-model alife -int trail  -species 'homogenous' -clones 8 -blocks 15
 e3_bmo_3_8:-model alife -int broadcast  -species '+d,+e,+t' -clones 8 -blocks 15
 e3_bbi_3_8:-model alife -int broadcast  -species '^de,^dt,^et' -clones 4 -blocks 15
 e3_bpo_3_8:-model alife -int broadcast  -species '+d,+e,+t,^de,^dt,^et,*det' -clones 2 -blocks 15
-e3_btr_3_8:-model alife -int broadcast  -species '*det' -clones 8 -blocks 1
+e3_btr_3_8:-model alife -int broadcast  -species '*det' -clones 8 -blocks 15
 e3_bho_3_8:-model alife -int broadcast  -species 'homogenous' -clones 8 -blocks 15
 
 e3_umo_3_8:-model alife -int unicast_n  -species '+d,+e,+t' -clones 8 -blocks 15
