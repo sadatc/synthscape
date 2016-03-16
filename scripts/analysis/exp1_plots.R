@@ -539,8 +539,11 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=FALSE) {
 
+#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("homogenous","heterogenous"),to=c("hom","het"))
+
+
 	pdf(fileName,  
-	  width = 3,height = 2, family="CMU Serif")	  
+	  width = 2.3,height = 1.75, family="CMU Serif")	  
 	  
 	  
 	yAxisLabel <- getMeasureShortName(colName)
@@ -550,24 +553,29 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
-			ylab(yAxisLabel) +
+			#ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
+			axis.title.y = element_blank(),
 			legend.position="none", 
-				axis.text.y = element_text(size=rel(0.7)))
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_text(size=rel(0.9))
+								)
 		)
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
-			ylab(yAxisLabel) +
+			#ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
+			axis.title.y = element_blank(),
 			legend.position="none", 				
-				axis.text.y = element_text(size=rel(0.7)))
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_text(size=rel(0.9)))
 			+ scale_y_continuous(labels=percentFormatter)
 		)
 	}
@@ -806,10 +814,10 @@ plotBootHist <-function(bootSample, fileName) {
 
 plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
 
-	xAxisLabel <- getMeasurePrettyName(colName)
+	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
+	  width = 2.5,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
@@ -817,8 +825,10 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="bottom", 
-				axis.text.x = element_text(size=rel(0.7)))
+			legend.position="none", 
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
 		)
 	} else {
 		print(
@@ -827,8 +837,10 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="bottom", 				
-				axis.text.x = element_text(size=rel(0.7)))
+			legend.position="none", 				
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
 			+ scale_x_continuous(labels=percentFormatter)
 		)
 	}
@@ -907,6 +919,7 @@ plotBootedStatsFull <- function(exp1.df) {
 		CAPTURES_MEAN=s.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=s.RATE_MOTION,
+		RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 		POPULATION="heterogenous"
 	)
 
@@ -916,6 +929,7 @@ plotBootedStatsFull <- function(exp1.df) {
 		CAPTURES_MEAN=g.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=g.RATE_MOTION,
+		RATE_COMMUNICATION=g.RATE_COMMUNICATION,
 		POPULATION="homogenous"
 	)
 	
@@ -927,6 +941,10 @@ plotBootedStatsFull <- function(exp1.df) {
 	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/boot-full-e2c.pdf")
 	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/boot-full-rm.pdf")
 	
+
+plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/boot-full-rc.pdf")
+
+
 	
 	
 	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/boot-full-box-cb.pdf", TRUE, FALSE)
@@ -1069,9 +1087,9 @@ exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
 
 #doNormalityAnalysisFullPop(exp1.df)
 #doNormalityAnalysisSubPop(exp1.df)
-plotBoxPlots(exp1.df) # boxplots to show difference
-#plotBootedStatsFull(exp1.df)
-#plotBootedStatsPartial(exp1.df)
+#plotBoxPlots(exp1.df) # boxplots to show difference
+plotBootedStatsFull(exp1.df)
+plotBootedStatsPartial(exp1.df)
 
 
 
