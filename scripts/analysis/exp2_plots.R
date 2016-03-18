@@ -1049,22 +1049,12 @@ performTTest <-function(measure,g.v,s.v) {
 }
 
 
-
-
-plotBootedStatsFull <- function(exp2.df) {
-
-	# now we will bootstrap the measures
+computeBootStats <-function(s.data.frame,g.data.frame) {
 	bootSize <- 1000
 
-	ea.data.frame <-  exp2.df
-
-	sg.data.frame <-  ea.data.frame
-
-	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
-
 	# extract the measures
+	s <- data.frame()
+	g <- data.frame()
 	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
 	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
 	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
@@ -1110,26 +1100,34 @@ plotBootedStatsFull <- function(exp2.df) {
 	)
 	
 	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
+
+	return(pop.data.frame)
+
+}
+
+
+
+plotBootedStats <- function(exp2.df) {
+
+
+
+
 	
-	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-cb.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-cm.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-e2c.pdf")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-rm.pdf")
-	
+#	pop.data.frame <- computeBootStats(exp2.df[exp2.df$SPECIES=="heterogenous",], exp2.df[exp2.df$SPECIES=="homogenous",])
 
-plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-rc.pdf")
 
+	pop.data.frame <- computeBootStats(exp2.df[exp2.df$SPECIES=="heterogenous" & exp2.df$QUALITY=="25% loss" & exp2.df$INTERACTIONS=="trail"  ,], exp2.df[exp2.df$SPECIES=="homogenous" & exp2.df$QUALITY=="25% loss" & exp2.df$INTERACTIONS=="trail" ,])
 
 	
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-cb.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-cm.pdf", TRUE)
+	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-e2c.pdf")
+	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-rm.pdf")
 	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-box-cb.pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-box-cm .pdf", TRUE, FALSE)
+plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-rc.pdf")
 
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-box-e2c.pdf", FALSE, FALSE)
-
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-full-box-rm.pdf", FALSE, FALSE)
+if(1!=1) {
 
 	t.table <- data.frame()
 
@@ -1146,105 +1144,14 @@ plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/resea
 	print("data table for pg vs ps")
 	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
 	#print(xtable(t.table, include.rownames=FALSE))
+	}
 
 }
 
 
 
-plotBootedStatsPartial <- function(exp2.df) {
-
-	# now we will bootstrap the measures
-	bootSize <- 1000
-
-	ea.data.frame <-  exp2.df[exp2.df$MODEL!="island",]
-
-	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="homogenous" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="heterogenous" & ea.data.frame$INTERACTIONS!="none")  ,]
-
-	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
-
-	# extract the measures
-	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-	s.RATE_MOTION <- s.data.frame$RATE_MOTION
-	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
-
-	s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
-	s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
-	s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
-	s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
-	s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
-
-	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-	g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-	g.RATE_MOTION <- g.data.frame$RATE_MOTION
-	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
-
-	g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
-	g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
-	g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
-	g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
-	g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
-
-	
-	s.pop.data.frame <- data.frame(
-		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=s.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=s.RATE_MOTION,
-		POPULATION="heterogenous"
-	)
 
 
-	g.pop.data.frame <- data.frame(
-		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=g.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=g.RATE_MOTION,
-		POPULATION="homogenous"
-	)
-	
-	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
-	
-	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-cb.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-cm.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-e2c.pdf")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-rm.pdf")
-	
-	
-	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-box-cb.pdf", TRUE, FALSE)
-
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-box-cm .pdf", TRUE, FALSE)
-
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-box-e2c.pdf", FALSE, FALSE)
-
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-partial-box-rm.pdf", FALSE, FALSE)
-
-	t.table <- data.frame()
-
-
-	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",s.CAPTURES_BEST_CASE,g.CAPTURES_BEST_CASE))
-	
-	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
-
-	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
-
-	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
-
-	data(t.table)
-	print("data table for pdf vs pis")
-	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
-	#print(xtable(t.table, include.rownames=FALSE))
-
-
-
-
-}
 
 
 
@@ -1263,9 +1170,9 @@ exp2.df <- renameFactorValues(exp2.df) # renames for nice plots
 
 #doNormalityAnalysisFullPop(exp2.df)
 #doNormalityAnalysisSubPop(exp2.df)
-plotBoxPlots(exp2.df) # boxplots to show difference
-#plotBootedStatsFull(exp2.df)
-#plotBootedStatsPartial(exp2.df)
+#plotBoxPlots(exp2.df) # boxplots to show difference
+plotBootedStats(exp2.df)
+
 
 
 
