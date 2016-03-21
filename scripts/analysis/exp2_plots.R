@@ -924,7 +924,7 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("b","u","t"), to=c("broadcast","unicast","trail"))
 	
-	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("none","trail","broadcast","unicast"))
+	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("trail","broadcast","unicast"))
 	
 	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
 
@@ -1024,6 +1024,126 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 }
 
 
+plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 6,height = 2, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(. ~ INTERACTIONS) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(. ~ INTERACTIONS) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+}
+
+
+
+plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 6,height = 2, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(. ~ QUALITY) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(. ~ QUALITY) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+}
+
+
+plotBootHistPop_IQ <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 6,height = 3, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(INTERACTIONS ~ QUALITY) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			+ geom_density(alpha = 0.9)
+			+ scale_fill_manual(values=c("white","grey50")) 
+			+ facet_grid(INTERACTIONS ~ QUALITY) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+}
+
 #
 # performs t-tests
 # reports back a data.frame
@@ -1106,26 +1226,302 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 }
 
 
+computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
+	bootSize <- 2000
+
+	# extract the measures
+	s <- data.frame()
+	g <- data.frame()
+	pop.data.frame <- data.frame()
+	
+	## loop through all interactions
+	## loop through all qualities
+	
+	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
+		for(var.quality in levels(s.orig.data.frame$QUALITY)) {
+			s <- data.frame()
+			g <- data.frame()
+			
+			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction & s.orig.data.frame$QUALITY==var.quality,]
+			
+			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction & g.orig.data.frame$QUALITY==var.quality,]
+			
+			
+			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+			s.RATE_MOTION <- s.data.frame$RATE_MOTION
+			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+
+
+			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
+			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
+			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
+			g.RATE_MOTION <- g.data.frame$RATE_MOTION
+			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+
+			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+
+
+			s.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=s.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=s.RATE_MOTION,
+				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+				POPULATION="heterogenous",
+				QUALITY=var.quality,
+				INTERACTIONS=var.interaction
+			)
+
+
+			g.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=g.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=g.RATE_MOTION,
+				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
+				POPULATION="homogenous",
+				QUALITY=var.quality,
+				INTERACTIONS=var.interaction
+
+			)
+
+			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+			print(paste("dealt with",var.interaction,var.quality))
+
+		}
+	}
+	
+	return(pop.data.frame)
+
+}
+
+
+
+computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
+	bootSize <- 1000
+
+	# extract the measures
+	s <- data.frame()
+	g <- data.frame()
+	pop.data.frame <- data.frame()
+	
+	## loop through all interactions
+	## loop through all qualities
+	
+	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
+
+			s <- data.frame()
+			g <- data.frame()
+			
+			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction,]
+			
+			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction,]
+			
+			
+			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+			s.RATE_MOTION <- s.data.frame$RATE_MOTION
+			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+
+
+			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
+			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
+			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
+			g.RATE_MOTION <- g.data.frame$RATE_MOTION
+			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+
+			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+
+
+			s.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=s.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=s.RATE_MOTION,
+				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+				POPULATION="heterogenous",
+
+				INTERACTIONS=var.interaction
+			)
+
+
+			g.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=g.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=g.RATE_MOTION,
+				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
+				POPULATION="homogenous",
+
+				INTERACTIONS=var.interaction
+
+			)
+
+			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+
+
+		}
+	
+	
+	return(pop.data.frame)
+
+}
+
+
+computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
+	bootSize <- 1000
+
+	# extract the measures
+	s <- data.frame()
+	g <- data.frame()
+	pop.data.frame <- data.frame()
+	
+	## loop through all interactions
+	## loop through all qualities
+	
+
+		for(var.quality in levels(s.orig.data.frame$QUALITY)) {
+			s <- data.frame()
+			g <- data.frame()
+			
+			s.data.frame <- s.orig.data.frame[ s.orig.data.frame$QUALITY==var.quality,]
+			
+			g.data.frame <- g.orig.data.frame[ g.orig.data.frame$QUALITY==var.quality,]
+			
+			
+			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+			s.RATE_MOTION <- s.data.frame$RATE_MOTION
+			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+
+
+			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
+			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
+			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
+			g.RATE_MOTION <- g.data.frame$RATE_MOTION
+			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+
+			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+
+
+			s.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=s.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=s.RATE_MOTION,
+				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+				POPULATION="heterogenous",
+				QUALITY=var.quality
+			)
+
+
+			g.pop.data.frame <- data.frame(
+				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
+				CAPTURES_MEAN=g.CAPTURES_MEAN,
+				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
+				RATE_MOTION=g.RATE_MOTION,
+				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
+				POPULATION="homogenous",
+				QUALITY=var.quality
+
+			)
+
+			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+			#print(paste("dealt with",var.interaction,var.quality))
+
+		
+	}
+	
+	return(pop.data.frame)
+
+}
+
+
 
 plotBootedStats <- function(exp2.df) {
 
 
+	pop.data.frame <- computeBootStatsI(exp2.df[exp2.df$SPECIES=="heterogenous",], exp2.df[exp2.df$SPECIES=="homogenous",])
+
+plotBootHistPop_I(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-i-cb.pdf", TRUE)
 
 
-	
-#	pop.data.frame <- computeBootStats(exp2.df[exp2.df$SPECIES=="heterogenous",], exp2.df[exp2.df$SPECIES=="homogenous",])
+plotBootHistPop_I(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-i-cm.pdf", TRUE)
+
+plotBootHistPop_I(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-i-e2c.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStats(exp2.df[exp2.df$SPECIES=="heterogenous" & exp2.df$QUALITY=="25% loss" & exp2.df$INTERACTIONS=="trail"  ,], exp2.df[exp2.df$SPECIES=="homogenous" & exp2.df$QUALITY=="25% loss" & exp2.df$INTERACTIONS=="trail" ,])
+plotBootHistPop_I(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-i-rm.pdf", FALSE)
 
-	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-cb.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-cm.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-e2c.pdf")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-rm.pdf")
-	
 
-plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-rc.pdf")
+plotBootHistPop_I(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-i-rc.pdf", FALSE)
+
+
+	pop.data.frame <- computeBootStatsQ(exp2.df[exp2.df$SPECIES=="heterogenous",], exp2.df[exp2.df$SPECIES=="homogenous",])
+
+
+
+plotBootHistPop_Q(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-q-cb.pdf", TRUE)
+
+plotBootHistPop_Q(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-q-cm.pdf", TRUE)
+
+plotBootHistPop_Q(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-q-e2c.pdf", FALSE)
+
+
+plotBootHistPop_Q(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-q-rm.pdf", FALSE)
+
+
+plotBootHistPop_Q(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-q-rc.pdf", FALSE)
+
+
+pop.data.frame <- computeBootStatsIQ(exp2.df[exp2.df$SPECIES=="heterogenous",], exp2.df[exp2.df$SPECIES=="homogenous",])
+
+
+	plotBootHistPop_IQ(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-iq-cb.pdf", TRUE)
+
+plotBootHistPop_IQ(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-iq-cm.pdf", TRUE)
+
+plotBootHistPop_IQ(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-iq-e2c.pdf", FALSE)
+
+
+plotBootHistPop_IQ(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-iq-rm.pdf", FALSE)
+
+
+plotBootHistPop_IQ(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/boot-pop-iq-rc.pdf", FALSE)
 
 if(1!=1) {
 
