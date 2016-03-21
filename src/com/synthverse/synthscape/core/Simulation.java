@@ -453,8 +453,8 @@ public abstract class Simulation extends SimState implements Constants {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY));
+			
 			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
-
 			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
 
 			resourceStatusArray[randomX][randomY].originX = randomX;
@@ -527,9 +527,10 @@ public abstract class Simulation extends SimState implements Constants {
 			x++;
 			for (int i = 0; i < settings._RESOURCE_BOX_WIDTH; i++) {
 				if (currentResourceCount < settings._ACTUAL_RESOURCES) {
+					
 					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
-
 					resourceStatusArray[x][y].state = ResourceState.RAW;
+					
 					resourceStatusArray[x][y].originX = x;
 					resourceStatusArray[x][y].originY = y;
 					resourceStatusArray[x][y].currentX = x;
@@ -698,9 +699,10 @@ public abstract class Simulation extends SimState implements Constants {
 			x++;
 			for (int i = 0; i < settings._RESOURCE_BOX_WIDTH; i++) {
 				if (currentResourceCount < settings._ACTUAL_RESOURCES) {
+					
 					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
-
 					resourceStatusArray[x][y].state = ResourceState.RAW;
+					
 					resourceStatusArray[x][y].originX = x;
 					resourceStatusArray[x][y].originY = y;
 					resourceStatusArray[x][y].currentX = x;
