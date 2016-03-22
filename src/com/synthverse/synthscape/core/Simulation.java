@@ -321,7 +321,7 @@ public abstract class Simulation extends SimState implements Constants {
 	public final void collectResouceCaptureStats() {
 		if (touchedResources.size() > 0) {
 			for (ResourceStatus status : touchedResources) {
-				//D.p(""+status);
+				// D.p(""+status);
 				resourceCaptureStats.addData(status);
 			}
 		}
@@ -442,6 +442,8 @@ public abstract class Simulation extends SimState implements Constants {
 
 		MersenneTwisterFast randomPrime = this.random;
 
+		int numberOfExtractedResources = (int) ((double) numberOfResources * Main.settings.EXTRACTED_RESOURCE_PERCENT);
+
 		for (int i = 0; i < numberOfResources; i++) {
 
 			int randomX = 0;
@@ -453,9 +455,16 @@ public abstract class Simulation extends SimState implements Constants {
 				randomX = randomPrime.nextInt(gridWidth);
 				randomY = randomPrime.nextInt(gridHeight);
 			} while (GridUtils.gridHasAnObjectAt(collisionGrid, randomX, randomY));
-			
-			GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
-			resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
+
+			if (numberOfExtractedResources > 0) {
+				GridUtils.set(resourceGrid, randomX, randomY, ResourceState.EXTRACTED);
+				resourceStatusArray[randomX][randomY].state = ResourceState.EXTRACTED;
+				numberOfExtractedResources--;
+			} else {
+				GridUtils.set(resourceGrid, randomX, randomY, ResourceState.RAW);
+				resourceStatusArray[randomX][randomY].state = ResourceState.RAW;
+			}
+			// turn Main.settings.EXTRACTED_RESOURCE_PERCENT % to EXTRACTED
 
 			resourceStatusArray[randomX][randomY].originX = randomX;
 			resourceStatusArray[randomX][randomY].originY = randomY;
@@ -517,6 +526,14 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 			x++;
 		}
+
+		int totalResourcesToBePlaced = settings._RESOURCE_BOX_WIDTH * settings._RESOURCE_BOX_WIDTH;
+		if (totalResourcesToBePlaced > settings._ACTUAL_RESOURCES) {
+			totalResourcesToBePlaced = settings._ACTUAL_RESOURCES;
+		}
+		int numberOfExtractedResources = (int) ((double) totalResourcesToBePlaced
+				* Main.settings.EXTRACTED_RESOURCE_PERCENT);
+
 		for (int j = 0; j < settings._RESOURCE_BOX_WIDTH; j++) {
 			y++;
 			x = settings._RESOURCE_BOX_LEFT;
@@ -527,10 +544,16 @@ public abstract class Simulation extends SimState implements Constants {
 			x++;
 			for (int i = 0; i < settings._RESOURCE_BOX_WIDTH; i++) {
 				if (currentResourceCount < settings._ACTUAL_RESOURCES) {
-					
-					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
-					resourceStatusArray[x][y].state = ResourceState.RAW;
-					
+
+					if (numberOfExtractedResources > 0) {
+						GridUtils.set(resourceGrid, x, y, ResourceState.EXTRACTED);
+						resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
+						numberOfExtractedResources--;
+					} else {
+						GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
+						resourceStatusArray[x][y].state = ResourceState.RAW;
+					}
+
 					resourceStatusArray[x][y].originX = x;
 					resourceStatusArray[x][y].originY = y;
 					resourceStatusArray[x][y].currentX = x;
@@ -689,6 +712,16 @@ public abstract class Simulation extends SimState implements Constants {
 			}
 			x++;
 		}
+		
+		int totalResourcesToBePlaced = settings._RESOURCE_BOX_WIDTH * settings._RESOURCE_BOX_WIDTH;
+		if (totalResourcesToBePlaced > settings._ACTUAL_RESOURCES) {
+			totalResourcesToBePlaced = settings._ACTUAL_RESOURCES;
+		}
+		int numberOfExtractedResources = (int) ((double) totalResourcesToBePlaced
+				* Main.settings.EXTRACTED_RESOURCE_PERCENT);
+		
+		
+		
 		for (int j = 0; j < settings._RESOURCE_BOX_WIDTH; j++) {
 			y++;
 			x = settings._RESOURCE_BOX_LEFT;
@@ -700,9 +733,16 @@ public abstract class Simulation extends SimState implements Constants {
 			for (int i = 0; i < settings._RESOURCE_BOX_WIDTH; i++) {
 				if (currentResourceCount < settings._ACTUAL_RESOURCES) {
 					
-					GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
-					resourceStatusArray[x][y].state = ResourceState.RAW;
 					
+					if (numberOfExtractedResources > 0) {
+						GridUtils.set(resourceGrid, x, y, ResourceState.EXTRACTED);
+						resourceStatusArray[x][y].state = ResourceState.EXTRACTED;
+						numberOfExtractedResources--;
+					} else {
+						GridUtils.set(resourceGrid, x, y, ResourceState.RAW);
+						resourceStatusArray[x][y].state = ResourceState.RAW;
+					}
+		
 					resourceStatusArray[x][y].originX = x;
 					resourceStatusArray[x][y].originY = y;
 					resourceStatusArray[x][y].currentX = x;
@@ -1084,7 +1124,7 @@ public abstract class Simulation extends SimState implements Constants {
 	protected void startSimulation() {
 		String seedString = Integer.toString(settings.SEED, 16);
 
-		logger.info("EXPERIMENT STARTS ["+seedString+"]: expected maxium simulations =" + simulationsPerExperiment
+		logger.info("EXPERIMENT STARTS [" + seedString + "]: expected maxium simulations =" + simulationsPerExperiment
 				+ " stepsPerSimulation=" + stepsPerSimulation);
 
 		initEnvironment();

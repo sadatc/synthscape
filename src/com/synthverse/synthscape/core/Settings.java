@@ -197,6 +197,9 @@ public class Settings implements Constants {
 
 	public int _WIDTH_EDGE = 0;
 	public int _HEIGHT_EDGE = 0;
+	
+	public double EXTRACTED_RESOURCE_PERCENT = 0.0;
+	
 
 	private Settings() {
 
@@ -342,6 +345,9 @@ public class Settings implements Constants {
 
 		options.addOption(OptionBuilder.withArgName("rdensity").hasArg().withType(Double.class)
 				.withDescription("resource density [" + RESOURCE_DENSITY + "]").create("rdensity"));
+		
+		options.addOption(OptionBuilder.withArgName("erperc").hasArg().withType(Double.class)
+				.withDescription("extracted resource percent [" + EXTRACTED_RESOURCE_PERCENT + "]").create("erperc"));
 
 		options.addOption(OptionBuilder.withArgName("goal").hasArg().withType(Double.class)
 				.withDescription("%resource capture goal [" + PERC_RESOURCE_CAPTURE_GOAL + "; 0 means no goal]")
@@ -503,6 +509,12 @@ public class Settings implements Constants {
 			}
 			printAndStore("RESOURCE_DENSITY = " + RESOURCE_DENSITY);
 
+			if (line.hasOption("erperc")) {
+				EXTRACTED_RESOURCE_PERCENT = new Double(line.getOptionValue("erperc")).doubleValue();
+			}
+			printAndStore("EXTRACTED_RESOURCE_PERCENT = " + EXTRACTED_RESOURCE_PERCENT);
+			
+			
 			if (line.hasOption("ms")) {
 				MATING_SUCCESS_RATE = new Double(line.getOptionValue("ms")).doubleValue();
 			}
