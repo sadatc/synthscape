@@ -1087,7 +1087,7 @@ plotBootedStatsPartial <- function(exp1.df) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
-exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/e1-exp1_experiments_mean_300.csv")
+exp1.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_experiments_mean_300.csv")
 
 exp1.df <- preProcessData(exp1.df)     # factorizes, as appropriate, adjusts E2C...
 exp1.df <- renameFactorValues(exp1.df) # renames for nice plots
