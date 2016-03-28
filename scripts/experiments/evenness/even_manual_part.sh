@@ -23,34 +23,23 @@ shift;
 done
 
 qsub -N e4_tmp_111_3_24 -v S=${S},P="-experiment e4_tmp_111_3_24" qsub_script.sh
-
 qsub -N e4_tmp_211_3_24 -v S=${S},P="-experiment e4_tmp_211_3_24" qsub_script.sh
 qsub -N e4_tmp_121_3_24 -v S=${S},P="-experiment e4_tmp_121_3_24" qsub_script.sh
 qsub -N e4_tmp_112_3_24 -v S=${S},P="-experiment e4_tmp_112_3_24" qsub_script.sh
-
 qsub -N e4_tmp_123_3_24 -v S=${S},P="-experiment e4_tmp_123_3_24" qsub_script.sh
 qsub -N e4_tmp_132_3_24 -v S=${S},P="-experiment e4_tmp_132_3_24" qsub_script.sh
-
 qsub -N e4_tmp_312_3_24 -v S=${S},P="-experiment e4_tmp_312_3_24" qsub_script.sh
 qsub -N e4_tmp_321_3_24 -v S=${S},P="-experiment e4_tmp_321_3_24" qsub_script.sh
-
 qsub -N e4_tmp_213_3_24 -v S=${S},P="-experiment e4_tmp_213_3_24" qsub_script.sh
 qsub -N e4_tmp_231_3_24 -v S=${S},P="-experiment e4_tmp_231_3_24" qsub_script.sh
 
-
-
-
 qsub -N e4_bmp_111_3_24 -v S=${S},P="-experiment e4_bmp_111_3_24" qsub_script.sh
-
 qsub -N e4_bmp_211_3_24 -v S=${S},P="-experiment e4_bmp_211_3_24" qsub_script.sh
 qsub -N e4_bmp_121_3_24 -v S=${S},P="-experiment e4_bmp_121_3_24" qsub_script.sh
 qsub -N e4_bmp_112_3_24 -v S=${S},P="-experiment e4_bmp_112_3_24" qsub_script.sh
-
 qsub -N e4_bmp_123_3_24 -v S=${S},P="-experiment e4_bmp_123_3_24" qsub_script.sh
 qsub -N e4_bmp_132_3_24 -v S=${S},P="-experiment e4_bmp_132_3_24" qsub_script.sh
-
 qsub -N e4_bmp_312_3_24 -v S=${S},P="-experiment e4_bmp_312_3_24" qsub_script.sh
 qsub -N e4_bmp_321_3_24 -v S=${S},P="-experiment e4_bmp_321_3_24" qsub_script.sh
-
 qsub -N e4_bmp_213_3_24 -v S=${S},P="-experiment e4_bmp_213_3_24" qsub_script.sh
 qsub -N e4_bmp_231_3_24 -v S=${S},P="-experiment e4_bmp_231_3_24" qsub_script.sh
