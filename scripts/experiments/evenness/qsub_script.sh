@@ -26,14 +26,14 @@
 cd ${PBS_O_WORKDIR}
 
 # depending on the HPCC cluster server, pick the appropriate JVM
-if [ ${SERVER} == "andy"  ] ; then
+if [ ${S} == "andy"  ] ; then
 	# unfortunately, still runs the older JVM
 	export PATH=/usr/lib64/jvm/jre-1.6.0-ibm/bin:${PATH}
 else
 	export PATH=/opt/jdk1.8.0_45/bin:${PATH}
 fi	
 
-export CLASSPATH=/home/s.chowdhury
+export CLASSPATH=/scratch/s.chowdhury
 DATA_DIR="${PBS_O_WORKDIR}/data/${PBS_JOBNAME}"
 
 # create data directory based on job name
@@ -41,4 +41,4 @@ if [ ! -d "${DATA_DIR}" ]; then
    mkdir ${DATA_DIR}
 fi
 
-java -Xms2048M -Xmx2048M -jar  ../../../synthscape.jar ${SIM_PARAMS} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} 
+java -Xms2048M -Xmx2048M -jar  ../../../synthscape.jar ${P} -job_name ${PBS_JOBNAME} -ddir ${DATA_DIR} 
