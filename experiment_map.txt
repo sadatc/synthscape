@@ -338,6 +338,60 @@ e3_uho_4_48:-use_4_tasks -model alife -int unicast_n  -species 'homogenous' -clo
 
 
 
+### experiment 4 
+
+
+# manual
+e4_tdp_3_24:-model alife -int trail -de -degofp 5 -demp 24 -species 'detector,extractor,transporter' -erperc 0.75 -blocks 15
+e4_bdp_3_24:-model alife -int broadcast -de -degofp 5 -demp 24 -species 'detector,extractor,transporter' -erperc 0.75 -blocks 15
+e4_tdf_3_24:-model alife -int trail -de -degofp 5 -demp 24 -species 'detector,extractor,transporter' -blocks 15
+e4_bdf_3_24:-model alife -int broadcast -de -degofp 5 -demp 24 -species 'detector,extractor,transporter' -blocks 15
+
+
+e4_tmf_111_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:1' -blocks 15
+e4_tmf_211_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:1' -blocks 15
+e4_tmf_121_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:1' -blocks 15
+e4_tmf_112_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:2' -blocks 15
+e4_tmf_123_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:3' -blocks 15
+e4_tmf_132_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:3:2' -blocks 15
+e4_tmf_312_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:1:2' -blocks 15
+e4_tmf_321_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:2:1' -blocks 15
+e4_tmf_213_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:3' -blocks 15
+e4_tmf_231_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:3:1' -blocks 15
+
+e4_bmf_111_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:1' -blocks 15
+e4_bmf_211_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:1' -blocks 15
+e4_bmf_121_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:1' -blocks 15
+e4_bmf_112_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:2' -blocks 15
+e4_bmf_123_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:3' -blocks 15
+e4_bmf_132_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:3:2' -blocks 15
+e4_bmf_312_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:1:2' -blocks 15
+e4_bmf_321_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:2:1' -blocks 15
+e4_bmf_213_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:3' -blocks 15
+e4_bmf_231_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:3:1' -blocks 15
+
+
+e4_tmp_111_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:1' -erperc 0.75 -blocks 15
+e4_tmp_211_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:1' -erperc 0.75 -blocks 15
+e4_tmp_121_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:1' -erperc 0.75 -blocks 15
+e4_tmp_112_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:2' -erperc 0.75 -blocks 15
+e4_tmp_123_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:3' -erperc 0.75 -blocks 15
+e4_tmp_132_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:3:2' -erperc 0.75 -blocks 15
+e4_tmp_312_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:1:2' -erperc 0.75 -blocks 15
+e4_tmp_321_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:2:1' -erperc 0.75 -blocks 15
+e4_tmp_213_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:3' -erperc 0.75 -blocks 15
+e4_tmp_231_3_24: -model alife -int trail -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:3:1' -erperc 0.75 -blocks 15
+
+e4_bmp_111_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:1' -erperc 0.75 -blocks 15
+e4_bmp_211_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:1' -erperc 0.75 -blocks 15
+e4_bmp_121_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:1' -erperc 0.75 -blocks 15
+e4_bmp_112_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:1:2' -erperc 0.75 -blocks 15
+e4_bmp_123_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:2:3' -erperc 0.75 -blocks 15
+e4_bmp_132_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '1:3:2' -erperc 0.75 -blocks 15
+e4_bmp_312_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:1:2' -erperc 0.75 -blocks 15
+e4_bmp_321_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '3:2:1' -erperc 0.75 -blocks 15
+e4_bmp_213_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:1:3' -erperc 0.75 -blocks 15
+e4_bmp_231_3_24: -model alife -int broadcast -species 'detector,extractor,transporter' -me -memp 24 -manpr '2:3:1' -erperc 0.75 -blocks 15
 
 
 
