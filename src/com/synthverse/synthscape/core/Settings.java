@@ -829,6 +829,11 @@ public class Settings implements Constants {
 						System.exit(1);
 					}
 					ME_POP_RATIO = line.getOptionValue("manpr");
+					
+					// if the string is surrounded by 's, then take them out
+					if(ME_POP_RATIO.startsWith("'") && ME_POP_RATIO.endsWith("'")) {
+						ME_POP_RATIO = ME_POP_RATIO.substring(1, ME_POP_RATIO.length()-1);
+					}
 					printAndStore("ME_POP_RATIO = " + ME_POP_RATIO);
 				} else {
 					if (!ME_RANDOM_POP_RATIO) {

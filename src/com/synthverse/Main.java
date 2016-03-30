@@ -36,10 +36,13 @@ public class Main {
 				int num = 0;
 				while ((line = reader.readLine()) != null) {
 					if (!line.trim().equals("") && !line.trim().startsWith("#")) {
-						String keyValuePair[] = line.split(":");
-						if (keyValuePair.length == 2) {
-							// D.p("read key:"+keyValuePair[0].trim());
-							map.put(keyValuePair[0].trim(), keyValuePair[1].trim());
+						
+						int firstColonIndex = line.indexOf(":");
+						if(firstColonIndex!=-1) {
+							String key = line.substring(0, firstColonIndex).trim();
+							String value = line.substring(firstColonIndex+1).trim();
+							//D.p("read key:"+key+" value:"+value);
+							map.put(key, value);
 							num++;
 						}
 					}
