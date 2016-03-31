@@ -833,6 +833,20 @@ compareMeans <-function(d.f,measure) {
 
 
 
+plotBoxPlotsAllPop <- function(exp3.df) {
+	plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-cb.pdf", TRUE)
+
+	plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-cm.pdf", TRUE)
+
+	plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-e2c.pdf", FALSE)
+
+	plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-rm.pdf", FALSE)
+
+	plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-rc.pdf", FALSE)
+}
+
+
+
 plotBoxPlots <- function(exp3.df) {
 	orig <- exp3.df
 
@@ -950,6 +964,9 @@ preProcessData <- function(exp3.df) {
 
 	
 	exp3.df$RES_E2C_STEPS_MEAN <- (exp3.df$RES_E2C_STEPS_MEAN*exp3.df$CAPTURES_MEAN)
+	
+	# round the T2SRATIO
+	exp3.df$T2SRATIO <- round(exp3.df$T2SRATIO,3)
 
 	return(exp3.df)
 }
@@ -1565,11 +1582,14 @@ orig <- exp3.df
 
 # first we'll only look at the heterogenous population:
 exp3.df <- exp3.df[exp3.df$SPECIES=="heterogenous",]
-plotBoxPlots(exp3.df) # boxplots to show difference
+#plotBoxPlots(exp3.df) # boxplots to show difference
+
+#exp3.df <- orig
+#plotBoxPlotsAllPop(exp3.df)
 
 
 
-#plotBootedStats(exp3.df)
+plotBootedStats(exp3.df)
 
 
 
