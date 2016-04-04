@@ -350,7 +350,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
@@ -361,7 +361,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		)
 	} else {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
@@ -417,9 +417,9 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string( x="POPULATION",y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			ggplot(dataFrame, aes_string( x="EXTRACTED_RESOURCES",y=colName)) +
+			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			facet_grid( INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			scale_fill_manual(values=c("white","grey50")) +
@@ -434,9 +434,9 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		)
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid(INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			ggplot(dataFrame, aes_string(x="EXTRACTED_RESOURCES", y=colName)) +
+			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			facet_grid(INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -969,12 +969,13 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 			f.RES_E2C_STEPS_MEAN <- f.data.frame$RES_E2C_STEPS_MEAN
 			f.RATE_MOTION <- f.data.frame$RATE_MOTION
 			f.RATE_COMMUNICATION <- f.data.frame$RATE_COMMUNICATION
+			f.EXTRACTED_RESOURCES <- f.data.frame$EXTRACTED_RESOURCES
 			
 			f.NUM_DETECTORS <- f.data.frame$NUM_DETECTORS
 			f.NUM_EXTRACTORS <- f.data.frame$NUM_EXTRACTORS
 			f.NUM_TRANSPORTERS <- f.data.frame$NUM_TRANSPORTERS
 			f.E <- f.data.frame$E
-			
+					
 
 			f.CAPTURES_BEST_CASE <- boot.mean(f.CAPTURES_BEST_CASE,bootSize)
 			f.CAPTURES_MEAN <- boot.mean(f.CAPTURES_MEAN,bootSize)
@@ -993,13 +994,14 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 			p.RES_E2C_STEPS_MEAN <- p.data.frame$RES_E2C_STEPS_MEAN
 			p.RATE_MOTION <- p.data.frame$RATE_MOTION
 			p.RATE_COMMUNICATION <- p.data.frame$RATE_COMMUNICATION
+			p.EXTRACTED_RESOURCES <- p.data.frame$EXTRACTED_RESOURCES
 
 			p.NUM_DETECTORS <- p.data.frame$NUM_DETECTORS
 			p.NUM_EXTRACTORS <- p.data.frame$NUM_EXTRACTORS
 			p.NUM_TRANSPORTERS <- p.data.frame$NUM_TRANSPORTERS
 			p.E <- p.data.frame$E
 			p.EXTRACTED_RESOURCES <- p.data.frame$EXTRACTED_RESOURCES
-
+				
 
 			p.CAPTURES_BEST_CASE <- boot.mean(p.CAPTURES_BEST_CASE,bootSize)
 			p.CAPTURES_MEAN <- boot.mean(p.CAPTURES_MEAN,bootSize)
@@ -1013,10 +1015,10 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 			p.NUM_TRANSPORTERS <- boot.mean(p.NUM_TRANSPORTERS,bootSize)
 			p.E <- boot.mean(p.E,bootSize)	
 
-			print("- here1 -")
 			
-			print(length(f.E))
-			print(length(f.NUM_TRANSPORTERS))
+			#print(f.EXTRACTED_RESOURCES)
+			#stop()
+			
 
 			f.pop.data.frame <- data.frame(
 				CAPTURES_BEST_CASE=f.CAPTURES_BEST_CASE,
@@ -1028,12 +1030,12 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 				NUM_EXTRACTORS=f.NUM_EXTRACTORS,
 				NUM_TRANSPORTERS=f.NUM_TRANSPORTERS,
 				E=f.E,
-				#EXTRACTED_RESOURCES=f.EXTRACTED_RESOURCES,
+				EXTRACTED_RESOURCES="f",
 				INTERACTIONS=var.interaction
 			)
 
-
-			print("- here2 -")
+			
+			
 
 			p.pop.data.frame <- data.frame(
 				CAPTURES_BEST_CASE=p.CAPTURES_BEST_CASE,
@@ -1045,12 +1047,12 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 				NUM_EXTRACTORS=p.NUM_EXTRACTORS,
 				NUM_TRANSPORTERS=p.NUM_TRANSPORTERS,
 				E=p.E,
-				#EXTRACTED_RESOURCES=p.EXTRACTED_RESOURCES,
+				EXTRACTED_RESOURCES="p",
 				INTERACTIONS=var.interaction
 
 			)
 
-			print("here3")	
+			
 
 			pop.data.frame <- rbind(pop.data.frame,f.pop.data.frame,p.pop.data.frame)
 
@@ -1072,11 +1074,17 @@ plotBootedStats <- function(exp4.df) {
 	
 	pop.data.frame <- computeBootStatsI(exp4.df[exp4.df$E_R=="f",], exp4.df[exp4.df$E_R=="p",])
 
+	print(names(pop.data.frame))
+	print("--here--")
 	plotBootHistPop_I(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cb.pdf", TRUE)
 	plotBootHistPop_I(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cm.pdf", TRUE)
 	plotBootHistPop_I(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-e2c.pdf", FALSE)
 	plotBootHistPop_I(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-rm.pdf", FALSE)
 	plotBootHistPop_I(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-rc.pdf", FALSE)
+	plotBootHistPop_I(pop.data.frame,"NUM_DETECTORS","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-dets.pdf", FALSE)
+	plotBootHistPop_I(pop.data.frame,"NUM_EXTRACTORS","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-exts.pdf", FALSE)
+	plotBootHistPop_I(pop.data.frame,"NUM_TRANSPORTERS","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-trns.pdf", FALSE)
+	plotBootHistPop_I(pop.data.frame,"E","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-e.pdf", FALSE)
 
 }
 
@@ -1108,14 +1116,14 @@ orig <- exp4.df
 # Traitsum
 # 
 
-plotHists(exp4.df)    # plots histograms
+#plotHists(exp4.df)    # plots histograms
 
 #doNormalityAnalysisFullPop(exp4.df)
 #doNormalityAnalysisSubPop(exp4.df)
 
 # first we'll only look at the heterogenous population:
 #exp4.df <- exp4.df[exp4.df$SPECIES=="heterogenous",]
-plotBoxPlots(exp4.df) # boxplots to show difference
+#plotBoxPlots(exp4.df) # boxplots to show difference
 
 #exp4.df <- orig
 #plotBoxPlotsAllPop(exp4.df)
