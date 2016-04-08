@@ -49,7 +49,7 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 #
 # given sample.data, computes mean based on r replicates 
 #
-boot.mean = function(sample.data, r) {
+bootMean = function(sample.data, r) {
 	sample.data = na.omit(sample.data)
 	n = length(sample.data)
 	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
@@ -1185,11 +1185,11 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 	s.RATE_MOTION <- s.data.frame$RATE_MOTION
 	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-	s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
-	s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
-	s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
-	s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
-	s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+	s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+	s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+	s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+	s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+	s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
 	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
@@ -1197,11 +1197,11 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 	g.RATE_MOTION <- g.data.frame$RATE_MOTION
 	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
 
-	g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
-	g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
-	g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
-	g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
-	g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+	g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
+	g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
+	g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
+	g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
+	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 	
 	s.pop.data.frame <- data.frame(
@@ -1257,11 +1257,11 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			s.RATE_MOTION <- s.data.frame$RATE_MOTION
 			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 
 			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
@@ -1270,11 +1270,11 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_MOTION <- g.data.frame$RATE_MOTION
 			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
 
-			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
 			s.pop.data.frame <- data.frame(
@@ -1340,11 +1340,11 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 			s.RATE_MOTION <- s.data.frame$RATE_MOTION
 			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 
 			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
@@ -1353,11 +1353,11 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_MOTION <- g.data.frame$RATE_MOTION
 			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
 
-			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
 			s.pop.data.frame <- data.frame(
@@ -1422,11 +1422,11 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			s.RATE_MOTION <- s.data.frame$RATE_MOTION
 			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-			s.CAPTURES_BEST_CASE <- boot.mean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- boot.mean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- boot.mean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- boot.mean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- boot.mean(s.RATE_COMMUNICATION,bootSize)
+			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 
 			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
@@ -1435,11 +1435,11 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_MOTION <- g.data.frame$RATE_MOTION
 			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
 
-			g.CAPTURES_BEST_CASE <- boot.mean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- boot.mean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- boot.mean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- boot.mean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- boot.mean(g.RATE_COMMUNICATION,bootSize)
+			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
+			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
+			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
+			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
+			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
 			s.pop.data.frame <- data.frame(

@@ -49,7 +49,7 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 #
 # given sample.data, computes mean based on r replicates 
 #
-boot.mean = function(sample.data, r) {
+bootMean = function(sample.data, r) {
 	sample.data = na.omit(sample.data)
 	n = length(sample.data)
 	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
@@ -890,11 +890,11 @@ computeBootStats <-function(f.data.frame,p.data.frame) {
 	f.RATE_MOTION <- f.data.frame$RATE_MOTION
 	f.RATE_COMMUNICATION <- f.data.frame$RATE_COMMUNICATION
 
-	f.CAPTURES_BEST_CASE <- boot.mean(f.CAPTURES_BEST_CASE,bootSize)
-	f.CAPTURES_MEAN <- boot.mean(f.CAPTURES_MEAN,bootSize)
-	f.RES_E2C_STEPS_MEAN <- boot.mean(f.RES_E2C_STEPS_MEAN,bootSize)
-	f.RATE_MOTION <- boot.mean(f.RATE_MOTION,bootSize)
-	f.RATE_COMMUNICATION <- boot.mean(f.RATE_COMMUNICATION,bootSize)
+	f.CAPTURES_BEST_CASE <- bootMean(f.CAPTURES_BEST_CASE,bootSize)
+	f.CAPTURES_MEAN <- bootMean(f.CAPTURES_MEAN,bootSize)
+	f.RES_E2C_STEPS_MEAN <- bootMean(f.RES_E2C_STEPS_MEAN,bootSize)
+	f.RATE_MOTION <- bootMean(f.RATE_MOTION,bootSize)
+	f.RATE_COMMUNICATION <- bootMean(f.RATE_COMMUNICATION,bootSize)
 
 	p.CAPTURES_BEST_CASE <- p.data.frame$CAPTURES_BEST_CASE
 	p.CAPTURES_MEAN <- p.data.frame$CAPTURES_MEAN
@@ -902,11 +902,11 @@ computeBootStats <-function(f.data.frame,p.data.frame) {
 	p.RATE_MOTION <- p.data.frame$RATE_MOTION
 	p.RATE_COMMUNICATION <- p.data.frame$RATE_COMMUNICATION
 
-	p.CAPTURES_BEST_CASE <- boot.mean(p.CAPTURES_BEST_CASE,bootSize)
-	p.CAPTURES_MEAN <- boot.mean(p.CAPTURES_MEAN,bootSize)
-	p.RES_E2C_STEPS_MEAN <- boot.mean(p.RES_E2C_STEPS_MEAN,bootSize)
-	p.RATE_MOTION <- boot.mean(p.RATE_MOTION,bootSize)
-	p.RATE_COMMUNICATION <- boot.mean(p.RATE_COMMUNICATION,bootSize)
+	p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
+	p.CAPTURES_MEAN <- bootMean(p.CAPTURES_MEAN,bootSize)
+	p.RES_E2C_STEPS_MEAN <- bootMean(p.RES_E2C_STEPS_MEAN,bootSize)
+	p.RATE_MOTION <- bootMean(p.RATE_MOTION,bootSize)
+	p.RATE_COMMUNICATION <- bootMean(p.RATE_COMMUNICATION,bootSize)
 
 	
 	f.pop.data.frame <- data.frame(
@@ -977,16 +977,16 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 			f.E <- f.data.frame$E
 					
 
-			f.CAPTURES_BEST_CASE <- boot.mean(f.CAPTURES_BEST_CASE,bootSize)
-			f.CAPTURES_MEAN <- boot.mean(f.CAPTURES_MEAN,bootSize)
-			f.RES_E2C_STEPS_MEAN <- boot.mean(f.RES_E2C_STEPS_MEAN,bootSize)
-			f.RATE_MOTION <- boot.mean(f.RATE_MOTION,bootSize)
-			f.RATE_COMMUNICATION <- boot.mean(f.RATE_COMMUNICATION,bootSize)
+			f.CAPTURES_BEST_CASE <- bootMean(f.CAPTURES_BEST_CASE,bootSize)
+			f.CAPTURES_MEAN <- bootMean(f.CAPTURES_MEAN,bootSize)
+			f.RES_E2C_STEPS_MEAN <- bootMean(f.RES_E2C_STEPS_MEAN,bootSize)
+			f.RATE_MOTION <- bootMean(f.RATE_MOTION,bootSize)
+			f.RATE_COMMUNICATION <- bootMean(f.RATE_COMMUNICATION,bootSize)
 
-			f.NUM_DETECTORS <- boot.mean(f.NUM_DETECTORS,bootSize)
-			f.NUM_EXTRACTORS <- boot.mean(f.NUM_EXTRACTORS,bootSize)
-			f.NUM_TRANSPORTERS <- boot.mean(f.NUM_TRANSPORTERS,bootSize)
-			f.E <- boot.mean(f.E,bootSize)	
+			f.NUM_DETECTORS <- bootMean(f.NUM_DETECTORS,bootSize)
+			f.NUM_EXTRACTORS <- bootMean(f.NUM_EXTRACTORS,bootSize)
+			f.NUM_TRANSPORTERS <- bootMean(f.NUM_TRANSPORTERS,bootSize)
+			f.E <- bootMean(f.E,bootSize)	
 
 
 			p.CAPTURES_BEST_CASE <- p.data.frame$CAPTURES_BEST_CASE
@@ -1003,17 +1003,17 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 			p.EXTRACTED_RESOURCES <- p.data.frame$EXTRACTED_RESOURCES
 				
 
-			p.CAPTURES_BEST_CASE <- boot.mean(p.CAPTURES_BEST_CASE,bootSize)
-			p.CAPTURES_MEAN <- boot.mean(p.CAPTURES_MEAN,bootSize)
-			p.RES_E2C_STEPS_MEAN <- boot.mean(p.RES_E2C_STEPS_MEAN,bootSize)
-			p.RATE_MOTION <- boot.mean(p.RATE_MOTION,bootSize)
-			p.RATE_COMMUNICATION <- boot.mean(p.RATE_COMMUNICATION,bootSize)
+			p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
+			p.CAPTURES_MEAN <- bootMean(p.CAPTURES_MEAN,bootSize)
+			p.RES_E2C_STEPS_MEAN <- bootMean(p.RES_E2C_STEPS_MEAN,bootSize)
+			p.RATE_MOTION <- bootMean(p.RATE_MOTION,bootSize)
+			p.RATE_COMMUNICATION <- bootMean(p.RATE_COMMUNICATION,bootSize)
 
 
-			p.NUM_DETECTORS <- boot.mean(p.NUM_DETECTORS,bootSize)
-			p.NUM_EXTRACTORS <- boot.mean(p.NUM_EXTRACTORS,bootSize)
-			p.NUM_TRANSPORTERS <- boot.mean(p.NUM_TRANSPORTERS,bootSize)
-			p.E <- boot.mean(p.E,bootSize)	
+			p.NUM_DETECTORS <- bootMean(p.NUM_DETECTORS,bootSize)
+			p.NUM_EXTRACTORS <- bootMean(p.NUM_EXTRACTORS,bootSize)
+			p.NUM_TRANSPORTERS <- bootMean(p.NUM_TRANSPORTERS,bootSize)
+			p.E <- bootMean(p.E,bootSize)	
 
 			
 			#print(f.EXTRACTED_RESOURCES)
