@@ -1,14 +1,12 @@
-# island model
 library(ggplot2)
 library(plyr)
 library(xtable)
 library(extrafont)
 library(scales)
 library(extrafont)
-#library(tikzDevice)
+
 
 options(width=150)
-
 globalNotchValue <- FALSE
 
 #library(scale)
@@ -44,7 +42,6 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 	)
 	dev.off()
 }
-
 
 #
 # given sample.data, computes mean based on r replicates 
@@ -637,9 +634,6 @@ plotBoxPlotsManual <- function(exp4.df) {
 }
 
 
-
-
-
 plotBoxPlots <- function(exp4.df) {
 	orig <- exp4.df
 
@@ -1175,11 +1169,6 @@ plotBootedStats <- function(exp4.df) {
 
 
 
-
-
-
-
-
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
@@ -1218,13 +1207,5 @@ plotBoxPlotsManual(exp4.df) # boxplots to show difference
 
 
 plotBootedStats(exp4.df)
-
-
-
-
-
-
-
-
 #plot the totals
 
