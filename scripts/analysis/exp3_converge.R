@@ -43,7 +43,13 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 		richnessType <- substr(csvFileName,5,6)
 		interactionType <- substr(csvFileName,4,4)
 		extractedClones <- substr(csvFileName,10,10)
+		richnessVariation <- substr(csvFileName,8,10)
 
+		if(richnessVariation == "4_2") {
+			richnessVariation <- "4_24"			
+		}
+
+		
 		if(richnessType == "ho") {
 			extractedSpecies <- "g"
 		}
@@ -273,6 +279,7 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 			meanData <- data.frame(EXPERIMENT=EXPERIMENT_NUMBER,
 				MODEL=MODEL,		
 				RICHNESS_TYPE = RICHNESS_TYPE,
+				RICHNESS_VARIATION = richnessVariation,
 				RICHNESS = RICHNESS,
 				TRAITSUM = 	TRAITSUM,
 				T2SRATIO = T2SRATIO,
