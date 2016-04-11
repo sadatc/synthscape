@@ -429,7 +429,7 @@ plotBoxPlot_I_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 4,height = 4, family="CMU Serif")	  
+	  width = 3,height = 2.5, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -437,7 +437,7 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string( x="POPULATION",y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( INTERACTIONS ~POPULATION_MIX) +
+			facet_grid( . ~POPULATION_MIX) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			scale_fill_manual(values=c("white","grey50")) +
@@ -454,7 +454,7 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid(INTERACTIONS ~ POPULATION_MIX) +
+			facet_grid(. ~ POPULATION_MIX) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -478,7 +478,7 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 4,height = 4, family="CMU Serif")	  
+	  width = 3,height = 2.5, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -486,7 +486,7 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string( x="POPULATION",y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( INTERACTIONS ~ RICHNESS) +
+			facet_grid( . ~ RICHNESS) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			scale_fill_manual(values=c("white","grey50")) +
@@ -503,7 +503,7 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid(INTERACTIONS ~ RICHNESS) +
+			facet_grid(. ~ RICHNESS) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -529,7 +529,7 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 6,height = 4, family="CMU Serif")	  
+	  width = 3,height = 2.5, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -537,7 +537,7 @@ plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string( x="POPULATION",y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( INTERACTIONS ~ T2SRATIO) +
+			facet_grid( . ~ T2SRATIO) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			scale_fill_manual(values=c("white","grey50")) +
@@ -554,7 +554,7 @@ plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid(INTERACTIONS ~ T2SRATIO) +
+			facet_grid(. ~ T2SRATIO) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -738,29 +738,7 @@ compareMeans <-function(d.f,measure) {
 plotBoxPlots <- function(expDataFrame) {
 	orig <- expDataFrame
 
-	if(2==1) {
-
-		expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_4",]	
-		plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cb.pdf", TRUE)
-		plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cm.pdf", TRUE)
-		plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-e2c.pdf", FALSE)
-		plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rm.pdf", FALSE)
-		plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
-
-		plotBoxPlot_R(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cb.pdf", TRUE)
-		plotBoxPlot_R(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cm.pdf", TRUE)
-		plotBoxPlot_R(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-e2c.pdf", FALSE)
-		plotBoxPlot_R(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rm.pdf", FALSE)
-		plotBoxPlot_R(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
-
-
-		plotBoxPlot_T2S(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-cb.pdf", TRUE)
-		plotBoxPlot_T2S(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-cm.pdf", TRUE)
-		plotBoxPlot_T2S(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-e2c.pdf", FALSE)
-		plotBoxPlot_T2S(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-rm.pdf", FALSE)
-		plotBoxPlot_T2S(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
-		expDataFrame <- orig
-	}	
+	
 
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_8",]	
 	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
@@ -902,9 +880,9 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
-plotBootHistPop_PM <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_PM <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
-	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","POPULATION_MIX"))
+	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("INTERACTIONS","POPULATION_MIX"))
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -951,9 +929,9 @@ plotBootHistPop_PM <-function(pop.data.frame, colName, fileName, showPercent = F
 	dev.off()
 }
 
-plotBootHistPop_R <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_R <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
-	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","RICHNESS"))
+	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("INTERACTIONS","RICHNESS"))
 	tst$RICHNESS <- factor(tst$RICHNESS)
 
 
@@ -1004,9 +982,9 @@ plotBootHistPop_R <-function(pop.data.frame, colName, fileName, showPercent = FA
 
 
 
-plotBootHistPop_T2S <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_T2S <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
-	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","T2SRATIO"))
+	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("INTERACTIONS","T2SRATIO"))
 	tst$T2SRATIO <- factor(tst$T2SRATIO)
 
 
@@ -1089,7 +1067,7 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1120,7 +1098,7 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 
 
 
-				s.pop.data.frame <- data.frame(
+				s.popDataFrame <- data.frame(
 					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 					CAPTURES_MEAN=s.CAPTURES_MEAN,
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1135,14 +1113,14 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 
 				
 
-				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
+				popDataFrame <- rbind(popDataFrame,s.popDataFrame)
 
 
 			}
 		}
 	
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1159,7 +1137,7 @@ computeBootStatsR <-function(s.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1190,7 +1168,7 @@ computeBootStatsR <-function(s.orig.data.frame) {
 
 
 
-				s.pop.data.frame <- data.frame(
+				s.popDataFrame <- data.frame(
 					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 					CAPTURES_MEAN=s.CAPTURES_MEAN,
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1205,14 +1183,14 @@ computeBootStatsR <-function(s.orig.data.frame) {
 
 				
 
-				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
+				popDataFrame <- rbind(popDataFrame,s.popDataFrame)
 
 
 			}
 		}
 	
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1225,7 +1203,7 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1256,7 +1234,7 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 
 
 
-				s.pop.data.frame <- data.frame(
+				s.popDataFrame <- data.frame(
 					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 					CAPTURES_MEAN=s.CAPTURES_MEAN,
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1271,14 +1249,14 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 
 				
 
-				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
+				popDataFrame <- rbind(popDataFrame,s.popDataFrame)
 
 
 			}
 		}
 	
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1289,58 +1267,58 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 
 plotBootedStats <- function(expDataFrame) {
 
-	pop.data.frame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
-	plotBootHistPop_PM(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
-	plotBootHistPop_PM(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
-	plotBootHistPop_PM(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
-	plotBootHistPop_PM(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
-	plotBootHistPop_PM(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
-
-
-	pop.data.frame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
-
-	plotBootHistPop_PM(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
-	plotBootHistPop_PM(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
-	plotBootHistPop_PM(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
-	plotBootHistPop_PM(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
-	plotBootHistPop_PM(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_PM(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_PM(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
-	plotBootHistPop_R(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
-	plotBootHistPop_R(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
-	plotBootHistPop_R(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
-	plotBootHistPop_R(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
-	plotBootHistPop_R(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
-
-
-	pop.data.frame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
-
-	plotBootHistPop_R(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
-	plotBootHistPop_R(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
-	plotBootHistPop_R(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
-	plotBootHistPop_R(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
-	plotBootHistPop_R(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_PM(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_PM(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_PM(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
-	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scb.pdf", TRUE)
-	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scm.pdf", TRUE)
-	plotBootHistPop_T2S(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2se2c.pdf", FALSE)
-	plotBootHistPop_T2S(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2srm.pdf", FALSE)
-	plotBootHistPop_T2S(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2src.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_R(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_R(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
+	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
-	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scb.pdf", TRUE)
-	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scm.pdf", TRUE)
-	plotBootHistPop_T2S(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2se2c.pdf", FALSE)
-	plotBootHistPop_T2S(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2srm.pdf", FALSE)
-	plotBootHistPop_T2S(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2src.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_R(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_R(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_R(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
+
+
+	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scb.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scm.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2se2c.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2srm.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2src.pdf", FALSE)
+
+
+	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
+
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scb.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scm.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2se2c.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2srm.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2src.pdf", FALSE)
 	
 }
 
@@ -1382,12 +1360,12 @@ plotHists(expDataFrame)    # plots histograms
 
 # first we'll only look at the heterogenous population:
 #expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+plotBoxPlots(expDataFrame) # boxplots to show difference
 
 
 
 
-#plotBootedStats(expDataFrame)
+plotBootedStats(expDataFrame)
 
 
 

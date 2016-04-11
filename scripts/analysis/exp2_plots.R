@@ -986,7 +986,7 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
-plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -994,7 +994,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 	  width = 2.5,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
@@ -1007,7 +1007,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 		)
 	} else {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
@@ -1024,7 +1024,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 }
 
 
-plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -1032,7 +1032,7 @@ plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FA
 	  width = 6,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ INTERACTIONS) 
@@ -1046,7 +1046,7 @@ plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FA
 		)
 	} else {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ INTERACTIONS) 
@@ -1065,7 +1065,7 @@ plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FA
 
 
 
-plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_Q <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -1073,7 +1073,7 @@ plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FA
 	  width = 6,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ QUALITY) 
@@ -1087,7 +1087,7 @@ plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FA
 		)
 	} else {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ QUALITY) 
@@ -1105,7 +1105,7 @@ plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FA
 }
 
 
-plotBootHistPop_IQ <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_IQ <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -1113,7 +1113,7 @@ plotBootHistPop_IQ <-function(pop.data.frame, colName, fileName, showPercent = F
 	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ QUALITY) 
@@ -1127,7 +1127,7 @@ plotBootHistPop_IQ <-function(pop.data.frame, colName, fileName, showPercent = F
 		)
 	} else {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ QUALITY) 
@@ -1200,7 +1200,7 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 	
-	s.pop.data.frame <- data.frame(
+	s.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=s.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1210,7 +1210,7 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 	)
 
 
-	g.pop.data.frame <- data.frame(
+	g.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=g.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -1219,9 +1219,9 @@ computeBootStats <-function(s.data.frame,g.data.frame) {
 		POPULATION="homogenous"
 	)
 	
-	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
+	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
 
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1232,7 +1232,7 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	g <- data.frame()
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1273,7 +1273,7 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
-			s.pop.data.frame <- data.frame(
+			s.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=s.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1285,7 +1285,7 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			)
 
 
-			g.pop.data.frame <- data.frame(
+			g.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=g.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -1297,13 +1297,13 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 
 			)
 
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+			popDataFrame <- rbind(popDataFrame,g.popDataFrame,s.popDataFrame)
 			print(paste("dealt with",var.interaction,var.quality))
 
 		}
 	}
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1315,7 +1315,7 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	g <- data.frame()
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1356,7 +1356,7 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
-			s.pop.data.frame <- data.frame(
+			s.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=s.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1368,7 +1368,7 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 			)
 
 
-			g.pop.data.frame <- data.frame(
+			g.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=g.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -1380,13 +1380,13 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 
 			)
 
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+			popDataFrame <- rbind(popDataFrame,g.popDataFrame,s.popDataFrame)
 
 
 		}
 	
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1397,7 +1397,7 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 	# extract the measures
 	s <- data.frame()
 	g <- data.frame()
-	pop.data.frame <- data.frame()
+	popDataFrame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
@@ -1438,7 +1438,7 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 
-			s.pop.data.frame <- data.frame(
+			s.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=s.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1449,7 +1449,7 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			)
 
 
-			g.pop.data.frame <- data.frame(
+			g.popDataFrame <- data.frame(
 				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 				CAPTURES_MEAN=g.CAPTURES_MEAN,
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -1460,13 +1460,13 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 
 			)
 
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
+			popDataFrame <- rbind(popDataFrame,g.popDataFrame,s.popDataFrame)
 			#print(paste("dealt with",var.interaction,var.quality))
 
 		
 	}
 	
-	return(pop.data.frame)
+	return(popDataFrame)
 
 }
 
@@ -1475,53 +1475,53 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 plotBootedStats <- function(expDataFrame) {
 
 
-	pop.data.frame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
-plotBootHistPop_I(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cb.pdf", TRUE)
-
-
-plotBootHistPop_I(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cm.pdf", TRUE)
-
-plotBootHistPop_I(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-e2c.pdf", FALSE)
+plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cb.pdf", TRUE)
 
 
-plotBootHistPop_I(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rm.pdf", FALSE)
+plotBootHistPop_I(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cm.pdf", TRUE)
+
+plotBootHistPop_I(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-e2c.pdf", FALSE)
 
 
-plotBootHistPop_I(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rc.pdf", FALSE)
+plotBootHistPop_I(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rm.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+plotBootHistPop_I(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rc.pdf", FALSE)
+
+
+	popDataFrame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
 
-plotBootHistPop_Q(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cb.pdf", TRUE)
+plotBootHistPop_Q(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cb.pdf", TRUE)
 
-plotBootHistPop_Q(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cm.pdf", TRUE)
+plotBootHistPop_Q(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cm.pdf", TRUE)
 
-plotBootHistPop_Q(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-e2c.pdf", FALSE)
-
-
-plotBootHistPop_Q(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rm.pdf", FALSE)
+plotBootHistPop_Q(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-e2c.pdf", FALSE)
 
 
-plotBootHistPop_Q(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rc.pdf", FALSE)
+plotBootHistPop_Q(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rm.pdf", FALSE)
 
 
-pop.data.frame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+plotBootHistPop_Q(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rc.pdf", FALSE)
 
 
-	plotBootHistPop_IQ(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cb.pdf", TRUE)
-
-plotBootHistPop_IQ(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cm.pdf", TRUE)
-
-plotBootHistPop_IQ(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-e2c.pdf", FALSE)
+popDataFrame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
-plotBootHistPop_IQ(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rm.pdf", FALSE)
+	plotBootHistPop_IQ(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cb.pdf", TRUE)
+
+plotBootHistPop_IQ(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cm.pdf", TRUE)
+
+plotBootHistPop_IQ(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-e2c.pdf", FALSE)
 
 
-plotBootHistPop_IQ(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rc.pdf", FALSE)
+plotBootHistPop_IQ(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rm.pdf", FALSE)
+
+
+plotBootHistPop_IQ(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rc.pdf", FALSE)
 
 if(1!=1) {
 

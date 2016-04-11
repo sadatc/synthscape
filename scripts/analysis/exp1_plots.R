@@ -822,7 +822,7 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
-plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
 
@@ -830,7 +830,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 	  width = 2.5,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
@@ -843,7 +843,7 @@ plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FAL
 		)
 	} else {
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
+			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
@@ -926,7 +926,7 @@ plotBootedStatsFull <- function(expDataFrame) {
 	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 	
-	s.pop.data.frame <- data.frame(
+	s.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=s.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -936,7 +936,7 @@ plotBootedStatsFull <- function(expDataFrame) {
 	)
 
 
-	g.pop.data.frame <- data.frame(
+	g.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=g.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -945,27 +945,27 @@ plotBootedStatsFull <- function(expDataFrame) {
 		POPULATION="homogenous"
 	)
 	
-	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
+	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
 	
 	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cb.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cm.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-e2c.pdf")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rm.pdf")
+	plotBootHist2Pop(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cb.pdf", TRUE)
+	plotBootHist2Pop(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cm.pdf", TRUE)
+	plotBootHist2Pop(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-e2c.pdf")
+	plotBootHist2Pop(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rm.pdf")
 	
 
-plotBootHist2Pop(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rc.pdf")
+plotBootHist2Pop(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rc.pdf")
 
 
 	
 	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cb.pdf", TRUE, FALSE)
+	plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cb.pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cm .pdf", TRUE, FALSE)
+	plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cm .pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-e2c.pdf", FALSE, FALSE)
+	plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-e2c.pdf", FALSE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-rm.pdf", FALSE, FALSE)
+	plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
@@ -1026,7 +1026,7 @@ plotBootedStatsPartial <- function(expDataFrame) {
 	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
 
 	
-	s.pop.data.frame <- data.frame(
+	s.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=s.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
@@ -1035,7 +1035,7 @@ plotBootedStatsPartial <- function(expDataFrame) {
 	)
 
 
-	g.pop.data.frame <- data.frame(
+	g.popDataFrame <- data.frame(
 		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
 		CAPTURES_MEAN=g.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
@@ -1043,23 +1043,23 @@ plotBootedStatsPartial <- function(expDataFrame) {
 		POPULATION="homogenous"
 	)
 	
-	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
+	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
 	
 	
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-cb.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-cm.pdf", TRUE)
-	plotBootHist2Pop(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-e2c.pdf")
-	plotBootHist2Pop(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-rm.pdf")
+	plotBootHist2Pop(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-cb.pdf", TRUE)
+	plotBootHist2Pop(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-cm.pdf", TRUE)
+	plotBootHist2Pop(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-e2c.pdf")
+	plotBootHist2Pop(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-rm.pdf")
 	
 	
 	
-	plotBoxPlot(pop.data.frame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cb.pdf", TRUE, FALSE)
+	plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cb.pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cm .pdf", TRUE, FALSE)
+	plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cm .pdf", TRUE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-e2c.pdf", FALSE, FALSE)
+	plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-e2c.pdf", FALSE, FALSE)
 
-	plotBoxPlot(pop.data.frame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-rm.pdf", FALSE, FALSE)
+	plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
