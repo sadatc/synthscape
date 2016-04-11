@@ -11,6 +11,50 @@ options(width=150)
 
 globalNotchValue <- FALSE
 
+
+## Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    return(datac)
+}
+
 #library(scale)
 p <- function(msg) {
 	print("**************************************************************************", quote=FALSE)
@@ -822,6 +866,65 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
+
+plotBootHist2PopNew <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
+
+	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("POPULATION"))
+	tst$POPULATION <- factor(tst$POPULATION)
+
+
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 2.5,height = 2, family="CMU Serif")
+	if( showPercent==FALSE ) {
+
+		print(
+			ggplot(tst, aes_string(y=colName, x="POPULATION"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
+			+ theme_bw()
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			#+ scale_y_continuous(labels=percentFormatter)
+		)
+		
+
+	} else {
+		
+		print(
+			ggplot(tst, aes_string(y=colName, x="POPULATION"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="POPULATION")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
+			+ theme_bw()
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_y_continuous(labels=percentFormatter)
+		)
+
+	}
+	dev.off()
+}
+
+
+
+
+
+
+
+
 plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
 	xAxisLabel <- getMeasureShortName(colName)
@@ -1081,11 +1184,11 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 ##### not using these....plotGraphs(expDataFrame)
 
 # Using these...
-#plotHists(expDataFrame)    # plots histograms
+plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysisFullPop(expDataFrame)
-#doNormalityAnalysisSubPop(expDataFrame)
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+doNormalityAnalysisFullPop(expDataFrame)
+doNormalityAnalysisSubPop(expDataFrame)
+plotBoxPlots(expDataFrame) # boxplots to show difference
 
 plotBootedStatsFull(expDataFrame)
 plotBootedStatsPartial(expDataFrame)
