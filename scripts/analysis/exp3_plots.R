@@ -11,6 +11,53 @@ options(width=150)
 
 globalNotchValue <- FALSE
 
+
+
+## Summarizes data.
+## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
+##   data: a data frame.
+##   measurevar: the name of a column that contains the variable to be summariezed
+##   groupvars: a vector containing names of columns that contain grouping variables
+##   na.rm: a boolean that indicates whether to ignore NA's
+##   conf.interval: the percent range of the confidence interval (default is 95%)
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+    library(plyr)
+
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+
+    # This does the summary. For each group's data frame, return a vector with
+    # N, mean, and sd
+    datac <- ddply(data, groupvars, .drop=.drop,
+      .fun = function(xx, col) {
+        c(N    = length2(xx[[col]], na.rm=na.rm),
+          mean = mean   (xx[[col]], na.rm=na.rm),
+          sd   = sd     (xx[[col]], na.rm=na.rm)
+        )
+      },
+      measurevar
+    )
+
+    # Rename the "mean" column    
+    datac <- rename(datac, c("mean" = measurevar))
+
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+
+    return(datac)
+}
+
+
+
 #library(scale)
 p <- function(msg) {
 	print("**************************************************************************", quote=FALSE)
@@ -265,13 +312,9 @@ getMeasureShortName <- function(colName) {
 
 
 
-plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
+plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
-
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
-
+	
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
 	
@@ -281,7 +324,7 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
+			facet_grid( INTERACTIONS ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -292,7 +335,7 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
+			facet_grid( INTERACTIONS ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -305,175 +348,41 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 	dev.off()
 
 }
-
-
-plotHistByPopulationQuality <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
-	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
-
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
-
-	xAxisLabel <- getMeasurePrettyName(colName)
-	
-	
-	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
-	if( showPercent==FALSE ) {
-		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
-			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ QUALITY) +
-			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.text.x = element_text(size=rel(0.7)))
-		)
-	} else {
-		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
-			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ QUALITY) +
-			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				#axis.title.x = element_text(family="cmsy10"),
-				axis.text.x = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
-		)
-	}
-	dev.off()
-
-}
-
-
-plotHistByInteractionQuality <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
-	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
-
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
-
-	xAxisLabel <- getMeasurePrettyName(colName)
-	
-	
-	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
-	if( showPercent==FALSE ) {
-		print(
-			ggplot(dataFrame,aes_string(x=colName)) +
-			geom_histogram(color="black", fill="grey80",alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ QUALITY) +
-			xlab(xAxisLabel) +
-			#scale_fill_manual(values=c("grey80")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.text.x = element_text(size=rel(0.7)))
-		)
-	} else {
-		print(
-			ggplot(dataFrame,aes_string(x=colName)) +
-			geom_histogram(color="black", fill="grey80",alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ QUALITY) +
-			xlab(xAxisLabel) +
-			#scale_fill_manual(values=c("grey80")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				#axis.title.x = element_text(family="cmsy10"),
-				axis.text.x = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
-		)
-	}
-	dev.off()
-
-}
-
-
-
-
-plotHistBySubPopulation <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
-	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "non-interacting homogenous"
-
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "interacting heterogenous"
-
-	xAxisLabel <- getMeasurePrettyName(colName)
-	
-	
-	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
-	if( showPercent==FALSE ) {
-		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
-			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ ., labeller=label_parsed) +
-			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-#			axis.title.x = element_text(family="cmsy10"),
-				axis.text.x = element_text(size=rel(0.7)))
-		)
-	} else {
-		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
-			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ ., labeller=label_parsed) +
-			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
-			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
- # 			axis.title.x = element_text(family="cmsy10"),
-				axis.text.x = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
-		)
-	}
-	dev.off()
-
-}
-
-
-
-
 
 
 
 plotHists <- function(exp3.df) {
+
+	orig <- exp3.df
+	if (2==1) {
 	
-	plotHistByPopulation("alife", exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-cm.pdf", TRUE)
-	plotHistByPopulation("alife", exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-cb.pdf", TRUE)
-	plotHistByPopulation("alife", exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-e3c.pdf")
-	plotHistByPopulation("alife", exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-rm.pdf")
-	plotHistByPopulation("alife", exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-rc.pdf")
-
-	plotHistByPopulationQuality("alife", exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-q-cm.pdf", TRUE)
-	plotHistByPopulationQuality("alife", exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-q-cb.pdf", TRUE)
-	plotHistByPopulationQuality("alife", exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-q-e3c.pdf")
-	plotHistByPopulationQuality("alife", exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-q-rm.pdf")
-	plotHistByPopulationQuality("alife", exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-q-rc.pdf")
-
-
-	plotHistByInteractionQuality("alife", exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-iq-cm.pdf", TRUE)
-	plotHistByInteractionQuality("alife", exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-iq-cb.pdf", TRUE)
-	plotHistByInteractionQuality("alife", exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-iq-e3c.pdf")
-	plotHistByInteractionQuality("alife", exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-iq-rm.pdf")
-	plotHistByInteractionQuality("alife", exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-alife-iq-rc.pdf")
-
-
+		exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="3_4",]	
+		plotHistByPopulationMix( exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-cm.pdf", TRUE)		
+		plotHistByPopulationMix( exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-cb.pdf", TRUE)
+		plotHistByPopulationMix( exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-e2c.pdf")
+		plotHistByPopulationMix( exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-rm.pdf")
+		plotHistByPopulationMix( exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-rc.pdf")
+		exp3.df <- orig
+	}
 	
-	plotHistBySubPopulation("alife", exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-s-alife-cm.pdf", TRUE)
-	plotHistBySubPopulation("alife", exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-s-alife-cb.pdf", TRUE)
-	plotHistBySubPopulation("alife", exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-s-alife-e3c.pdf")
-	plotHistBySubPopulation("alife", exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-s-alife-rm.pdf")
-	plotHistBySubPopulation("alife", exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-hist-s-alife-rc.pdf")
+
+	exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="3_8",]
+	plotHistByPopulationMix( exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cm.pdf", TRUE)
+	plotHistByPopulationMix( exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cb.pdf", TRUE)
+	plotHistByPopulationMix( exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-e2c.pdf")
+	plotHistByPopulationMix( exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rm.pdf")
+	plotHistByPopulationMix( exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rc.pdf")
+	exp3.df <- orig
+	
+	exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="4_24",]
+	plotHistByPopulationMix( exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-cm.pdf", TRUE)
+	plotHistByPopulationMix( exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-cb.pdf", TRUE)
+	plotHistByPopulationMix( exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-e2c.pdf")
+	plotHistByPopulationMix( exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rm.pdf")
+	plotHistByPopulationMix( exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rc.pdf")
+	exp3.df <- orig
 
 }
-
-
-
 
 
 
@@ -833,64 +742,80 @@ compareMeans <-function(d.f,measure) {
 
 
 
-plotBoxPlotsAllPop <- function(exp3.df) {
-	plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-cb.pdf", TRUE)
 
-	plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-cm.pdf", TRUE)
-
-	plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-e2c.pdf", FALSE)
-
-	plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-rm.pdf", FALSE)
-
-	plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-all-rc.pdf", FALSE)
-}
 
 
 
 plotBoxPlots <- function(exp3.df) {
 	orig <- exp3.df
 
+	if(2==1) {
 
-	# compare richness type vs performance
+		exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="3_4",]	
+		plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cb.pdf", TRUE)
+		plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cm.pdf", TRUE)
+		plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-e2c.pdf", FALSE)
+		plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rm.pdf", FALSE)
+		plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
 
-	plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-cb.pdf", TRUE)
-
-	plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-cm.pdf", TRUE)
-
-	plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-e2c.pdf", FALSE)
-
-	plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-rm.pdf", FALSE)
-
-	plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-pm-rc.pdf", FALSE)
-
-
-
-
-	plotBoxPlot_R(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-cb.pdf", TRUE)
-
-	plotBoxPlot_R(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-cm.pdf", TRUE)
-
-	plotBoxPlot_R(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-e2c.pdf", FALSE)
-
-	plotBoxPlot_R(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-rm.pdf", FALSE)
-
-	plotBoxPlot_R(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-rc.pdf", FALSE)
+		plotBoxPlot_R(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cb.pdf", TRUE)
+		plotBoxPlot_R(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-cm.pdf", TRUE)
+		plotBoxPlot_R(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-e2c.pdf", FALSE)
+		plotBoxPlot_R(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rm.pdf", FALSE)
+		plotBoxPlot_R(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
 
 
-	plotBoxPlot_T2S(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-t2s-cb.pdf", TRUE)
+		plotBoxPlot_T2S(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-cb.pdf", TRUE)
+		plotBoxPlot_T2S(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-cm.pdf", TRUE)
+		plotBoxPlot_T2S(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-e2c.pdf", FALSE)
+		plotBoxPlot_T2S(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-t2s-rm.pdf", FALSE)
+		plotBoxPlot_T2S(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-box-r-rc.pdf", FALSE)
+		exp3.df <- orig
+	}	
 
-	plotBoxPlot_T2S(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-t2s-cm.pdf", TRUE)
+	exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="3_8",]	
+	plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
+	plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cm.pdf", TRUE)
+	plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-e2c.pdf", FALSE)
+	plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rm.pdf", FALSE)
+	plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rc.pdf", FALSE)
 
-	plotBoxPlot_T2S(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-t2s-e2c.pdf", FALSE)
-
-	plotBoxPlot_T2S(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-t2s-rm.pdf", FALSE)
-
-	plotBoxPlot_T2S(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-box-r-rc.pdf", FALSE)
-
-
+	plotBoxPlot_R(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
+	plotBoxPlot_R(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cm.pdf", TRUE)
+	plotBoxPlot_R(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-e2c.pdf", FALSE)
+	plotBoxPlot_R(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rm.pdf", FALSE)
+	plotBoxPlot_R(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rc.pdf", FALSE)
 
 
+	plotBoxPlot_T2S(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-t2s-cb.pdf", TRUE)
+	plotBoxPlot_T2S(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-t2s-cm.pdf", TRUE)
+	plotBoxPlot_T2S(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-t2s-e2c.pdf", FALSE)
+	plotBoxPlot_T2S(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-t2s-rm.pdf", FALSE)
+	plotBoxPlot_T2S(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rc.pdf", FALSE)
+	exp3.df <- orig
 
+
+
+	exp3.df <- exp3.df[exp3.df$RICHNESS_VARIATION=="4_24",]	
+	plotBoxPlot_PM(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cb.pdf", TRUE)
+	plotBoxPlot_PM(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cm.pdf", TRUE)
+	plotBoxPlot_PM(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-e2c.pdf", FALSE)
+	plotBoxPlot_PM(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rm.pdf", FALSE)
+	plotBoxPlot_PM(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rc.pdf", FALSE)
+
+	plotBoxPlot_R(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cb.pdf", TRUE)
+	plotBoxPlot_R(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cm.pdf", TRUE)
+	plotBoxPlot_R(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-e2c.pdf", FALSE)
+	plotBoxPlot_R(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rm.pdf", FALSE)
+	plotBoxPlot_R(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rc.pdf", FALSE)
+
+
+	plotBoxPlot_T2S(exp3.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-t2s-cb.pdf", TRUE)
+	plotBoxPlot_T2S(exp3.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-t2s-cm.pdf", TRUE)
+	plotBoxPlot_T2S(exp3.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-t2s-e2c.pdf", FALSE)
+	plotBoxPlot_T2S(exp3.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-t2s-rm.pdf", FALSE)
+	plotBoxPlot_T2S(exp3.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rc.pdf", FALSE)
+	exp3.df <- orig
 
 
 }
@@ -907,10 +832,7 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a"), to=c("alife"))
 
-
-	
 	dataFrame$MODEL <- factor(dataFrame$MODEL,c("alife"))
-	
 	
 	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("b","u","t"), to=c("broadcast","unicast","trail"))
 	
@@ -926,12 +848,12 @@ renameFactorValues <- function(dataFrame) {
 
 
 	dataFrame$POPULATION_MIX <- mapvalues(dataFrame$POPULATION_MIX, 
-		from=c("mo","bi","tr","po","ho"), 
-		to=c("mono-","bi-","tri-","poly-","homogenous")
+		from=c("mo","bi","tr","qu","po","ho"), 
+		to=c("mono","bi","tri","qua","poly","homogenous")
 	)
 
 	dataFrame$POPULATION_MIX <-factor(
-		dataFrame$POPULATION_MIX,c("mono-","bi-","tri-","poly-","homogenous")
+		dataFrame$POPULATION_MIX,c("mono","bi","tri","qua","poly","homogenous")
 	) 
 	
 	
@@ -945,6 +867,7 @@ preProcessData <- function(exp3.df) {
 	# set all factors
 	exp3.df$MODEL <- factor(exp3.df$MODEL) 
 	exp3.df$SPECIES <- factor(exp3.df$SPECIES)
+	exp3.df$RICHNESS_VARIATION <- factor(exp3.df$RICHNESS_VARIATION)
 	exp3.df$POPULATION <- exp3.df$SPECIES
 	exp3.df$POPULATION_MIX <- exp3.df$RICHNESS_TYPE
 	
@@ -990,163 +913,161 @@ plotBootHist <-function(bootSample, fileName) {
 }
 
 
-plotBootHist2Pop <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+plotBootHistPop_PM <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","POPULATION_MIX"))
 
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 2.5,height = 2, family="CMU Serif")
+	  width = 3,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
+
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ xlab(xAxisLabel) 
+			ggplot(tst, aes_string(y=colName, x="POPULATION_MIX"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.title.y = element_blank(),
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
+			#+ scale_y_continuous(labels=percentFormatter)
 		)
+		
+
 	} else {
+		
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ xlab(xAxisLabel) 
+			ggplot(tst, aes_string(y=colName, x="POPULATION_MIX"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				axis.title.y = element_blank(),
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
+			+ scale_y_continuous(labels=percentFormatter)
 		)
+
+	}
+	dev.off()
+}
+
+plotBootHistPop_R <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","RICHNESS"))
+	tst$RICHNESS <- factor(tst$RICHNESS)
+
+
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 3,height = 3, family="CMU Serif")
+	if( showPercent==FALSE ) {
+
+		print(
+			ggplot(tst, aes_string(y=colName, x="RICHNESS"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
+			+ theme_bw()
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			#+ scale_y_continuous(labels=percentFormatter)
+		)
+		
+
+	} else {
+		
+		print(
+			ggplot(tst, aes_string(y=colName, x="RICHNESS"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
+			+ theme_bw()
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_y_continuous(labels=percentFormatter)
+		)
+
 	}
 	dev.off()
 }
 
 
-plotBootHistPop_I <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+plotBootHistPop_T2S <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
+
+	tst <- summarySE(pop.data.frame,measurevar=colName,groupvars=c("INTERACTIONS","T2SRATIO"))
+	tst$T2SRATIO <- factor(tst$T2SRATIO)
+
 
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 6,height = 2, family="CMU Serif")
+	  width = 3,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
+
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ INTERACTIONS) 
-			+ xlab(xAxisLabel) 
+			ggplot(tst, aes_string(y=colName, x="T2SRATIO"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.title.y = element_blank(),
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
+			#+ scale_y_continuous(labels=percentFormatter)
 		)
+		
+
 	} else {
+		
 		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ INTERACTIONS) 
-			+ xlab(xAxisLabel) 
+			ggplot(tst, aes_string(y=colName, x="T2SRATIO"))
+			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(.9))
+			#+ facet_grid(. ~ INTERACTIONS ) 
+			+ ylab(xAxisLabel) 
 			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				axis.title.y = element_blank(),
+			+ theme( legend.position="none", 				
+				axis.title.x = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
+			+ scale_y_continuous(labels=percentFormatter)
 		)
+
 	}
 	dev.off()
 }
 
 
 
-plotBootHistPop_Q <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
-
-	xAxisLabel <- getMeasureShortName(colName)
-
-	pdf(fileName,  
-	  width = 6,height = 2, family="CMU Serif")
-	if( showPercent==FALSE ) {
-		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ QUALITY) 
-			+ xlab(xAxisLabel) 
-			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.title.y = element_blank(),
-				axis.text.x = element_text(size=rel(0.7)),
-				axis.text.y = element_text(size=rel(0.7)))
-		)
-	} else {
-		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ QUALITY) 
-			+ xlab(xAxisLabel) 
-			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				axis.title.y = element_blank(),
-				axis.text.x = element_text(size=rel(0.7)),
-				axis.text.y = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
-		)
-	}
-	dev.off()
-}
-
-
-plotBootHistPop_IQ <-function(pop.data.frame, colName, fileName, showPercent = FALSE) {
-
-	xAxisLabel <- getMeasureShortName(colName)
-
-	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
-	if( showPercent==FALSE ) {
-		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION")) 
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(INTERACTIONS ~ QUALITY) 
-			+ xlab(xAxisLabel) 
-			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 
-				axis.title.y = element_blank(),
-				axis.text.x = element_text(size=rel(0.7)),
-				axis.text.y = element_text(size=rel(0.7)))
-		)
-	} else {
-		print(
-			ggplot(pop.data.frame, aes_string(colName, fill="POPULATION"))
-			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(INTERACTIONS ~ QUALITY) 
-			+ xlab(xAxisLabel) 
-			+ theme_bw()
-			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="none", 				
-				axis.title.y = element_blank(),
-				axis.text.x = element_text(size=rel(0.7)),
-				axis.text.y = element_text(size=rel(0.7)))
-			+ scale_x_continuous(labels=percentFormatter)
-		)
-	}
-	dev.off()
-}
 
 #
 # performs t-tests
@@ -1173,220 +1094,62 @@ performTTest <-function(measure,g.v,s.v) {
 }
 
 
-computeBootStats <-function(s.data.frame,g.data.frame) {
-	bootSize <- 1000
+computeBootStatsPM <-function(s.orig.data.frame) {
+	bootSize <- 10
 
 	# extract the measures
 	s <- data.frame()
-	g <- data.frame()
-	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-	s.RATE_MOTION <- s.data.frame$RATE_MOTION
-	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
-
-	s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
-	s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
-	s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
-	s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
-	s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
-
-	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-	g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-	g.RATE_MOTION <- g.data.frame$RATE_MOTION
-	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
-
-	g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
-	g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
-	g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
-	g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
-	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
-
 	
-	s.pop.data.frame <- data.frame(
-		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=s.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=s.RATE_MOTION,
-		RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-		POPULATION="heterogenous"
-	)
-
-
-	g.pop.data.frame <- data.frame(
-		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=g.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=g.RATE_MOTION,
-		RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-		POPULATION="homogenous"
-	)
-	
-	pop.data.frame <- rbind(g.pop.data.frame,s.pop.data.frame)
-
-	return(pop.data.frame)
-
-}
-
-
-computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
-	bootSize <- 2000
-
-	# extract the measures
-	s <- data.frame()
-	g <- data.frame()
 	pop.data.frame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
-		for(var.quality in levels(s.orig.data.frame$QUALITY)) {
-			s <- data.frame()
-			g <- data.frame()
-			
-			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction & s.orig.data.frame$QUALITY==var.quality,]
-			
-			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction & g.orig.data.frame$QUALITY==var.quality,]
-			
-			
-			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-			s.RATE_MOTION <- s.data.frame$RATE_MOTION
-			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+		for(var.populationMix in unique(s.orig.data.frame$POPULATION_MIX)) {
 
-			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
+				s <- data.frame()
+				
+				
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$POPULATION_MIX==var.populationMix & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				
+				
+				
+				
+				s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+				s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+				s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+				s.RATE_MOTION <- s.data.frame$RATE_MOTION
+				s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-
-			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-			g.RATE_MOTION <- g.data.frame$RATE_MOTION
-			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
-
-			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
-
-
-			s.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=s.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=s.RATE_MOTION,
-				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
-				QUALITY=var.quality,
-				INTERACTIONS=var.interaction
-			)
-
-
-			g.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=g.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=g.RATE_MOTION,
-				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
-				QUALITY=var.quality,
-				INTERACTIONS=var.interaction
-
-			)
-
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
-			print(paste("dealt with",var.interaction,var.quality))
-
-		}
-	}
-	
-	return(pop.data.frame)
-
-}
+				s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+				s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+				s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+				s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+				s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 
 
-computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
-	bootSize <- 1000
 
-	# extract the measures
-	s <- data.frame()
-	g <- data.frame()
-	pop.data.frame <- data.frame()
-	
-	## loop through all interactions
-	## loop through all qualities
-	
-	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
+				s.pop.data.frame <- data.frame(
+					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+					CAPTURES_MEAN=s.CAPTURES_MEAN,
+					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+					RATE_MOTION=s.RATE_MOTION,
+					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+					POPULATION="heterogenous",
+					INTERACTIONS = var.interactions,
 
-			s <- data.frame()
-			g <- data.frame()
-			
-			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction,]
-			
-			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction,]
-			
-			
-			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-			s.RATE_MOTION <- s.data.frame$RATE_MOTION
-			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
-
-			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
+					POPULATION_MIX=var.populationMix
+				)
 
 
-			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-			g.RATE_MOTION <- g.data.frame$RATE_MOTION
-			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
+				
 
-			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
+				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
 
 
-			s.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=s.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=s.RATE_MOTION,
-				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
-
-				INTERACTIONS=var.interaction
-			)
-
-
-			g.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=g.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=g.RATE_MOTION,
-				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
-
-				INTERACTIONS=var.interaction
-
-			)
-
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
-
-
+			}
 		}
 	
 	
@@ -1395,157 +1158,201 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 }
 
 
-computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
-	bootSize <- 1000
+
+
+
+
+
+
+computeBootStatsR <-function(s.orig.data.frame) {
+	bootSize <- 10
 
 	# extract the measures
 	s <- data.frame()
-	g <- data.frame()
+	
 	pop.data.frame <- data.frame()
 	
 	## loop through all interactions
 	## loop through all qualities
 	
+	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+		for(var.Richness in unique(s.orig.data.frame$RICHNESS)) {
 
-		for(var.quality in levels(s.orig.data.frame$QUALITY)) {
-			s <- data.frame()
-			g <- data.frame()
-			
-			s.data.frame <- s.orig.data.frame[ s.orig.data.frame$QUALITY==var.quality,]
-			
-			g.data.frame <- g.orig.data.frame[ g.orig.data.frame$QUALITY==var.quality,]
-			
-			
-			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-			s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-			s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-			s.RATE_MOTION <- s.data.frame$RATE_MOTION
-			s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+				s <- data.frame()
+				
+				
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$RICHNESS==var.Richness & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				
+				
+				
+				
+				s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+				s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+				s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+				s.RATE_MOTION <- s.data.frame$RATE_MOTION
+				s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
 
-			s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
-			s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
-			s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
-			s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
-			s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
-
-
-			g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-			g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-			g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-			g.RATE_MOTION <- g.data.frame$RATE_MOTION
-			g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
-
-			g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
-			g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
-			g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
-			g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
-			g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
+				s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+				s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+				s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+				s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+				s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
 
 
-			s.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=s.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=s.RATE_MOTION,
-				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
-				QUALITY=var.quality
-			)
 
 
-			g.pop.data.frame <- data.frame(
-				CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-				CAPTURES_MEAN=g.CAPTURES_MEAN,
-				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-				RATE_MOTION=g.RATE_MOTION,
-				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
-				QUALITY=var.quality
+				s.pop.data.frame <- data.frame(
+					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+					CAPTURES_MEAN=s.CAPTURES_MEAN,
+					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+					RATE_MOTION=s.RATE_MOTION,
+					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+					POPULATION="heterogenous",
+					INTERACTIONS = var.interactions,
 
-			)
+					RICHNESS=var.Richness
+				)
 
-			pop.data.frame <- rbind(pop.data.frame,g.pop.data.frame,s.pop.data.frame)
-			#print(paste("dealt with",var.interaction,var.quality))
 
-		
-	}
+				
+
+				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
+
+
+			}
+		}
+	
 	
 	return(pop.data.frame)
 
 }
+
+
+
+
+computeBootStatsT2S <-function(s.orig.data.frame) {
+	bootSize <- 10
+
+	# extract the measures
+	s <- data.frame()
+	
+	pop.data.frame <- data.frame()
+	
+	## loop through all interactions
+	## loop through all qualities
+	
+	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+		for(var.T2SRATIO in unique(s.orig.data.frame$T2SRATIO)) {
+
+				s <- data.frame()
+				
+				
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$T2SRATIO==var.T2SRATIO & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				
+				
+				
+				
+				s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
+				s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
+				s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
+				s.RATE_MOTION <- s.data.frame$RATE_MOTION
+				s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
+
+				s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
+				s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
+				s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
+				s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
+				s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
+
+
+
+
+				s.pop.data.frame <- data.frame(
+					CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
+					CAPTURES_MEAN=s.CAPTURES_MEAN,
+					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
+					RATE_MOTION=s.RATE_MOTION,
+					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
+					POPULATION="heterogenous",
+					INTERACTIONS = var.interactions,
+
+					T2SRATIO=var.T2SRATIO
+				)
+
+
+				
+
+				pop.data.frame <- rbind(pop.data.frame,s.pop.data.frame)
+
+
+			}
+		}
+	
+	
+	return(pop.data.frame)
+
+}
+
+
+
 
 
 
 plotBootedStats <- function(exp3.df) {
 
+	pop.data.frame <- computeBootStatsPM(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="3_8",])
 
-	pop.data.frame <- computeBootStatsI(exp3.df[exp3.df$SPECIES=="heterogenous",], exp3.df[exp3.df$SPECIES=="homogenous",])
-
-plotBootHistPop_I(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-i-cb.pdf", TRUE)
-
-
-plotBootHistPop_I(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-i-cm.pdf", TRUE)
-
-plotBootHistPop_I(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-i-e3c.pdf", FALSE)
+	plotBootHistPop_PM(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_PM(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_PM(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_PM(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_PM(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-plotBootHistPop_I(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-i-rm.pdf", FALSE)
+	pop.data.frame <- computeBootStatsPM(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="4_24",])
+
+	plotBootHistPop_PM(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_PM(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_PM(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_PM(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_PM(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
 
 
-plotBootHistPop_I(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-i-rc.pdf", FALSE)
+	pop.data.frame <- computeBootStatsR(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="3_8",])
+
+	plotBootHistPop_R(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_R(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_R(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_R(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_R(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsQ(exp3.df[exp3.df$SPECIES=="heterogenous",], exp3.df[exp3.df$SPECIES=="homogenous",])
+	pop.data.frame <- computeBootStatsR(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="4_24",])
+
+	plotBootHistPop_R(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
+	plotBootHistPop_R(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
+	plotBootHistPop_R(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-e2c.pdf", FALSE)
+	plotBootHistPop_R(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rm.pdf", FALSE)
+	plotBootHistPop_R(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
 
 
+	pop.data.frame <- computeBootStatsT2S(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="3_8",])
 
-plotBootHistPop_Q(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-q-cb.pdf", TRUE)
-
-plotBootHistPop_Q(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-q-cm.pdf", TRUE)
-
-plotBootHistPop_Q(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-q-e3c.pdf", FALSE)
-
-
-plotBootHistPop_Q(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-q-rm.pdf", FALSE)
+	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scb.pdf", TRUE)
+	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scm.pdf", TRUE)
+	plotBootHistPop_T2S(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2se2c.pdf", FALSE)
+	plotBootHistPop_T2S(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2srm.pdf", FALSE)
+	plotBootHistPop_T2S(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2src.pdf", FALSE)
 
 
-plotBootHistPop_Q(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-q-rc.pdf", FALSE)
+	pop.data.frame <- computeBootStatsT2S(exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$RICHNESS_VARIATION=="4_24",])
 
-
-pop.data.frame <- computeBootStatsIQ(exp3.df[exp3.df$SPECIES=="heterogenous",], exp3.df[exp3.df$SPECIES=="homogenous",])
-
-
-	plotBootHistPop_IQ(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-iq-cb.pdf", TRUE)
-
-plotBootHistPop_IQ(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-iq-cm.pdf", TRUE)
-
-plotBootHistPop_IQ(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-iq-e3c.pdf", FALSE)
-
-
-plotBootHistPop_IQ(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-iq-rm.pdf", FALSE)
-
-
-plotBootHistPop_IQ(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-boot-pop-iq-rc.pdf", FALSE)
-
-if(1!=1) {
-
-	t.table <- data.frame()
-
-
-	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",s.CAPTURES_BEST_CASE,g.CAPTURES_BEST_CASE))
+	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scb.pdf", TRUE)
+	plotBootHistPop_T2S(pop.data.frame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scm.pdf", TRUE)
+	plotBootHistPop_T2S(pop.data.frame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2se2c.pdf", FALSE)
+	plotBootHistPop_T2S(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2srm.pdf", FALSE)
+	plotBootHistPop_T2S(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2src.pdf", FALSE)
 	
-	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
-
-	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
-
-	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
-
-	data(t.table)
-	print("data table for pg vs ps")
-	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
-	#print(xtable(t.table, include.rownames=FALSE))
-	}
-
 }
 
 
@@ -1560,10 +1367,15 @@ if(1!=1) {
 
 exp3.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp3/exp3_experiments_mean_300.csv")
 
+
+
 exp3.df <- preProcessData(exp3.df)     # factorizes, as appropriate, adjusts E2C...
 exp3.df <- renameFactorValues(exp3.df) # renames for nice plots
 
 orig <- exp3.df
+
+# only keep the heterogenous ones...
+exp3.df <- exp3.df[exp3.df$SPECIES=="heterogenous" & exp3.df$INTERACTIONS=="trail",]
 
 ##### not using these....plotGraphs(exp3.df)
 
@@ -1574,18 +1386,15 @@ orig <- exp3.df
 # Richness
 # Traitsum
 # 
-
 #plotHists(exp3.df)    # plots histograms
 
 #doNormalityAnalysisFullPop(exp3.df)
 #doNormalityAnalysisSubPop(exp3.df)
 
 # first we'll only look at the heterogenous population:
-exp3.df <- exp3.df[exp3.df$SPECIES=="heterogenous",]
+#exp3.df <- exp3.df[exp3.df$SPECIES=="heterogenous",]
 #plotBoxPlots(exp3.df) # boxplots to show difference
 
-#exp3.df <- orig
-#plotBoxPlotsAllPop(exp3.df)
 
 
 
