@@ -319,12 +319,12 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 	
 	
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
+	  width = 7,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ POPULATION_MIX, labeller=label_parsed) +
+			facet_grid( . ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -335,7 +335,7 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ POPULATION_MIX, labeller=label_parsed) +
+			facet_grid( . ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -354,18 +354,7 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 plotHists <- function(expDataFrame) {
 
 	orig <- expDataFrame
-	if (2==1) {
 	
-		expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_4",]	
-		plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-cm.pdf", TRUE)		
-		plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-cb.pdf", TRUE)
-		plotHistByPopulationMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-e2c.pdf")
-		plotHistByPopulationMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-rm.pdf")
-		plotHistByPopulationMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_4-hist-rc.pdf")
-		expDataFrame <- orig
-	}
-	
-
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_8",]
 	plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cm.pdf", TRUE)
 	plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cb.pdf", TRUE)
@@ -1386,7 +1375,7 @@ expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame
 # Richness
 # Traitsum
 # 
-#plotHists(expDataFrame)    # plots histograms
+plotHists(expDataFrame)    # plots histograms
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
@@ -1398,7 +1387,7 @@ expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame
 
 
 
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 
 
 
