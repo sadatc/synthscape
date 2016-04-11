@@ -47,12 +47,12 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 
 
 #
-# given sample.data, computes mean based on r replicates 
+# given sampleData, computes mean based on r replicates 
 #
-bootMean = function(sample.data, r) {
-	sample.data = na.omit(sample.data)
-	n = length(sample.data)
-	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
+bootMean = function(sampleData, r) {
+	sampleData = na.omit(sampleData)
+	n = length(sampleData)
+	boot.samples = matrix(sample(sampleData,size=n*r, replace=TRUE),r,n)
 	boot.statistics = apply(boot.samples,1,mean)
 	return(boot.statistics)
 }

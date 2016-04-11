@@ -47,12 +47,12 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 
 
 #
-# given sample.data, computes mean based on r replicates 
+# given sampleData, computes mean based on r replicates 
 #
-bootMean = function(sample.data, r) {
-	sample.data = na.omit(sample.data)
-	n = length(sample.data)
-	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
+bootMean = function(sampleData, r) {
+	sampleData = na.omit(sampleData)
+	n = length(sampleData)
+	boot.samples = matrix(sample(sampleData,size=n*r, replace=TRUE),r,n)
 	boot.statistics = apply(boot.samples,1,mean)
 	return(boot.statistics)
 }
@@ -1237,14 +1237,14 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
+	for(varInteraction in levels(s.orig.data.frame$INTERACTIONS)) {
 		for(var.quality in levels(s.orig.data.frame$QUALITY)) {
 			s <- data.frame()
 			g <- data.frame()
 			
-			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction & s.orig.data.frame$QUALITY==var.quality,]
+			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==varInteraction & s.orig.data.frame$QUALITY==var.quality,]
 			
-			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction & g.orig.data.frame$QUALITY==var.quality,]
+			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==varInteraction & g.orig.data.frame$QUALITY==var.quality,]
 			
 			
 			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
@@ -1281,7 +1281,7 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 				POPULATION="heterogenous",
 				QUALITY=var.quality,
-				INTERACTIONS=var.interaction
+				INTERACTIONS=varInteraction
 			)
 
 
@@ -1293,12 +1293,12 @@ computeBootStatsIQ <-function(s.orig.data.frame,g.orig.data.frame) {
 				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
 				POPULATION="homogenous",
 				QUALITY=var.quality,
-				INTERACTIONS=var.interaction
+				INTERACTIONS=varInteraction
 
 			)
 
 			popDataFrame <- rbind(popDataFrame,g.popDataFrame,s.popDataFrame)
-			print(paste("dealt with",var.interaction,var.quality))
+			print(paste("dealt with",varInteraction,var.quality))
 
 		}
 	}
@@ -1320,14 +1320,14 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interaction in levels(s.orig.data.frame$INTERACTIONS)) {
+	for(varInteraction in levels(s.orig.data.frame$INTERACTIONS)) {
 
 			s <- data.frame()
 			g <- data.frame()
 			
-			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==var.interaction,]
+			s.data.frame <- s.orig.data.frame[s.orig.data.frame$INTERACTIONS==varInteraction,]
 			
-			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==var.interaction,]
+			g.data.frame <- g.orig.data.frame[g.orig.data.frame$INTERACTIONS==varInteraction,]
 			
 			
 			s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
@@ -1364,7 +1364,7 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 				POPULATION="heterogenous",
 
-				INTERACTIONS=var.interaction
+				INTERACTIONS=varInteraction
 			)
 
 
@@ -1376,7 +1376,7 @@ computeBootStatsI <-function(s.orig.data.frame,g.orig.data.frame) {
 				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
 				POPULATION="homogenous",
 
-				INTERACTIONS=var.interaction
+				INTERACTIONS=varInteraction
 
 			)
 
@@ -1461,7 +1461,7 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 			)
 
 			popDataFrame <- rbind(popDataFrame,g.popDataFrame,s.popDataFrame)
-			#print(paste("dealt with",var.interaction,var.quality))
+			#print(paste("dealt with",varInteraction,var.quality))
 
 		
 	}

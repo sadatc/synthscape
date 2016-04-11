@@ -94,12 +94,12 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 
 
 #
-# given sample.data, computes mean based on r replicates 
+# given sampleData, computes mean based on r replicates 
 #
-bootMean = function(sample.data, r) {
-	sample.data = na.omit(sample.data)
-	n = length(sample.data)
-	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
+bootMean = function(sampleData, r) {
+	sampleData = na.omit(sampleData)
+	n = length(sampleData)
+	boot.samples = matrix(sample(sampleData,size=n*r, replace=TRUE),r,n)
 	boot.statistics = apply(boot.samples,1,mean)
 	return(boot.statistics)
 }
@@ -1072,13 +1072,13 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+	for(varInteractions in levels(s.orig.data.frame$INTERACTIONS)) {
 		for(var.populationMix in unique(s.orig.data.frame$POPULATION_MIX)) {
 
 				s <- data.frame()
 				
 				
-				s.data.frame <- s.orig.data.frame[s.orig.data.frame$POPULATION_MIX==var.populationMix & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$POPULATION_MIX==var.populationMix & s.orig.data.frame$INTERACTIONS ==varInteractions,]
 				
 				
 				
@@ -1105,7 +1105,7 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 					POPULATION="heterogenous",
-					INTERACTIONS = var.interactions,
+					INTERACTIONS = varInteractions,
 
 					POPULATION_MIX=var.populationMix
 				)
@@ -1142,13 +1142,13 @@ computeBootStatsR <-function(s.orig.data.frame) {
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+	for(varInteractions in levels(s.orig.data.frame$INTERACTIONS)) {
 		for(var.Richness in unique(s.orig.data.frame$RICHNESS)) {
 
 				s <- data.frame()
 				
 				
-				s.data.frame <- s.orig.data.frame[s.orig.data.frame$RICHNESS==var.Richness & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$RICHNESS==var.Richness & s.orig.data.frame$INTERACTIONS ==varInteractions,]
 				
 				
 				
@@ -1175,7 +1175,7 @@ computeBootStatsR <-function(s.orig.data.frame) {
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 					POPULATION="heterogenous",
-					INTERACTIONS = var.interactions,
+					INTERACTIONS = varInteractions,
 
 					RICHNESS=var.Richness
 				)
@@ -1208,13 +1208,13 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 	## loop through all interactions
 	## loop through all qualities
 	
-	for(var.interactions in levels(s.orig.data.frame$INTERACTIONS)) {
+	for(varInteractions in levels(s.orig.data.frame$INTERACTIONS)) {
 		for(var.T2SRATIO in unique(s.orig.data.frame$T2SRATIO)) {
 
 				s <- data.frame()
 				
 				
-				s.data.frame <- s.orig.data.frame[s.orig.data.frame$T2SRATIO==var.T2SRATIO & s.orig.data.frame$INTERACTIONS ==var.interactions,]
+				s.data.frame <- s.orig.data.frame[s.orig.data.frame$T2SRATIO==var.T2SRATIO & s.orig.data.frame$INTERACTIONS ==varInteractions,]
 				
 				
 				
@@ -1241,7 +1241,7 @@ computeBootStatsT2S <-function(s.orig.data.frame) {
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
 					POPULATION="heterogenous",
-					INTERACTIONS = var.interactions,
+					INTERACTIONS = varInteractions,
 
 					T2SRATIO=var.T2SRATIO
 				)

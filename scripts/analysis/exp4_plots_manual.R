@@ -44,12 +44,12 @@ plotHistBy_S <-function(dataFrame, colName, fileName) {
 }
 
 #
-# given sample.data, computes mean based on r replicates 
+# given sampleData, computes mean based on r replicates 
 #
-bootMean = function(sample.data, r) {
-	sample.data = na.omit(sample.data)
-	n = length(sample.data)
-	boot.samples = matrix(sample(sample.data,size=n*r, replace=TRUE),r,n)
+bootMean = function(sampleData, r) {
+	sampleData = na.omit(sampleData)
+	n = length(sampleData)
+	boot.samples = matrix(sample(sampleData,size=n*r, replace=TRUE),r,n)
 	boot.statistics = apply(boot.samples,1,mean)
 	return(boot.statistics)
 }
@@ -950,17 +950,17 @@ performTTest <-function(measure,p.v,f.v) {
 }
 
 
-computeBootStats <-function(f.data.frame,p.data.frame) {
+computeBootStats <-function(fDataFrame,pDataFrame) {
 	bootSize <- 1000
 
 	# extract the measures
 	s <- data.frame()
 	g <- data.frame()
-	f.CAPTURES_BEST_CASE <- f.data.frame$CAPTURES_BEST_CASE
-	f.CAPTURES_MEAN <- f.data.frame$CAPTURES_MEAN
-	f.RES_E2C_STEPS_MEAN <- f.data.frame$RES_E2C_STEPS_MEAN
-	f.RATE_MOTION <- f.data.frame$RATE_MOTION
-	f.RATE_COMMUNICATION <- f.data.frame$RATE_COMMUNICATION
+	f.CAPTURES_BEST_CASE <- fDataFrame$CAPTURES_BEST_CASE
+	f.CAPTURES_MEAN <- fDataFrame$CAPTURES_MEAN
+	f.RES_E2C_STEPS_MEAN <- fDataFrame$RES_E2C_STEPS_MEAN
+	f.RATE_MOTION <- fDataFrame$RATE_MOTION
+	f.RATE_COMMUNICATION <- fDataFrame$RATE_COMMUNICATION
 
 	f.CAPTURES_BEST_CASE <- bootMean(f.CAPTURES_BEST_CASE,bootSize)
 	f.CAPTURES_MEAN <- bootMean(f.CAPTURES_MEAN,bootSize)
@@ -968,11 +968,11 @@ computeBootStats <-function(f.data.frame,p.data.frame) {
 	f.RATE_MOTION <- bootMean(f.RATE_MOTION,bootSize)
 	f.RATE_COMMUNICATION <- bootMean(f.RATE_COMMUNICATION,bootSize)
 
-	p.CAPTURES_BEST_CASE <- p.data.frame$CAPTURES_BEST_CASE
-	p.CAPTURES_MEAN <- p.data.frame$CAPTURES_MEAN
-	p.RES_E2C_STEPS_MEAN <- p.data.frame$RES_E2C_STEPS_MEAN
-	p.RATE_MOTION <- p.data.frame$RATE_MOTION
-	p.RATE_COMMUNICATION <- p.data.frame$RATE_COMMUNICATION
+	p.CAPTURES_BEST_CASE <- pDataFrame$CAPTURES_BEST_CASE
+	p.CAPTURES_MEAN <- pDataFrame$CAPTURES_MEAN
+	p.RES_E2C_STEPS_MEAN <- pDataFrame$RES_E2C_STEPS_MEAN
+	p.RATE_MOTION <- pDataFrame$RATE_MOTION
+	p.RATE_COMMUNICATION <- pDataFrame$RATE_COMMUNICATION
 
 	p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
 	p.CAPTURES_MEAN <- bootMean(p.CAPTURES_MEAN,bootSize)
@@ -1011,7 +1011,7 @@ computeBootStats <-function(f.data.frame,p.data.frame) {
 
 
 
-computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
+computeBootStatsI <-function(fOrigDataFrame, pOrigDataFrame) {
 	bootSize <- 1000
 
 
@@ -1025,31 +1025,31 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 	## loop through all qualities
 
 
-	for(var.ratio in unique(f.orig.data.frame$RATIO)) {
+	for(varRatio in unique(fOrigDataFrame$RATIO)) {
 
 	
-		for(var.interaction in unique(f.orig.data.frame$INTERACTIONS)) {
+		for(varInteraction in unique(fOrigDataFrame$INTERACTIONS)) {
 				
 
 				f <- data.frame()
 				p <- data.frame()
 				
-				f.data.frame <- f.orig.data.frame[f.orig.data.frame$INTERACTIONS==var.interaction & f.orig.data.frame$RATIO == var.ratio,]
+				fDataFrame <- fOrigDataFrame[fOrigDataFrame$INTERACTIONS==varInteraction & fOrigDataFrame$RATIO == varRatio,]
 				
-				p.data.frame <- p.orig.data.frame[p.orig.data.frame$INTERACTIONS==var.interaction & p.orig.data.frame$RATIO == var.ratio,]
+				pDataFrame <- pOrigDataFrame[pOrigDataFrame$INTERACTIONS==varInteraction & pOrigDataFrame$RATIO == varRatio,]
 				
 				
-				f.CAPTURES_BEST_CASE <- f.data.frame$CAPTURES_BEST_CASE
-				f.CAPTURES_MEAN <- f.data.frame$CAPTURES_MEAN
-				f.RES_E2C_STEPS_MEAN <- f.data.frame$RES_E2C_STEPS_MEAN
-				f.RATE_MOTION <- f.data.frame$RATE_MOTION
-				f.RATE_COMMUNICATION <- f.data.frame$RATE_COMMUNICATION
-				f.EXTRACTED_RESOURCES <- f.data.frame$EXTRACTED_RESOURCES
+				f.CAPTURES_BEST_CASE <- fDataFrame$CAPTURES_BEST_CASE
+				f.CAPTURES_MEAN <- fDataFrame$CAPTURES_MEAN
+				f.RES_E2C_STEPS_MEAN <- fDataFrame$RES_E2C_STEPS_MEAN
+				f.RATE_MOTION <- fDataFrame$RATE_MOTION
+				f.RATE_COMMUNICATION <- fDataFrame$RATE_COMMUNICATION
+				f.EXTRACTED_RESOURCES <- fDataFrame$EXTRACTED_RESOURCES
 				
-				f.NUM_DETECTORS <- f.data.frame$NUM_DETECTORS
-				f.NUM_EXTRACTORS <- f.data.frame$NUM_EXTRACTORS
-				f.NUM_TRANSPORTERS <- f.data.frame$NUM_TRANSPORTERS
-				f.E <- f.data.frame$E
+				f.NUM_DETECTORS <- fDataFrame$NUM_DETECTORS
+				f.NUM_EXTRACTORS <- fDataFrame$NUM_EXTRACTORS
+				f.NUM_TRANSPORTERS <- fDataFrame$NUM_TRANSPORTERS
+				f.E <- fDataFrame$E
 						
 
 				f.CAPTURES_BEST_CASE <- bootMean(f.CAPTURES_BEST_CASE,bootSize)
@@ -1065,18 +1065,18 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 				f.E <- bootMean(f.E,bootSize)	
 
 
-				p.CAPTURES_BEST_CASE <- p.data.frame$CAPTURES_BEST_CASE
-				p.CAPTURES_MEAN <- p.data.frame$CAPTURES_MEAN
-				p.RES_E2C_STEPS_MEAN <- p.data.frame$RES_E2C_STEPS_MEAN
-				p.RATE_MOTION <- p.data.frame$RATE_MOTION
-				p.RATE_COMMUNICATION <- p.data.frame$RATE_COMMUNICATION
-				p.EXTRACTED_RESOURCES <- p.data.frame$EXTRACTED_RESOURCES
+				p.CAPTURES_BEST_CASE <- pDataFrame$CAPTURES_BEST_CASE
+				p.CAPTURES_MEAN <- pDataFrame$CAPTURES_MEAN
+				p.RES_E2C_STEPS_MEAN <- pDataFrame$RES_E2C_STEPS_MEAN
+				p.RATE_MOTION <- pDataFrame$RATE_MOTION
+				p.RATE_COMMUNICATION <- pDataFrame$RATE_COMMUNICATION
+				p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
 
-				p.NUM_DETECTORS <- p.data.frame$NUM_DETECTORS
-				p.NUM_EXTRACTORS <- p.data.frame$NUM_EXTRACTORS
-				p.NUM_TRANSPORTERS <- p.data.frame$NUM_TRANSPORTERS
-				p.E <- p.data.frame$E
-				p.EXTRACTED_RESOURCES <- p.data.frame$EXTRACTED_RESOURCES
+				p.NUM_DETECTORS <- pDataFrame$NUM_DETECTORS
+				p.NUM_EXTRACTORS <- pDataFrame$NUM_EXTRACTORS
+				p.NUM_TRANSPORTERS <- pDataFrame$NUM_TRANSPORTERS
+				p.E <- pDataFrame$E
+				p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
 					
 
 				p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
@@ -1107,8 +1107,8 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 					NUM_TRANSPORTERS=f.NUM_TRANSPORTERS,
 					E=f.E,
 					EXTRACTED_RESOURCES="f",
-					INTERACTIONS=var.interaction,
-					RATIO = var.ratio
+					INTERACTIONS=varInteraction,
+					RATIO = varRatio
 				)
 
 				
@@ -1125,8 +1125,8 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 					NUM_TRANSPORTERS=p.NUM_TRANSPORTERS,
 					E=p.E,
 					EXTRACTED_RESOURCES="p",
-					INTERACTIONS=var.interaction,
-					RATIO = var.ratio
+					INTERACTIONS=varInteraction,
+					RATIO = varRatio
 
 				)
 
