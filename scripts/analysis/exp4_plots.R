@@ -121,15 +121,15 @@ p(rSShapiro)
 
 
 
-doNormalityAnalysisSubPop <- function(exp4.df) {
+doNormalityAnalysisSubPop <- function(expDataFrame) {
 	dist.table <- data.frame()
 
 
 
 #	print("========== ALIFE ========")
-	gdata <- exp4.df[exp4.df$SPECIES=="homogenous"  & exp4.df$MODEL=="alife" & exp4.df$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- exp4.df[exp4.df$SPECIES=="heterogenous" &  exp4.df$MODEL=="alife" & exp4.df$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -147,12 +147,12 @@ doNormalityAnalysisSubPop <- function(exp4.df) {
 
 
 
-doNormalityAnalysisFullPop <- function(exp4.df) {
+doNormalityAnalysisFullPop <- function(expDataFrame) {
 	dist.table <- data.frame()
 
-	gdata <- exp4.df[exp4.df$SPECIES=="homogenous" & exp4.df$QUALITY=="s"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
 
-	sdata <- exp4.df[exp4.df$SPECIES=="heterogenous" & exp4.df$QUALITY=="s"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$QUALITY=="s"  ,]
 
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -441,34 +441,34 @@ plotHistBySubPopulation <-function(model, dataFrame, colName, fileName, showPerc
 
 
 
-plotHists <- function(exp4.df) {
+plotHists <- function(expDataFrame) {
 	
-	plotHistByPopulation("alife", exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-cm.pdf", TRUE)
-	plotHistByPopulation("alife", exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-cb.pdf", TRUE)
-	plotHistByPopulation("alife", exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-e4c.pdf")
-	plotHistByPopulation("alife", exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-rm.pdf")
-	plotHistByPopulation("alife", exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-rc.pdf")
+	plotHistByPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-cm.pdf", TRUE)
+	plotHistByPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-cb.pdf", TRUE)
+	plotHistByPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-e4c.pdf")
+	plotHistByPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-rm.pdf")
+	plotHistByPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-rc.pdf")
 
-	plotHistByPopulationQuality("alife", exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-cm.pdf", TRUE)
-	plotHistByPopulationQuality("alife", exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-cb.pdf", TRUE)
-	plotHistByPopulationQuality("alife", exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-e4c.pdf")
-	plotHistByPopulationQuality("alife", exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-rm.pdf")
-	plotHistByPopulationQuality("alife", exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-rc.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-cm.pdf", TRUE)
+	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-cb.pdf", TRUE)
+	plotHistByPopulationQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-e4c.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-rm.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-q-rc.pdf")
 
 
-	plotHistByInteractionQuality("alife", exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-cm.pdf", TRUE)
-	plotHistByInteractionQuality("alife", exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-cb.pdf", TRUE)
-	plotHistByInteractionQuality("alife", exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-e4c.pdf")
-	plotHistByInteractionQuality("alife", exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-rm.pdf")
-	plotHistByInteractionQuality("alife", exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-rc.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-cm.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-cb.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-e4c.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-rm.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-alife-iq-rc.pdf")
 
 
 	
-	plotHistBySubPopulation("alife", exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-cm.pdf", TRUE)
-	plotHistBySubPopulation("alife", exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-cb.pdf", TRUE)
-	plotHistBySubPopulation("alife", exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-e4c.pdf")
-	plotHistBySubPopulation("alife", exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-rm.pdf")
-	plotHistBySubPopulation("alife", exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-rc.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-cm.pdf", TRUE)
+	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-cb.pdf", TRUE)
+	plotHistBySubPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-e4c.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-rm.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-s-alife-rc.pdf")
 
 }
 
@@ -833,59 +833,59 @@ compareMeans <-function(d.f,measure) {
 
 
 
-plotBoxPlotsAllPop <- function(exp4.df) {
-	plotBoxPlot_PM(exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-cb.pdf", TRUE)
+plotBoxPlotsAllPop <- function(expDataFrame) {
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-cb.pdf", TRUE)
 
-	plotBoxPlot_PM(exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-cm.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-cm.pdf", TRUE)
 
-	plotBoxPlot_PM(exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-e2c.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-e2c.pdf", FALSE)
 
-	plotBoxPlot_PM(exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-rm.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-rm.pdf", FALSE)
 
-	plotBoxPlot_PM(exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-rc.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-all-rc.pdf", FALSE)
 }
 
 
 
-plotBoxPlots <- function(exp4.df) {
-	orig <- exp4.df
+plotBoxPlots <- function(expDataFrame) {
+	orig <- expDataFrame
 
 
 	# compare richness type vs performance
 
-	plotBoxPlot_PM(exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-cb.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-cb.pdf", TRUE)
 
-	plotBoxPlot_PM(exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-cm.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-cm.pdf", TRUE)
 
-	plotBoxPlot_PM(exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-e2c.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-e2c.pdf", FALSE)
 
-	plotBoxPlot_PM(exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-rm.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-rm.pdf", FALSE)
 
-	plotBoxPlot_PM(exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-rc.pdf", FALSE)
-
-
+	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-pm-rc.pdf", FALSE)
 
 
-	plotBoxPlot_R(exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-cb.pdf", TRUE)
-
-	plotBoxPlot_R(exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-cm.pdf", TRUE)
-
-	plotBoxPlot_R(exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-e2c.pdf", FALSE)
-
-	plotBoxPlot_R(exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rm.pdf", FALSE)
-
-	plotBoxPlot_R(exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rc.pdf", FALSE)
 
 
-	plotBoxPlot_T2S(exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-cb.pdf", TRUE)
+	plotBoxPlot_R(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-cb.pdf", TRUE)
 
-	plotBoxPlot_T2S(exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-cm.pdf", TRUE)
+	plotBoxPlot_R(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-cm.pdf", TRUE)
 
-	plotBoxPlot_T2S(exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-e2c.pdf", FALSE)
+	plotBoxPlot_R(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-e2c.pdf", FALSE)
 
-	plotBoxPlot_T2S(exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-rm.pdf", FALSE)
+	plotBoxPlot_R(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rm.pdf", FALSE)
 
-	plotBoxPlot_T2S(exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rc.pdf", FALSE)
+	plotBoxPlot_R(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rc.pdf", FALSE)
+
+
+	plotBoxPlot_T2S(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-cb.pdf", TRUE)
+
+	plotBoxPlot_T2S(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-cm.pdf", TRUE)
+
+	plotBoxPlot_T2S(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-e2c.pdf", FALSE)
+
+	plotBoxPlot_T2S(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-t2s-rm.pdf", FALSE)
+
+	plotBoxPlot_T2S(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-r-rc.pdf", FALSE)
 
 
 
@@ -941,34 +941,34 @@ renameFactorValues <- function(dataFrame) {
 # this function:
 # 1. makes POPULATION a synonym for species
 # 2. sets RES_E2C_STEPS_MEAN = RES_E2C_STEPS_MEAN * CAPTURES_MEAN
-preProcessData <- function(exp4.df) {
+preProcessData <- function(expDataFrame) {
 	# set all factors
-	exp4.df$MODEL <- factor(exp4.df$MODEL) 
-	exp4.df$SPECIES <- factor(exp4.df$SPECIES)
-	exp4.df$POPULATION <- exp4.df$SPECIES
-	exp4.df$POPULATION_MIX <- exp4.df$RICHNESS_TYPE
+	expDataFrame$MODEL <- factor(expDataFrame$MODEL) 
+	expDataFrame$SPECIES <- factor(expDataFrame$SPECIES)
+	expDataFrame$POPULATION <- expDataFrame$SPECIES
+	expDataFrame$POPULATION_MIX <- expDataFrame$RICHNESS_TYPE
 	
-	exp4.df$POPULATION <- factor(exp4.df$POPULATION)	
-	exp4.df$INTERACTIONS <- factor(exp4.df$INTERACTIONS)
-	exp4.df$COMPLEXITY <- factor(exp4.df$COMPLEXITY)
-	exp4.df$CLONES <- factor(exp4.df$CLONES)
-	exp4.df$RICHNESS_TYPE <- factor(exp4.df$RICHNESS_TYPE)
-	exp4.df$POPULATION_MIX <- factor(exp4.df$POPULATION_MIX)
+	expDataFrame$POPULATION <- factor(expDataFrame$POPULATION)	
+	expDataFrame$INTERACTIONS <- factor(expDataFrame$INTERACTIONS)
+	expDataFrame$COMPLEXITY <- factor(expDataFrame$COMPLEXITY)
+	expDataFrame$CLONES <- factor(expDataFrame$CLONES)
+	expDataFrame$RICHNESS_TYPE <- factor(expDataFrame$RICHNESS_TYPE)
+	expDataFrame$POPULATION_MIX <- factor(expDataFrame$POPULATION_MIX)
 	
 	
-	exp4.df$GRIDS <- factor(exp4.df$GRIDS)
-	exp4.df$RESOURCES <- factor(exp4.df$RESOURCES)
-	exp4.df$SITES <- factor(exp4.df$SITES)
-	exp4.df$OBSTACLES <- factor(exp4.df$OBSTACLES)
-	exp4.df$DIFFICULTY <- factor(exp4.df$DIFFICULTY)
+	expDataFrame$GRIDS <- factor(expDataFrame$GRIDS)
+	expDataFrame$RESOURCES <- factor(expDataFrame$RESOURCES)
+	expDataFrame$SITES <- factor(expDataFrame$SITES)
+	expDataFrame$OBSTACLES <- factor(expDataFrame$OBSTACLES)
+	expDataFrame$DIFFICULTY <- factor(expDataFrame$DIFFICULTY)
 
 	
-	exp4.df$RES_E2C_STEPS_MEAN <- (exp4.df$RES_E2C_STEPS_MEAN*exp4.df$CAPTURES_MEAN)
+	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 	
 	# round the T2SRATIO
-	exp4.df$T2SRATIO <- round(exp4.df$T2SRATIO,3)
+	expDataFrame$T2SRATIO <- round(expDataFrame$T2SRATIO,3)
 
-	return(exp4.df)
+	return(expDataFrame)
 }
 
 
@@ -1476,10 +1476,10 @@ computeBootStatsQ <-function(s.orig.data.frame,g.orig.data.frame) {
 
 
 
-plotBootedStats <- function(exp4.df) {
+plotBootedStats <- function(expDataFrame) {
 
 
-	pop.data.frame <- computeBootStatsI(exp4.df[exp4.df$SPECIES=="heterogenous",], exp4.df[exp4.df$SPECIES=="homogenous",])
+	pop.data.frame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 plotBootHistPop_I(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cb.pdf", TRUE)
 
@@ -1495,7 +1495,7 @@ plotBootHistPop_I(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/di
 plotBootHistPop_I(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-rc.pdf", FALSE)
 
 
-	pop.data.frame <- computeBootStatsQ(exp4.df[exp4.df$SPECIES=="heterogenous",], exp4.df[exp4.df$SPECIES=="homogenous",])
+	pop.data.frame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
 
@@ -1512,7 +1512,7 @@ plotBootHistPop_Q(pop.data.frame,"RATE_MOTION","/Users/sadat/Dropbox/research/di
 plotBootHistPop_Q(pop.data.frame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-q-rc.pdf", FALSE)
 
 
-pop.data.frame <- computeBootStatsIQ(exp4.df[exp4.df$SPECIES=="heterogenous",], exp4.df[exp4.df$SPECIES=="homogenous",])
+pop.data.frame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
 	plotBootHistPop_IQ(pop.data.frame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-iq-cb.pdf", TRUE)
@@ -1558,14 +1558,14 @@ if(1!=1) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
-exp4.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_dyn_experiments_mean_300.csv")
+expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_dyn_experiments_mean_300.csv")
 
-exp4.df <- preProcessData(exp4.df)     # factorizes, as appropriate, adjusts E2C...
-exp4.df <- renameFactorValues(exp4.df) # renames for nice plots
+expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
+expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
-orig <- exp4.df
+orig <- expDataFrame
 
-##### not using these....plotGraphs(exp4.df)
+##### not using these....plotGraphs(expDataFrame)
 
 # Using these...
 
@@ -1575,21 +1575,21 @@ orig <- exp4.df
 # Traitsum
 # 
 
-#plotHists(exp4.df)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysisFullPop(exp4.df)
-#doNormalityAnalysisSubPop(exp4.df)
+#doNormalityAnalysisFullPop(expDataFrame)
+#doNormalityAnalysisSubPop(expDataFrame)
 
 # first we'll only look at the heterogenous population:
-exp4.df <- exp4.df[exp4.df$SPECIES=="heterogenous",]
-#plotBoxPlots(exp4.df) # boxplots to show difference
+expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
-#exp4.df <- orig
-#plotBoxPlotsAllPop(exp4.df)
+#expDataFrame <- orig
+#plotBoxPlotsAllPop(expDataFrame)
 
 
 
-plotBootedStats(exp4.df)
+plotBootedStats(expDataFrame)
 
 
 

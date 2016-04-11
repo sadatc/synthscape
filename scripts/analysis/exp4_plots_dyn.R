@@ -121,15 +121,15 @@ p(rSShapiro)
 
 
 
-doNormalityAnalysisSubPop <- function(exp4.df) {
+doNormalityAnalysisSubPop <- function(expDataFrame) {
 	dist.table <- data.frame()
 
 
 
 #	print("========== ALIFE ========")
-	gdata <- exp4.df[exp4.df$SPECIES=="homogenous"  & exp4.df$MODEL=="alife" & exp4.df$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- exp4.df[exp4.df$SPECIES=="heterogenous" &  exp4.df$MODEL=="alife" & exp4.df$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -147,12 +147,12 @@ doNormalityAnalysisSubPop <- function(exp4.df) {
 
 
 
-doNormalityAnalysisFullPop <- function(exp4.df) {
+doNormalityAnalysisFullPop <- function(expDataFrame) {
 	dist.table <- data.frame()
 
-	gdata <- exp4.df[exp4.df$SPECIES=="homogenous" & exp4.df$QUALITY=="s"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
 
-	sdata <- exp4.df[exp4.df$SPECIES=="heterogenous" & exp4.df$QUALITY=="s"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$QUALITY=="s"  ,]
 
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	dist.table <- rbind(dist.table,analyzeNormailtyPair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -391,17 +391,17 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 
 
 
-plotHists <- function(exp4.df) {
+plotHists <- function(expDataFrame) {
 
-	plotHistByIntResMix( exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cm.pdf", TRUE)
-	plotHistByIntResMix( exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cb.pdf", TRUE)
-	plotHistByIntResMix( exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e4c.pdf")
-	plotHistByIntResMix( exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rm.pdf")
-	plotHistByIntResMix( exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rc.pdf")
-	plotHistByIntResMix( exp4.df,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-dets.pdf")
-	plotHistByIntResMix( exp4.df,"NUM_EXTRACTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-exts.pdf")
-	plotHistByIntResMix( exp4.df,"NUM_TRANSPORTERS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-trns.pdf")
-	plotHistByIntResMix( exp4.df,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e.pdf")
+	plotHistByIntResMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cm.pdf", TRUE)
+	plotHistByIntResMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cb.pdf", TRUE)
+	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e4c.pdf")
+	plotHistByIntResMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rm.pdf")
+	plotHistByIntResMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rc.pdf")
+	plotHistByIntResMix( expDataFrame,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-dets.pdf")
+	plotHistByIntResMix( expDataFrame,"NUM_EXTRACTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-exts.pdf")
+	plotHistByIntResMix( expDataFrame,"NUM_TRANSPORTERS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-trns.pdf")
+	plotHistByIntResMix( expDataFrame,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e.pdf")
 
 
 
@@ -563,29 +563,29 @@ compareMeans <-function(d.f,measure) {
 
 
 
-plotBoxPlots <- function(exp4.df) {
-	orig <- exp4.df
+plotBoxPlots <- function(expDataFrame) {
+	orig <- expDataFrame
 
 
 	# compare richness type vs performance
 
-	plotBoxPlot_Even(exp4.df,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-cb.pdf", TRUE)
+	plotBoxPlot_Even(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-cb.pdf", TRUE)
 
-	plotBoxPlot_Even(exp4.df,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-cm.pdf", TRUE)
+	plotBoxPlot_Even(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-cm.pdf", TRUE)
 
-	plotBoxPlot_Even(exp4.df,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-e2c.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-e2c.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-rm.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-rm.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-rc.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e-rc.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-ds.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-ds.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"NUM_EXTRACTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-es.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"NUM_EXTRACTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-es.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"NUM_TRANSPORTERS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-ts.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"NUM_TRANSPORTERS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-ts.pdf", FALSE)
 
-	plotBoxPlot_Even(exp4.df,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e.pdf", FALSE)
+	plotBoxPlot_Even(expDataFrame,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-e.pdf", FALSE)
 
 }
 
@@ -636,44 +636,44 @@ renameFactorValues <- function(dataFrame) {
 # this function:
 # 1. makes POPULATION a synonym for species
 # 2. sets RES_E2C_STEPS_MEAN = RES_E2C_STEPS_MEAN * CAPTURES_MEAN
-preProcessData <- function(exp4.df) {
+preProcessData <- function(expDataFrame) {
 	# set all factors
-	exp4.df$MODEL <- factor(exp4.df$MODEL) 
-	exp4.df$SPECIES <- factor(exp4.df$SPECIES)
-	exp4.df$POPULATION <- exp4.df$SPECIES
+	expDataFrame$MODEL <- factor(expDataFrame$MODEL) 
+	expDataFrame$SPECIES <- factor(expDataFrame$SPECIES)
+	expDataFrame$POPULATION <- expDataFrame$SPECIES
 	
 	
-	exp4.df$POPULATION <- factor(exp4.df$POPULATION)	
-	exp4.df$INTERACTIONS <- factor(exp4.df$INTERACTIONS)
-	exp4.df$COMPLEXITY <- factor(exp4.df$COMPLEXITY)
-	exp4.df$CLONES <- factor(exp4.df$CLONES)
-	exp4.df$EVENNESS_CONTROL <- factor(exp4.df$EVENNESS_CONTROL)
-	exp4.df$EXTRACTED_RESOURCES <- factor(exp4.df$EXTRACTED_RESOURCES)
-	exp4.df$E_R <- exp4.df$EXTRACTED_RESOURCES
+	expDataFrame$POPULATION <- factor(expDataFrame$POPULATION)	
+	expDataFrame$INTERACTIONS <- factor(expDataFrame$INTERACTIONS)
+	expDataFrame$COMPLEXITY <- factor(expDataFrame$COMPLEXITY)
+	expDataFrame$CLONES <- factor(expDataFrame$CLONES)
+	expDataFrame$EVENNESS_CONTROL <- factor(expDataFrame$EVENNESS_CONTROL)
+	expDataFrame$EXTRACTED_RESOURCES <- factor(expDataFrame$EXTRACTED_RESOURCES)
+	expDataFrame$E_R <- expDataFrame$EXTRACTED_RESOURCES
 	
 	
-	exp4.df$GRIDS <- factor(exp4.df$GRIDS)
-	exp4.df$RESOURCES <- factor(exp4.df$RESOURCES)
-	exp4.df$SITES <- factor(exp4.df$SITES)
-	exp4.df$OBSTACLES <- factor(exp4.df$OBSTACLES)
-	exp4.df$DIFFICULTY <- factor(exp4.df$DIFFICULTY)
+	expDataFrame$GRIDS <- factor(expDataFrame$GRIDS)
+	expDataFrame$RESOURCES <- factor(expDataFrame$RESOURCES)
+	expDataFrame$SITES <- factor(expDataFrame$SITES)
+	expDataFrame$OBSTACLES <- factor(expDataFrame$OBSTACLES)
+	expDataFrame$DIFFICULTY <- factor(expDataFrame$DIFFICULTY)
 
 	
-	exp4.df$RES_E2C_STEPS_MEAN <- (exp4.df$RES_E2C_STEPS_MEAN*exp4.df$CAPTURES_MEAN)
+	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
 	## compute evenness
-	exp4.df$TOT_POP <- 24
+	expDataFrame$TOT_POP <- 24
 	numSpecies <- 3
 
-	P1 <- exp4.df$NUM_DETECTORS/exp4.df$TOT_POP
-	P2 <- exp4.df$NUM_EXTRACTORS/exp4.df$TOT_POP
-	P3 <- exp4.df$NUM_TRANSPORTERS/exp4.df$TOT_POP
+	P1 <- expDataFrame$NUM_DETECTORS/expDataFrame$TOT_POP
+	P2 <- expDataFrame$NUM_EXTRACTORS/expDataFrame$TOT_POP
+	P3 <- expDataFrame$NUM_TRANSPORTERS/expDataFrame$TOT_POP
 
 	H <- -((P1*log(P1)) + (P2*log(P2)) + (P3*log(P3)) )
-	exp4.df$E <- H/log(numSpecies)
+	expDataFrame$E <- H/log(numSpecies)
 
 
-	return(exp4.df)
+	return(expDataFrame)
 }
 
 
@@ -1069,10 +1069,10 @@ computeBootStatsI <-function(f.orig.data.frame, p.orig.data.frame) {
 
 
 
-plotBootedStats <- function(exp4.df) {
+plotBootedStats <- function(expDataFrame) {
 
 	
-	pop.data.frame <- computeBootStatsI(exp4.df[exp4.df$E_R=="f",], exp4.df[exp4.df$E_R=="p",])
+	pop.data.frame <- computeBootStatsI(expDataFrame[expDataFrame$E_R=="f",], expDataFrame[expDataFrame$E_R=="p",])
 
 	print(names(pop.data.frame))
 	print("--here--")
@@ -1098,15 +1098,15 @@ plotBootedStats <- function(exp4.df) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
-exp4.df <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_dyn_experiments_mean_300.csv")
+expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_dyn_experiments_mean_300.csv")
 
-exp4.df <- preProcessData(exp4.df)     # factorizes, as appropriate, adjusts E2C...
-exp4.df <- renameFactorValues(exp4.df) # renames for nice plots
+expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
+expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
-orig <- exp4.df
+orig <- expDataFrame
 
 
-##### not using these....plotGraphs(exp4.df)
+##### not using these....plotGraphs(expDataFrame)
 
 # Using these...
 
@@ -1116,21 +1116,21 @@ orig <- exp4.df
 # Traitsum
 # 
 
-#plotHists(exp4.df)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysisFullPop(exp4.df)
-#doNormalityAnalysisSubPop(exp4.df)
+#doNormalityAnalysisFullPop(expDataFrame)
+#doNormalityAnalysisSubPop(expDataFrame)
 
 # first we'll only look at the heterogenous population:
-#exp4.df <- exp4.df[exp4.df$SPECIES=="heterogenous",]
-#plotBoxPlots(exp4.df) # boxplots to show difference
+#expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
-#exp4.df <- orig
-#plotBoxPlotsAllPop(exp4.df)
+#expDataFrame <- orig
+#plotBoxPlotsAllPop(expDataFrame)
 
 
 
-plotBootedStats(exp4.df)
+plotBootedStats(expDataFrame)
 
 
 
