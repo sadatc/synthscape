@@ -347,12 +347,12 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	
 	
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
+	  width = 6,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			facet_grid( . ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -363,7 +363,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			facet_grid( . ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -411,7 +411,7 @@ plotHists <- function(expDataFrame) {
 plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 4,height = 4, family="CMU Serif")	  
+	  width = 2.5,height = 2 , family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -419,7 +419,7 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string( x="EXTRACTED_RESOURCES",y=colName)) +
 			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
-			facet_grid( INTERACTIONS ~ .) +
+			#facet_grid( INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			scale_fill_manual(values=c("white","grey50")) +
@@ -436,7 +436,7 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string(x="EXTRACTED_RESOURCES", y=colName)) +
 			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
-			facet_grid(INTERACTIONS ~ .) +
+			#facet_grid(INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -738,13 +738,13 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 6,height = 2, family="CMU Serif")
+	  width = 2.5,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ INTERACTIONS) 
+			#+ facet_grid(. ~ INTERACTIONS) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -758,7 +758,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
-			+ facet_grid(. ~ INTERACTIONS) 
+			#+ facet_grid(. ~ INTERACTIONS) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -1105,6 +1105,8 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 orig <- expDataFrame
 
+expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
+
 
 ##### not using these....plotGraphs(expDataFrame)
 
@@ -1116,14 +1118,14 @@ orig <- expDataFrame
 # Traitsum
 # 
 
-#plotHists(expDataFrame)    # plots histograms
+plotHists(expDataFrame)    # plots histograms
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
 
 # first we'll only look at the heterogenous population:
 #expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+plotBoxPlots(expDataFrame) # boxplots to show difference
 
 #expDataFrame <- orig
 #plotBoxPlotsAllPop(expDataFrame)
