@@ -1305,29 +1305,22 @@ plotBootedStats <- function(expDataFrame) {
 
 	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
-	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scb.pdf", TRUE)
-	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2scm.pdf", TRUE)
-	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2se2c.pdf", FALSE)
-	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2srm.pdf", FALSE)
-	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2src.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-cb.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-cm.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2se-2c.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-rm.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-rc.pdf", FALSE)
 
 
 	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
-	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scb.pdf", TRUE)
-	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2scm.pdf", TRUE)
-	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2se2c.pdf", FALSE)
-	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2srm.pdf", FALSE)
-	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2src.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-cb.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-cm.pdf", TRUE)
+	plotBootHistPop_T2S(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-e2c.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-rm.pdf", FALSE)
+	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-rc.pdf", FALSE)
 	
 }
-
-
-
-
-
-
-
 
 ##############################   MAIN PROCESS BEGINS ###############################
 
