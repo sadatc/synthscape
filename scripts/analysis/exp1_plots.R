@@ -993,7 +993,7 @@ performTTest <-function(measure,g.v,s.v) {
 plotBootedStatsFull <- function(expDataFrame) {
 
 	# now we will bootstrap the measures
-	bootSize <- 1000
+bootSize <- 1000
 
 	ea.data.frame <-  expDataFrame
 
@@ -1085,7 +1085,7 @@ plotBootedStatsFull <- function(expDataFrame) {
 plotBootedStatsPartial <- function(expDataFrame) {
 
 	# now we will bootstrap the measures
-	bootSize <- 1000
+bootSize <- 1000
 
 	ea.data.frame <-  expDataFrame[expDataFrame$MODEL!="island",]
 

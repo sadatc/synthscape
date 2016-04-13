@@ -1062,7 +1062,7 @@ performTTest <-function(measure,g.v,s.v) {
 
 
 computeBootStatsPM <-function(s.orig.data.frame) {
-	bootSize <- 10
+bootSize <- 1000
 
 	# extract the measures
 	s <- data.frame()
@@ -1132,7 +1132,7 @@ computeBootStatsPM <-function(s.orig.data.frame) {
 
 
 computeBootStatsR <-function(s.orig.data.frame) {
-	bootSize <- 10
+bootSize <- 1000
 
 	# extract the measures
 	s <- data.frame()
@@ -1198,7 +1198,7 @@ computeBootStatsR <-function(s.orig.data.frame) {
 
 
 computeBootStatsT2S <-function(s.orig.data.frame) {
-	bootSize <- 10
+bootSize <- 1000
 
 	# extract the measures
 	s <- data.frame()
