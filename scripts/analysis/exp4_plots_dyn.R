@@ -335,7 +335,7 @@ getMeasureShortName <- function(colName) {
 
 
 	if(colName == "E") {
-		result <- "Evenness"
+		result <- expression(italic(E))
 	}
 	return(result)
 }
@@ -387,6 +387,8 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 
 
 plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+	
+
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -896,11 +898,11 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 	
 	
 	#print(summary(popDataFrame$CAPTURES_BEST_CASE))
-	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("EXTRACTED_RESOURCES"))
-	tst$EXTRACTED_RESOURCES <- factor(tst$EXTRACTED_RESOURCES)
-	print(tst$CAPTURES_BEST_CASE-tst$ci)
-	print(tst$CAPTURES_BEST_CASE)
-	print(tst$CAPTURES_BEST_CASE+tst$ci)
+	#t#st <- summarySE(popDataFrame,measurevar=colName,groupvars=c("EXTRACTED_RESOURCES"))
+	#tst$EXTRACTED_RESOURCES <- factor(tst$EXTRACTED_RESOURCES)
+	#print(tst$CAPTURES_BEST_CASE-tst$ci)
+	#print(tst$CAPTURES_BEST_CASE)
+	#print(tst$CAPTURES_BEST_CASE+tst$ci)
 	
 
 
@@ -926,9 +928,9 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES"))
 			+ geom_density(alpha = 0.9)
-			+ geom_vline(xintercept=tst$CAPTURES_BEST_CASE, size=0.001)
-			+ geom_vline(xintercept=(tst$CAPTURES_BEST_CASE+tst$ci), size=0.001)
-			+ geom_vline(xintercept=(tst$CAPTURES_BEST_CASE-tst$ci), size=0.001)
+			#+ geom_vline(xintercept=tst$CAPTURES_BEST_CASE, size=0.001)
+			#+ geom_vline(xintercept=(tst$CAPTURES_BEST_CASE+tst$ci), size=0.001)
+			#+ geom_vline(xintercept=(tst$CAPTURES_BEST_CASE-tst$ci), size=0.001)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			#+ facet_grid(. ~ INTERACTIONS) 
 			+ xlab(xAxisLabel) 
@@ -942,7 +944,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		)
 	}
 	dev.off()
-stop()
+#stop()
 	
 }
 
@@ -1292,14 +1294,14 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 # Traitsum
 # 
 
-#plotHists(expDataFrame)    # plots histograms
+plotHists(expDataFrame)    # plots histograms
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
 
 # first we'll only look at the heterogenous population:
 #expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+plotBoxPlots(expDataFrame) # boxplots to show difference
 
 #expDataFrame <- orig
 #plotBoxPlotsAllPop(expDataFrame)
