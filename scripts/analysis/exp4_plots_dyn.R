@@ -192,8 +192,16 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 
 
-doNormalityAnalysisFullPop <- function(expDataFrame) {
+
+doNormalityAnalysis <- function(data=NULL,measures=NULL,groups=NULL) {
+
 	distTable <- data.frame()
+	for(measure in measures) {
+		print(measure)
+	}
+	stop()
+
+	
 
 	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
 
@@ -386,9 +394,40 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 }
 
 
-plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+plotHistByIntResMixNew <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+
+	xAxisLabel <- getMeasurePrettyName(colName)
 	
 
+	df2 <- ddply(.data = dataFrame, .variables = .(EXTRACTED_RESOURCES), function(dat){
+	             q <- qqnorm(dat[[colName]], plot = FALSE)
+	             dat$xq <- q$x
+	             dat
+		}
+	)
+
+	print("hi")
+
+
+	
+	pdf(fileName,  
+	  width = 6,height = 2, family="CMU Serif")
+	print(
+	ggplot(data = df2, aes_string(x = "xq", y = colName)) +
+  	geom_point(size=1) +
+  	geom_smooth(method = "lm", se = FALSE, color="black" ) +
+  	xlab("Theoretical") +
+  	ylab("Sample") +
+  	facet_grid(. ~ EXTRACTED_RESOURCES)
+	)
+	dev.off()
+	
+
+
+}
+
+
+plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -423,20 +462,6 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	dev.off()
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 plotHists <- function(expDataFrame) {
 
@@ -1296,19 +1321,19 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysisFullPop(expDataFrame)
+#doNormalityAnalysis(data=expDataFrame,measure=c("CAPTURES_BEST_CASE","CAPTURES_MEAN"), groups=c("EXTRACTED_RESOURCES"))
 #doNormalityAnalysisSubPop(expDataFrame)
 
 # first we'll only look at the heterogenous population:
 #expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
 #expDataFrame <- orig
 #plotBoxPlotsAllPop(expDataFrame)
 
 
 
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 
 
 
