@@ -1,6 +1,7 @@
 # island model
 library(ggplot2)
 library(plyr)
+
 library(xtable)
 library(extrafont)
 library(scales)
@@ -103,6 +104,9 @@ bootMean = function(sampleData, r) {
 }
 
 
+
+
+
 pValueString <- function(val) {
 	result <- val
 
@@ -116,109 +120,150 @@ pValueString <- function(val) {
 	
 	return(result)
 }
+
+
+nonParametricCompare <-function(measureName,vecA,vecB) {
+
+
+	wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+	
+	W <- wilcox$statistic[[1]]
+	pValue <- wilcox$p.value
+	
+	#library(coin)
+	#mydf <- data.frame(a=vecA,b=vecB)
+	#print(mydf)
+	#ttt<-wilcoxsign_test(b~a, data=mydf, distribution="exact")
+	#print(ttt)
+	#print(ttt$Z)
+	#stop()
+	#z<- wilcox$estimate
+	z<- qnorm(pValue/2)
+	r<- z/ sqrt(length(vecA))
+	
+	#print(wilcox)	
+	#print(z)
+	#print(r)
+	#stop()
+
+
+
+	result.frame <- data.frame(
+		#EXTRACTED_RESOURCES=groupName,
+		MEASURE=measureName,
+		W=W,
+		P=pValue,
+		EFFECT=r
+	)
+	
+	return(result.frame)
+}
+
+doNonParametricAnalysis <- function(expDataFrame) {
+
+	distTable <- data.frame()
+
+	p("NON-PARAMETRIC TEST >>>>>>")
+
+	aDat <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
+	bDat <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
+
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",aDat$CAPTURES_MEAN,bDat$CAPTURES_MEAN))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",aDat$CAPTURES_BEST_CASE,bDat$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",aDat$RES_E2C_STEPS_MEAN,bDat$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",aDat$RATE_COMMUNICATION,bDat$RATE_COMMUNICATION))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",aDat$RATE_MOTION,bDat$RATE_MOTION))
+	distTable <- rbind(distTable,nonParametricCompare("NUM_DETECTORS",aDat$NUM_DETECTORS,bDat$NUM_DETECTORS))
+	distTable <- rbind(distTable,nonParametricCompare("NUM_EXTRACTORS",aDat$NUM_EXTRACTORS,bDat$NUM_EXTRACTORS))
+	distTable <- rbind(distTable,nonParametricCompare("NUM_TRANSPORTERS",aDat$NUM_TRANSPORTERS,bDat$NUM_TRANSPORTERS))
+	distTable <- rbind(distTable,nonParametricCompare("E",aDat$E,bDat$E))
+
+	print(distTable)
+
+	
+	data(distTable)
+	print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE)
+
+	p("<<<<<<<<< NON-PARAMETRIC TEST")
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #
 # performs shapiro-wilk test and mann-whitney test
 # reports back a data.frame
 #
-analyzeNormailtyPair <-function(model,measure,g,s) {
-	rMeasure <- measure
+analyzeNormailtyMeasure <-function(groupName,measureName,vec) {
 
-#	print("performing shapiro test. if p<0.05, sample likely non-normal")
-	rGSampleSize <- length(g)
-	rGShapiro <- shapiro.test(g)
+	shap <- shapiro.test(vec)
 
-p(rGShapiro)
-	rGShapiroW <- rGShapiro$statistic[[1]]
-	rGShapiroP <- rGShapiro$p.value
+	W <- shap$statistic[[1]]
+	pValue <- shap$p.value
 	
-
-
-	rSSampleSize <- length(s)
-	rSShapiro <- shapiro.test(s)
-
-p(rSShapiro)
-
-	rSShapiroW <- rSShapiro$statistic[[1]]
-	rSShapiroP <- rSShapiro$p.value
-
-
-#print("mann-whitney u test. if p<0.05, the samples are non-identical populationf...")
-	rWilcox <- wilcox.test(g,s)
-	rWilcoxW <- rWilcox$statistic[[1]]
-	rWilcoxP <- rWilcox$p.value
-
-	#result.frame <- data.frame(MODEL=model,MEASURE=measure, G_SIZE=rGSampleSize,
-	#	G_SHAP_W=rGShapiroW, G_SHAP_P=rGShapiroP, S_SIZE=rSSampleSize,
-	#	S_SHAP_W=rSShapiroW, S_SHAP_P=rSShapiroP, WILCOX_W=rWilcoxW, 
-	#	WILCOX_P=rWilcoxP)
-	
-			
-	
-	result.frame <- data.frame(MODEL=model,MEASURE=measure,
-		G_SHAP_W=rGShapiroW, G_SHAP_P=pValueString(rGShapiroP), S_SHAP_W=rSShapiroW, S_SHAP_P=pValueString(rSShapiroP))
-	
-	
-	
-	
+	result.frame <- data.frame(
+		EXTRACTED_RESOURCES=groupName,
+		MEASURE=measureName,
+		W=W,
+		P=pValue
+	)
 	
 	return(result.frame)
 }
 
 
 
-doNormalityAnalysisSubPop <- function(expDataFrame) {
+doNormalityAnalysis <- function(expDataFrame) {
+
 	distTable <- data.frame()
 
+	p("NORMALITY TEST >>>>>>")
 
+	data <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
 
-#	print("========== ALIFE ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RATE_MOTION",data$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_DETECTORS",data$NUM_DETECTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","E",data$E))
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
+	data <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
 
-	distTable <- rbind(distTable,analyzeNormailtyPair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RATE_MOTION",data$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_DETECTORS",data$NUM_DETECTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","E",data$E))
+
 	
-	
-
-	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	data(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
 
+	p("<<<<<<<<< NORMALITY TEST")
 	
 }
 
 
 
 
-doNormalityAnalysis <- function(data=NULL,measures=NULL,groups=NULL) {
 
-	distTable <- data.frame()
-	for(measure in measures) {
-		print(measure)
-	}
-	stop()
-
-	
-
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
-
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$QUALITY=="s"  ,]
-
-	distTable <- rbind(distTable,analyzeNormailtyPair("CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	
-
-	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
-	data(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
-
-	
-}
 
 
 
@@ -1054,86 +1099,63 @@ plotBootHistPop_IQ <-function(popDataFrame, colName, fileName, showPercent = FAL
 	dev.off()
 }
 
-#
-# performs t-tests
-# reports back a data.frame
-#
-performTTest <-function(measure,p.v,f.v) {
 
-	t.result <- t.test(p.v,f.v)
+bootedTTest <-function(measureName,sampleA, sampleB, bootSize) {
 	
-	tValue <- t.result$statistic[[1]]
-	dFreedom <- t.result$parameter[[1]]
-	pValue <- af.double(t.result$p.value)
 
-	#print(measure)
-	#print(t.result)
-	#print(summary(t.result))
-	#print(pValue)	
+	sampleA <- bootMean(sampleA,bootSize)
+	sampleB <- bootMean(sampleB,bootSize)
+
+
+
+	tResult <- t.test(sampleA,sampleB)
+	
+	#print(tResult)
+	tValue <- tResult$statistic[[1]]
+	dFreedom <- tResult$parameter[[1]]
+	pValue <- as.double(tResult$p.value)
+
 
 	
-	result.frame <- data.frame(MEASURE=measure,
+	resultFrame <- data.frame(MEASURE=measureName,
 		T_VALUE=tValue, D_FREEDOM=dFreedom, P_VALUE=pValue)
+
 	
-	return(result.frame)
+	return(resultFrame)
 }
 
 
-computeBootStats <-function(fDataFrame,pDataFrame) {
-bootSize <- 1000
+doBootAnalysis <-function(expDataFrame) {
 
-	# extract the measures
-	s <- data.frame()
-	g <- data.frame()
-	f.CAPTURES_BEST_CASE <- fDataFrame$CAPTURES_BEST_CASE
-	f.CAPTURES_MEAN <- fDataFrame$CAPTURES_MEAN
-	f.RES_E2C_STEPS_MEAN <- fDataFrame$RES_E2C_STEPS_MEAN
-	f.RATE_MOTION <- fDataFrame$RATE_MOTION
-	f.RATE_COMMUNICATION <- fDataFrame$RATE_COMMUNICATION
+	bootSize <- 1000	
 
-	f.CAPTURES_BEST_CASE <- bootMean(f.CAPTURES_BEST_CASE,bootSize)
-	f.CAPTURES_MEAN <- bootMean(f.CAPTURES_MEAN,bootSize)
-	f.RES_E2C_STEPS_MEAN <- bootMean(f.RES_E2C_STEPS_MEAN,bootSize)
-	f.RATE_MOTION <- bootMean(f.RATE_MOTION,bootSize)
-	f.RATE_COMMUNICATION <- bootMean(f.RATE_COMMUNICATION,bootSize)
+	distTable <- data.frame()
 
-	p.CAPTURES_BEST_CASE <- pDataFrame$CAPTURES_BEST_CASE
-	p.CAPTURES_MEAN <- pDataFrame$CAPTURES_MEAN
-	p.RES_E2C_STEPS_MEAN <- pDataFrame$RES_E2C_STEPS_MEAN
-	p.RATE_MOTION <- pDataFrame$RATE_MOTION
-	p.RATE_COMMUNICATION <- pDataFrame$RATE_COMMUNICATION
+	p("BOOT ANALYSIS >>>>>>")
 
-	p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
-	p.CAPTURES_MEAN <- bootMean(p.CAPTURES_MEAN,bootSize)
-	p.RES_E2C_STEPS_MEAN <- bootMean(p.RES_E2C_STEPS_MEAN,bootSize)
-	p.RATE_MOTION <- bootMean(p.RATE_MOTION,bootSize)
-	p.RATE_COMMUNICATION <- bootMean(p.RATE_COMMUNICATION,bootSize)
+	dataA <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
+	dataB <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
 
+	distTable <- rbind(distTable,bootedTTest("CAPTURES_MEAN",dataA$CAPTURES_MEAN,dataB$CAPTURES_MEAN,bootSize))
+	distTable <- rbind(distTable,bootedTTest("CAPTURES_BEST_CASE",dataA$CAPTURES_BEST_CASE,dataB$CAPTURES_BEST_CASE,bootSize))
+	distTable <- rbind(distTable,bootedTTest("RES_E2C_STEPS_MEAN",dataA$RES_E2C_STEPS_MEAN,dataB$RES_E2C_STEPS_MEAN,bootSize))
+	distTable <- rbind(distTable,bootedTTest("RATE_COMMUNICATION",dataA$RATE_COMMUNICATION,dataB$RATE_COMMUNICATION,bootSize))
+	distTable <- rbind(distTable,bootedTTest("RATE_MOTION",dataA$RATE_MOTION,dataB$RATE_MOTION,bootSize))
+	distTable <- rbind(distTable,bootedTTest("NUM_DETECTORS",dataA$NUM_DETECTORS,dataB$NUM_DETECTORS,bootSize))
+	distTable <- rbind(distTable,bootedTTest("NUM_EXTRACTORS",dataA$NUM_EXTRACTORS,dataB$NUM_EXTRACTORS,bootSize))
+	distTable <- rbind(distTable,bootedTTest("NUM_TRANSPORTERS",dataA$NUM_TRANSPORTERS,dataB$NUM_TRANSPORTERS,bootSize))
+	distTable <- rbind(distTable,bootedTTest("E",dataA$E,dataB$E,bootSize))
+
+
+	print(distTable)	
+	data(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+
+	p("<<<<<<<<< BOOT ANALYSIS TEST")
 	
-	f.popDataFrame <- data.frame(
-		CAPTURES_BEST_CASE=f.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=f.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=f.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=f.RATE_MOTION,
-		RATE_COMMUNICATION=f.RATE_COMMUNICATION,
-		POPULATION="heterogenous"
-	)
-
-
-	p.popDataFrame <- data.frame(
-		CAPTURES_BEST_CASE=p.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=p.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=p.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=p.RATE_MOTION,
-		RATE_COMMUNICATION=p.RATE_COMMUNICATION,
-		POPULATION="homogenous"
-	)
-	
-	popDataFrame <- rbind(p.popDataFrame,f.popDataFrame)
-
-	return(popDataFrame)
-
 }
+
+
 
 
 
@@ -1272,10 +1294,9 @@ bootSize <- 1000
 
 
 plotBootedStats <- function(expDataFrame) {
-
 	
 	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$E_R=="f",], expDataFrame[expDataFrame$E_R=="p",])
-
+	
 	
 	plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cb.pdf", TRUE)
 	plotBootHistPop_I(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cm.pdf", TRUE)
@@ -1289,14 +1310,8 @@ plotBootedStats <- function(expDataFrame) {
 
 }
 
-
-
-
-
-
-
-
 ##############################   MAIN PROCESS BEGINS ###############################
+
 
 
 expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_dyn_experiments_mean_300.csv")
@@ -1309,33 +1324,20 @@ orig <- expDataFrame
 expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
-##### not using these....plotGraphs(expDataFrame)
 
-# Using these...
-
-# Populations: 3_4 and 3_8
-# Richness Types: mo, bi, po, tr, ho
-# Richness
-# Traitsum
-# 
 
 plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysis(data=expDataFrame,measure=c("CAPTURES_BEST_CASE","CAPTURES_MEAN"), groups=c("EXTRACTED_RESOURCES"))
-#doNormalityAnalysisSubPop(expDataFrame)
-
-# first we'll only look at the heterogenous population:
-#expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
-#plotBoxPlots(expDataFrame) # boxplots to show difference
-
-#expDataFrame <- orig
-#plotBoxPlotsAllPop(expDataFrame)
+doNormalityAnalysis(expDataFrame)
 
 
+plotBoxPlots(expDataFrame) 
+doNonParametricAnalysis(expDataFrame)
 
-#plotBootedStats(expDataFrame)
+plotBootedStats(expDataFrame)
 
 
+doBootAnalysis(expDataFrame)
 
 
 
