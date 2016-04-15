@@ -512,7 +512,7 @@ plotHists <- function(expDataFrame) {
 
 	plotHistByIntResMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cm.pdf", TRUE)
 	plotHistByIntResMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-cb.pdf", TRUE)
-	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e4c.pdf")
+	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-e2c.pdf")
 	plotHistByIntResMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rm.pdf")
 	plotHistByIntResMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-rc.pdf")
 	plotHistByIntResMix( expDataFrame,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-hist-intresmix-dets.pdf")
