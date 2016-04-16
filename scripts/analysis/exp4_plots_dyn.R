@@ -117,6 +117,10 @@ pValueString <- function(val) {
 	if(val < 0.01) {
 		result <- "p < 0.01"
 	} 
+
+	if(val > 0.05) {
+		result <- paste("p = ",round(val,digits=2),sep="")
+	}
 	
 	return(result)
 }
@@ -124,35 +128,19 @@ pValueString <- function(val) {
 
 nonParametricCompare <-function(measureName,vecA,vecB) {
 
-
 	wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
 	
 	W <- wilcox$statistic[[1]]
 	pValue <- wilcox$p.value
 	
-	#library(coin)
-	#mydf <- data.frame(a=vecA,b=vecB)
-	#print(mydf)
-	#ttt<-wilcoxsign_test(b~a, data=mydf, distribution="exact")
-	#print(ttt)
-	#print(ttt$Z)
-	#stop()
-	#z<- wilcox$estimate
 	z<- qnorm(pValue/2)
 	r<- z/ sqrt(length(vecA))
 	
-	#print(wilcox)	
-	#print(z)
-	#print(r)
-	#stop()
-
-
-
 	result.frame <- data.frame(
-		#EXTRACTED_RESOURCES=groupName,
+		
 		MEASURE=measureName,
 		W=W,
-		P=pValue,
+		P=pValueString(pValue),
 		EFFECT=r
 	)
 	
@@ -181,7 +169,7 @@ doNonParametricAnalysis <- function(expDataFrame) {
 	print(distTable)
 
 	
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE)
 
 	p("<<<<<<<<< NON-PARAMETRIC TEST")
@@ -209,12 +197,13 @@ analyzeNormailtyMeasure <-function(groupName,measureName,vec) {
 
 	W <- shap$statistic[[1]]
 	pValue <- shap$p.value
-	
+
 	result.frame <- data.frame(
 		EXTRACTED_RESOURCES=groupName,
 		MEASURE=measureName,
 		W=W,
-		P=pValue
+		P=pValueString(pValue)
+		#P=pValue
 	)
 	
 	return(result.frame)
@@ -252,9 +241,10 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","E",data$E))
 
+	print(distTable)
 	
-	data(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	
+	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
 
 	p("<<<<<<<<< NORMALITY TEST")
 	
@@ -1118,7 +1108,7 @@ bootedTTest <-function(measureName,sampleA, sampleB, bootSize) {
 
 	
 	resultFrame <- data.frame(MEASURE=measureName,
-		T_VALUE=tValue, D_FREEDOM=dFreedom, P_VALUE=pValue)
+		T_VALUE=tValue, D_FREEDOM=dFreedom, P_VALUE=pValueString(pValue))
 
 	
 	return(resultFrame)
@@ -1148,7 +1138,7 @@ doBootAnalysis <-function(expDataFrame) {
 
 
 	print(distTable)	
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
 
 	p("<<<<<<<<< BOOT ANALYSIS TEST")
@@ -1326,15 +1316,15 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 
 doNormalityAnalysis(expDataFrame)
 
 
-plotBoxPlots(expDataFrame) 
+#plotBoxPlots(expDataFrame) 
 doNonParametricAnalysis(expDataFrame)
 
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 
 
 doBootAnalysis(expDataFrame)
