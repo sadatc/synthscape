@@ -136,7 +136,7 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 	
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
@@ -158,7 +158,7 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 	
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
@@ -344,12 +344,12 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	
 	
 	pdf(fileName,  
-	  width = 6,height = 3, family="CMU Serif")
+	  width = 6,height = 6, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			facet_grid( RATIO ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -360,7 +360,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( INTERACTIONS ~ EXTRACTED_RESOURCES) +
+			facet_grid( RATIO ~ EXTRACTED_RESOURCES) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -392,13 +392,10 @@ plotHists <- function(expDataFrame) {
 
 	plotHistByIntResMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-cm.pdf", TRUE)
 	plotHistByIntResMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-cb.pdf", TRUE)
-	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-e4c.pdf")
+	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-e2c.pdf")
 	plotHistByIntResMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-rm.pdf")
 	plotHistByIntResMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-rc.pdf")
-	plotHistByIntResMix( expDataFrame,"NUM_DETECTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-dets.pdf")
-	plotHistByIntResMix( expDataFrame,"NUM_EXTRACTORS", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-exts.pdf")
-	plotHistByIntResMix( expDataFrame,"NUM_TRANSPORTERS", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-trns.pdf")
-	plotHistByIntResMix( expDataFrame,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-e.pdf")
+	
 
 
 
@@ -1169,6 +1166,74 @@ plotBootedStats <- function(expDataFrame) {
 
 
 
+#
+# performs shapiro-wilk test and mann-whitney test
+# reports back a data.frame
+#
+analyzeNormailtyMeasure <-function(measureName,data,ratio) {
+
+	data <- data[data$RATIO == ratio,]
+	
+
+	
+	vecU <- data[data$E_R=="f",]
+	vecU <- vecU[[measureName]]
+	shapU <- shapiro.test(vecU)
+
+
+	WU <- shapU$statistic[[1]]
+	pValueU <- shapU$p.value
+	
+	
+	vecP <- data[data$E_R=="p",]
+	vecP <- vecP[[measureName]]
+	shapP <- shapiro.test(vecP)
+
+	WP <- shapP$statistic[[1]]
+	pValueP <- shapP$p.value
+	
+
+
+	result.frame <- data.frame(
+		RATIO=ratio,
+		MEASURE=measureName,
+		WU=WU,
+		PU=pValueU,
+		WP=WP,
+		PP=pValueP
+	)
+
+	return(result.frame)
+}
+
+
+
+doNormalityAnalysis <- function(data) {
+
+
+	distTable <- data.frame()
+
+	p("NORMALITY TEST >>>>>>")
+
+	
+	for(ratio in unique(data$RATIO)) {
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("CAPTURES_MEAN",data, ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("CAPTURES_BEST_CASE",data, ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("RES_E2C_STEPS_MEAN",data,ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_COMMUNICATION",data,ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_COMMUNICATION",data,ratio))
+	}
+	print(distTable)
+	
+	
+	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+
+	p("<<<<<<<<< NORMALITY TEST")
+	
+}
+
+
+
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
@@ -1178,6 +1243,9 @@ expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, a
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 orig <- expDataFrame
+
+# restricting to trail only
+expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 ##### not using these....plotGraphs(expDataFrame)
@@ -1192,20 +1260,20 @@ orig <- expDataFrame
 
 #plotHists(expDataFrame)    # plots histograms
 
-#doNormalityAnalysisFullPop(expDataFrame)
-#doNormalityAnalysisSubPop(expDataFrame)
+doNormalityAnalysis(expDataFrame)
+
 
 # first we'll only look at the heterogenous population:
 #expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
 #plotBoxPlots(expDataFrame) # boxplots to show difference
 
-plotBoxPlotsManual(expDataFrame) # boxplots to show difference
+#plotBoxPlotsManual(expDataFrame) # boxplots to show difference
 
 #expDataFrame <- orig
 #plotBoxPlotsAllPop(expDataFrame)
 
 
 
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 #plot the totals
 
