@@ -203,7 +203,7 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 	
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
@@ -252,7 +252,7 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 	
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
-	data(distTable)
+	
 	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
 
 	
