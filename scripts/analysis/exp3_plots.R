@@ -741,11 +741,11 @@ plotBoxPlots <- function(expDataFrame) {
 	
 
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_8",]	
-	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
-	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cm.pdf", TRUE)
-	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-e2c.pdf", FALSE)
-	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rm.pdf", FALSE)
-	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-rc.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-cb.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-cm.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-e2c.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-rm.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-rc.pdf", FALSE)
 
 	plotBoxPlot_R(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
 	plotBoxPlot_R(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cm.pdf", TRUE)
@@ -764,11 +764,11 @@ plotBoxPlots <- function(expDataFrame) {
 
 
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="4_24",]	
-	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cb.pdf", TRUE)
-	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cm.pdf", TRUE)
-	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-e2c.pdf", FALSE)
-	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rm.pdf", FALSE)
-	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-rc.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-pm-cb.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-pm-cm.pdf", TRUE)
+	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-pm-e2c.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-pm-rm.pdf", FALSE)
+	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-pm-rc.pdf", FALSE)
 
 	plotBoxPlot_R(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cb.pdf", TRUE)
 	plotBoxPlot_R(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-box-r-cm.pdf", TRUE)
@@ -1322,6 +1322,171 @@ plotBootedStats <- function(expDataFrame) {
 	
 }
 
+
+
+#
+# performs shapiro-wilk test and mann-whitney test
+# reports back a data.frame
+#
+analyzeNormailtyMeasure <-function(groupName,colName,dataFrame) {
+	
+	
+	#mono
+	data <- dataFrame[dataFrame$POPULATION_MIX=="mono",]	
+	shap <- shapiro.test(data[[colName]])
+	WMono <- shap$statistic[[1]]
+	pValueMono <- pValueString(shap$p.value)
+
+	#bi
+	data <- dataFrame[dataFrame$POPULATION_MIX=="bi",]
+	shap <- shapiro.test(data[[colName]])
+	WBi <- shap$statistic[[1]]
+	pValueBi <- pValueString(shap$p.value)
+	
+	#tri
+	data <- dataFrame[dataFrame$POPULATION_MIX=="tri",]
+	shap <- shapiro.test(data[[colName]])
+	WTri <- shap$statistic[[1]]
+	pValueTri <- pValueString(shap$p.value)
+	#poly
+	data <- dataFrame[dataFrame$POPULATION_MIX=="poly",]
+	shap <- shapiro.test(data[[colName]])
+	WPoly <- shap$statistic[[1]]
+	pValuePoly <- pValueString(shap$p.value)
+	
+	
+	result.frame <- data.frame(
+		EXTRACTED_RESOURCES=groupName,
+		MEASURE=colName,
+		WMono=WMono,
+		pValueMono=pValueMono,
+		WBi=WBi,
+		pValueBi=pValueBi,
+		WTri=WTri,
+		pValueTri=pValueTri,
+		WPoly=WPoly,
+		pValuePoly=pValuePoly		
+	)
+	
+
+	if(groupName == "4_24") {
+		#qua
+		data <- dataFrame[dataFrame$POPULATION_MIX=="qua",]
+		shap <- shapiro.test(data[[colName]])
+		WQua <- shap$statistic[[1]]
+		pValueQua <- pValueString(shap$p.value)
+
+		result.frame <- data.frame(
+			EXTRACTED_RESOURCES=groupName,
+			MEASURE=colName,
+			WMono=WMono,
+			pValueMono=pValueMono,
+			WBi=WBi,
+			pValueBi=pValueBi,
+			WTri=WTri,
+			pValueTri=pValueTri,
+			WQua=WQua,
+			pValueQua=pValueQua,	
+			WPoly=WPoly,
+			pValuePoly=pValuePoly
+				
+		)
+
+	} 
+
+
+
+	return(result.frame)
+}
+
+
+doNormalityAnalysis <- function(expDataFrame) {
+
+	distTable <- data.frame()
+
+	p("NORMALITY TEST >>>>>>")
+
+
+	
+	
+	data <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("3_8","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("3_8","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("3_8","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("3_8","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("3_8","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	
+	
+
+	distTable <- data.frame()
+	data <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="4_24",]
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("4_24","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("4_24","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("4_24","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("4_24","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("4_24","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< NORMALITY TEST")
+	
+}
+
+kruskalWallisTest <-function(measureName,dataFrame) {
+
+	library(pgirmess)
+
+	measureData <- dataFrame[[measureName]]
+	ratioData <- dataFrame$RATIO
+	N <- length(measureData)
+	
+	
+	
+	#p(measureName)
+	kResult <- kruskal.test(measureData ~ ratioData)
+	kResult2 <- kruskalmc(measureData ~ ratioData, cont="two-tailed")
+	
+	#print(tResult)
+	kValue <- kResult$statistic[[1]]
+	dFreedom <- kResult$parameter[[1]]
+	pValue <- as.double(kResult$p.value)
+
+	
+	
+	resultFrame <- data.frame(MEASURE=measureName,
+		H_VALUE=kValue, D_FREEDOM=dFreedom, P_VALUE=pValueString(pValue))
+
+	
+	return(resultFrame)
+}
+
+
+doKruskalWallis <-function(expDataFrameOrig) {
+
+
+
+	distTable <- data.frame()
+
+	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
+
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_BEST_CASE",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RES_E2C_STEPS_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
+
+	print(distTable)	
+	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+
+	p("<<<<<<<<< KRUSKAL-WALLIS TEST")
+	
+}
+
+
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
@@ -1337,35 +1502,15 @@ orig <- expDataFrame
 # only keep the heterogenous ones...
 expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS=="trail",]
 
-##### not using these....plotGraphs(expDataFrame)
 
-# Using these...
+#plotHists(expDataFrame)    # plots histograms
+#doNormalityAnalysis(expDataFrame)
 
-# Populations: 3_4 and 3_8
-# Richness Types: mo, bi, po, tr, ho
-# Richness
-# Traitsum
-# 
-plotHists(expDataFrame)    # plots histograms
-
-#doNormalityAnalysisFullPop(expDataFrame)
-#doNormalityAnalysisSubPop(expDataFrame)
-
-# first we'll only look at the heterogenous population:
-#expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous",]
 plotBoxPlots(expDataFrame) # boxplots to show difference
+#doKruskalWallis(expDataFrame)
 
 
 
+#plotBootedStats(expDataFrame)
 
-plotBootedStats(expDataFrame)
-
-
-
-
-
-
-
-
-#plot the totals
 
