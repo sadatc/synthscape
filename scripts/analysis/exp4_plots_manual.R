@@ -1239,12 +1239,6 @@ kruskalWallisTest <-function(measureName,dataFrame) {
 	kResult <- kruskal.test(measureData ~ ratioData)
 	kResult2 <- kruskalmc(measureData ~ ratioData, cont="two-tailed")
 	
-	#print(kResult)
-	#print(kResult2)
-	#stop()
-
-
-
 	#print(tResult)
 	kValue <- kResult$statistic[[1]]
 	dFreedom <- kResult$parameter[[1]]
