@@ -348,7 +348,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	
 	
 	pdf(fileName,  
-	  width = 6,height = 6, family="CMU Serif")
+	  width = 6,height = 7, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
@@ -645,8 +645,6 @@ plotBoxPlotsManual <- function(expDataFrame) {
 
 	plotBoxPlot_EvenM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-rc.pdf", FALSE)
 
-	
-	plotBoxPlot_EvenM(expDataFrame,"E", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e.pdf", FALSE)
 
 }
 
@@ -1153,11 +1151,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_I(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-e2c.pdf", FALSE)
 	plotBootHistPop_I(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-rm.pdf", FALSE)
 	plotBootHistPop_I(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-rc.pdf", FALSE)
-	plotBootHistPop_I(popDataFrame,"NUM_DETECTORS","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-dets.pdf", FALSE)
-	plotBootHistPop_I(popDataFrame,"NUM_EXTRACTORS","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-exts.pdf", FALSE)
-	plotBootHistPop_I(popDataFrame,"NUM_TRANSPORTERS","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-trns.pdf", FALSE)
-	plotBootHistPop_I(popDataFrame,"E","/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-boot-pop-i-e.pdf", FALSE)
-
+	
 }
 
 
@@ -1278,6 +1272,68 @@ doKruskalWallis <-function(expDataFrame) {
 	
 }
 
+nonParametricCompare <-function(measureName,ratio,data,evennessValue) {
+	vecA <- data[data$E_R=="f",]
+	vecA <- vecA[[measureName]]
+
+
+	vecB <- data[data$E_R=="p",]
+	vecB <- vecB[[measureName]]
+
+	#print(head(vecA))
+	#print(head(vecB))
+	#stop()
+
+	wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+	
+	W <- wilcox$statistic[[1]]
+	pValue <- wilcox$p.value
+	
+	z<- qnorm(pValue/2)
+	r<- z/ sqrt(length(vecA))
+	
+	result.frame <- data.frame(		
+		RATIO = ratio,
+		EVENNESS=evennessValue,
+		MEASURE=measureName,
+		W=W,
+		P=pValueString(pValue),
+		EFFECT=r
+	)
+	
+	return(result.frame)
+}
+
+doNonParametricAnalysis <-function(expDataFrame) {
+
+	p("NON-PARAMETRIC ANALYSIS >>>>>>")
+
+	distTable <- data.frame()
+
+	for(ratio in unique(expDataFrame$RATIO)) {
+		
+		print(ratio)
+		data <- expDataFrame[expDataFrame$RATIO == ratio,]
+		evennessValue <- data[["E"]]
+		evennessValue <- evennessValue[1]
+		
+		distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",ratio,data,evennessValue))
+		distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",ratio,data,evennessValue))
+		distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",ratio,data,evennessValue))
+		distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",ratio,data,evennessValue))
+		distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",ratio,data,evennessValue))
+	}
+	
+
+	print(distTable)	
+	
+	print(xtable(distTable, digits=c(0,0,3,0,0,2,-2)), include.rownames=FALSE)
+
+	p("<<<<<<<<< NON-PARAMETRIC ANALYSIS")
+	
+}
+
+
 
 
 
@@ -1297,16 +1353,14 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 
-#plotHists(expDataFrame)    # plots histograms
-
-#doNormalityAnalysis(expDataFrame)
-
+plotHists(expDataFrame)    # plots histograms
+doNormalityAnalysis(expDataFrame)
 
 
-#plotBoxPlotsManual(expDataFrame) # boxplots to show difference
 
-
+plotBoxPlotsManual(expDataFrame) # boxplots to show difference
 doKruskalWallis(expDataFrame)
+doNonParametricAnalysis(expDataFrame)
 
-#plotBootedStats(expDataFrame)
+##plotBootedStats(expDataFrame)
 
