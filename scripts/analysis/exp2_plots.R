@@ -443,32 +443,29 @@ plotHistBySubPopulation <-function(model, dataFrame, colName, fileName, showPerc
 
 plotHists <- function(expDataFrame) {
 	
-	plotHistByPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-cm.pdf", TRUE)
-	plotHistByPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-cb.pdf", TRUE)
-	plotHistByPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-e2c.pdf")
-	plotHistByPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-rm.pdf")
-	plotHistByPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-rc.pdf")
+	plotHistByPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-cm.pdf", TRUE)
+	plotHistByPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-cb.pdf", TRUE)
+	plotHistByPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-e2c.pdf")
+	plotHistByPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-rm.pdf")
+	plotHistByPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-rc.pdf")
 
-	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-q-cm.pdf", TRUE)
-	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-q-cb.pdf", TRUE)
-	plotHistByPopulationQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-q-e2c.pdf")
-	plotHistByPopulationQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-q-rm.pdf")
-	plotHistByPopulationQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-q-rc.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-cm.pdf", TRUE)
+	plotHistByPopulationQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-cb.pdf", TRUE)
+	plotHistByPopulationQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-e2c.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-rm.pdf")
+	plotHistByPopulationQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-rc.pdf")
 
-
-	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-iq-cm.pdf", TRUE)
-	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-iq-cb.pdf", TRUE)
-	plotHistByInteractionQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-iq-e2c.pdf")
-	plotHistByInteractionQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-iq-rm.pdf")
-	plotHistByInteractionQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-alife-iq-rc.pdf")
-
-
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cm.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cb.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-e2c.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rm.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rc.pdf")
 	
-	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-s-alife-cm.pdf", TRUE)
-	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-s-alife-cb.pdf", TRUE)
-	plotHistBySubPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-s-alife-e2c.pdf")
-	plotHistBySubPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-s-alife-rm.pdf")
-	plotHistBySubPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-s-alife-rc.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-cm.pdf", TRUE)
+	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-cb.pdf", TRUE)
+	plotHistBySubPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-e2c.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-rm.pdf")
+	plotHistBySubPopulation("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-rc.pdf")
 
 }
 
@@ -1545,7 +1542,150 @@ if(1!=1) {
 }
 
 
+selectFromDf <- function(dataFrame,columnName, columnValue) {
+	filterExpression <- paste0("dataFrame$",columnName," == '",columnValue, "'")	
+	
+	result <-data.frame()
+	result <- rbind(result,dataFrame[eval(parse(text=filterExpression),dataFrame),])
+	return(result)
+}
 
+
+analyzeNormailtyMeasureByGroups <-function(primaryGroup,secondaryGroup,measureName,dataFrame) {
+
+	
+	result <- data.frame()
+
+	for(primary in unique(dataFrame[[primaryGroup]])) {
+		for(secondary in unique(dataFrame[[secondaryGroup]])) {
+			data = selectFromDf(dataFrame,primaryGroup,primary)
+			data = selectFromDf(data,secondaryGroup,secondary)
+			
+			
+			shap <- shapiro.test(data[[measureName]])
+			W <- shap$statistic[[1]]
+			pValue <- pValueString(shap$p.value)
+			
+			rowData <- data.frame(
+				MEASURE=measureName,
+				primaryGroup=primary,
+				secondaryGroup=secondary,				
+				W=W,
+				pValue=pValue
+			)
+
+			result <- rbind(result,rowData)
+		}
+	}
+	
+	
+	return(result)
+
+
+
+}
+
+
+
+analyzeNormailtyMeasureByGroup <-function(primaryGroup,measureName,dataFrame) {
+	
+	result <- data.frame()
+
+	
+	for(primary in unique(dataFrame[[primaryGroup]])) {
+		data = selectFromDf(dataFrame,primaryGroup,primary)
+
+		d <- data[[measureName]]
+		if(length(d)>5000) {
+			d <- d[1:5000]
+		} 	
+		shap <- shapiro.test(d)
+		W <- shap$statistic[[1]]
+		pValue <- pValueString(shap$p.value)
+		
+
+
+		rowData <- data.frame(
+			MEASURE=measureName,
+			primaryGroup=primary,						
+			W=W,
+			pValue=pValue
+		)
+
+		result <- rbind(result,rowData)
+	}
+
+	
+	
+	return(result)
+
+
+
+}
+
+
+
+doNormalityAnalysis <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("POP-INTERACTION: NORMALITY TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION: NORMALITY TEST")
+
+
+	distTable <- data.frame()
+	p("POP-QUALITY: NORMALITY TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-QUALITY: NORMALITY TEST")
+
+
+
+	distTable <- data.frame()
+	p("INTERACTIONS-QUALITY: NORMALITY TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< INTERACTIONS-QUALITY: NORMALITY TEST")
+
+
+
+	distTable <- data.frame()
+	p("POPULATION: NORMALITY TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RATE_MOTION",data))
+	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POPULATION: NORMALITY TEST")
+	
+	
+}
 
 
 
@@ -1561,13 +1701,15 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 ##### not using these....plotGraphs(expDataFrame)
 
+
 # Using these...
 #plotHists(expDataFrame)    # plots histograms
+doNormalityAnalysis(expDataFrame)
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
-plotBoxPlots(expDataFrame) # boxplots to show difference
-plotBootedStats(expDataFrame)
+#plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBootedStats(expDataFrame)
 
 
 
