@@ -755,8 +755,9 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$COMPLEXITY <- factor(expDataFrame$COMPLEXITY)
 	expDataFrame$CLONES <- factor(expDataFrame$CLONES)
 	expDataFrame$EVENNESS_CONTROL <- factor(expDataFrame$EVENNESS_CONTROL)
-	expDataFrame$RESOURCE_UNIFORMITY <- factor(expDataFrame$RESOURCE_UNIFORMITY)
-	expDataFrame$E_R <- expDataFrame$RESOURCE_UNIFORMITY
+	expDataFrame$EXTRACTED_RESOURCES <- factor(expDataFrame$EXTRACTED_RESOURCES)
+	expDataFrame$RESOURCE_UNIFORMITY <- factor(expDataFrame$EXTRACTED_RESOURCES)
+	expDataFrame$RU <- expDataFrame$RESOURCE_UNIFORMITY
 	
 	
 	expDataFrame$GRIDS <- factor(expDataFrame$GRIDS)
@@ -1285,7 +1286,7 @@ bootSize <- 1000
 
 plotBootedStats <- function(expDataFrame) {
 	
-	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$E_R=="f",], expDataFrame[expDataFrame$E_R=="p",])
+	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$RU=="f",], expDataFrame[expDataFrame$RU=="p",])
 	
 	
 	plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-boot-pop-i-cb.pdf", TRUE)
