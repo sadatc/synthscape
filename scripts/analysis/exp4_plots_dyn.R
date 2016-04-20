@@ -153,8 +153,8 @@ doNonParametricAnalysis <- function(expDataFrame) {
 
 	p("NON-PARAMETRIC TEST >>>>>>")
 
-	aDat <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
-	bDat <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
+	aDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
+	bDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
 
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",aDat$CAPTURES_MEAN,bDat$CAPTURES_MEAN))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",aDat$CAPTURES_BEST_CASE,bDat$CAPTURES_BEST_CASE))
@@ -199,7 +199,7 @@ analyzeNormailtyMeasure <-function(groupName,measureName,vec) {
 	pValue <- shap$p.value
 
 	result.frame <- data.frame(
-		EXTRACTED_RESOURCES=groupName,
+		RESOURCE_UNIFORMITY=groupName,
 		MEASURE=measureName,
 		W=W,
 		P=pValueString(pValue)
@@ -217,7 +217,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 
 	p("NORMALITY TEST >>>>>>")
 
-	data <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
+	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
 
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
@@ -229,7 +229,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","E",data$E))
 
-	data <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
+	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
 
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
@@ -434,7 +434,7 @@ plotHistByIntResMixNew <-function(dataFrame, colName, fileName, showPercent=FALS
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
 
-	df2 <- ddply(.data = dataFrame, .variables = .(EXTRACTED_RESOURCES), function(dat){
+	df2 <- ddply(.data = dataFrame, .variables = .(RESOURCE_UNIFORMITY), function(dat){
 	             q <- qqnorm(dat[[colName]], plot = FALSE)
 	             dat$xq <- q$x
 	             dat
@@ -453,7 +453,7 @@ plotHistByIntResMixNew <-function(dataFrame, colName, fileName, showPercent=FALS
   	geom_smooth(method = "lm", se = FALSE, color="black" ) +
   	xlab("Theoretical") +
   	ylab("Sample") +
-  	facet_grid(. ~ EXTRACTED_RESOURCES)
+  	facet_grid(. ~ RESOURCE_UNIFORMITY)
 	)
 	dev.off()
 	
@@ -471,9 +471,9 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	  width = 6,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( . ~ EXTRACTED_RESOURCES) +
+			facet_grid( . ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -482,9 +482,9 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		)
 	} else {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( . ~ EXTRACTED_RESOURCES) +
+			facet_grid( . ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -524,8 +524,8 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string( x="EXTRACTED_RESOURCES",y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			#facet_grid( INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
@@ -541,8 +541,8 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		)
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="EXTRACTED_RESOURCES", y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			#facet_grid(INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
@@ -732,7 +732,7 @@ renameFactorValues <- function(dataFrame) {
 
 
 	
-	dataFrame$EXTRACTED_RESOURCES <- mapvalues(dataFrame$EXTRACTED_RESOURCES, 
+	dataFrame$RESOURCE_UNIFORMITY <- mapvalues(dataFrame$RESOURCE_UNIFORMITY, 
 		from=c("f","p"), 
 		to=c("uniform resources", "mixed resources")
 	)
@@ -755,8 +755,8 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$COMPLEXITY <- factor(expDataFrame$COMPLEXITY)
 	expDataFrame$CLONES <- factor(expDataFrame$CLONES)
 	expDataFrame$EVENNESS_CONTROL <- factor(expDataFrame$EVENNESS_CONTROL)
-	expDataFrame$EXTRACTED_RESOURCES <- factor(expDataFrame$EXTRACTED_RESOURCES)
-	expDataFrame$E_R <- expDataFrame$EXTRACTED_RESOURCES
+	expDataFrame$RESOURCE_UNIFORMITY <- factor(expDataFrame$RESOURCE_UNIFORMITY)
+	expDataFrame$E_R <- expDataFrame$RESOURCE_UNIFORMITY
 	
 	
 	expDataFrame$GRIDS <- factor(expDataFrame$GRIDS)
@@ -896,8 +896,8 @@ plotBootHistPop_tst <-function(popDataFrame, colName, fileName, showPercent = FA
 
 plotBootHistPop_Itmp<-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
-	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("EXTRACTED_RESOURCES"))
-	tst$EXTRACTED_RESOURCES <- factor(tst$EXTRACTED_RESOURCES)
+	tst <- summarySE(popDataFrame,measurevar=colName,groupvars=c("RESOURCE_UNIFORMITY"))
+	tst$RESOURCE_UNIFORMITY <- factor(tst$RESOURCE_UNIFORMITY)
 
 	print(tst)
 
@@ -908,12 +908,12 @@ plotBootHistPop_Itmp<-function(popDataFrame, colName, fileName, showPercent = FA
 	if( showPercent==FALSE ) {
 
 		print(
-			ggplot(tst, aes_string(y=colName, x="EXTRACTED_RESOURCES"))
+			ggplot(tst, aes_string(y=colName, x="RESOURCE_UNIFORMITY"))
 			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
 			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9))
-			#+ facet_grid(. ~ EXTRACTED_RESOURCES ) 
+			#+ facet_grid(. ~ RESOURCE_UNIFORMITY ) 
 			+ ylab(xAxisLabel) 
 			+ theme_bw()
 			+ theme( legend.position="none", 				
@@ -927,12 +927,12 @@ plotBootHistPop_Itmp<-function(popDataFrame, colName, fileName, showPercent = FA
 	} else {
 		
 		print(
-			ggplot(tst, aes_string(y=colName, x="EXTRACTED_RESOURCES"))
+			ggplot(tst, aes_string(y=colName, x="RESOURCE_UNIFORMITY"))
 			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
 			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9))
-			#+ facet_grid(. ~ EXTRACTED_RESOURCES ) 
+			#+ facet_grid(. ~ RESOURCE_UNIFORMITY ) 
 			+ ylab(xAxisLabel) 
 			+ theme_bw()
 			+ theme( legend.position="none", 				
@@ -952,14 +952,14 @@ plotBootHistPop_Itmp<-function(popDataFrame, colName, fileName, showPercent = FA
 
 plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
 
-	#t1 <- popDataFrame[popDataFrame$EXTRACTED_RESOURCES == "p",]
+	#t1 <- popDataFrame[popDataFrame$RESOURCE_UNIFORMITY == "p",]
 	#t1 <- t1$CAPTURES_BEST_CASE
 	#print(t.test(t1))
 	
 	
 	#print(summary(popDataFrame$CAPTURES_BEST_CASE))
-	#t#st <- summarySE(popDataFrame,measurevar=colName,groupvars=c("EXTRACTED_RESOURCES"))
-	#tst$EXTRACTED_RESOURCES <- factor(tst$EXTRACTED_RESOURCES)
+	#t#st <- summarySE(popDataFrame,measurevar=colName,groupvars=c("RESOURCE_UNIFORMITY"))
+	#tst$RESOURCE_UNIFORMITY <- factor(tst$RESOURCE_UNIFORMITY)
 	#print(tst$CAPTURES_BEST_CASE-tst$ci)
 	#print(tst$CAPTURES_BEST_CASE)
 	#print(tst$CAPTURES_BEST_CASE+tst$ci)
@@ -972,7 +972,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 	  width = 2.5,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES")) 
+			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			#+ facet_grid(. ~ INTERACTIONS) 
@@ -986,7 +986,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		)
 	} else {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES"))
+			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY"))
 			+ geom_density(alpha = 0.9)
 			#+ geom_vline(xintercept=tst$CAPTURES_BEST_CASE, size=0.001)
 			#+ geom_vline(xintercept=(tst$CAPTURES_BEST_CASE+tst$ci), size=0.001)
@@ -1123,8 +1123,8 @@ doBootAnalysis <-function(expDataFrame) {
 
 	p("BOOT ANALYSIS >>>>>>")
 
-	dataA <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="uniform resources",]
-	dataB <- expDataFrame[expDataFrame$EXTRACTED_RESOURCES=="mixed resources",]
+	dataA <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
+	dataB <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
 
 	distTable <- rbind(distTable,bootedTTest("CAPTURES_MEAN",dataA$CAPTURES_MEAN,dataB$CAPTURES_MEAN,bootSize))
 	distTable <- rbind(distTable,bootedTTest("CAPTURES_BEST_CASE",dataA$CAPTURES_BEST_CASE,dataB$CAPTURES_BEST_CASE,bootSize))
@@ -1182,7 +1182,7 @@ bootSize <- 1000
 			f.RES_E2C_STEPS_MEAN <- fDataFrame$RES_E2C_STEPS_MEAN
 			f.RATE_MOTION <- fDataFrame$RATE_MOTION
 			f.RATE_COMMUNICATION <- fDataFrame$RATE_COMMUNICATION
-			f.EXTRACTED_RESOURCES <- fDataFrame$EXTRACTED_RESOURCES
+			f.RESOURCE_UNIFORMITY <- fDataFrame$RESOURCE_UNIFORMITY
 			
 			f.NUM_DETECTORS <- fDataFrame$NUM_DETECTORS
 			f.NUM_EXTRACTORS <- fDataFrame$NUM_EXTRACTORS
@@ -1208,13 +1208,13 @@ bootSize <- 1000
 			p.RES_E2C_STEPS_MEAN <- pDataFrame$RES_E2C_STEPS_MEAN
 			p.RATE_MOTION <- pDataFrame$RATE_MOTION
 			p.RATE_COMMUNICATION <- pDataFrame$RATE_COMMUNICATION
-			p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
+			p.RESOURCE_UNIFORMITY <- pDataFrame$RESOURCE_UNIFORMITY
 
 			p.NUM_DETECTORS <- pDataFrame$NUM_DETECTORS
 			p.NUM_EXTRACTORS <- pDataFrame$NUM_EXTRACTORS
 			p.NUM_TRANSPORTERS <- pDataFrame$NUM_TRANSPORTERS
 			p.E <- pDataFrame$E
-			p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
+			p.RESOURCE_UNIFORMITY <- pDataFrame$RESOURCE_UNIFORMITY
 				
 
 			p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
@@ -1230,7 +1230,7 @@ bootSize <- 1000
 			p.E <- bootMean(p.E,bootSize)	
 
 			
-			#print(f.EXTRACTED_RESOURCES)
+			#print(f.RESOURCE_UNIFORMITY)
 			#stop()
 			
 
@@ -1244,7 +1244,7 @@ bootSize <- 1000
 				NUM_EXTRACTORS=f.NUM_EXTRACTORS,
 				NUM_TRANSPORTERS=f.NUM_TRANSPORTERS,
 				E=f.E,
-				EXTRACTED_RESOURCES="f",
+				RESOURCE_UNIFORMITY="f",
 				INTERACTIONS=varInteraction
 			)
 
@@ -1261,7 +1261,7 @@ bootSize <- 1000
 				NUM_EXTRACTORS=p.NUM_EXTRACTORS,
 				NUM_TRANSPORTERS=p.NUM_TRANSPORTERS,
 				E=p.E,
-				EXTRACTED_RESOURCES="p",
+				RESOURCE_UNIFORMITY="p",
 				INTERACTIONS=varInteraction
 
 			)
