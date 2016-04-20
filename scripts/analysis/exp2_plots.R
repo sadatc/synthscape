@@ -68,6 +68,10 @@ pValueString <- function(val) {
 	if(val < 0.01) {
 		result <- "p < 0.01"
 	} 
+
+	if(val > 0.05) {
+		result <- paste("p = ",round(val,digits=2),sep="")
+	}
 	
 	return(result)
 }
@@ -575,6 +579,55 @@ plotBoxPlot_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 
 
+plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+
+	pdf(fileName,  
+	  width = 3.5,height = 2.5, family="CMU Serif")	  
+	yAxisLabel <- getMeasureShortName(colName)
+	
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
+			#facet_grid( . ~ POPULATION, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() +
+			geom_line(size=0.1) +
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+				)
+		)
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
+			#facet_grid(. ~ POPULATION, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_y_continuous(labels=percentFormatter)+
+			scale_fill_discrete("Population") +
+			scale_fill_manual(values=c("white","grey50")) +
+			geom_line(size=0.1) +
+			theme_bw() + 			
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+
+				)
+		)
+	}
+
+	dev.off()
+}
+
+
 plotBoxPlot_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
@@ -734,7 +787,6 @@ plotBoxPlots <- function(expDataFrame) {
 
 
 	# compare interaction vs performance
-
 	plotBoxPlot_I(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-i-cb.pdf", TRUE)
 	plotBoxPlot_I(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-i-cm.pdf", TRUE)
 	plotBoxPlot_I(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-i-e2c.pdf")
@@ -758,40 +810,12 @@ plotBoxPlots <- function(expDataFrame) {
 	plotBoxPlot_I_Q(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-iq-rm.pdf")
 	plotBoxPlot_I_Q(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-iq-rc.pdf")
 
-
-
-if (1!=1) {
-
-	
-	# do box plots by interaction and quality
-	plotBoxPlot_I_Q(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-mi-cb.pdf", TRUE)
-	plotBoxPlot_I_Q(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-mi-cm.pdf", TRUE)
-	plotBoxPlot_I_Q(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-mi-e2c.pdf")
-	plotBoxPlot_I_Q(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-mi-rm.pdf")
-	plotBoxPlot_I_Q(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-mi-rc.pdf")
-
-	
-
-
-	# show a comparison of the means...
-	print("comparing pg and ps...(non-parametric)")
-	compareMeans(expDataFrame,"CAPTURES_BEST_CASE")
-	compareMeans(expDataFrame,"CAPTURES_MEAN")
-	compareMeans(expDataFrame,"RES_E2C_STEPS_MEAN")
-	compareMeans(expDataFrame,"RATE_MOTION")
-	compareMeans(expDataFrame,"RATE_COMMUNICATION")
-	print("DONE comparing pg and ps...(non-parametric)")
-	
-
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-full-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-full-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-full-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-full-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-full-box-rc.pdf")
-	
-	
-}
-
+	# compare interaction vs performance
+	plotBoxPlot_P(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-p-cb.pdf", TRUE)
+	plotBoxPlot_P(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-p-cm.pdf", TRUE)
+	plotBoxPlot_P(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-p-e2c.pdf")
+	plotBoxPlot_P(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-p-rm.pdf")
+	plotBoxPlot_P(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-box-p-rc.pdf")
 
 
 }
@@ -1586,35 +1610,35 @@ analyzeNormailtyMeasureByGroups <-function(primaryGroup,secondaryGroup,measureNa
 }
 
 
-
 analyzeNormailtyMeasureByGroup <-function(primaryGroup,measureName,dataFrame) {
+
 	
 	result <- data.frame()
 
-	
 	for(primary in unique(dataFrame[[primaryGroup]])) {
-		data = selectFromDf(dataFrame,primaryGroup,primary)
-
-		d <- data[[measureName]]
-		if(length(d)>5000) {
-			d <- d[1:5000]
-		} 	
-		shap <- shapiro.test(d)
-		W <- shap$statistic[[1]]
-		pValue <- pValueString(shap$p.value)
 		
+			data = selectFromDf(dataFrame,primaryGroup,primary)
+		
+			d <- data[[measureName]]
+			if(length(d)>5000) {
+				d <- d[1:5000]
+			}
+			
+			shap <- shapiro.test(d)
+			W <- shap$statistic[[1]]
+			pValue <- pValueString(shap$p.value)
+			
+			rowData <- data.frame(
+				MEASURE=measureName,
+				primaryGroup=primary,
+				
+				W=W,
+				pValue=pValue
+			)
 
-
-		rowData <- data.frame(
-			MEASURE=measureName,
-			primaryGroup=primary,						
-			W=W,
-			pValue=pValue
-		)
-
-		result <- rbind(result,rowData)
+			result <- rbind(result,rowData)
+		
 	}
-
 	
 	
 	return(result)
@@ -1622,6 +1646,9 @@ analyzeNormailtyMeasureByGroup <-function(primaryGroup,measureName,dataFrame) {
 
 
 }
+
+
+
 
 
 
@@ -1689,6 +1716,374 @@ doNormalityAnalysis <- function(expDataFrame) {
 
 
 
+kruskalWallisTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	
+	data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+	measureData <- data[[measureName]]
+	groupByCol <- data[[primaryGroup]]
+	kResult <- kruskal.test(measureData ~ groupByCol)
+	#print(summary(measureData))
+	#print(summary(groupByCol))
+	#print(kResult)
+	
+	kValueG <- kResult$statistic[[1]]
+	dFreedomG <- kResult$parameter[[1]]
+	pValueG <- as.double(kResult$p.value)
+	
+	data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+	measureData <- data[[measureName]]
+	groupByCol <- data[[primaryGroup]]
+	kResult <- kruskal.test(measureData ~ groupByCol)
+	kValueS <- kResult$statistic[[1]]
+	dFreedomS <- kResult$parameter[[1]]
+	pValueS <- as.double(kResult$p.value)
+	
+
+	rowData <- data.frame(
+		MEASURE=measureName,
+		H_VALUE_G=kValueG, 
+		D_FREEDOM_G=dFreedomG, 
+		P_VALUE_G=pValueString(pValueG),
+		H_VALUE_S=kValueS, 
+		D_FREEDOM_S=dFreedomS, 
+		P_VALUE_S=pValueString(pValueS)
+	)
+	
+
+	return(rowData)
+}
+
+
+nonParametricCompare <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	for(primary in unique(dataFrame[[primaryGroup]])) {
+
+		data = selectFromDf(dataFrame,primaryGroup,primary)
+
+		vecA <- data[data$SPECIES=="homogenous",]
+		vecA <- vecA[[measureName]]
+
+
+		vecB <- data[data$SPECIES=="heterogenous",]
+		vecB <- vecB[[measureName]]
+
+		#print(head(vecA))
+		#print(head(vecB))
+		#stop()
+
+		wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+		
+		W <- wilcox$statistic[[1]]
+		pValue <- wilcox$p.value
+		
+		z<- qnorm(pValue/2)
+		r<- z/ sqrt(length(vecA))
+		
+		rowData <- data.frame(	
+			MEASURE=measureName,
+			PRIMARY=primary,			
+			W=W,
+			P=pValueString(pValue),
+			EFFECT=r
+		)
+		result <- rbind(result,rowData)
+
+	}
+	
+	
+	return(result)
+}
+
+
+kruskalWallisTest1 <-function(groupByColParam,measureName,data) {
+	return(nonParametricCompare1(groupByColParam,measureName,data))
+}
+
+
+nonParametricCompare1 <-function(groupByColParam,measureName,data) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	
+
+	vecA <- data[data$SPECIES=="homogenous",]
+	vecA <- vecA[[measureName]]
+
+
+	vecB <- data[data$SPECIES=="heterogenous",]
+	vecB <- vecB[[measureName]]
+
+	#print(head(vecA))
+	#print(head(vecB))
+	#stop()
+
+	wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+	
+	W <- wilcox$statistic[[1]]
+	pValue <- wilcox$p.value
+	
+	z<- qnorm(pValue/2)
+	r<- z/ sqrt(length(vecA))
+	
+	rowData <- data.frame(	
+		MEASURE=measureName,
+		W=W,
+		P=pValueString(pValue),
+		EFFECT=r
+	)
+	result <- rbind(result,rowData)
+
+	
+	
+	
+	return(result)
+}
+
+
+kruskalWallisTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainData) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	
+
+		for(primary in unique(mainData[[primaryGroup]])) {
+			print(primary)
+			dataFrame = selectFromDf(mainData,primaryGroup,primary)
+		
+		
+			
+			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+			kResult <- kruskal.test(measureData ~ groupByCol)
+			kValueG <- kResult$statistic[[1]]
+			dFreedomG <- kResult$parameter[[1]]
+			pValueG <- as.double(kResult$p.value)
+			
+			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+			kResult <- kruskal.test(measureData ~ groupByCol)
+			kValueS <- kResult$statistic[[1]]
+			dFreedomS <- kResult$parameter[[1]]
+			pValueS <- as.double(kResult$p.value)
+			
+
+			rowData <- data.frame(				
+				MEASURE=measureName,
+				PRIMARY=primary,
+				H_VALUE_G=kValueG, 
+				D_FREEDOM_G=dFreedomG, 
+				P_VALUE_G=pValueString(pValueG),
+				H_VALUE_S=kValueS, 
+				D_FREEDOM_S=dFreedomS, 
+				P_VALUE_S=pValueString(pValueS)
+			)
+
+
+			result <- rbind(result,rowData)
+		}
+	
+
+
+
+	return(result)
+}
+
+
+nonParametricCompare2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,dataFrame) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	for(primary in unique(dataFrame[[primaryGroup]])) {
+
+		for(secondary in unique(dataFrame[[secondaryGroup]])) {
+
+
+			data = selectFromDf(dataFrame,primaryGroup,primary)
+			data = selectFromDf(data,secondaryGroup,secondary)
+
+			vecA <- data[data$SPECIES=="homogenous",]
+			vecA <- vecA[[measureName]]
+
+
+			vecB <- data[data$SPECIES=="heterogenous",]
+			vecB <- vecB[[measureName]]
+
+			
+			wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+			
+			W <- wilcox$statistic[[1]]
+			pValue <- wilcox$p.value
+			
+			z<- qnorm(pValue/2)
+			r<- z/ sqrt(length(vecA))
+			
+			rowData <- data.frame(	
+				MEASURE=measureName,
+				PRIMARY=primary,			
+				SECONDARY=secondary,
+				W=W,
+				P=pValueString(pValue),
+				EFFECT=r
+			)
+			result <- rbind(result,rowData)
+		}
+	}
+
+
+
+	return(result)
+}
+
+
+doNonParametricComparisons <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("POP-INTERACTION: NON-PARAMETRIC COMPARE >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
+
+	print(distTable)	
+	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
+
+
+	distTable <- data.frame()
+	p("POP-QUALITY: NON-PARAMETRIC COMPARE >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-QUALITY: NON-PARAMETRIC COMPARE")
+	
+
+	distTable <- data.frame()
+	p("POP-INTERACTION: NON-PARAMETRIC COMPARE >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
+
+
+
+	distTable <- data.frame()
+	p("POPULATION: NON-PARAMETRIC COMPARE >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POPULATION: NON-PARAMETRIC COMPARE")
+	
+}
+
+
+doKruskalWallis <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("POP-QUALITY: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-QUALITY: KRUSKAL-WALLIS")
+	
+
+
+
+
+
+	distTable <- data.frame()
+	p("POP-INTERACTION: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_MOTION",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	
+	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION: KRUSKAL-WALLIS")
+
+
+	
+
+
+	distTable <- data.frame()
+	p("POP-INTERACTION-QUALITY: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	
+	print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
+
+
+
+	distTable <- data.frame()
+	p("POPULATION: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POPULATION: KRUSKAL-WALLIS")
+	
+}
+
+
+
+
+
+
+
 
 
 ##############################   MAIN PROCESS BEGINS ###############################
@@ -1706,9 +2101,10 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 #plotHists(expDataFrame)    # plots histograms
 doNormalityAnalysis(expDataFrame)
 
-#doNormalityAnalysisFullPop(expDataFrame)
-#doNormalityAnalysisSubPop(expDataFrame)
 #plotBoxPlots(expDataFrame) # boxplots to show difference
+
+#doKruskalWallis(expDataFrame)
+#doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)
 
 

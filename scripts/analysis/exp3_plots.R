@@ -115,6 +115,10 @@ pValueString <- function(val) {
 	if(val < 0.01) {
 		result <- "p < 0.01"
 	} 
+
+	if(val > 0.05) {
+		result <- paste("p = ",round(val,digits=2),sep="")
+	}
 	
 	return(result)
 }
