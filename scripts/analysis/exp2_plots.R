@@ -2064,6 +2064,155 @@ doKruskalWallis <- function(expDataFrame) {
 }
 
 
+as.numeric.factor <- function(x) {seq_along(levels(x))[x]}
+
+jonkheereTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
+	library(clinfun)
+	options(warn=-1)
+
+	result <- data.frame()
+	
+	
+	data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+	measureData <- data[[measureName]]
+	groupByCol <- data[[primaryGroup]]
+	groupByCol = as.numeric.factor(groupByCol)
+	jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+	
+	jValueG <-jResult$statistic[[1]]
+	jAltG <- jResult$alternative[[1]]
+	pValueG <- as.double(jResult$p.value)
+	
+
+	data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+	measureData <- data[[measureName]]
+	groupByCol <- data[[primaryGroup]]
+	groupByCol = as.numeric.factor(groupByCol)
+	jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+	
+	jValueS <-jResult$statistic[[1]]
+	jAltS <- jResult$alternative[[1]]
+	pValueS <- as.double(jResult$p.value)
+
+	
+
+	rowData <- data.frame(
+		MEASURE=measureName,
+		JT_G=jValueG, 
+		J_ALT_G=jAltG, 
+		P_VALUE_G=pValueString(pValueG),
+		JT_S=jValueS, 
+		J_ALT_S=jAltS, 
+		P_VALUE_S=pValueString(pValueS)
+	)
+	
+	options(warn=1)
+	return(rowData)
+}
+
+
+
+
+jonkheereTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainData) {
+	library(clinfun)
+	options(warn=-1)
+
+
+	result <- data.frame()
+	
+		for(primary in unique(mainData[[primaryGroup]])) {
+			dataFrame = selectFromDf(mainData,primaryGroup,primary)
+		
+		
+			
+			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+			groupByCol = as.numeric.factor(groupByCol)
+			
+
+			jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+			
+			jValueG <-jResult$statistic[[1]]
+			jAltG <- jResult$alternative[[1]]
+			pValueG <- as.double(jResult$p.value)
+			
+
+			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+			groupByCol = as.numeric.factor(groupByCol)
+			jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+			
+			jValueS <-jResult$statistic[[1]]
+			jAltS <- jResult$alternative[[1]]
+			pValueS <- as.double(jResult$p.value)
+
+			rowData <- data.frame(
+				PRIMARY=primary,
+				MEASURE=measureName,
+				JT_G=jValueG, 
+				J_ALT_G=jAltG, 
+				P_VALUE_G=pValueString(pValueG),
+				JT_S=jValueS, 
+				J_ALT_S=jAltS, 
+				P_VALUE_S=pValueString(pValueS)
+			)
+			#print(rowData)
+			#stop()
+
+			result <- rbind(result,rowData)
+		}
+	
+
+
+	options(warn=1)
+	return(result)
+}
+
+
+doTrendTest <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("POP-QUALITY:TREND TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-QUALITY:TREND TEST")
+	
+
+	
+
+
+	distTable <- data.frame()
+	p("POP-INTERACTION-QUALITY:TREND TEST >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,jonkheereTest2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,jonkheereTest2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,jonkheereTest2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,jonkheereTest2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,jonkheereTest2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)
+	#stop()
+	
+	print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION-QUALITY:TREND TEST")
+
+
+
+	
+}
+
+
+
 
 
 anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainData) {
@@ -2180,14 +2329,15 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 
 # Using these...
-#plotHists(expDataFrame)    # plots histograms
-#doNormalityAnalysis(expDataFrame)
+plotHists(expDataFrame)    # plots histograms
+doNormalityAnalysis(expDataFrame)
 
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+plotBoxPlots(expDataFrame) # boxplots to show difference
 
-#doKruskalWallis(expDataFrame)
-#doNonParametricComparisons(expDataFrame)
-#plotBootedStats(expDataFrame)
+doKruskalWallis(expDataFrame)
+doTrendTest(expDataFrame)
+doNonParametricComparisons(expDataFrame)
+plotBootedStats(expDataFrame)
 doANOVA(expDataFrame)
 
 
