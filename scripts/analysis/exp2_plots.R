@@ -1498,70 +1498,53 @@ plotBootedStats <- function(expDataFrame) {
 
 	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
-plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cb.pdf", TRUE)
+	plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cb.pdf", TRUE)
 
 
-plotBootHistPop_I(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cm.pdf", TRUE)
+	plotBootHistPop_I(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cm.pdf", TRUE)
 
-plotBootHistPop_I(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-e2c.pdf", FALSE)
-
-
-plotBootHistPop_I(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rm.pdf", FALSE)
+	plotBootHistPop_I(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-e2c.pdf", FALSE)
 
 
-plotBootHistPop_I(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rc.pdf", FALSE)
+	plotBootHistPop_I(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rm.pdf", FALSE)
+
+
+	plotBootHistPop_I(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rc.pdf", FALSE)
 
 
 	popDataFrame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
 
-plotBootHistPop_Q(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cb.pdf", TRUE)
+	plotBootHistPop_Q(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cb.pdf", TRUE)
 
-plotBootHistPop_Q(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cm.pdf", TRUE)
+	plotBootHistPop_Q(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-cm.pdf", TRUE)
 
-plotBootHistPop_Q(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-e2c.pdf", FALSE)
-
-
-plotBootHistPop_Q(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rm.pdf", FALSE)
+	plotBootHistPop_Q(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-e2c.pdf", FALSE)
 
 
-plotBootHistPop_Q(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rc.pdf", FALSE)
+	plotBootHistPop_Q(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rm.pdf", FALSE)
 
 
-popDataFrame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	plotBootHistPop_Q(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rc.pdf", FALSE)
+
+
+	popDataFrame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
 
 
 	plotBootHistPop_IQ(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cb.pdf", TRUE)
 
-plotBootHistPop_IQ(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cm.pdf", TRUE)
+	plotBootHistPop_IQ(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cm.pdf", TRUE)
 
-plotBootHistPop_IQ(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-e2c.pdf", FALSE)
-
-
-plotBootHistPop_IQ(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rm.pdf", FALSE)
+	plotBootHistPop_IQ(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-e2c.pdf", FALSE)
 
 
-plotBootHistPop_IQ(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rc.pdf", FALSE)
-
-if(1!=1) {
-
-	t.table <- data.frame()
+	plotBootHistPop_IQ(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rm.pdf", FALSE)
 
 
-	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",s.CAPTURES_BEST_CASE,g.CAPTURES_BEST_CASE))
-	
-	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
+	plotBootHistPop_IQ(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-rc.pdf", FALSE)
 
-	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
 
-	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
-
-	data(t.table)
-	print("data table for pg vs ps")
-	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
-	#print(xtable(t.table, include.rownames=FALSE))
-	}
 
 }
 
@@ -1856,7 +1839,6 @@ kruskalWallisTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measur
 	
 
 		for(primary in unique(mainData[[primaryGroup]])) {
-			print(primary)
 			dataFrame = selectFromDf(mainData,primaryGroup,primary)
 		
 		
@@ -1879,8 +1861,9 @@ kruskalWallisTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measur
 			
 
 			rowData <- data.frame(				
-				MEASURE=measureName,
 				PRIMARY=primary,
+				MEASURE=measureName,
+				
 				H_VALUE_G=kValueG, 
 				D_FREEDOM_G=dFreedomG, 
 				P_VALUE_G=pValueString(pValueG),
@@ -2056,7 +2039,9 @@ doKruskalWallis <- function(expDataFrame) {
 	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
 	distTable <- rbind(distTable,kruskalWallisTest2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
 
+	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)
+	#stop()
 	
 	print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE)
 	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
@@ -2081,6 +2066,103 @@ doKruskalWallis <- function(expDataFrame) {
 
 
 
+anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainData) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+		for(primary in unique(mainData[[primaryGroup]])) {
+			print(primary)
+
+			dataFrame = selectFromDf(mainData,primaryGroup,primary)
+		
+		
+			
+			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+
+			
+			anova <- oneway.test(measureData ~ groupByCol)
+			
+			fValueG <- anova$statistic[[1]]
+			numDFreedomG <- anova$parameter[[1]]
+			denDFreedomG <- anova$parameter[[2]]
+			pValueG <- 	anova$p.value
+			
+
+
+
+			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			measureData <- data[[measureName]]
+			groupByCol <- data[[secondaryGroup]]
+		
+
+			anova <- oneway.test(measureData ~ groupByCol)
+			
+			fValueS <- anova$statistic[[1]]
+			numDFreedomS <- anova$parameter[[1]]
+			denDFreedomS <- anova$parameter[[2]]
+			pValueS <- 	anova$p.value
+			
+
+
+			rowData <- data.frame(				
+				PRIMARY=primary,
+				MEASURE=measureName,
+				
+				F_VALUE_G=fValueG, 
+				N_D_FREEDOM_G=numDFreedomG, 
+				D_D_FREEDOM_G=denDFreedomG, 
+				P_VALUE_G=pValueString(pValueG),
+
+				F_VALUE_S=fValueS, 
+				N_D_FREEDOM_S=numDFreedomS, 
+				D_D_FREEDOM_S=denDFreedomS, 
+				P_VALUE_S=pValueString(pValueS)
+			)
+
+
+			result <- rbind(result,rowData)
+		}
+	
+
+
+
+	return(result)
+}
+
+
+
+
+
+doANOVA <- function(expDataFrame) {
+
+
+	data <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	
+	distTable <- data.frame()
+	p("POP-INTERACTION-QUALITY: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)
+	#stop()
+	
+	print(xtable(distTable, digits=c(0,0,0,2,2,2,0,2,2,2,0)), include.rownames=FALSE)
+	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
+
+
+
+}
+
+
+
 
 
 
@@ -2099,14 +2181,14 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 # Using these...
 #plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+#doNormalityAnalysis(expDataFrame)
 
 #plotBoxPlots(expDataFrame) # boxplots to show difference
 
 #doKruskalWallis(expDataFrame)
 #doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)
-
+doANOVA(expDataFrame)
 
 
 
