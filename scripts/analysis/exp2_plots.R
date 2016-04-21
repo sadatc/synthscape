@@ -2329,16 +2329,16 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+#plotHists(expDataFrame)    # plots histograms
+#doNormalityAnalysis(expDataFrame)
 
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
 doKruskalWallis(expDataFrame)
 doTrendTest(expDataFrame)
-doNonParametricComparisons(expDataFrame)
-plotBootedStats(expDataFrame)
-doANOVA(expDataFrame)
+#doNonParametricComparisons(expDataFrame)
+#plotBootedStats(expDataFrame)
+#doANOVA(expDataFrame)
 
 
 

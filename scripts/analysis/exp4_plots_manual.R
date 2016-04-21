@@ -351,9 +351,9 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	  width = 6,height = 7, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( RATIO ~ EXTRACTED_RESOURCES) +
+			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -362,9 +362,9 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		)
 	} else {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="EXTRACTED_RESOURCES")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( RATIO ~ EXTRACTED_RESOURCES) +
+			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
 			scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -411,10 +411,10 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	ordered_ratios <- data.frame()
 	for(ratio in unique(dataFrame$RATIO)) {
 	
-		fmed <- dataFrame[dataFrame$RATIO==ratio & dataFrame$E_R=="f",]
+		fmed <- dataFrame[dataFrame$RATIO==ratio & dataFrame$RU=="f",]
 		fmed <- median(fmed[[colName]])
 	
-		pmed <- dataFrame[dataFrame$RATIO==ratio & dataFrame$E_R=="p",]
+		pmed <- dataFrame[dataFrame$RATIO==ratio & dataFrame$RU=="p",]
 		pmed <- median(pmed[[colName]])
 	
 		ordered_ratios <- rbind(ordered_ratios,data.frame(RATIO=ratio,FMED=fmed,PMED=pmed))
@@ -423,7 +423,9 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	#ordered_ratios <- ordered_ratios[order(ordered_ratios$FMED),]
 	
 	ordered_ratios <- ordered_ratios[order(ordered_ratios$PMED),]
+
 	
+	# this effectively replaces the existing 
 	dataFrame$RATIO <- factor(dataFrame$RATIO,ordered_ratios$RATIO)
 
 
@@ -435,8 +437,8 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string( x="EXTRACTED_RESOURCES",y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			facet_grid( . ~ RATIO) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
@@ -453,8 +455,8 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="EXTRACTED_RESOURCES", y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			facet_grid(. ~ RATIO) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
@@ -486,8 +488,8 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string( x="EXTRACTED_RESOURCES",y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			facet_grid( INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
@@ -503,8 +505,8 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		)
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="EXTRACTED_RESOURCES", y=colName)) +
-			geom_boxplot(aes(fill=EXTRACTED_RESOURCES), notch=globalNotchValue) +
+			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
 			facet_grid(INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
@@ -687,7 +689,7 @@ renameFactorValues <- function(dataFrame) {
 
 
 	
-	dataFrame$EXTRACTED_RESOURCES <- mapvalues(dataFrame$EXTRACTED_RESOURCES, 
+	dataFrame$RESOURCE_UNIFORMITY <- mapvalues(dataFrame$RESOURCE_UNIFORMITY, 
 		from=c("f","p"), 
 		to=c("uniform resources", "mixed resources")
 	)
@@ -711,7 +713,8 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$CLONES <- factor(expDataFrame$CLONES)
 	expDataFrame$EVENNESS_CONTROL <- factor(expDataFrame$EVENNESS_CONTROL)
 	expDataFrame$EXTRACTED_RESOURCES <- factor(expDataFrame$EXTRACTED_RESOURCES)
-	expDataFrame$E_R <- expDataFrame$EXTRACTED_RESOURCES
+	expDataFrame$RESOURCE_UNIFORMITY <- factor(expDataFrame$EXTRACTED_RESOURCES)
+	expDataFrame$RU <- expDataFrame$RESOURCE_UNIFORMITY
 	
 	
 	expDataFrame$GRIDS <- factor(expDataFrame$GRIDS)
@@ -804,7 +807,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 	  width = 6,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES")) 
+			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY")) 
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ RATIO) 
@@ -818,7 +821,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		)
 	} else {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="EXTRACTED_RESOURCES"))
+			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY"))
 			+ geom_density(alpha = 0.9)
 			+ scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ RATIO) 
@@ -1035,7 +1038,7 @@ bootSize <- 1000
 				f.RES_E2C_STEPS_MEAN <- fDataFrame$RES_E2C_STEPS_MEAN
 				f.RATE_MOTION <- fDataFrame$RATE_MOTION
 				f.RATE_COMMUNICATION <- fDataFrame$RATE_COMMUNICATION
-				f.EXTRACTED_RESOURCES <- fDataFrame$EXTRACTED_RESOURCES
+				f.RESOURCE_UNIFORMITY <- fDataFrame$RESOURCE_UNIFORMITY
 				
 				f.NUM_DETECTORS <- fDataFrame$NUM_DETECTORS
 				f.NUM_EXTRACTORS <- fDataFrame$NUM_EXTRACTORS
@@ -1061,13 +1064,13 @@ bootSize <- 1000
 				p.RES_E2C_STEPS_MEAN <- pDataFrame$RES_E2C_STEPS_MEAN
 				p.RATE_MOTION <- pDataFrame$RATE_MOTION
 				p.RATE_COMMUNICATION <- pDataFrame$RATE_COMMUNICATION
-				p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
+				p.RESOURCE_UNIFORMITY <- pDataFrame$RESOURCE_UNIFORMITY
 
 				p.NUM_DETECTORS <- pDataFrame$NUM_DETECTORS
 				p.NUM_EXTRACTORS <- pDataFrame$NUM_EXTRACTORS
 				p.NUM_TRANSPORTERS <- pDataFrame$NUM_TRANSPORTERS
 				p.E <- pDataFrame$E
-				p.EXTRACTED_RESOURCES <- pDataFrame$EXTRACTED_RESOURCES
+				p.RESOURCE_UNIFORMITY <- pDataFrame$RESOURCE_UNIFORMITY
 					
 
 				p.CAPTURES_BEST_CASE <- bootMean(p.CAPTURES_BEST_CASE,bootSize)
@@ -1083,7 +1086,7 @@ bootSize <- 1000
 				p.E <- bootMean(p.E,bootSize)	
 
 				
-				#print(f.EXTRACTED_RESOURCES)
+				#print(f.RESOURCE_UNIFORMITY)
 				#stop()
 				
 
@@ -1097,7 +1100,7 @@ bootSize <- 1000
 					NUM_EXTRACTORS=f.NUM_EXTRACTORS,
 					NUM_TRANSPORTERS=f.NUM_TRANSPORTERS,
 					E=f.E,
-					EXTRACTED_RESOURCES="f",
+					RESOURCE_UNIFORMITY="f",
 					INTERACTIONS=varInteraction,
 					RATIO = varRatio
 				)
@@ -1115,7 +1118,7 @@ bootSize <- 1000
 					NUM_EXTRACTORS=p.NUM_EXTRACTORS,
 					NUM_TRANSPORTERS=p.NUM_TRANSPORTERS,
 					E=p.E,
-					EXTRACTED_RESOURCES="p",
+					RESOURCE_UNIFORMITY="p",
 					INTERACTIONS=varInteraction,
 					RATIO = varRatio
 
@@ -1141,7 +1144,7 @@ bootSize <- 1000
 plotBootedStats <- function(expDataFrame) {
 
 	
-	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$E_R=="f",], expDataFrame[expDataFrame$E_R=="p",])
+	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$RU=="f",], expDataFrame[expDataFrame$RU=="p",])
 	
 
 	print(names(popDataFrame))
@@ -1164,7 +1167,7 @@ analyzeNormailtyMeasure <-function(measureName,data,ratio) {
 
 	data <- data[data$RATIO == ratio,]
 	
-	vecU <- data[data$E_R=="f",]
+	vecU <- data[data$RU=="f",]
 	vecU <- vecU[[measureName]]
 	shapU <- shapiro.test(vecU)
 
@@ -1173,7 +1176,7 @@ analyzeNormailtyMeasure <-function(measureName,data,ratio) {
 	pValueU <- shapU$p.value
 	
 	
-	vecP <- data[data$E_R=="p",]
+	vecP <- data[data$RU=="p",]
 	vecP <- vecP[[measureName]]
 	shapP <- shapiro.test(vecP)
 
@@ -1272,12 +1275,96 @@ doKruskalWallis <-function(expDataFrame) {
 	
 }
 
+
+
+as.numeric.factor <- function(x) {seq_along(levels(x))[x]}
+
+jonckheereTest <-function(measureName,resourceUniformity,dataFrame) {
+	library(clinfun)
+	options(warn=-1)
+
+
+	ordered_ratios <- data.frame()
+	for(ratio in unique(dataFrame$RATIO)) {
+	
+		measureMedian <- dataFrame[dataFrame$RATIO==ratio & dataFrame$RU==resourceUniformity,]
+		measureMedian <- median(measureMedian[[measureName]])
+	
+		ordered_ratios <- rbind(ordered_ratios,data.frame(RATIO=ratio,MEASUREMEDIAN=measureMedian))
+	}
+	
+	ordered_ratios <- ordered_ratios[order(ordered_ratios$MEASUREMEDIAN),]	
+	orderString = paste(ordered_ratios$RATIO,collapse=" > ")
+
+	dataFrame$RATIO <- factor(dataFrame$RATIO,ordered_ratios$RATIO)
+
+
+	result <- data.frame()
+	
+	data <- dataFrame[order(dataFrame$RATIO),] #order the data according to the ratio of increasing measure
+	
+	measureData <- data[[measureName]]
+	groupByCol <- data[["RATIO"]]
+	groupByCol = as.numeric.factor(groupByCol)
+	jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+	
+	jValue <-jResult$statistic[[1]]
+	jAlt <- jResult$alternative[[1]]
+	pValue <- as.double(jResult$p.value)
+	
+
+	rowData <- data.frame(
+		RESOURCE_UNIFORMITY=resourceUniformity,
+		MEASURE=measureName,
+		ORDER_STRING=orderString,
+		JT=jValue, 
+		J_ALT=jAlt, 
+		P_VALUE=pValueString(pValue)
+		
+	)
+	
+	options(warn=1)
+	return(rowData)
+}
+
+
+doTrendAnalysis <-function(expDataFrame) {
+
+
+	distTable <- data.frame()
+	p("TREND ANALYSIS (PARTIAL) >>>>>>")
+	distTable <- rbind(distTable,jonckheereTest("CAPTURES_MEAN","p",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("CAPTURES_BEST_CASE","p",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RES_E2C_STEPS_MEAN","p",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RATE_COMMUNICATION","p",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RATE_MOTION","p",expDataFrame))
+	print(distTable)
+
+	print(xtable(distTable, digits=c(0,0,0,0,0,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< TREND ANALYSIS (PARTIAL)")
+
+
+	distTable <- data.frame()
+	p("TREND ANALYSIS (FULL) >>>>>>")
+	distTable <- rbind(distTable,jonckheereTest("CAPTURES_MEAN","f",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("CAPTURES_BEST_CASE","f",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RES_E2C_STEPS_MEAN","f",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RATE_COMMUNICATION","f",expDataFrame))
+	distTable <- rbind(distTable,jonckheereTest("RATE_MOTION","f",expDataFrame))
+	print(distTable)
+	print(xtable(distTable, digits=c(0,0,0,0,0,0,0)), include.rownames=FALSE)
+	p("<<<<<<<<< TREND ANALYSIS (FULL)")
+	
+}
+
+
+
 nonParametricCompare <-function(measureName,ratio,data,evennessValue) {
-	vecA <- data[data$E_R=="f",]
+	vecA <- data[data$RU=="f",]
 	vecA <- vecA[[measureName]]
 
 
-	vecB <- data[data$E_R=="p",]
+	vecB <- data[data$RU=="p",]
 	vecB <- vecB[[measureName]]
 
 	#print(head(vecA))
@@ -1311,8 +1398,7 @@ doNonParametricAnalysis <-function(expDataFrame) {
 	distTable <- data.frame()
 
 	for(ratio in unique(expDataFrame$RATIO)) {
-		
-		print(ratio)
+				
 		data <- expDataFrame[expDataFrame$RATIO == ratio,]
 		evennessValue <- data[["E"]]
 		evennessValue <- evennessValue[1]
@@ -1360,6 +1446,7 @@ doNormalityAnalysis(expDataFrame)
 
 plotBoxPlotsManual(expDataFrame) # boxplots to show difference
 doKruskalWallis(expDataFrame)
+doTrendAnalysis(expDataFrame)
 doNonParametricAnalysis(expDataFrame)
 
 ##plotBootedStats(expDataFrame)
