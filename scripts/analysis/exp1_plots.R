@@ -1193,11 +1193,5 @@ plotBoxPlots(expDataFrame) # boxplots to show difference
 plotBootedStatsFull(expDataFrame)
 plotBootedStatsPartial(expDataFrame)
 
-
-
-
-
-
-
 #plot the totals
 
