@@ -1212,7 +1212,7 @@ doNormalityAnalysis <- function(data) {
 		distTable <- rbind(distTable,analyzeNormailtyMeasure("CAPTURES_BEST_CASE",data, ratio))
 		distTable <- rbind(distTable,analyzeNormailtyMeasure("RES_E2C_STEPS_MEAN",data,ratio))
 		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_COMMUNICATION",data,ratio))
-		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_COMMUNICATION",data,ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_MOTION",data,ratio))
 	}
 	print(distTable)
 	
@@ -1251,27 +1251,33 @@ kruskalWallisTest <-function(measureName,dataFrame) {
 }
 
 
-doKruskalWallis <-function(expDataFrame) {
+doKruskalWallis <-function(expDataFrameOrig) {
 
 
 
 	distTable <- data.frame()
-
-	p("KRUSKAL-WALLIS ANALYSIS >>>>>>")
-
-	
+	p("KRUSKAL-WALLIS (f) ANALYSIS >>>>>>")
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "f",]
 	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_MEAN",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_BEST_CASE",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("RES_E2C_STEPS_MEAN",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
-	
-
 	print(distTable)	
-	
 	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	p("<<<<<<<<< KRUSKAL-WALLIS (f) TEST")
 
-	p("<<<<<<<<< KRUSKAL-WALLIS TEST")
+	distTable <- data.frame()
+	p("KRUSKAL-WALLIS (p) ANALYSIS >>>>>>")
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "p",]
+	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_BEST_CASE",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RES_E2C_STEPS_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
+	print(distTable)	
+	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	p("<<<<<<<<< KRUSKAL-WALLIS (p) TEST")
 	
 }
 
@@ -1439,15 +1445,15 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 
-plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+#plotHists(expDataFrame)    # plots histograms
+#doNormalityAnalysis(expDataFrame)
 
 
 
-plotBoxPlotsManual(expDataFrame) # boxplots to show difference
-doKruskalWallis(expDataFrame)
+#plotBoxPlotsManual(expDataFrame) # boxplots to show difference
+#doKruskalWallis(expDataFrame)
 doTrendAnalysis(expDataFrame)
-doNonParametricAnalysis(expDataFrame)
+#doNonParametricAnalysis(expDataFrame)
 
 ##plotBootedStats(expDataFrame)
 
