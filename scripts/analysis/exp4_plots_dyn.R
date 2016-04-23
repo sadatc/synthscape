@@ -138,7 +138,7 @@ doNonParametricAnalysis <- function(expDataFrame) {
 
 	print(distTable)
 
-	print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE))
 
 	p("<<<<<<<<< NON-PARAMETRIC TEST")
 	
@@ -212,7 +212,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	print(distTable)
 	
 	
-	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 
 	p("<<<<<<<<< NORMALITY TEST")
 	
@@ -1108,7 +1108,7 @@ doBootAnalysis <-function(expDataFrame) {
 
 	print(distTable)	
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
 
 	p("<<<<<<<<< BOOT ANALYSIS TEST")
 	
@@ -1285,14 +1285,14 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 doNormalityAnalysis(expDataFrame)
 
 
-plotBoxPlots(expDataFrame) 
+#plotBoxPlots(expDataFrame) 
 doNonParametricAnalysis(expDataFrame)
 
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 doBootAnalysis(expDataFrame)
 
 
