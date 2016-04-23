@@ -123,8 +123,8 @@ doNonParametricAnalysis <- function(expDataFrame) {
 
 	p("NON-PARAMETRIC TEST >>>>>>")
 
-	aDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
-	bDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
+	aDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform",]
+	bDat <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed",]
 
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",aDat$CAPTURES_MEAN,bDat$CAPTURES_MEAN))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",aDat$CAPTURES_BEST_CASE,bDat$CAPTURES_BEST_CASE))
@@ -185,29 +185,29 @@ doNormalityAnalysis <- function(expDataFrame) {
 
 	p("NORMALITY TEST >>>>>>")
 
-	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
+	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform",]
 
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","RATE_MOTION",data$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_DETECTORS",data$NUM_DETECTORS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform resources","E",data$E))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","CAPTURES_MEAN",data$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","RATE_MOTION",data$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","NUM_DETECTORS",data$NUM_DETECTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("uniform","E",data$E))
 
-	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
+	data <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed",]
 
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_MEAN",data$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","RATE_MOTION",data$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_DETECTORS",data$NUM_DETECTORS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
-	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed resources","E",data$E))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","CAPTURES_MEAN",data$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","CAPTURES_BEST_CASE",data$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","RES_E2C_STEPS_MEAN",data$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","RATE_COMMUNICATION",data$RATE_COMMUNICATION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","RATE_MOTION",data$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","NUM_DETECTORS",data$NUM_DETECTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","NUM_EXTRACTORS",data$NUM_EXTRACTORS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","NUM_TRANSPORTERS",data$NUM_TRANSPORTERS))
+	distTable <- rbind(distTable,analyzeNormailtyMeasure("mixed","E",data$E))
 
 	print(distTable)
 	
@@ -702,7 +702,7 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$RESOURCE_UNIFORMITY <- mapvalues(dataFrame$RESOURCE_UNIFORMITY, 
 		from=c("f","p"), 
-		to=c("uniform resources", "mixed resources")
+		to=c("uniform", "mixed")
 	)
 	
 	return(dataFrame)
@@ -1092,8 +1092,8 @@ doBootAnalysis <-function(expDataFrame) {
 
 	p("BOOT ANALYSIS >>>>>>")
 
-	dataA <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
-	dataB <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed resources",]
+	dataA <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="uniform",]
+	dataB <- expDataFrame[expDataFrame$RESOURCE_UNIFORMITY=="mixed",]
 
 	distTable <- rbind(distTable,bootedTTest("CAPTURES_MEAN",dataA$CAPTURES_MEAN,dataB$CAPTURES_MEAN,bootSize))
 	distTable <- rbind(distTable,bootedTTest("CAPTURES_BEST_CASE",dataA$CAPTURES_BEST_CASE,dataB$CAPTURES_BEST_CASE,bootSize))

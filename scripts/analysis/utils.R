@@ -34,5 +34,6 @@ displayLatex <- function(xtableString) {
 	x <- sub("NUM[\\]_EXTRACTORS","$N_{e}$",x) 
 	x <- sub("NUM[\\]_TRANSPORTERS","$N_{t}$",x) 
 	x <- sub("NUM[\\]_PROCESSORS","$N_{p}$",x) 
+	x <- sub("[[]ht[]]","[H]",x) 
 	cat(x,sep="\n")
 }
