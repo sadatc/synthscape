@@ -5,7 +5,7 @@ library(xtable)
 library(extrafont)
 library(scales)
 library(extrafont)
-#library(tikzDevice)
+source("utils.R")
 
 options(width=150)
 
@@ -55,13 +55,6 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     return(datac)
 }
 
-#library(scale)
-p <- function(msg) {
-	print("**************************************************************************", quote=FALSE)
-	print(msg, quote=FALSE)
-	print("**************************************************************************", quote=FALSE)
-
-}
 
 plotGraphs <-function(data) {
 
@@ -102,19 +95,6 @@ bootMean = function(sampleData, r) {
 }
 
 
-pValueString <- function(val) {
-	result <- val
-
-	if(val < 0.05) {
-		result <- "p < 0.05"
-	} 
-
-	if(val < 0.01) {
-		result <- "p < 0.01"
-	} 
-	
-	return(result)
-}
 #
 # performs shapiro-wilk test and mann-whitney test
 # reports back a data.frame

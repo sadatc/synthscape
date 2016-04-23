@@ -4,18 +4,12 @@ library(xtable)
 library(extrafont)
 library(scales)
 library(extrafont)
+source("utils.R")
 
 
 options(width=150)
 globalNotchValue <- FALSE
 
-#library(scale)
-p <- function(msg) {
-	print("**************************************************************************", quote=FALSE)
-	print(msg, quote=FALSE)
-	print("**************************************************************************", quote=FALSE)
-
-}
 
 plotGraphs <-function(data) {
 
@@ -55,23 +49,7 @@ bootMean = function(sampleData, r) {
 }
 
 
-pValueString <- function(val) {
-	result <- val
 
-	if(val < 0.05) {
-		result <- "p < 0.05"
-	} 
-
-	if(val < 0.01) {
-		result <- "p < 0.01"
-	} 
-
-	if(val > 0.05) {
-		result <- paste("p = ",round(val,digits=2),sep="")
-	}
-	
-	return(result)
-}
 #
 # performs shapiro-wilk test and mann-whitney test
 # reports back a data.frame
@@ -141,7 +119,7 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -163,7 +141,7 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -1215,8 +1193,11 @@ doNormalityAnalysis <- function(data) {
 		distTable <- rbind(distTable,analyzeNormailtyMeasure("RATE_MOTION",data,ratio))
 	}
 	print(distTable)
+
+	#displayLatex(xtable(distTable, digits=c(0,0,0,2,0,2,0), include.rownames=FALSE, print.results =FALSE))
+
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0)), include.rownames=FALSE))
 	
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0)), include.rownames=FALSE)
 
 	p("<<<<<<<<< NORMALITY TEST")
 	
@@ -1264,7 +1245,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
 	p("<<<<<<<<< KRUSKAL-WALLIS (f) TEST")
 
 	distTable <- data.frame()
@@ -1276,7 +1257,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
 	p("<<<<<<<<< KRUSKAL-WALLIS (p) TEST")
 	
 }
@@ -1319,14 +1300,11 @@ jonckheereTest <-function(measureName,resourceUniformity,dataFrame) {
 	pValue <- as.double(jResult$p.value)
 	
 
-	rowData <- data.frame(
-		RESOURCE_UNIFORMITY=resourceUniformity,
+	rowData <- data.frame(		
 		MEASURE=measureName,
-		ORDER_STRING=orderString,
+		OS=orderString,
 		JT=jValue, 
-		J_ALT=jAlt, 
-		P_VALUE=pValueString(pValue)
-		
+		P=pValueString(pValue)
 	)
 	
 	options(warn=1)
@@ -1346,7 +1324,7 @@ doTrendAnalysis <-function(expDataFrame) {
 	distTable <- rbind(distTable,jonckheereTest("RATE_MOTION","p",expDataFrame))
 	print(distTable)
 
-	print(xtable(distTable, digits=c(0,0,0,0,0,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< TREND ANALYSIS (PARTIAL)")
 
 
@@ -1358,7 +1336,7 @@ doTrendAnalysis <-function(expDataFrame) {
 	distTable <- rbind(distTable,jonckheereTest("RATE_COMMUNICATION","f",expDataFrame))
 	distTable <- rbind(distTable,jonckheereTest("RATE_MOTION","f",expDataFrame))
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,0,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< TREND ANALYSIS (FULL)")
 	
 }
@@ -1387,11 +1365,11 @@ nonParametricCompare <-function(measureName,ratio,data,evennessValue) {
 	
 	result.frame <- data.frame(		
 		RATIO = ratio,
-		EVENNESS=evennessValue,
+		#EVENNESS=evennessValue,
 		MEASURE=measureName,
 		W=W,
-		P=pValueString(pValue),
-		EFFECT=r
+		P=pValueString(pValue)
+		#EFFECT=r
 	)
 	
 	return(result.frame)
@@ -1419,7 +1397,7 @@ doNonParametricAnalysis <-function(expDataFrame) {
 
 	print(distTable)	
 	
-	print(xtable(distTable, digits=c(0,0,3,0,0,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2)), include.rownames=FALSE))
 
 	p("<<<<<<<<< NON-PARAMETRIC ANALYSIS")
 	
@@ -1452,8 +1430,8 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 #plotBoxPlotsManual(expDataFrame) # boxplots to show difference
 #doKruskalWallis(expDataFrame)
-doTrendAnalysis(expDataFrame)
+#doTrendAnalysis(expDataFrame)
 #doNonParametricAnalysis(expDataFrame)
 
-##plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 

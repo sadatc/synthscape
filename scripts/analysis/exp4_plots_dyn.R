@@ -6,7 +6,7 @@ library(xtable)
 library(extrafont)
 library(scales)
 library(extrafont)
-#library(tikzDevice)
+source("utils.R")
 
 options(width=150)
 
@@ -56,15 +56,6 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 }
 
 
-
-#library(scale)
-p <- function(msg) {
-	print("**************************************************************************", quote=FALSE)
-	print(msg, quote=FALSE)
-	print("**************************************************************************", quote=FALSE)
-
-}
-
 plotGraphs <-function(data) {
 
 	pdf("/tmp/isl_capture.pdf",  
@@ -103,27 +94,6 @@ bootMean = function(sampleData, r) {
 	return(boot.statistics)
 }
 
-
-
-
-
-pValueString <- function(val) {
-	result <- val
-
-	if(val < 0.05) {
-		result <- "p < 0.05"
-	} 
-
-	if(val < 0.01) {
-		result <- "p < 0.01"
-	} 
-
-	if(val > 0.05) {
-		result <- paste("p = ",round(val,digits=2),sep="")
-	}
-	
-	return(result)
-}
 
 
 nonParametricCompare <-function(measureName,vecA,vecB) {
@@ -168,8 +138,6 @@ doNonParametricAnalysis <- function(expDataFrame) {
 
 	print(distTable)
 
-	
-	
 	print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE)
 
 	p("<<<<<<<<< NON-PARAMETRIC TEST")
