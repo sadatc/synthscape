@@ -110,8 +110,7 @@ nonParametricCompare <-function(measureName,vecA,vecB) {
 		
 		MEASURE=measureName,
 		W=W,
-		P=pValueString(pValue),
-		EFFECT=r
+		P=pValueString(pValue)
 	)
 	
 	return(result.frame)
@@ -138,7 +137,7 @@ doNonParametricAnalysis <- function(expDataFrame) {
 
 	print(distTable)
 
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,-2,2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,-2)), include.rownames=FALSE))
 
 	p("<<<<<<<<< NON-PARAMETRIC TEST")
 	
@@ -258,102 +257,6 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 	)
 	dev.off()
 }
-
-percentFormatter <- function(x) {
-	y <- paste(round(x*100),"%",sep="")
-	return(y)
-}
-
-
-getMeasurePrettyName <- function(colName) {
-	result <- colName
-	
-	if(colName == "CAPTURES_MEAN") {
-		result <- expression(italic(M[mean]) ~ ":  Mean Captures (% of total)")
-	}
-
-	if(colName == "CAPTURES_BEST_CASE") {
-		result <- expression(italic(M[best]) ~ ":  Best Captures (% of total)")
-	}
-
-	if(colName == "RES_E2C_STEPS_MEAN") {
-		result <- expression(italic(M[effort]) ~ ":  Mean Steps between Extraction & Capture")
-	}
-
-	if(colName == "RATE_COMMUNICATION") {
-		result <- expression(italic(M[comm]) ~ ":  Communication Instructions")
-	}
-
-	if(colName == "RATE_MOTION") {
-		result <- expression(italic(M[move]) ~ ":  Movement Instructions")
-	}
-	
-	if(colName == "NUM_DETECTORS") {
-		result <- "Detectors"
-	}
-
-	if(colName == "NUM_TRANSPORTERS") {
-		result <- "Transporters"
-	}
-
-	if(colName == "NUM_EXTRACTORS") {
-		result <- "Extractors"
-	}
-
-	if(colName == "E") {
-		result <- "Evenness"
-	}
-
-	return(result)
-}
-
-
-
-getMeasureShortName <- function(colName) {
-	result <- colName
-	
-	if(colName == "CAPTURES_MEAN") {
-		result <- expression(italic(M[mean]) )
-	}
-
-	if(colName == "CAPTURES_BEST_CASE") {
-		result <- expression(italic(M[best]))
-	}
-
-	if(colName == "RES_E2C_STEPS_MEAN") {
-		result <- expression(italic(M[effort]))
-	}
-
-	if(colName == "RATE_COMMUNICATION") {
-		result <- expression(italic(M[comm]) )
-	}
-
-	if(colName == "RATE_MOTION") {
-		result <- expression(italic(M[move]) )
-	}
-	
-	if(colName == "NUM_DETECTORS") {
-		result <- "Detectors"
-	}
-
-	if(colName == "NUM_EXTRACTORS") {
-		result <- "Extractors"
-	}
-
-	if(colName == "NUM_TRANSPORTERS") {
-		result <- "Transporters"
-	}
-
-
-	if(colName == "E") {
-		result <- expression(italic(E))
-	}
-	return(result)
-}
-
-
-
-
 
 plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
@@ -486,7 +389,7 @@ plotHists <- function(expDataFrame) {
 plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 2.5,height = 2 , family="CMU Serif")	  
+	  width = 2.1,height = 1.5 , family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -1289,7 +1192,7 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 doNormalityAnalysis(expDataFrame)
 
 
-#plotBoxPlots(expDataFrame) 
+plotBoxPlots(expDataFrame) 
 doNonParametricAnalysis(expDataFrame)
 
 #plotBootedStats(expDataFrame)
