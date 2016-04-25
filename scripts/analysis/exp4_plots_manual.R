@@ -1331,13 +1331,13 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 plotHists(expDataFrame)    # plots histograms
-#doNormalityAnalysis(expDataFrame)
+doNormalityAnalysis(expDataFrame)
 
 
 plotBoxPlotsManual(expDataFrame) # boxplots to show difference
-#doKruskalWallis(expDataFrame)
-#doTrendAnalysis(expDataFrame)
-#doNonParametricAnalysis(expDataFrame)
+doKruskalWallis(expDataFrame)
+doTrendAnalysis(expDataFrame)
+doNonParametricAnalysis(expDataFrame)
 
 #plotBootedStats(expDataFrame)
 
