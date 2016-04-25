@@ -64,19 +64,19 @@ getMeasurePrettyName <- function(colName) {
 	}
 	
 	if(colName == "NUM_DETECTORS") {
-		result <- "Detectors"
+		result <- expression(italic(N[d]) ~ ":  Detectors")		
 	}
 
 	if(colName == "NUM_TRANSPORTERS") {
-		result <- "Transporters"
+		result <- expression(italic(N[t]) ~ ":  Transporters")
 	}
 
 	if(colName == "NUM_EXTRACTORS") {
-		result <- "Extractors"
+		result <- expression(italic(N[e]) ~ ":  Extractors")		
 	}
 
 	if(colName == "E") {
-		result <- "Evenness"
+		result <- expression(italic(E) ~ ":  Evenness")
 	}
 
 	return(result)
@@ -108,20 +108,20 @@ getMeasureShortName <- function(colName) {
 	}
 	
 	if(colName == "NUM_DETECTORS") {
-		result <- "Detectors"
+		result <- expression(italic(N[d]) )
 	}
 
 	if(colName == "NUM_EXTRACTORS") {
-		result <- "Extractors"
+		result <- expression(italic(N[e]) )
 	}
 
 	if(colName == "NUM_TRANSPORTERS") {
-		result <- "Transporters"
+		result <- expression(italic(N[t]) )
 	}
 
 
 	if(colName == "E") {
-		result <- "Evenness"
+		result <- expression(italic(E) )
 	}
 	return(result)
 }
