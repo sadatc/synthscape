@@ -119,7 +119,7 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -141,7 +141,7 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -1488,9 +1488,9 @@ analyzeNormailtyMeasureByGroups <-function(primaryGroup,secondaryGroup,measureNa
 			pValue <- pValueString(shap$p.value)
 			
 			rowData <- data.frame(
-				MEASURE=measureName,
 				primaryGroup=primary,
 				secondaryGroup=secondary,				
+				MEASURE=measureName,				
 				W=W,
 				pValue=pValue
 			)
@@ -1526,9 +1526,8 @@ analyzeNormailtyMeasureByGroup <-function(primaryGroup,measureName,dataFrame) {
 			pValue <- pValueString(shap$p.value)
 			
 			rowData <- data.frame(
-				MEASURE=measureName,
-				primaryGroup=primary,
-				
+				primaryGroup=primary,				
+				MEASURE=measureName,				
 				W=W,
 				pValue=pValue
 			)
@@ -1560,8 +1559,9 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","RATE_MOTION",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
 
+	distTable <- distTable[order(distTable$primaryGroup,distTable$secondaryGroup,distTable$MEASURE),]
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NORMALITY TEST")
 
 
@@ -1573,9 +1573,9 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RES_E2C_STEPS_MEAN",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RATE_MOTION",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("SPECIES","QUALITY","RATE_COMMUNICATION",data))
-
+	distTable <- distTable[order(distTable$primaryGroup,distTable$secondaryGroup,distTable$MEASURE),]
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY: NORMALITY TEST")
 
 
@@ -1588,9 +1588,9 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RATE_MOTION",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroups("INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
-
+	distTable <- distTable[order(distTable$primaryGroup,distTable$secondaryGroup,distTable$MEASURE),]
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< INTERACTIONS-QUALITY: NORMALITY TEST")
 
 
@@ -1603,9 +1603,9 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RES_E2C_STEPS_MEAN",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RATE_MOTION",data))
 	distTable <- rbind(distTable,analyzeNormailtyMeasureByGroup("SPECIES","RATE_COMMUNICATION",data))
-
+	distTable <- distTable[order(distTable$primaryGroup,distTable$MEASURE),]
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: NORMALITY TEST")
 	
 	
@@ -1856,7 +1856,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
 
 
@@ -1870,7 +1870,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY: NON-PARAMETRIC COMPARE")
 	
 
@@ -1885,7 +1885,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
 
 
@@ -1900,7 +1900,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: NON-PARAMETRIC COMPARE")
 	
 }
@@ -1918,7 +1918,7 @@ doKruskalWallis <- function(expDataFrame) {
 	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY: KRUSKAL-WALLIS")
 	
 
@@ -1937,7 +1937,7 @@ doKruskalWallis <- function(expDataFrame) {
 
 	print(distTable)
 	
-	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: KRUSKAL-WALLIS")
 
 
@@ -1957,7 +1957,7 @@ doKruskalWallis <- function(expDataFrame) {
 	print(distTable)
 	#stop()
 	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
 
 
@@ -1972,7 +1972,7 @@ doKruskalWallis <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: KRUSKAL-WALLIS")
 	
 }
@@ -2097,7 +2097,7 @@ doTrendTest <- function(expDataFrame) {
 	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY:TREND TEST")
 	
 
@@ -2117,7 +2117,7 @@ doTrendTest <- function(expDataFrame) {
 	print(distTable)
 	#stop()
 	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION-QUALITY:TREND TEST")
 
 
@@ -2217,7 +2217,7 @@ doANOVA <- function(expDataFrame) {
 	print(distTable)
 	#stop()
 	
-	print(xtable(distTable, digits=c(0,0,0,2,2,2,0,2,2,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,2,2,0,2,2,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
 
 
@@ -2243,16 +2243,16 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 doNormalityAnalysis(expDataFrame)
 
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
-doKruskalWallis(expDataFrame)
-doTrendTest(expDataFrame)
-doNonParametricComparisons(expDataFrame)
-plotBootedStats(expDataFrame)
-doANOVA(expDataFrame)
+#doKruskalWallis(expDataFrame)
+#doTrendTest(expDataFrame)
+#doNonParametricComparisons(expDataFrame)
+#plotBootedStats(expDataFrame)
+#doANOVA(expDataFrame)
 
 
 

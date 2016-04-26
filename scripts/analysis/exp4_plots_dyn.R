@@ -841,7 +841,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 2.5,height = 2, family="CMU Serif")
+	  width = 2.1,height = 1.5 , family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY")) 

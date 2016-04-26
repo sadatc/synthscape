@@ -169,7 +169,7 @@ doNormalityAnalysis_PMSubPop <- function(expDataFrame) {
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -191,7 +191,7 @@ doNormalityAnalysis_PMFullPop <- function(expDataFrame) {
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -240,7 +240,7 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 	
 	
 	pdf(fileName,  
-	  width = 7,height = 3, family="CMU Serif")
+	  width = 7,height = 2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
@@ -272,24 +272,131 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 
 
 
+plotHistByPopulationRichness <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+	
+	
+	xAxisLabel <- getMeasurePrettyName(colName)
+	
+	
+	pdf(fileName,  
+	  width = 7,height = 2, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( . ~ RICHNESS, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( . ~ RICHNESS, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				#axis.title.x = element_text(family="cmsy10"),
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+
+}
+
+plotHistByPopulationT2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+	
+	
+	xAxisLabel <- getMeasurePrettyName(colName)
+	
+	
+	pdf(fileName,  
+	  width = 7,height = 2, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( . ~ T2SRATIO, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( . ~ T2SRATIO, labeller=label_parsed) +
+			xlab(xAxisLabel) +
+			scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				#axis.title.x = element_text(family="cmsy10"),
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+
+}
+
+
+
+
 plotHists <- function(expDataFrame) {
 
 	orig <- expDataFrame
 	
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="3_8",]
-	plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cm.pdf", TRUE)
-	plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-cb.pdf", TRUE)
-	plotHistByPopulationMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-e2c.pdf")
-	plotHistByPopulationMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rm.pdf")
-	plotHistByPopulationMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rc.pdf")
+	plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-pm-cm.pdf", TRUE)
+	plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-pm-cb.pdf", TRUE)
+	plotHistByPopulationMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-pm-e2c.pdf")
+	plotHistByPopulationMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-pm-rm.pdf")
+	plotHistByPopulationMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-pm-rc.pdf")
+	
+	plotHistByPopulationRichness( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rich-cm.pdf", TRUE)
+	plotHistByPopulationRichness( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rich-cb.pdf", TRUE)
+	plotHistByPopulationRichness( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rich-e2c.pdf")
+	plotHistByPopulationRichness( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rich-rm.pdf")
+	plotHistByPopulationRichness( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-rich-rc.pdf")
+	
+
+	plotHistByPopulationT2S( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-t2s-cm.pdf", TRUE)
+	plotHistByPopulationT2S( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-t2s-cb.pdf", TRUE)
+	plotHistByPopulationT2S( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-t2s-e2c.pdf")
+	plotHistByPopulationT2S( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-t2s-rm.pdf")
+	plotHistByPopulationT2S( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-hist-t2s-rc.pdf")
+	
+
+
+
 	expDataFrame <- orig
 	
 	expDataFrame <- expDataFrame[expDataFrame$RICHNESS_VARIATION=="4_24",]
-	plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-cm.pdf", TRUE)
-	plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-cb.pdf", TRUE)
-	plotHistByPopulationMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-e2c.pdf")
-	plotHistByPopulationMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rm.pdf")
-	plotHistByPopulationMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rc.pdf")
+	plotHistByPopulationMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-pm-cm.pdf", TRUE)
+	plotHistByPopulationMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-pm-cb.pdf", TRUE)
+	plotHistByPopulationMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-pm-e2c.pdf")
+	plotHistByPopulationMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-pm-rm.pdf")
+	plotHistByPopulationMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-pm-rc.pdf")
+	
+	plotHistByPopulationRichness( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rich-cm.pdf", TRUE)
+	plotHistByPopulationRichness( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rich-cb.pdf", TRUE)
+	plotHistByPopulationRichness( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rich-e2c.pdf")
+	plotHistByPopulationRichness( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rich-rm.pdf")
+	plotHistByPopulationRichness( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-rich-rc.pdf")
+	
+
+	plotHistByPopulationT2S( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-t2s-cm.pdf", TRUE)
+	plotHistByPopulationT2S( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-t2s-cb.pdf", TRUE)
+	plotHistByPopulationT2S( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-t2s-e2c.pdf")
+	plotHistByPopulationT2S( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-t2s-rm.pdf")
+	plotHistByPopulationT2S( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-hist-t2s-rc.pdf")
 	expDataFrame <- orig
 
 }
@@ -350,7 +457,7 @@ plotBoxPlot_I_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 3,height = 2.5, family="CMU Serif")	  
+	  width = 2.26,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -399,7 +506,7 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 3,height = 2.5, family="CMU Serif")	  
+	  width = 2.25,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -450,7 +557,7 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 3,height = 2.5, family="CMU Serif")	  
+	  width = 2.26,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -1529,7 +1636,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_PM("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1542,7 +1649,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_PM("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-MIX: NORMALITY TEST")
 
 	distTable <- data.frame()
@@ -1557,7 +1664,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_R("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1570,7 +1677,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_R("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< RICHNESS: NORMALITY TEST")
 
 	distTable <- data.frame()
@@ -1585,7 +1692,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_T2S("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1598,7 +1705,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_T2S("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< T2S: NORMALITY TEST")
 	
 }
@@ -1653,7 +1760,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","POPULATION_MIX",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("POPULATION_MIX")
@@ -1667,7 +1774,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","POPULATION_MIX",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
@@ -1682,7 +1789,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","RICHNESS",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("RICHNESS")
@@ -1696,7 +1803,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","RICHNESS",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
@@ -1711,7 +1818,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("T2SRATIO")
@@ -1725,7 +1832,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","T2SRATIO",expDataFrame))
 
 	print(distTable)	
-	print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 
 
@@ -1753,10 +1860,10 @@ expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame
 
 
 plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+#doNormalityAnalysis(expDataFrame)
 
 plotBoxPlots(expDataFrame) # boxplots to show difference
-doKruskalWallis(expDataFrame)
+#doKruskalWallis(expDataFrame)
 
 
 
