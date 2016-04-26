@@ -496,7 +496,7 @@ plotBoxPlot_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 3.5,height = 2.5, family="CMU Serif")	  
+	  width = 2.25,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -511,7 +511,7 @@ plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="bottom", 
+			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
@@ -529,7 +529,7 @@ plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
-			legend.position="bottom", 
+			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
@@ -1684,11 +1684,11 @@ nonParametricCompare <-function(groupByColParam,primaryGroup,measureName,dataFra
 		r<- z/ sqrt(length(vecA))
 		
 		rowData <- data.frame(	
-			MEASURE=measureName,
-			PRIMARY=primary,			
+			PRIMARY=primary,
+			MEASURE=measureName,						
 			W=W,
-			P=pValueString(pValue),
-			EFFECT=r
+			P=pValueString(pValue)
+			#EFFECT=r
 		)
 		result <- rbind(result,rowData)
 
@@ -1733,8 +1733,7 @@ nonParametricCompare1 <-function(groupByColParam,measureName,data) {
 	rowData <- data.frame(	
 		MEASURE=measureName,
 		W=W,
-		P=pValueString(pValue),
-		EFFECT=r
+		P=pValueString(pValue)
 	)
 	result <- rbind(result,rowData)
 
@@ -1827,12 +1826,12 @@ nonParametricCompare2 <-function(groupByColParam,primaryGroup,secondaryGroup,mea
 			r<- z/ sqrt(length(vecA))
 			
 			rowData <- data.frame(	
+				PRIMARY=primary,
 				MEASURE=measureName,
-				PRIMARY=primary,			
+							
 				SECONDARY=secondary,
 				W=W,
-				P=pValueString(pValue),
-				EFFECT=r
+				P=pValueString(pValue)
 			)
 			result <- rbind(result,rowData)
 		}
@@ -1855,8 +1854,9 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RATE_MOTION",data))
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
 
+	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
 
 
@@ -1869,8 +1869,9 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RATE_MOTION",data))
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
+	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY: NON-PARAMETRIC COMPARE")
 	
 
@@ -1883,9 +1884,9 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
 	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
 
-	#distTable <- distTable[order(distTable$PRIMARY),]
+	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
 
 
@@ -1900,7 +1901,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: NON-PARAMETRIC COMPARE")
 	
 }
@@ -2013,10 +2014,10 @@ jonkheereTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
 	rowData <- data.frame(
 		MEASURE=measureName,
 		JT_G=jValueG, 
-		J_ALT_G=jAltG, 
+		#J_ALT_G=jAltG, 
 		P_VALUE_G=pValueString(pValueG),
 		JT_S=jValueS, 
-		J_ALT_S=jAltS, 
+		#J_ALT_S=jAltS, 
 		P_VALUE_S=pValueString(pValueS)
 	)
 	
@@ -2066,10 +2067,10 @@ jonkheereTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureNam
 				PRIMARY=primary,
 				MEASURE=measureName,
 				JT_G=jValueG, 
-				J_ALT_G=jAltG, 
+				#J_ALT_G=jAltG, 
 				P_VALUE_G=pValueString(pValueG),
 				JT_S=jValueS, 
-				J_ALT_S=jAltS, 
+				#J_ALT_S=jAltS, 
 				P_VALUE_S=pValueString(pValueS)
 			)
 			#print(rowData)
@@ -2097,7 +2098,7 @@ doTrendTest <- function(expDataFrame) {
 	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY:TREND TEST")
 	
 
@@ -2117,7 +2118,7 @@ doTrendTest <- function(expDataFrame) {
 	print(distTable)
 	#stop()
 	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION-QUALITY:TREND TEST")
 
 
@@ -2244,7 +2245,7 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 # Using these...
 #plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+#doNormalityAnalysis(expDataFrame)
 
 #plotBoxPlots(expDataFrame) # boxplots to show difference
 
@@ -2252,7 +2253,7 @@ doNormalityAnalysis(expDataFrame)
 #doTrendTest(expDataFrame)
 #doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)
-#doANOVA(expDataFrame)
+doANOVA(expDataFrame)
 
 
 
