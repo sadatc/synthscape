@@ -874,11 +874,11 @@ performTTest <-function(measure,s.v,g.v) {
 		D_FREEDOM=dFreedom, 
 		P_VALUE=pValueString(pValue),
 		GM = gMean,
-		GCI1 = gCI1,
-		GCI2 = gCI2,
-		SM = sMean,
-		SCI1 = sCI1,
-		SCI2 = sCI2
+		#GCI1 = gCI1,
+		#GCI2 = gCI2,
+		SM = sMean
+		#SCI1 = sCI1,
+		#SCI2 = sCI2
 		)
 	
 	return(result.frame)
@@ -975,7 +975,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for pg vs ps")
-	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,2,-2,-2,2,-2,-2), include.rownames=FALSE)))
+	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,4,4)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 }
@@ -992,8 +992,8 @@ bootSize <- 1000
 	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="homogenous" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="heterogenous" & ea.data.frame$INTERACTIONS!="none")  ,]
 
 	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
+	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous" & sg.data.frame$INTERACTIONS!="none",]
+	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous" & sg.data.frame$INTERACTIONS=="none",]
 
 	# extract the measures
 	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
@@ -1063,7 +1063,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for png vs pis")
-	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,2,-2,-2,2,-2,-2), include.rownames=FALSE)))
+	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,4,4)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 
@@ -1109,13 +1109,13 @@ nonParametricCompare <-function(measureName,dataFrame1, dataFrame2) {
 		W=W,
 		P=pValueString(pValue),
 		G_MEDIAN=g.median,
-		G_MEAN=g.mean,
-		G_CI1=g.ci1,
-		G_CI2=g.ci2,
-		S_MEDIAN=s.median,
-		S_MEAN=s.mean,
-		S_CI1=s.ci1,
-		S_CI2=s.ci2
+		#G_MEAN=g.mean,
+		#G_CI1=g.ci1,
+		#G_CI2=g.ci2,
+		S_MEDIAN=s.median
+		#S_MEAN=s.mean,
+		#S_CI1=s.ci1,
+		#S_CI2=s.ci2
 		#EFFECT=r
 	)
 	result <- rbind(result,rowData)
@@ -1140,8 +1140,9 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,3,3)), include.rownames=FALSE))
 	p("<<<<<<<<< PG vs PS: NON-PARAMETRIC COMPARE")
+
 
 
 	distTable <- data.frame()
@@ -1157,7 +1158,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,3,3)), include.rownames=FALSE))
 	p("<<<<<<<<< ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
 
 
@@ -1174,7 +1175,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,3,3)), include.rownames=FALSE))
 	p("<<<<<<<<< NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
 
 	distTable <- data.frame()
@@ -1190,7 +1191,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,3,3)), include.rownames=FALSE))
 	p("<<<<<<<<< PNG vs PIS: NON-PARAMETRIC COMPARE")
 
 
@@ -1207,7 +1208,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
 	p("<<<<<<<<< ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
 
 
@@ -1224,7 +1225,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 	
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,2,2,2,2,2,2,2,2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,3,3)), include.rownames=FALSE))
 	p("<<<<<<<<< NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
 	
 }
