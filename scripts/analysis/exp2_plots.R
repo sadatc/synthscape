@@ -2251,9 +2251,9 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 #doKruskalWallis(expDataFrame)
 #doTrendTest(expDataFrame)
-#doNonParametricComparisons(expDataFrame)
+doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)
-doANOVA(expDataFrame)
+#doANOVA(expDataFrame)
 
 
 

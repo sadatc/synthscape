@@ -184,7 +184,7 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 	p("**** Normality test for Png vs Pis data (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -233,7 +233,7 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	p("**** Normality test for Pg vs Ps (Shapiro-Wilks Normality Test)  ****")
 	
-	print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,2,-2)), include.rownames=FALSE))
 
 	
 }
@@ -630,28 +630,14 @@ plotBoxPlots <- function(expDataFrame) {
 	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
 
 	
-	# do box plots by model and interaction of just E and A
-	#plotBoxPlot_M_I(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-mi-cb.pdf", TRUE)
-	#plotBoxPlot_M_I(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-mi-cm-ea.pdf", TRUE)
-	#plotBoxPlot_M_I(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-mi-e2c-ea.pdf")
-	#plotBoxPlot_M_I(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-mi-rm-ea.pdf")
-	#plotBoxPlot_M_I(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-mi-rc-ea.pdf")
-
-
-	# do box plots by model 
-	#plotBoxPlot_M(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-m-cb.pdf", TRUE)
-	#plotBoxPlot_M(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-m-cm-ea.pdf", TRUE)
-	#plotBoxPlot_M(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-m-e2c-ea.pdf")
-	#plotBoxPlot_M(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-m-rm-ea.pdf")
-	#plotBoxPlot_M(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-m-rc-ea.pdf")
 	
 
 	# do box plots of overall (including interactions)
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-box-rc.pdf")
+	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-cb.pdf", TRUE)
+	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-cm.pdf", TRUE)
+	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-e2c.pdf")
+	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-rm.pdf")
+	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-rc.pdf")
 	
 	# do only island
 	expDataFrame <-  orig[orig$MODEL=="island",]
@@ -659,11 +645,11 @@ plotBoxPlots <- function(expDataFrame) {
 	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
 
 	# do box plots by model 
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-box-rc.pdf")
+	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-cb.pdf", TRUE)
+	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-cm.pdf", TRUE)
+	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-e2c.pdf")
+	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-rm.pdf")
+	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-rc.pdf")
 	
 	# consider all models... just pdf vs pis
 	expDataFrame <-  orig
@@ -684,35 +670,6 @@ plotBoxPlots <- function(expDataFrame) {
 	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rm.pdf")
 	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rc.pdf")
 	
-	
-
-
-	# compare  just pdf vs pis in non-island
-	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
-	
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
-
-
-	# show a comparison of the means...
-	print("comparing pdf and pis...(non-parametric)")
-	compareMeans(expDataFrame,"CAPTURES_BEST_CASE")
-	compareMeans(expDataFrame,"CAPTURES_MEAN")
-	compareMeans(expDataFrame,"RES_E2C_STEPS_MEAN")
-	compareMeans(expDataFrame,"RATE_MOTION")
-	compareMeans(expDataFrame,"RATE_COMMUNICATION")
-	print("DONE comparing pg and ps...(non-parametric)")
-
-
-	
-	# do box plots of overall (including interactions)
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-part-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-part-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-part-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-part-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-part-box-rc.pdf")
-
-
 
 
 }
@@ -848,7 +805,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 2.5,height = 2, family="CMU Serif")
+	  width = 2.3,height = 1.75, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
@@ -885,7 +842,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 # performs t-tests
 # reports back a data.frame
 #
-performTTest <-function(measure,g.v,s.v) {
+performTTest <-function(measure,s.v,g.v) {
 
 	t.result <- t.test(g.v,s.v)
 	
@@ -894,13 +851,35 @@ performTTest <-function(measure,g.v,s.v) {
 	pValue <- as.double(t.result$p.value)
 
 	#print(measure)
+	gMean <- mean(g.v)
+	gT <- t.test(g.v)
+	gCI1 <- gT$conf.int[[1]]
+	gCI2 <- gT$conf.int[[2]]
+
+	sMean <- mean(s.v)
+	sT <- t.test(s.v)
+	sCI1 <- sT$conf.int[[1]]
+	sCI2 <- sT$conf.int[[2]]
+
+
 	#print(t.result)
 	#print(summary(t.result))
+	
 	#print(pValue)	
 
 	
-	result.frame <- data.frame(MEASURE=measure,
-		T_VALUE=tValue, D_FREEDOM=dFreedom, P_VALUE=pValue)
+	result.frame <- data.frame(
+		MEASURE=measure,
+		T_VALUE=tValue, 
+		D_FREEDOM=dFreedom, 
+		P_VALUE=pValueString(pValue),
+		GM = gMean,
+		GCI1 = gCI1,
+		GCI2 = gCI2,
+		SM = sMean,
+		SCI1 = sCI1,
+		SCI2 = sCI2
+		)
 	
 	return(result.frame)
 }
@@ -912,6 +891,8 @@ plotBootedStatsFull <- function(expDataFrame) {
 
 	# now we will bootstrap the measures
 bootSize <- 1000
+
+	expDataFrame <- expDataFrame[expDataFrame$MODEL!="island",]
 
 	ea.data.frame <-  expDataFrame
 
@@ -978,10 +959,10 @@ bootSize <- 1000
 
 	
 	
-	plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cb.pdf", TRUE, FALSE)
-	plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cm .pdf", TRUE, FALSE)
-	plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-e2c.pdf", FALSE, FALSE)
-	plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-rm.pdf", FALSE, FALSE)
+	#plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cb.pdf", TRUE, FALSE)
+	#plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cm .pdf", TRUE, FALSE)
+	#plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-e2c.pdf", FALSE, FALSE)
+	#plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
@@ -990,11 +971,12 @@ bootSize <- 1000
 	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",s.CAPTURES_MEAN,g.CAPTURES_MEAN))
 	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
 	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
+	t.table <- rbind(t.table, performTTest("RATE_COMMUNICATION",s.RATE_COMMUNICATION,g.RATE_COMMUNICATION))
 
-	data(t.table)
-	print("data table for pg vs ps")
-	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
-	#print(xtable(t.table, include.rownames=FALSE))
+	#data(t.table)
+	p("boot data table for pg vs ps")
+	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,2,-2,-2,2,-2,-2), include.rownames=FALSE)))
+	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 }
 
@@ -1066,10 +1048,10 @@ bootSize <- 1000
 	
 	
 	
-	plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cb.pdf", TRUE, FALSE)
-	plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cm .pdf", TRUE, FALSE)
-	plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-e2c.pdf", FALSE, FALSE)
-	plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-rm.pdf", FALSE, FALSE)
+	#plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cb.pdf", TRUE, FALSE)
+	#plotBoxPlot(popDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-cm .pdf", TRUE, FALSE)
+	#plotBoxPlot(popDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-e2c.pdf", FALSE, FALSE)
+	#plotBoxPlot(popDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-partial-box-rm.pdf", FALSE, FALSE)
 
 	t.table <- data.frame()
 
@@ -1079,16 +1061,173 @@ bootSize <- 1000
 	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",s.RES_E2C_STEPS_MEAN,g.RES_E2C_STEPS_MEAN))
 	t.table <- rbind(t.table, performTTest("RATE_MOTION",s.RATE_MOTION,g.RATE_MOTION))
 
-	data(t.table)
-	print("data table for pdf vs pis")
-	print(xtable(t.table, digits=c(0,0,2,2,-2), include.rownames=FALSE))
-	#print(xtable(t.table, include.rownames=FALSE))
+	#data(t.table)
+	p("boot data table for png vs pis")
+	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,2,-2,-2,2,-2,-2), include.rownames=FALSE)))
+	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 
 
 
 }
 
+
+nonParametricCompare <-function(measureName,dataFrame1, dataFrame2) {
+
+	result <- data.frame()
+	vecA <- dataFrame1[[measureName]]
+	vecB <- dataFrame2[[measureName]]
+	wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
+
+
+	g.mean <- mean(vecA, na.rm=TRUE)
+	g.var <- var(vecA, na.rm=TRUE)
+	g.median <- median(vecA, na.rm=TRUE)
+	g.t <- t.test(vecA)
+	g.ci1 <- g.t$conf.int[[1]]
+	g.ci2 <- g.t$conf.int[[2]]
+
+
+	s.mean <- mean(vecB, na.rm=TRUE)
+	s.var <- var(vecB, na.rm=TRUE)
+	s.median <- median(vecB, na.rm=TRUE)
+	s.t <- t.test(vecB)
+	s.ci1 <- s.t$conf.int[[1]]
+	s.ci2 <- s.t$conf.int[[2]]
+
+
+
+	
+	W <- wilcox$statistic[[1]]
+	pValue <- wilcox$p.value
+	
+	z<- qnorm(pValue/2)
+	r<- z/ sqrt(length(vecA))
+	
+	rowData <- data.frame(				
+		MEASURE=measureName,						
+		W=W,
+		P=pValueString(pValue),
+		G_MEDIAN=g.median,
+		G_MEAN=g.mean,
+		G_CI1=g.ci1,
+		G_CI2=g.ci2,
+		S_MEDIAN=s.median,
+		S_MEAN=s.mean,
+		S_CI1=s.ci1,
+		S_CI2=s.ci2
+		#EFFECT=r
+	)
+	result <- rbind(result,rowData)
+
+	return(result)
+}
+
+
+
+doNonParametricComparisons <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" ,]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" ,]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< PG vs PS: NON-PARAMETRIC COMPARE")
+
+
+	distTable <- data.frame()
+	p("ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$MODEL=="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous"  & expDataFrame$MODEL=="island",]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
+
+
+	distTable <- data.frame()
+	p("NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$MODEL!="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous"  & expDataFrame$MODEL!="island",]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
+
+	distTable <- data.frame()
+	p("PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none",]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< PNG vs PIS: NON-PARAMETRIC COMPARE")
+
+
+	distTable <- data.frame()
+	p("ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL=="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL=="island",]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2,-2,-2,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
+
+
+	distTable <- data.frame()
+	p("NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL!="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL!="island",]	
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
+	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,2,2,2,2,2,2,2,2)), include.rownames=FALSE))
+	p("<<<<<<<<< NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
+	
+}
 
 
 ##############################   MAIN PROCESS BEGINS ###############################
@@ -1102,11 +1241,12 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 ##### not using these....plotGraphs(expDataFrame)
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 
-doNormalityAnalysisFullPop(expDataFrame)
-doNormalityAnalysisSubPop(expDataFrame)
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#doNormalityAnalysisFullPop(expDataFrame)
+#doNormalityAnalysisSubPop(expDataFrame)
+#plotBoxPlots(expDataFrame) # boxplots to show difference
+#doNonParametricComparisons(expDataFrame)
 
 plotBootedStatsFull(expDataFrame)
 plotBootedStatsPartial(expDataFrame)
