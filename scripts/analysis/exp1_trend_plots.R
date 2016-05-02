@@ -663,7 +663,7 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$POPULATION <- factor(expDataFrame$POPULATION)	
 	expDataFrame$INTERACTIONS <- factor(expDataFrame$INTERACTIONS)
 	
-	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
+	#expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
 	return(expDataFrame)
 }
@@ -1241,22 +1241,27 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	
 	if( showPercent==FALSE ) {
-		print(
+	print(
 			ggplot(dataFrame, aes_string(x="GENERATION", y=colName)) +
-			xlim(0,300)+
-			geom_line(aes(color=POPULATION), size=0.55) +
-			facet_grid( MODEL ~ INTERACTIONS, scales="free_y",labeller=label_parsed) +
+			xlim(0,300) +
+			geom_line(aes(color=POPULATION), size=0.35) +
+			#scale_y_continuous(labels = percent_format()) +
+			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
-
+			guides(color=guide_legend(title="Population")) +
+			scale_color_manual(values=c("grey60","black")) +	
+			xlab("Generation") +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="bottom", 
 				axis.text.y = element_text(size=rel(0.7)),
-				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.text.x = element_text(size=rel(0.7))
+				#axis.text.x = element_blank()
+				#axis.title.x = element_blank()
 
 				)
 		)
+		
 	} else {
 
 
@@ -1264,21 +1269,25 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 		print(
 			ggplot(dataFrame, aes_string(x="GENERATION", y=colName)) +
-			xlim(0,300)+
-			geom_line(aes(color=POPULATION), size=0.55) +
-			facet_grid( MODEL ~ INTERACTIONS, scales="free_y",labeller=label_parsed) +
+			xlim(0,300) +
+			geom_line(aes(color=POPULATION), size=0.35) +
+			scale_y_continuous(labels = percent_format()) +
+			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
-
+			guides(color=guide_legend(title="Population")) +
+			scale_color_manual(values=c("grey60","black")) +	
+			xlab("Generation") +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="bottom", 
 				axis.text.y = element_text(size=rel(0.7)),
-				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.text.x = element_text(size=rel(0.7))
+				#axis.text.x = element_blank()
+				#axis.title.x = element_blank()
 
 				)
 		)
-		#stop()
+		
 	}
 
 	dev.off()
