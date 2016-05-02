@@ -1,7 +1,6 @@
 # Constants
 library(data.table)
 
-
 MAX_GENERATIONS <-299
 
 CSV_FIELDS_TO_GRAB <- c("MODEL","RESOURCES","INTERACTIONS","SPECIES",
@@ -14,6 +13,8 @@ CSV_FIELDS_TO_GRAB_S <- c("EXPERIMENT",CSV_FIELDS_TO_GRAB,"SIGNAL_SENT","SIGNAL_
 EXPERIMENT_NUMBER <- 0
 
 MEAN_FILE_NAME <- "exp1_mean_trends"
+
+
 
 
 hashTable <- new.env(hash=TRUE)
@@ -82,6 +83,23 @@ getElements <- function(setName) {
 	} 
 }
 
+accumulatorFunc <- function(partialKey,
+	GENERATION,CAPTURES_MEAN,CAPTURES_BEST_CASE,
+	RATE_COMMUNICATION,RATE_MOTION,RES_E2C_STEPS_MEAN) {
+
+	partialKey <- paste(partialKey,GENERATION ,sep=":")
+
+	accumulateMean(paste(partialKey,"CAPTURES_MEAN",sep=":"),CAPTURES_MEAN)
+	accumulateMean(paste(partialKey,"CAPTURES_BEST_CASE",sep=":"),CAPTURES_BEST_CASE)
+	accumulateMean(paste(partialKey,"RATE_COMMUNICATION",sep=":"),RATE_COMMUNICATION)
+	accumulateMean(paste(partialKey,"RATE_MOTION",sep=":"),RATE_MOTION)
+	accumulateMean(paste(partialKey,"RES_E2C_STEPS_MEAN",sep=":"),RES_E2C_STEPS_MEAN)
+	
+	
+	
+}
+
+
 ###### PROGRAM STARTS HERE
 
 meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
@@ -106,10 +124,10 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 
 		
 		csvFile <- paste(directory,csvFileName,sep="/") # concats
-		print("reading data from: ")
+		
 		print(csvFile)
 		csvFileData <- read.csv(csvFile, header=TRUE)
-		print("done reading...")		
+		
 	
 	
 		# only gather data if there is at least MAX_GENERATIONS amount of rows
@@ -144,8 +162,7 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 			# speciesType
 			fileData$SPECIES <- correctedSpecies
 			
-			
-			
+						
 			if(interactionType == "b") {
 				fileData$SIGNAL_SENT <- fileData$TOT_BROADCAST_SENT 
 				fileData$SIGNAL_RECEIVED <- fileData$TOT_BROADCAST_RECEIVED
@@ -193,27 +210,22 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 			numDataCols <- ncol(fileDataS)
 			
 			observations <- fileDataS[,6:numDataCols]
-
-			for(genI in 1:MAX_GENERATIONS) {
-				for(measureI in names(observations)) {
-					if(measureI!="GENERATION") {
-						# now form a gigantic key
-						theKey <- paste(correctedModel,correctedSpecies,interactionType,genI,measureI,sep=":")
-						addSet("MODEL",correctedModel)
-						addSet("SPECIES",correctedSpecies)
-						addSet("INTERACTIONS",interactionType)
-						theValue <- observations[observations$GENERATION==genI,measureI]
-						#print(theKey)
-						#print(theValue)
-						accumulateMean(theKey,theValue)
-						#print(getAccumulatedMean(theKey))
-					}
-					
-				}
-				#stop()
-				
-			}
 			
+			addSet("MODEL",correctedModel)
+			addSet("SPECIES",correctedSpecies)
+			addSet("INTERACTIONS",interactionType)
+
+			partialKey <- paste(correctedModel,correctedSpecies,interactionType,sep=":")
+
+			# apply accumulatorFunc to every row of observations
+			with(observations,{mapply(accumulatorFunc,partialKey,
+			 						  GENERATION,CAPTURES_MEAN,CAPTURES_BEST_CASE,
+			 						  RATE_COMMUNICATION,RATE_MOTION,RES_E2C_STEPS_MEAN			 						  
+			 						  )
+							   }
+			    )
+			
+
 			rm(fileDataS)
 			rm(fileData)
 			rm(csvFileData)
@@ -241,7 +253,7 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 	aggregateData <- data.frame()
 	
 	dataSubDirs <- list.dirs(dataDir,  full.names = FALSE)
-	print(dataSubDirs)
+	
 	
 	aggregateData <- data.frame()
 
@@ -249,26 +261,16 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 		dataSubDir <- dataSubDirs[directoryIndex]
 
 		if( dataSubDir != "") {
-
-			print(dataSubDir)
 			dataSubDirFullPath <- paste(dataDir,dataSubDir,sep="/")
-				
-
-			print("processing ...")
-			print(dataSubDirFullPath)	
-
 			
 			meanifyCSVS(dataSubDirFullPath,aggregateData, howManyGenerations)
 			
-			print("======")
 		}
 	}
-	print("done")
+	print("done computing averages...now dumping them in the aggregate file")
 
 
-	#print(getElements("MODEL"))
-	#print(getElements("SPECIES"))
-	#print(getElements("INTERACTIONS"))
+	# Now accumulate everything back to a data structure, and write that one out...
 
 	aggregateDF <- data.frame()
 	for(model in getElements("MODEL")) {
@@ -290,9 +292,7 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 					RATE_MOTION <- paste(model,species,interactions,generations,"RATE_MOTION",sep=":")
 					RATE_MOTION <- getAccumulatedMean(RATE_MOTION)
 
-
-					
-					
+	
 					row <- data.frame(
 						MODEL=model,
 						SPECIES=species,
@@ -303,23 +303,15 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 						RES_E2C_STEPS_MEAN=RES_E2C_STEPS_MEAN,
 						RATE_MOTION=RATE_MOTION,
 						RATE_COMMUNICATION=RATE_COMMUNICATION
-					)
-					#print(names(row))					
+					)					
 					aggregateDF <- rbind(aggregateDF,row)
-					#print(aggregateDF)
-					#print("came here!")
+					
 				}
 			}
 		}
 	}
-	#print(aggregateDF)
+	
 	write.csv(aggregateDF,file=meanFile,row.names=F)
-	
-	#write.csv(aggregateData,file=meanFile,row.names=F)
-
-	
-
-	
 
 }
 
@@ -330,27 +322,8 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 
 ##############################   MAIN PROCESS BEGINS ###############################
 
-
-#summarizeExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/penzias_4t/data/",
-#	"/Users/sadat/ExperimentResults/GeneralTrends/msiccSummaries")
-
-#summarizeExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/andy_3t/data/",
-#	"/Users/sadat/ExperimentResults/GeneralTrends/msiccSummaries")
-
-#summarizeExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/andy_3t/data/",
-#	"/Users/sadat/ExperimentResults/GeneralTrends/post_processed")
-
-#processCSVS("/Users/sadat/ExperimentResults/GeneralTrends/andy_3t/data/e1_ist_3_10",
-#	"/tmp/summ.csv")
-
-
-
-
-
-
-
 meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/final_data/",
-	"/Users/sadat/analysis/data/exp1/", 300)	
+	"/tmp/", 300)	
 
 
 
