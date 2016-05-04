@@ -663,7 +663,7 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$POPULATION <- factor(expDataFrame$POPULATION)	
 	expDataFrame$INTERACTIONS <- factor(expDataFrame$INTERACTIONS)
 	
-	#expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
+	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
 	return(expDataFrame)
 }
