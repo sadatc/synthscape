@@ -985,6 +985,9 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 #
 performTTest <-function(measure,s.v,g.v) {
 
+	#print(t.test(g.v))
+	#stop()
+
 	t.result <- t.test(g.v,s.v)
 	
 	tValue <- t.result$statistic[[1]]
@@ -996,11 +999,15 @@ performTTest <-function(measure,s.v,g.v) {
 	gT <- t.test(g.v)
 	gCI1 <- gT$conf.int[[1]]
 	gCI2 <- gT$conf.int[[2]]
+	gStdErr <- var(g.v)/length(g.v)
+
+
 
 	sMean <- mean(s.v)
 	sT <- t.test(s.v)
 	sCI1 <- sT$conf.int[[1]]
 	sCI2 <- sT$conf.int[[2]]
+	sStdErr <- var(s.v)/length(s.v)	
 
 
 	#print(t.result)
@@ -1015,9 +1022,13 @@ performTTest <-function(measure,s.v,g.v) {
 		D_FREEDOM=dFreedom, 
 		P_VALUE=pValueString(pValue),
 		GM = gMean,
+		GErr = gStdErr, 
+		#GM = paste0("( ",gCI1,", ",gCI2," )"),
 		#GCI1 = gCI1,
 		#GCI2 = gCI2,
-		SM = sMean
+		SM = sMean,
+		SErr = sStdErr
+		#SM = paste0("( ",sCI1,", ",sCI2," )")
 		#SCI1 = sCI1,
 		#SCI2 = sCI2
 		)
@@ -1116,7 +1127,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for pg vs ps")
-	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,4,4)), include.rownames=FALSE))
+	displayLatex(print(xtable(t.table, digits=c(0,0,1,0,-2,-2,-1,-2,-1)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 }
@@ -1204,7 +1215,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for png vs pis")
-	displayLatex(print(xtable(t.table, digits=c(0,0,2,2,-2,4,4)), include.rownames=FALSE))
+	displayLatex(print(xtable(t.table, digits=c(0,0,1,0,-2,-2,-1,-2,-1)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 
@@ -1389,10 +1400,10 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
 #plotBoxPlots(expDataFrame) # boxplots to show difference
-doNonParametricComparisons(expDataFrame)
+#doNonParametricComparisons(expDataFrame)
 
-#plotBootedStatsFull(expDataFrame)
-#plotBootedStatsPartial(expDataFrame)
+plotBootedStatsFull(expDataFrame)
+plotBootedStatsPartial(expDataFrame)
 
 #plot the totals
 
