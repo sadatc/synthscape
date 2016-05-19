@@ -292,7 +292,7 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -303,7 +303,7 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -333,7 +333,7 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 #			axis.title.x = element_text(family="cmsy10"),
@@ -345,7 +345,7 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
  # 			axis.title.x = element_text(family="cmsy10"),
@@ -435,7 +435,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid(  ~ MODEL , labeller=label_parsed) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -447,7 +447,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( ~ MODEL, labeller=label_parsed) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
 			#xlab("Population") +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -478,7 +478,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -494,7 +494,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -756,7 +756,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			# + scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -769,7 +769,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			# + scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -1249,7 +1249,7 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
 			guides(color=guide_legend(title="Population")) +
-			scale_color_manual(values=c("grey60","black")) +	
+			#scale_color_manual(values=c("grey60","black")) +	
 			xlab("Generation") +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -1275,7 +1275,7 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
 			guides(color=guide_legend(title="Population")) +
-			scale_color_manual(values=c("grey60","black")) +	
+			#scale_color_manual(values=c("grey60","black")) +	
 			xlab("Generation") +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -1312,7 +1312,8 @@ plotTrends <- function(expDataFrame) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
-expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_mean_trends300.csv")
+#expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_mean_trends300_nonboot.csv")
+expDataFrame <- read.csv(file="/tmp/exp1_mean_trends300.csv")
 
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
