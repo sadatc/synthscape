@@ -75,6 +75,7 @@ addSet <- function(setName, element) {
 	
 }
 
+
 getElements <- function(setName) {	
 	setKey <- paste0(setName,"_set")
 	if(!is.null(hashTable[[setKey]])) {
@@ -270,6 +271,7 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 	print("done computing averages...now dumping them in the aggregate file")
 
 
+
 	# Now accumulate everything back to a data structure, and write that one out...
 
 	aggregateDF <- data.frame()
@@ -322,8 +324,7 @@ meanifyExp1Data <-function(dataDir, meanDir, howManyGenerations) {
 
 ##############################   MAIN PROCESS BEGINS ###############################
 
-meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/final_data/",
-	"/tmp/", 300)	
+meanifyExp1Data("/Users/sadat/ExperimentResults/GeneralTrends/final_data/","/tmp/", 300)	
 
 
 

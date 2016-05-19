@@ -83,8 +83,8 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 	CLONES <- 0
 
 	
-	#for(i in 1:length(csvFiles)) {
-	for(i in 1:2) {
+	for(i in 1:length(csvFiles)) {
+	#for(i in 1:2) {
 		assign("EXPERIMENT_NUMBER",EXPERIMENT_NUMBER + 1,.GlobalEnv)
 		csvFileName <- csvFiles[i]
 		correctedSpecies <- substr(csvFileName,5,5)
