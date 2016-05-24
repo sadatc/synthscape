@@ -1009,6 +1009,8 @@ performTTest <-function(measure,s.v,g.v) {
 	sCI2 <- sT$conf.int[[2]]
 	sStdErr <- var(s.v)/length(s.v)	
 
+	delta <- round(((sMean - gMean)/gMean)*100,digits=0)
+
 
 	#print(t.result)
 	#print(summary(t.result))
@@ -1027,7 +1029,8 @@ performTTest <-function(measure,s.v,g.v) {
 		#GCI1 = gCI1,
 		#GCI2 = gCI2,
 		SM = sMean,
-		SErr = sStdErr
+		SErr = sStdErr,
+		delta = paste0(delta,"%")
 		#SM = paste0("( ",sCI1,", ",sCI2," )")
 		#SCI1 = sCI1,
 		#SCI2 = sCI2
@@ -1127,7 +1130,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for pg vs ps")
-	displayLatex(print(xtable(t.table, digits=c(0,0,1,0,-2,-2,-1,-2,-1)), include.rownames=FALSE))
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,1)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 }
@@ -1215,7 +1218,7 @@ bootSize <- 1000
 
 	#data(t.table)
 	p("boot data table for png vs pis")
-	displayLatex(print(xtable(t.table, digits=c(0,0,1,0,-2,-2,-1,-2,-1)), include.rownames=FALSE))
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,0)), include.rownames=FALSE))
 	#displayLatex(print(xtable(t.table, include.rownames=FALSE)))
 
 
@@ -1395,14 +1398,14 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 ##### not using these....plotGraphs(expDataFrame)
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 #doNonParametricComparisons(expDataFrame)
 
-plotBootedStatsFull(expDataFrame)
+#plotBootedStatsFull(expDataFrame)
 plotBootedStatsPartial(expDataFrame)
 
 #plot the totals

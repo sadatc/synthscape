@@ -941,7 +941,7 @@ plotBootHist2Pop2 <-function(popDataFrame, colName, fileName, showPercent = FALS
 	xAxisLabel <- getMeasureShortName(colName)
 
 	pdf(fileName,  
-	  width = 7,height = 4, family="CMU Serif")
+	  width = 2.5,height = 3.2, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="SUB_POPULATION")) 
@@ -952,7 +952,7 @@ plotBootHist2Pop2 <-function(popDataFrame, colName, fileName, showPercent = FALS
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			#legend.position="none", 
+			legend.position="none", 
 				axis.title.y = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
@@ -967,7 +967,7 @@ plotBootHist2Pop2 <-function(popDataFrame, colName, fileName, showPercent = FALS
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
-			#legend.position="none", 				
+			legend.position="none", 				
 				axis.title.y = element_blank(),
 				axis.text.x = element_text(size=rel(0.7)),
 				axis.text.y = element_text(size=rel(0.7)))
@@ -1022,7 +1022,7 @@ plotBootHist2Pop3 <-function(popDataFrame, colName, fileName, showPercent = FALS
 # performs t-tests
 # reports back a data.frame
 #
-performTTest <-function(measure,s.v,g.v) {
+performTTest <-function(measure,g.v,s.v) {
 
 	#print(t.test(g.v))
 	#stop()
@@ -1048,6 +1048,8 @@ performTTest <-function(measure,s.v,g.v) {
 	sCI2 <- sT$conf.int[[2]]
 	sStdErr <- var(s.v)/length(s.v)	
 
+	delta <- round(((sMean - gMean)/gMean)*100,digits=1)
+
 
 	#print(t.result)
 	#print(summary(t.result))
@@ -1066,7 +1068,8 @@ performTTest <-function(measure,s.v,g.v) {
 		#GCI1 = gCI1,
 		#GCI2 = gCI2,
 		SM = sMean,
-		SErr = sStdErr
+		SErr = sStdErr,
+		delta = paste0(delta,"%")
 		#SM = paste0("( ",sCI1,", ",sCI2," )")
 		#SCI1 = sCI1,
 		#SCI2 = sCI2
@@ -1311,6 +1314,8 @@ plotBootedStatsPartial4 <- function(expDataFrame) {
 
 plotBootedStatsPartial4_2 <- function(expDataFrame) {
 
+	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
+
 	# now we will bootstrap the measures
 	bootSize <- 1000
 
@@ -1422,6 +1427,38 @@ plotBootedStatsPartial4_2 <- function(expDataFrame) {
 	plotBootHist2Pop2(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-all_pops-rm.pdf")
 	plotBootHist2Pop2(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-all_pops-rc.pdf")
 	
+	
+	t.table <- data.frame()
+
+	
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",sn.CAPTURES_BEST_CASE,si.CAPTURES_BEST_CASE))
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",sn.CAPTURES_MEAN,si.CAPTURES_MEAN))
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",sn.RES_E2C_STEPS_MEAN,si.RES_E2C_STEPS_MEAN))
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",sn.RATE_MOTION,si.RATE_MOTION))
+
+	#data(t.table)
+	p("boot data table for sn vs si")
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,0)), include.rownames=FALSE))
+	
+
+
+	t.table <- data.frame()
+
+
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",gn.CAPTURES_BEST_CASE,gi.CAPTURES_BEST_CASE))
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",gn.CAPTURES_MEAN,gi.CAPTURES_MEAN))
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",gn.RES_E2C_STEPS_MEAN,gi.RES_E2C_STEPS_MEAN))
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",gn.RATE_MOTION,gi.RATE_MOTION))
+
+	#data(t.table)
+	p("boot data table for gn vs gi")
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,0)), include.rownames=FALSE))
+
+
+
+	
+
+
 	#stop()
 	
 	#plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1_2/e1-boot-partial-box-cb.pdf", TRUE, FALSE)
@@ -1807,11 +1844,11 @@ expDataFrame$INTERACTING <- factor(expDataFrame$INTERACTING)
 #doNormalityAnalysisSubPop(expDataFrame)
 #plotBoxPlots(expDataFrame) # boxplots to show difference
 #doNonParametricComparisonsHms(expDataFrame)
-doNonParametricComparisonsHts(expDataFrame)
+#doNonParametricComparisonsHts(expDataFrame)
 
 
 
-#plotBootedStatsPartial4_2(expDataFrame)
+plotBootedStatsPartial4_2(expDataFrame)
 
 
 #plot the totals
