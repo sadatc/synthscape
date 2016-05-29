@@ -1456,7 +1456,32 @@ plotBootedStatsPartial4_2 <- function(expDataFrame) {
 
 
 
+	t.table <- data.frame()
+
+
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",gn.CAPTURES_BEST_CASE,sn.CAPTURES_BEST_CASE))
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",gn.CAPTURES_MEAN,sn.CAPTURES_MEAN))
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",gn.RES_E2C_STEPS_MEAN,sn.RES_E2C_STEPS_MEAN))
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",gn.RATE_MOTION,sn.RATE_MOTION))
+
+	#data(t.table)
+	p("boot data table for gn vs sn")
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,0)), include.rownames=FALSE))
+
+
+
 	
+	t.table <- data.frame()
+
+
+	t.table <- rbind(t.table, performTTest("CAPTURES_BEST_CASE",gi.CAPTURES_BEST_CASE,si.CAPTURES_BEST_CASE))
+	t.table <- rbind(t.table, performTTest("CAPTURES_MEAN",gi.CAPTURES_MEAN,si.CAPTURES_MEAN))
+	t.table <- rbind(t.table, performTTest("RES_E2C_STEPS_MEAN",gi.RES_E2C_STEPS_MEAN,si.RES_E2C_STEPS_MEAN))
+	t.table <- rbind(t.table, performTTest("RATE_MOTION",gi.RATE_MOTION,si.RATE_MOTION))
+
+	#data(t.table)
+	p("boot data table for gi vs si")
+	displayLatex(print(xtable(t.table, digits=c(0,0,0,0,-2,-2,-1,-2,-1,0)), include.rownames=FALSE))
 
 
 	#stop()
