@@ -36,8 +36,13 @@ displayLatex <- function(xtableString) {
 	x <- sub("NUM[\\]_PROCESSORS","$N_{p}$",x) 
 	x <- sub("[[]ht[]]","[H]",x)
 	x <- gsub("[^[:digit:]]0[.]",".",x)
+	x <- gsub("0.000000E[+]00","0",x)
 	x <- gsub("(((\\S)+)E[+]((\\S)+))","\\\\num{\\1}",x)
 	x <- gsub("(((\\S)+)E[-]((\\S)+))","\\\\num{\\1}",x)
+
+	x <- gsub("\\num{&.00E+00}"," & 0",x,fixed=TRUE)
+
+	
 	cat(x,sep="\n")
 }
 

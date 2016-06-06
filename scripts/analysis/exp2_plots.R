@@ -106,9 +106,9 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 
 #	print("========== ALIFE ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="HmI"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="HtI" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -129,9 +129,9 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 doNormalityAnalysisFullPop <- function(expDataFrame) {
 	distTable <- data.frame()
 
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="HmI" & expDataFrame$QUALITY=="s"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$QUALITY=="s"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="HtI" & expDataFrame$QUALITY=="s"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -186,9 +186,9 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HmI"] <-  "HmI"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HtI"] <-  "HtI"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -228,9 +228,9 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 plotHistByPopulationQuality <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HmI"] <-  "HmI"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HtI"] <-  "HtI"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -270,9 +270,9 @@ plotHistByPopulationQuality <-function(model, dataFrame, colName, fileName, show
 plotHistByInteractionQuality <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HmI"] <-  "HmI"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HtI"] <-  "HtI"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -282,7 +282,8 @@ plotHistByInteractionQuality <-function(model, dataFrame, colName, fileName, sho
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame,aes_string(x=colName)) +
-			geom_histogram(color="black", fill="grey80",alpha = 0.85) +
+			geom_histogram(color="black",aes_string(  fill="INTERACTIONS")) +
+			#geom_histogram() +
 			facet_grid( INTERACTIONS ~ QUALITY) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("grey80")) +
@@ -293,7 +294,8 @@ plotHistByInteractionQuality <-function(model, dataFrame, colName, fileName, sho
 	} else {
 		print(
 			ggplot(dataFrame,aes_string(x=colName)) +
-			geom_histogram(color="black", fill="grey80",alpha = 0.85) +
+			geom_histogram(color="black",aes_string(fill="INTERACTIONS")) +
+			#geom_histogram() +
 			facet_grid( INTERACTIONS ~ QUALITY) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("grey80")) +
@@ -314,9 +316,9 @@ plotHistByInteractionQuality <-function(model, dataFrame, colName, fileName, sho
 plotHistBySubPopulation <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "non-interacting homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HmI"] <-  "non-interacting homogenous"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "interacting heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="HtI"] <-  "interacting heterogenous"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -361,6 +363,15 @@ plotHistBySubPopulation <-function(model, dataFrame, colName, fileName, showPerc
 
 plotHists <- function(expDataFrame) {
 	
+	
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cm.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cb.pdf", TRUE)
+	plotHistByInteractionQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-e2c.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rm.pdf")
+	plotHistByInteractionQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rc.pdf")
+	
+	
+
 	plotHistByPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-cm.pdf", TRUE)
 	plotHistByPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-cb.pdf", TRUE)
 	plotHistByPopulation("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pi-e2c.pdf")
@@ -373,11 +384,6 @@ plotHists <- function(expDataFrame) {
 	plotHistByPopulationQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-rm.pdf")
 	plotHistByPopulationQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pq-rc.pdf")
 
-	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cm.pdf", TRUE)
-	plotHistByInteractionQuality("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-cb.pdf", TRUE)
-	plotHistByInteractionQuality("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-e2c.pdf")
-	plotHistByInteractionQuality("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rm.pdf")
-	plotHistByInteractionQuality("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-iq-rc.pdf")
 	
 	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-cm.pdf", TRUE)
 	plotHistBySubPopulation("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-hist-pop-cb-cb.pdf", TRUE)
@@ -513,6 +519,7 @@ plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
+				axis.title.y = element_blank(),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
 				)
@@ -531,6 +538,7 @@ plotBoxPlot_P <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
+				axis.title.y = element_blank(),
 				axis.text.x = element_blank(),
 				axis.title.x = element_blank()
 
@@ -599,7 +607,7 @@ plotBoxPlot_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=FALSE) {
 
-#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("homogenous","heterogenous"),to=c("hom","het"))
+#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("HmI","HtI"),to=c("hom","het"))
 
 
 	pdf(fileName,  
@@ -652,7 +660,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 compareMeans <-function(d.f,measure) {
 	r.f <- data.frame()
 
-	g <- d.f[(d.f$SPECIES=="homogenous"),]
+	g <- d.f[(d.f$SPECIES=="HmI"),]
 	g <- g[[measure]]
 
 	g.mean <- mean(g, na.rm=TRUE)
@@ -665,7 +673,7 @@ compareMeans <-function(d.f,measure) {
 	
 
 	
-	s <- d.f[(d.f$SPECIES=="heterogenous"),]
+	s <- d.f[(d.f$SPECIES=="HtI"),]
 	s <- s[[measure]]
 
 	s.mean <- mean(s, na.rm=TRUE)
@@ -680,10 +688,10 @@ compareMeans <-function(d.f,measure) {
 	rWilcoxW <- rWilcox$statistic[[1]]
 	rWilcoxP <- rWilcox$p.value
 
-	g.f <- data.frame( POPULATION="homogenous", MEAUSURE=measure, MEAN=g.mean,
+	g.f <- data.frame( POPULATION="HmI", MEAUSURE=measure, MEAN=g.mean,
 		VAR = g.var, MEDIAN = g.median, CI1 = g.ci1, CI2 = g.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
-	s.f <- data.frame( POPULATION="heterogenous", MEAUSURE=measure, MEAN=s.mean,
+	s.f <- data.frame( POPULATION="HtI", MEAUSURE=measure, MEAN=s.mean,
 		VAR = s.var, MEDIAN = s.median, CI1 = s.ci1, CI2 = s.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
 
@@ -755,8 +763,8 @@ plotBoxPlotsOld <- function(expDataFrame) {
 
 	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
 	
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
+	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="HmI" & expDataFrame$INTERACTIONS=="none") |
+	   (expDataFrame$SPECIES=="HtI" & expDataFrame$INTERACTIONS!="none") ,]
 
 	
 	# do box plots by model and interaction of just E and A
@@ -784,8 +792,8 @@ plotBoxPlotsOld <- function(expDataFrame) {
 	
 	# do only island
 	expDataFrame <-  orig[orig$MODEL=="island",]
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
+	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="HmI" & expDataFrame$INTERACTIONS=="none") |
+	   (expDataFrame$SPECIES=="HtI" & expDataFrame$INTERACTIONS!="none") ,]
 
 	# do box plots by model 
 	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-i-box-cb.pdf", TRUE)
@@ -819,8 +827,8 @@ plotBoxPlotsOld <- function(expDataFrame) {
 	# compare  just pdf vs pis in non-island
 	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
 	
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
+	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="HmI" & expDataFrame$INTERACTIONS=="none") |
+	   (expDataFrame$SPECIES=="HtI" & expDataFrame$INTERACTIONS!="none") ,]
 
 
 	# show a comparison of the means...
@@ -861,13 +869,13 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("trail","broadcast","unicast"))
 	
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("HmI","HtI"))
 
-	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("HmI","HtI"))
 	
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("HmI","HtI"))
 	
-	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("HmI","HtI"))
 
 
 	dataFrame$QUALITY <- mapvalues(dataFrame$QUALITY, from=c("s","h","m","l"), to=c("no-loss","25% loss","50% loss","75% loss"))
@@ -1141,7 +1149,7 @@ bootSize <- 1000
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=s.RATE_MOTION,
 		RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-		POPULATION="heterogenous"
+		POPULATION="HtI"
 	)
 
 
@@ -1151,7 +1159,7 @@ bootSize <- 1000
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=g.RATE_MOTION,
 		RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-		POPULATION="homogenous"
+		POPULATION="HmI"
 	)
 	
 	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
@@ -1214,7 +1222,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=s.RATE_MOTION,
 				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
+				POPULATION="HtI",
 				QUALITY=var.quality,
 				INTERACTIONS=varInteraction
 			)
@@ -1226,7 +1234,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=g.RATE_MOTION,
 				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
+				POPULATION="HmI",
 				QUALITY=var.quality,
 				INTERACTIONS=varInteraction
 
@@ -1297,7 +1305,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=s.RATE_MOTION,
 				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
+				POPULATION="HtI",
 
 				INTERACTIONS=varInteraction
 			)
@@ -1309,7 +1317,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=g.RATE_MOTION,
 				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
+				POPULATION="HmI",
 
 				INTERACTIONS=varInteraction
 
@@ -1379,7 +1387,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=s.RATE_MOTION,
 				RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-				POPULATION="heterogenous",
+				POPULATION="HtI",
 				QUALITY=var.quality
 			)
 
@@ -1390,7 +1398,7 @@ bootSize <- 1000
 				RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 				RATE_MOTION=g.RATE_MOTION,
 				RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-				POPULATION="homogenous",
+				POPULATION="HmI",
 				QUALITY=var.quality
 
 			)
@@ -1410,7 +1418,7 @@ bootSize <- 1000
 plotBootedStats <- function(expDataFrame) {
 
 
-	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	popDataFrame <- computeBootStatsI(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
 
 	plotBootHistPop_I(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-cb.pdf", TRUE)
 
@@ -1426,7 +1434,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_I(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-i-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	popDataFrame <- computeBootStatsQ(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
 
 
 
@@ -1443,7 +1451,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_Q(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-q-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	popDataFrame <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
 
 
 	plotBootHistPop_IQ(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp2/e2-boot-pop-iq-cb.pdf", TRUE)
@@ -1619,19 +1627,20 @@ kruskalWallisTest <-function(groupByColParam,primaryGroup,measureName,dataFrame)
 	result <- data.frame()
 	
 	
-	data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+	data <- dataFrame[dataFrame$SPECIES=="HmI",]
 	measureData <- data[[measureName]]
 	groupByCol <- data[[primaryGroup]]
 	kResult <- kruskal.test(measureData ~ groupByCol)
+
 	#print(summary(measureData))
 	#print(summary(groupByCol))
-	#print(kResult)
+
 	
 	kValueG <- kResult$statistic[[1]]
 	dFreedomG <- kResult$parameter[[1]]
 	pValueG <- as.double(kResult$p.value)
 	
-	data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+	data <- dataFrame[dataFrame$SPECIES=="HtI",]
 	measureData <- data[[measureName]]
 	groupByCol <- data[[primaryGroup]]
 	kResult <- kruskal.test(measureData ~ groupByCol)
@@ -1664,13 +1673,18 @@ nonParametricCompare <-function(groupByColParam,primaryGroup,measureName,dataFra
 
 		data = selectFromDf(dataFrame,primaryGroup,primary)
 
-		vecA <- data[data$SPECIES=="homogenous",]
+		vecA <- data[data$SPECIES=="HmI",]
 		vecA <- vecA[[measureName]]
+		medianA = median(vecA, na.rm=TRUE)
 
 
-		vecB <- data[data$SPECIES=="heterogenous",]
+
+		vecB <- data[data$SPECIES=="HtI",]
 		vecB <- vecB[[measureName]]
+		medianB = median(vecB, na.rm=TRUE)
 
+
+		
 		#print(head(vecA))
 		#print(head(vecB))
 		#stop()
@@ -1686,6 +1700,8 @@ nonParametricCompare <-function(groupByColParam,primaryGroup,measureName,dataFra
 		rowData <- data.frame(	
 			PRIMARY=primary,
 			MEASURE=measureName,						
+			MED_A=medianA,
+			MED_B=medianB,
 			W=W,
 			P=pValueString(pValue)
 			#EFFECT=r
@@ -1711,11 +1727,11 @@ nonParametricCompare1 <-function(groupByColParam,measureName,data) {
 	
 	
 
-	vecA <- data[data$SPECIES=="homogenous",]
+	vecA <- data[data$SPECIES=="HmI",]
 	vecA <- vecA[[measureName]]
 
 
-	vecB <- data[data$SPECIES=="heterogenous",]
+	vecB <- data[data$SPECIES=="HtI",]
 	vecB <- vecB[[measureName]]
 
 	#print(head(vecA))
@@ -1756,7 +1772,7 @@ kruskalWallisTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measur
 		
 		
 			
-			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HmI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 			kResult <- kruskal.test(measureData ~ groupByCol)
@@ -1764,7 +1780,7 @@ kruskalWallisTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measur
 			dFreedomG <- kResult$parameter[[1]]
 			pValueG <- as.double(kResult$p.value)
 			
-			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HtI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 			kResult <- kruskal.test(measureData ~ groupByCol)
@@ -1809,12 +1825,14 @@ nonParametricCompare2 <-function(groupByColParam,primaryGroup,secondaryGroup,mea
 			data = selectFromDf(dataFrame,primaryGroup,primary)
 			data = selectFromDf(data,secondaryGroup,secondary)
 
-			vecA <- data[data$SPECIES=="homogenous",]
+			vecA <- data[data$SPECIES=="HmI",]
 			vecA <- vecA[[measureName]]
+			medianA = median(vecA, na.rm=TRUE)
 
 
-			vecB <- data[data$SPECIES=="heterogenous",]
+			vecB <- data[data$SPECIES=="HtI",]
 			vecB <- vecB[[measureName]]
+			medianB = median(vecB, na.rm=TRUE)
 
 			
 			wilcox <- wilcox.test(vecA,vecB, conf.int=TRUE)
@@ -1827,9 +1845,10 @@ nonParametricCompare2 <-function(groupByColParam,primaryGroup,secondaryGroup,mea
 			
 			rowData <- data.frame(	
 				PRIMARY=primary,
-				MEASURE=measureName,
-							
 				SECONDARY=secondary,
+				MEASURE=measureName,
+				MED_A=medianA,
+				MED_B=medianB,											
 				W=W,
 				P=pValueString(pValue)
 			)
@@ -1846,6 +1865,24 @@ nonParametricCompare2 <-function(groupByColParam,primaryGroup,secondaryGroup,mea
 doNonParametricComparisons <- function(expDataFrame) {
 
 	distTable <- data.frame()
+	p("QUALITY-INTERACTION: NON-PARAMETRIC COMPARE >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-2,-2,0,2)), include.rownames=FALSE))
+	p("<<<<<<<<< QUALITY-INTERACTION: NON-PARAMETRIC COMPARE")
+
+	stop()
+
+
+
+	distTable <- data.frame()
 	p("POP-INTERACTION: NON-PARAMETRIC COMPARE >>>>>>")
 	data <- expDataFrame
 	distTable <- rbind(distTable,nonParametricCompare("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
@@ -1856,8 +1893,9 @@ doNonParametricComparisons <- function(expDataFrame) {
 
 	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,-2,-2,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
+	
 
 
 	distTable <- data.frame()
@@ -1871,23 +1909,11 @@ doNonParametricComparisons <- function(expDataFrame) {
 
 	distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,-2,-2,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY: NON-PARAMETRIC COMPARE")
 	
 
-	distTable <- data.frame()
-	p("POP-INTERACTION: NON-PARAMETRIC COMPARE >>>>>>")
-	data <- expDataFrame
-	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
-	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
-	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
-	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
-	distTable <- rbind(distTable,nonParametricCompare2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
-
-	distTable <- distTable[order(distTable$PRIMARY),]
-	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,2)), include.rownames=FALSE))
-	p("<<<<<<<<< POP-INTERACTION: NON-PARAMETRIC COMPARE")
+	
 
 
 
@@ -1901,13 +1927,31 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,-2,-2,0,2)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: NON-PARAMETRIC COMPARE")
 	
 }
 
 
 doKruskalWallis <- function(expDataFrame) {
+
+
+	distTable <- data.frame()
+	p("POP-INTERACTION: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_MOTION",data))
+	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< POP-INTERACTION: KRUSKAL-WALLIS")
+
+	stop()
+
 
 	distTable <- data.frame()
 	p("POP-QUALITY: KRUSKAL-WALLIS >>>>>>")
@@ -1927,19 +1971,6 @@ doKruskalWallis <- function(expDataFrame) {
 
 
 
-	distTable <- data.frame()
-	p("POP-INTERACTION: KRUSKAL-WALLIS >>>>>>")
-	data <- expDataFrame
-	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_MEAN",data))
-	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","CAPTURES_BEST_CASE",data))
-	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RES_E2C_STEPS_MEAN",data))
-	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_MOTION",data))
-	distTable <- rbind(distTable,kruskalWallisTest("SPECIES","INTERACTIONS","RATE_COMMUNICATION",data))
-
-	print(distTable)
-	
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
-	p("<<<<<<<<< POP-INTERACTION: KRUSKAL-WALLIS")
 
 
 	
@@ -1988,7 +2019,7 @@ jonkheereTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
 	result <- data.frame()
 	
 	
-	data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+	data <- dataFrame[dataFrame$SPECIES=="HmI",]
 	measureData <- data[[measureName]]
 	groupByCol <- data[[primaryGroup]]
 	groupByCol = as.numeric.factor(groupByCol)
@@ -1999,7 +2030,7 @@ jonkheereTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
 	pValueG <- as.double(jResult$p.value)
 	
 
-	data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+	data <- dataFrame[dataFrame$SPECIES=="HtI",]
 	measureData <- data[[measureName]]
 	groupByCol <- data[[primaryGroup]]
 	groupByCol = as.numeric.factor(groupByCol)
@@ -2040,7 +2071,7 @@ jonkheereTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureNam
 		
 		
 			
-			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HmI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 			groupByCol = as.numeric.factor(groupByCol)
@@ -2053,7 +2084,7 @@ jonkheereTest2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureNam
 			pValueG <- as.double(jResult$p.value)
 			
 
-			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HtI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 			groupByCol = as.numeric.factor(groupByCol)
@@ -2142,7 +2173,7 @@ anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainDa
 		
 		
 			
-			data <- dataFrame[dataFrame$SPECIES=="homogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HmI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 
@@ -2157,7 +2188,7 @@ anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainDa
 
 
 
-			data <- dataFrame[dataFrame$SPECIES=="heterogenous",]
+			data <- dataFrame[dataFrame$SPECIES=="HtI",]
 			measureData <- data[[measureName]]
 			groupByCol <- data[[secondaryGroup]]
 		
@@ -2203,7 +2234,7 @@ anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainDa
 doANOVA <- function(expDataFrame) {
 
 
-	data <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="heterogenous",], expDataFrame[expDataFrame$SPECIES=="homogenous",])
+	data <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
 	
 	distTable <- data.frame()
 	p("POP-INTERACTION-QUALITY: KRUSKAL-WALLIS >>>>>>")
@@ -2240,11 +2271,13 @@ expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp2/exp2_expe
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
+#print(summary(expDataFrame))
+
 ##### not using these....plotGraphs(expDataFrame)
 
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
 plotBoxPlots(expDataFrame) # boxplots to show difference
@@ -2252,7 +2285,7 @@ plotBoxPlots(expDataFrame) # boxplots to show difference
 #doKruskalWallis(expDataFrame)
 #doTrendTest(expDataFrame)
 #doNonParametricComparisons(expDataFrame)
-plotBootedStats(expDataFrame)
+#plotBootedStats(expDataFrame)
 #doANOVA(expDataFrame)
 
 

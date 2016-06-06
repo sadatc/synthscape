@@ -157,9 +157,9 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 	print("========== ISLAND ========")
 	distTable <- data.frame()
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	distTable <- rbind(distTable, analyzeNormailtyPair("island","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("island","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -172,9 +172,9 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 
 	print("========== EMBODIED ========")
 	#distTable <- data.frame()
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("embodied","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("embodied","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -183,9 +183,9 @@ doNormalityAnalysisSubPop <- function(expDataFrame) {
 	#distTable <- rbind(distTable,analyzeNormailtyPair("embodied","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 
 	print("========== ALIFE ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -209,9 +209,9 @@ doNormalityAnalysisFullPop1 <- function(expDataFrame) {
 
 #	print("========== ISLAND ========")
 	
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="island"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="island"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="island"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="island"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("island","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("island","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -223,9 +223,9 @@ doNormalityAnalysisFullPop1 <- function(expDataFrame) {
 
 
 #	print("========== EMBODIED ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="embodied"  ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="embodied"  ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="embodied" ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="embodied" ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("embodied","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("embodied","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -234,9 +234,9 @@ doNormalityAnalysisFullPop1 <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyPair("embodied","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 
 #	print("========== ALIFE ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife"  ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="alife"  ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="alife"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -258,8 +258,8 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	print("========== island ========")
 	distTable <- data.frame()
-	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="island"   ,]
-	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="island"  ,]
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="island"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="island"  ,]
 
 	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
 	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
@@ -298,8 +298,8 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	print("========== embodied ========")
 	distTable <- data.frame()
-	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="embodied"   ,]
-	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="embodied"  ,]
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="embodied"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="embodied"  ,]
 
 	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
 	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
@@ -339,8 +339,8 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 
 	print("========== alife ========")
 	distTable <- data.frame()
-	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife"   ,]
-	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife"  ,]
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="alife"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="alife"  ,]
 
 	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
 	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
@@ -416,9 +416,9 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Hm"] <-  "Hm"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Ht"] <-  "Ht"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -457,9 +457,9 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
 	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="homogenous"] <-  "non-interacting homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Hm"] <-  "non-interacting homogenous"
 
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="heterogenous"] <-  "interacting heterogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Ht"] <-  "interacting heterogenous"
 
 	xAxisLabel <- getMeasurePrettyName(colName)
 	
@@ -526,7 +526,7 @@ plotHists <- function(expDataFrame) {
 
 
 
-	expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none")  ,]
+	expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none")  ,]
 
 
 	plotHistByModelSpecific("island", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-island-cm.pdf", TRUE)
@@ -649,7 +649,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=FALSE) {
 
-#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("homogenous","heterogenous"),to=c("hom","het"))
+#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("Hm","Ht"),to=c("hom","het"))
 
 
 	pdf(fileName,  
@@ -702,7 +702,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 compareMeans <-function(d.f,measure) {
 	r.f <- data.frame()
 
-	g <- d.f[(d.f$SPECIES=="homogenous"),]
+	g <- d.f[(d.f$SPECIES=="Hm"),]
 	g <- g[[measure]]
 
 	g.mean <- mean(g, na.rm=TRUE)
@@ -715,7 +715,7 @@ compareMeans <-function(d.f,measure) {
 	
 
 	
-	s <- d.f[(d.f$SPECIES=="heterogenous"),]
+	s <- d.f[(d.f$SPECIES=="Ht"),]
 	s <- s[[measure]]
 
 	s.mean <- mean(s, na.rm=TRUE)
@@ -730,10 +730,10 @@ compareMeans <-function(d.f,measure) {
 	rWilcoxW <- rWilcox$statistic[[1]]
 	rWilcoxP <- rWilcox$p.value
 
-	g.f <- data.frame( POPULATION="homogenous", MEAUSURE=measure, MEAN=g.mean,
+	g.f <- data.frame( POPULATION="Hm", MEAUSURE=measure, MEAN=g.mean,
 		VAR = g.var, MEDIAN = g.median, CI1 = g.ci1, CI2 = g.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
-	s.f <- data.frame( POPULATION="heterogenous", MEAUSURE=measure, MEAN=s.mean,
+	s.f <- data.frame( POPULATION="Ht", MEAUSURE=measure, MEAN=s.mean,
 		VAR = s.var, MEDIAN = s.median, CI1 = s.ci1, CI2 = s.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
 
@@ -750,7 +750,7 @@ plotBoxPlots <- function(expDataFrame) {
 	orig <- expDataFrame
 
 	# only look at non-communicating homogenous and communicating heterogenous	
-	#expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none")  ,]
+	#expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none")  ,]
 	
 
 	
@@ -767,8 +767,8 @@ plotBoxPlots <- function(expDataFrame) {
 
 	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
 	
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
+	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |
+	   (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none") ,]
 
 	
 	
@@ -782,8 +782,8 @@ plotBoxPlots <- function(expDataFrame) {
 	
 	# do only island
 	expDataFrame <-  orig[orig$MODEL=="island",]
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none") ,]
+	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |
+	   (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none") ,]
 
 	# do box plots by model 
 	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-cb.pdf", TRUE)
@@ -829,13 +829,13 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("none","trail","broadcast","unicast"))
 	
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("Hm","Ht"))
 
-	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("Hm","Ht"))
 	
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("Hm","Ht"))
 	
-	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("Hm","Ht"))
 	
 	return(dataFrame)
 }
@@ -1054,8 +1054,8 @@ bootSize <- 1000
 	sg.data.frame <-  ea.data.frame
 
 	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous",]
+	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Ht",]
+	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Hm",]
 
 	# extract the measures
 	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
@@ -1089,7 +1089,7 @@ bootSize <- 1000
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=s.RATE_MOTION,
 		RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-		POPULATION="heterogenous"
+		POPULATION="Ht"
 	)
 
 
@@ -1099,7 +1099,7 @@ bootSize <- 1000
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=g.RATE_MOTION,
 		RATE_COMMUNICATION=g.RATE_COMMUNICATION,
-		POPULATION="homogenous"
+		POPULATION="Hm"
 	)
 	
 	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
@@ -1144,11 +1144,11 @@ bootSize <- 1000
 
 	ea.data.frame <-  expDataFrame[expDataFrame$MODEL!="island",]
 
-	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="homogenous" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="heterogenous" & ea.data.frame$INTERACTIONS!="none")  ,]
+	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="Hm" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="Ht" & ea.data.frame$INTERACTIONS!="none")  ,]
 
 	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="heterogenous" & sg.data.frame$INTERACTIONS!="none",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="homogenous" & sg.data.frame$INTERACTIONS=="none",]
+	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Ht" & sg.data.frame$INTERACTIONS!="none",]
+	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Hm" & sg.data.frame$INTERACTIONS=="none",]
 
 	# extract the measures
 	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
@@ -1181,7 +1181,7 @@ bootSize <- 1000
 		CAPTURES_MEAN=s.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=s.RATE_MOTION,
-		POPULATION="heterogenous"
+		POPULATION="Ht"
 	)
 
 
@@ -1190,7 +1190,7 @@ bootSize <- 1000
 		CAPTURES_MEAN=g.CAPTURES_MEAN,
 		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
 		RATE_MOTION=g.RATE_MOTION, 
-		POPULATION="homogenous"
+		POPULATION="Hm"
 	)
 	
 	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
@@ -1285,8 +1285,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" ,]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" ,]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" ,]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" ,]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
@@ -1304,8 +1304,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$MODEL=="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous"  & expDataFrame$MODEL=="island",]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$MODEL=="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht"  & expDataFrame$MODEL=="island",]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
@@ -1321,8 +1321,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$MODEL!="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous"  & expDataFrame$MODEL!="island",]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$MODEL!="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht"  & expDataFrame$MODEL!="island",]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
@@ -1337,8 +1337,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none",]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none",]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
@@ -1354,8 +1354,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL=="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL=="island",]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL=="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL=="island",]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
@@ -1371,8 +1371,8 @@ doNonParametricComparisons <- function(expDataFrame) {
 	distTable <- data.frame()
 	p("NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL!="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL!="island",]	
+	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL!="island",]
+	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL!="island",]	
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
 	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
