@@ -156,9 +156,9 @@ doNormalityAnalysis_PMSubPop <- function(expDataFrame) {
 
 
 #	print("========== ALIFE ========")
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS!="none"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -179,9 +179,9 @@ doNormalityAnalysis_PMSubPop <- function(expDataFrame) {
 doNormalityAnalysis_PMFullPop <- function(expDataFrame) {
 	distTable <- data.frame()
 
-	gdata <- expDataFrame[expDataFrame$SPECIES=="homogenous" & expDataFrame$QUALITY=="s"   ,]
+	gdata <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$QUALITY=="s"   ,]
 
-	sdata <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$QUALITY=="s"  ,]
+	sdata <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$QUALITY=="s"  ,]
 
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
 	distTable <- rbind(distTable,analyzeNormailtyPair("alife","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
@@ -247,7 +247,7 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -258,7 +258,7 @@ plotHistByPopulationMix <-function(dataFrame, colName, fileName, showPercent=FAL
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ POPULATION_MIX, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -286,7 +286,7 @@ plotHistByPopulationRichness <-function(dataFrame, colName, fileName, showPercen
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ RICHNESS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -297,7 +297,7 @@ plotHistByPopulationRichness <-function(dataFrame, colName, fileName, showPercen
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ RICHNESS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -323,7 +323,7 @@ plotHistByPopulationT2S <-function(dataFrame, colName, fileName, showPercent=FAL
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ T2SRATIO, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -334,7 +334,7 @@ plotHistByPopulationT2S <-function(dataFrame, colName, fileName, showPercent=FAL
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( . ~ T2SRATIO, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -419,7 +419,7 @@ plotBoxPlot_I_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( INTERACTIONS ~ QUALITY) + #, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -436,7 +436,7 @@ plotBoxPlot_I_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( INTERACTIONS ~ QUALITY ) + # labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			scale_y_continuous(labels=percentFormatter)+
 			geom_line(size=0.1) +
 			theme_bw() + 			
@@ -466,16 +466,17 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string( x="POPULATION",y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( . ~POPULATION_MIX) +
-			ylab(yAxisLabel) +
+			#ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 				)
 		)
 	} else {
@@ -483,17 +484,18 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
 			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid(. ~ POPULATION_MIX) +
-			ylab(yAxisLabel) +
+			#ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 
 				)
 		)
@@ -517,14 +519,15 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( . ~ RICHNESS) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 				)
 		)
 	} else {
@@ -535,14 +538,15 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			##scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 
 				)
 		)
@@ -568,14 +572,15 @@ plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( . ~ T2SRATIO) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 				)
 		)
 	} else {
@@ -586,14 +591,15 @@ plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.y = element_text(size=rel(0.7)),
 				axis.text.x = element_blank(),
-				axis.title.x = element_blank()
+				axis.title.x = element_blank(),
+				axis.title.y = element_blank()
 
 				)
 		)
@@ -621,7 +627,7 @@ plotBoxPlot_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid( . ~ QUALITY) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -638,7 +644,7 @@ plotBoxPlot_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 			facet_grid(. ~ QUALITY) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			#scale_x_continuous(labels=percentFormatter)+
 			scale_y_continuous(labels=percentFormatter)+
 			geom_line(size=0.1) +
@@ -662,7 +668,7 @@ plotBoxPlot_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotches=FALSE) {
 
-#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("homogenous","heterogenous"),to=c("hom","het"))
+#	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION,from=c("Hm","Ht"),to=c("hom","het"))
 
 
 	pdf(fileName,  
@@ -678,7 +684,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -694,7 +700,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -715,7 +721,7 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 compareMeans <-function(d.f,measure) {
 	r.f <- data.frame()
 
-	g <- d.f[(d.f$SPECIES=="homogenous"),]
+	g <- d.f[(d.f$SPECIES=="Hm"),]
 	g <- g[[measure]]
 
 	g.mean <- mean(g, na.rm=TRUE)
@@ -728,7 +734,7 @@ compareMeans <-function(d.f,measure) {
 	
 
 	
-	s <- d.f[(d.f$SPECIES=="heterogenous"),]
+	s <- d.f[(d.f$SPECIES=="Ht"),]
 	s <- s[[measure]]
 
 	s.mean <- mean(s, na.rm=TRUE)
@@ -743,10 +749,10 @@ compareMeans <-function(d.f,measure) {
 	rWilcoxW <- rWilcox$statistic[[1]]
 	rWilcoxP <- rWilcox$p.value
 
-	g.f <- data.frame( POPULATION="homogenous", MEAUSURE=measure, MEAN=g.mean,
+	g.f <- data.frame( POPULATION="Hm", MEAUSURE=measure, MEAN=g.mean,
 		VAR = g.var, MEDIAN = g.median, CI1 = g.ci1, CI2 = g.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
-	s.f <- data.frame( POPULATION="heterogenous", MEAUSURE=measure, MEAN=s.mean,
+	s.f <- data.frame( POPULATION="Ht", MEAUSURE=measure, MEAN=s.mean,
 		VAR = s.var, MEDIAN = s.median, CI1 = s.ci1, CI2 = s.ci2, 
 		WILCOX_W=rWilcoxW, WILCOX_P = rWilcoxP)
 
@@ -774,6 +780,8 @@ plotBoxPlots <- function(expDataFrame) {
 	plotBoxPlot_PM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-e2c.pdf", FALSE)
 	plotBoxPlot_PM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-rm.pdf", FALSE)
 	plotBoxPlot_PM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-pm-rc.pdf", FALSE)
+
+	
 
 	plotBoxPlot_R(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cb.pdf", TRUE)
 	plotBoxPlot_R(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-box-r-cm.pdf", TRUE)
@@ -833,22 +841,22 @@ renameFactorValues <- function(dataFrame) {
 	
 	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("trail","broadcast","unicast"))
 	
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("Hm","Ht"))
 
-	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("homogenous","heterogenous"))
+	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("Hm","Ht"))
 	
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("Hm","Ht"))
 	
-	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("homogenous","heterogenous"))
+	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("Hm","Ht"))
 
 
 	dataFrame$POPULATION_MIX <- mapvalues(dataFrame$POPULATION_MIX, 
 		from=c("mo","bi","tr","qu","po","ho"), 
-		to=c("mono","bi","tri","qua","poly","homogenous")
+		to=c("mono","bi","tri","qua","poly","Hm")
 	)
 
 	dataFrame$POPULATION_MIX <-factor(
-		dataFrame$POPULATION_MIX,c("mono","bi","tri","qua","poly","homogenous")
+		dataFrame$POPULATION_MIX,c("mono","bi","tri","qua","poly","Hm")
 	) 
 	
 	
@@ -920,7 +928,7 @@ plotBootHistPop_PM <-function(popDataFrame, colName, fileName, showPercent = FAL
 
 		print(
 			ggplot(tst, aes_string(y=colName, x="POPULATION_MIX"))
-			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_bar(position=position_dodge(), stat="identity", color="black")
 			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9))
@@ -939,7 +947,7 @@ plotBootHistPop_PM <-function(popDataFrame, colName, fileName, showPercent = FAL
 		
 		print(
 			ggplot(tst, aes_string(y=colName, x="POPULATION_MIX"))
-			+ geom_bar(position=position_dodge(), stat="identity", color="black", fill="white")
+			+ geom_bar(position=position_dodge(), stat="identity", color="black")
 			+ geom_errorbar(aes_string(ymin=paste(colName,"-ci",sep=""), ymax=paste(colName,"+ci",sep="")),
                   width=.2,                    # Width of the error bars
                   position=position_dodge(.9))
@@ -1132,7 +1140,7 @@ bootSize <- 1000
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-					POPULATION="heterogenous",
+					POPULATION="Ht",
 					INTERACTIONS = varInteractions,
 
 					POPULATION_MIX=var.populationMix
@@ -1202,7 +1210,7 @@ bootSize <- 1000
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-					POPULATION="heterogenous",
+					POPULATION="Ht",
 					INTERACTIONS = varInteractions,
 
 					RICHNESS=var.Richness
@@ -1268,7 +1276,7 @@ bootSize <- 1000
 					RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
 					RATE_MOTION=s.RATE_MOTION,
 					RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-					POPULATION="heterogenous",
+					POPULATION="Ht",
 					INTERACTIONS = varInteractions,
 
 					T2SRATIO=var.T2SRATIO
@@ -1295,7 +1303,7 @@ bootSize <- 1000
 
 plotBootedStats <- function(expDataFrame) {
 
-	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
 	plotBootHistPop_PM(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
 	plotBootHistPop_PM(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
@@ -1304,7 +1312,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_PM(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
+	popDataFrame <- computeBootStatsPM(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
 	plotBootHistPop_PM(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
 	plotBootHistPop_PM(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
@@ -1313,7 +1321,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_PM(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
 	plotBootHistPop_R(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cb.pdf", TRUE)
 	plotBootHistPop_R(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-cm.pdf", TRUE)
@@ -1322,7 +1330,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_R(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-r-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
+	popDataFrame <- computeBootStatsR(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
 	plotBootHistPop_R(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cb.pdf", TRUE)
 	plotBootHistPop_R(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-cm.pdf", TRUE)
@@ -1331,7 +1339,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_R(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-r-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="3_8",])
+	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="3_8",])
 
 	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-cb.pdf", TRUE)
 	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-cm.pdf", TRUE)
@@ -1340,7 +1348,7 @@ plotBootedStats <- function(expDataFrame) {
 	plotBootHistPop_T2S(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-3_8-boot-pop-t2s-rc.pdf", FALSE)
 
 
-	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$RICHNESS_VARIATION=="4_24",])
+	popDataFrame <- computeBootStatsT2S(expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$RICHNESS_VARIATION=="4_24",])
 
 	plotBootHistPop_T2S(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-cb.pdf", TRUE)
 	plotBootHistPop_T2S(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp3/e3-4_24-boot-pop-t2s-cm.pdf", TRUE)
@@ -1744,8 +1752,69 @@ kruskalWallisTest <-function(groupName,measureName,groupByColParam,dataFrame) {
 	return(resultFrame)
 }
 
+selectFromDf <- function(dataFrame,columnName, columnValue) {
+	filterExpression <- paste0("dataFrame$",columnName," == '",columnValue, "'")	
+	
+	result <-data.frame()
+	result <- rbind(result,dataFrame[eval(parse(text=filterExpression),dataFrame),])
+	return(result)
+}
+
+
+medianValues <-function(groupName,measureName,groupByColParam,dataFrame) {
+
+	library(pgirmess)
+
+
+
+	result <- data.frame()
+
+
+
+
+	for(group in unique(dataFrame[[groupByColParam]])) {
+		#print(group)
+		data = selectFromDf(dataFrame,groupByColParam,group)
+		medianValue = median(data[[measureName]],na.rm=TRUE)
+		#print(measureName)
+		#print(medianValue)
+		resultFrame <- data.frame(
+			PRIMARY = group,
+			MEASURE=measureName,
+			MEDIAN=medianValue 
+		)
+		result <- rbind(result,resultFrame)
+	}
+
+	#result <- as.data.frame(t(result))
+	#print(result)
+	#stop()
+	
+	return(result)
+}
+
+
 
 doKruskalWallis <-function(expDataFrameOrig) {
+	library(reshape)
+
+
+	p("MEDIAN 3_8 ANALYSIS >>>>>>")
+	p("POPULATION_MIX")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","POPULATION_MIX",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+
+	
 
 
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
@@ -1762,6 +1831,28 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	print(distTable)	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
+	
+
+	p("MEDIAN 4_8 ANALYSIS >>>>>>")
+	p("POPULATION_MIX")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="4_24",]
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_MEAN","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_BEST_CASE","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RES_E2C_STEPS_MEAN","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_COMMUNICATION","POPULATION_MIX",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_MOTION","POPULATION_MIX",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+
+
+
+
+
+
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("POPULATION_MIX")
 
@@ -1775,6 +1866,22 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	print(distTable)	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+
+
+	p("MEDIAN 3_8 ANALYSIS >>>>>>")
+	p("RICHNESS")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","RICHNESS",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
 
 
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
@@ -1791,6 +1898,25 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	print(distTable)	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
+
+
+	p("MEDIAN 4_8 ANALYSIS >>>>>>")
+	p("RICHNESS")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="4_24",]
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_COMMUNICATION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_MOTION","RICHNESS",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+
+
+
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("RICHNESS")
 
@@ -1806,6 +1932,24 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
 
 
+
+	p("MEDIAN 3_8 ANALYSIS >>>>>>")
+	p("T2SRATIO")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+
+
+
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
 	p("T2SRATIO")
 
@@ -1819,6 +1963,24 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	print(distTable)	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+
+
+
+	p("MEDIAN 4_8 ANALYSIS >>>>>>")
+	p("T2SRATIO")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="4_24",]
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("4_24","RATE_MOTION","T2SRATIO",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+
 
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
 	p("T2SRATIO")
@@ -1856,10 +2018,10 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 orig <- expDataFrame
 
 # only keep the heterogenous ones...
-expDataFrame <- expDataFrame[expDataFrame$SPECIES=="heterogenous" & expDataFrame$INTERACTIONS=="trail",]
+expDataFrame <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS=="trail",]
 
 
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
 plotBoxPlots(expDataFrame) # boxplots to show difference

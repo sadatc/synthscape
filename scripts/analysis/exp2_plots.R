@@ -1729,10 +1729,15 @@ nonParametricCompare1 <-function(groupByColParam,measureName,data) {
 
 	vecA <- data[data$SPECIES=="HmI",]
 	vecA <- vecA[[measureName]]
+	medianA = median(vecA, na.rm=TRUE)
 
 
 	vecB <- data[data$SPECIES=="HtI",]
 	vecB <- vecB[[measureName]]
+	medianB = median(vecB, na.rm=TRUE)
+	print(vecB)
+	print(medianB)
+
 
 	#print(head(vecA))
 	#print(head(vecB))
@@ -1748,6 +1753,8 @@ nonParametricCompare1 <-function(groupByColParam,measureName,data) {
 	
 	rowData <- data.frame(	
 		MEASURE=measureName,
+		MEDIAN_A=medianA,
+		MEDIAN_B=medianB,
 		W=W,
 		P=pValueString(pValue)
 	)
@@ -1935,6 +1942,20 @@ doNonParametricComparisons <- function(expDataFrame) {
 
 doKruskalWallis <- function(expDataFrame) {
 
+	distTable <- data.frame()
+	p("POPULATION: KRUSKAL-WALLIS >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_MOTION",data))
+	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< POPULATION: KRUSKAL-WALLIS")
+	stop()
+
 
 	distTable <- data.frame()
 	p("POP-INTERACTION: KRUSKAL-WALLIS >>>>>>")
@@ -1994,18 +2015,7 @@ doKruskalWallis <- function(expDataFrame) {
 
 
 
-	distTable <- data.frame()
-	p("POPULATION: KRUSKAL-WALLIS >>>>>>")
-	data <- expDataFrame
-	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_MEAN",data))
-	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","CAPTURES_BEST_CASE",data))
-	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RES_E2C_STEPS_MEAN",data))
-	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_MOTION",data))
-	distTable <- rbind(distTable,nonParametricCompare1("SPECIES","RATE_COMMUNICATION",data))
-
-	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
-	p("<<<<<<<<< POPULATION: KRUSKAL-WALLIS")
+	
 	
 }
 
@@ -2024,6 +2034,10 @@ jonkheereTest <-function(groupByColParam,primaryGroup,measureName,dataFrame) {
 	groupByCol <- data[[primaryGroup]]
 	groupByCol = as.numeric.factor(groupByCol)
 	jResult <- jonckheere.test(measureData,groupByCol,alternative="increasing")
+	print(summary(jResult))
+	print(jResult)
+	stop()
+
 	
 	jValueG <-jResult$statistic[[1]]
 	jAltG <- jResult$alternative[[1]]
@@ -2129,7 +2143,7 @@ doTrendTest <- function(expDataFrame) {
 	distTable <- rbind(distTable,jonkheereTest("SPECIES","QUALITY","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-QUALITY:TREND TEST")
 	
 
@@ -2149,7 +2163,7 @@ doTrendTest <- function(expDataFrame) {
 	print(distTable)
 	#stop()
 	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,0,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION-QUALITY:TREND TEST")
 
 
@@ -2229,15 +2243,82 @@ anova2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainDa
 
 
 
+meansErrs2 <-function(groupByColParam,primaryGroup,secondaryGroup,measureName,mainData) {
+	#library(pgirmess)
+
+	result <- data.frame()
+	
+	for(primary in unique(mainData[[primaryGroup]])) {
+
+		for(secondary in unique(mainData[[secondaryGroup]])) {
+			dataFrame = selectFromDf(mainData,primaryGroup,primary)
+			dataFrame = selectFromDf(dataFrame,secondaryGroup,secondary)
+
+			data <- dataFrame[dataFrame$SPECIES=="HmI",]
+			g.v <- data[[measureName]]
+			g.v <- g.v[!is.na(g.v)]
+			gMean <- mean(g.v)
+			gStdErr <- var(g.v)/length(g.v)
+
+			data <- dataFrame[dataFrame$SPECIES=="HtI",]
+			s.v <- data[[measureName]]
+			s.v <- s.v[!is.na(s.v)]
+			sMean <- mean(s.v)
+			sStdErr <- var(s.v)/length(s.v)
+
+
+			rowData <- data.frame(				
+				PRIMARY=primary,
+				SECONDARY=secondary,
+				MEASURE=measureName,
+				
+				GM = gMean,
+				GErr = gStdErr, 
+				SM = sMean,
+				SErr = sStdErr
+			)
+			result <- rbind(result,rowData)
+		}
+		
+	}
+	
+
+
+
+	return(result)
+}
+
+
 
 
 doANOVA <- function(expDataFrame) {
+
+	data <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
+	
+	distTable <- data.frame()
+	p("POP-INTERACTION-QUALITY: ANOVA >>>>>>")
+	data <- expDataFrame
+	distTable <- rbind(distTable,meansErrs2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
+	distTable <- rbind(distTable,meansErrs2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
+	distTable <- rbind(distTable,meansErrs2("SPECIES","INTERACTIONS","QUALITY","RES_E2C_STEPS_MEAN",data))
+	distTable <- rbind(distTable,meansErrs2("SPECIES","INTERACTIONS","QUALITY","RATE_MOTION",data))
+	distTable <- rbind(distTable,meansErrs2("SPECIES","INTERACTIONS","QUALITY","RATE_COMMUNICATION",data))
+
+	distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)
+	#stop()
+	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< POP-INTERACTION-QUALITY: ANOVA")
+	
+	stop()
+
 
 
 	data <- computeBootStatsIQ(expDataFrame[expDataFrame$SPECIES=="HtI",], expDataFrame[expDataFrame$SPECIES=="HmI",])
 	
 	distTable <- data.frame()
-	p("POP-INTERACTION-QUALITY: KRUSKAL-WALLIS >>>>>>")
+	p("POP-INTERACTION-QUALITY: ANOVA >>>>>>")
 	data <- expDataFrame
 	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_MEAN",data))
 	distTable <- rbind(distTable,anova2("SPECIES","INTERACTIONS","QUALITY","CAPTURES_BEST_CASE",data))
@@ -2250,7 +2331,7 @@ doANOVA <- function(expDataFrame) {
 	#stop()
 	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,2,2,0,2,2,2,0)), include.rownames=FALSE))
-	p("<<<<<<<<< POP-INTERACTION-QUALITY: KRUSKAL-WALLIS")
+	p("<<<<<<<<< POP-INTERACTION-QUALITY: ANOVA")
 
 
 
@@ -2280,13 +2361,13 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 #plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
 #doKruskalWallis(expDataFrame)
 #doTrendTest(expDataFrame)
 #doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)
-#doANOVA(expDataFrame)
+doANOVA(expDataFrame)
 
 
 
