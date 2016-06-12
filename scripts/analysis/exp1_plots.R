@@ -414,8 +414,9 @@ plotHistBy_S_M <-function(dataFrame, colName, fileName) {
 }
 
 plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
-	
+
+	dataFrame <- dataFrame[dataFrame$MODEL==model ,]	
+
 	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Hm"] <-  "Hm"
 
 	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Ht"] <-  "Ht"
@@ -858,7 +859,7 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$OBSTACLES <- factor(expDataFrame$OBSTACLES)
 	expDataFrame$DIFFICULTY <- factor(expDataFrame$DIFFICULTY)
 	
-	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
+	#expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
 	return(expDataFrame)
 }
@@ -1392,6 +1393,7 @@ doNonParametricComparisons <- function(expDataFrame) {
 
 expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_experiments_mean_300.csv")
 
+
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
@@ -1402,11 +1404,11 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 #doNormalityAnalysisFullPop(expDataFrame)
 #doNormalityAnalysisSubPop(expDataFrame)
-#plotBoxPlots(expDataFrame) # boxplots to show difference
+plotBoxPlots(expDataFrame) # boxplots to show difference
 #doNonParametricComparisons(expDataFrame)
 
 #plotBootedStatsFull(expDataFrame)
-plotBootedStatsPartial(expDataFrame)
+#plotBootedStatsPartial(expDataFrame)
 
 #plot the totals
 
