@@ -88,7 +88,7 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 				# nothing to do...
 			}
 
-			csvFileData <- csvFileData[1:MAX_GENERATIONS,] # we trim off excess rows
+			csvFileData <- csvFileData[MAX_GENERATIONS:MAX_GENERATIONS,] # we trim off excess rows
 			fileData <- data.frame(EXPERIMENT=i,csvFileData[CSV_FIELDS_TO_GRAB])
 			
 			## the data has some issues that needs to be fixed

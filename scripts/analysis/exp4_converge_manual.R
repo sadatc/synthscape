@@ -83,7 +83,7 @@ meanifyCSVS <-function(directory, aggregateData, howManyGenerations) {
 				# nothing to do...
 			}
 
-			csvFileData <- csvFileData[1:MAX_GENERATIONS,] # we trim off excess rows
+			csvFileData <- csvFileData[MAX_GENERATIONS:MAX_GENERATIONS,] # we trim off excess rows
 			fileData <- data.frame(EXPERIMENT=i,csvFileData[CSV_FIELDS_TO_GRAB])
 			
 			## the data has some issues that needs to be fixed
@@ -208,13 +208,15 @@ meanifyExp4Data <-function(dataDir, meanDir, howManyGenerations) {
 	
 	aggregateData <- data.frame()
 	
+
 	dataSubDirs <- list.dirs(dataDir,  full.names = FALSE)
-	print(dataSubDirs)
+	
 	
 	aggregateData <- data.frame()
 
 	for(directoryIndex in 1:length(dataSubDirs)) {
 		dataSubDir <- dataSubDirs[directoryIndex]
+
 
 		if( dataSubDir != "") {
 
