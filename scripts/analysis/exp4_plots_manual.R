@@ -203,7 +203,7 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -214,7 +214,7 @@ plotHistByPopulation <-function(model, dataFrame, colName, fileName, showPercent
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -240,7 +240,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 
 				axis.text.x = element_text(size=rel(0.7)))
@@ -251,7 +251,7 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 			geom_histogram(color="black", alpha = 0.85) +
 			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
 			xlab(xAxisLabel) +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			legend.position="none", 				
 				#axis.title.x = element_text(family="cmsy10"),
@@ -323,11 +323,12 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
 			facet_grid( . ~ RATIO) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -341,12 +342,13 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
 			facet_grid(. ~ RATIO) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -374,11 +376,12 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
 			facet_grid( INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() +
 			geom_line(size=0.1) +
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -391,12 +394,13 @@ plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue) +
+			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
 			facet_grid(INTERACTIONS ~ .) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			geom_line(size=0.1) +
 			theme_bw() + 			
 			theme(#text=element_text(family="CMUSerif-Roman"),
@@ -432,11 +436,12 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
+			geom_boxplot(aes(fill=POPULATION), notch=showNotches, outlier.size = NA, outlier.color = NA) +
+			
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -448,11 +453,12 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
+			geom_boxplot(aes(fill=POPULATION), notch=showNotches, outlier.size = NA, outlier.color = NA) +
+			
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
-			scale_fill_manual(values=c("white","grey50")) +
+			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
 			axis.title.x = element_blank(),
 			axis.title.y = element_blank(),
@@ -656,7 +662,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -669,7 +675,7 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -694,7 +700,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY")) 
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ RATIO) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -708,7 +714,7 @@ plotBootHistPop_I <-function(popDataFrame, colName, fileName, showPercent = FALS
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="RESOURCE_UNIFORMITY"))
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ RATIO) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -735,7 +741,7 @@ plotBootHistPop_Q <-function(popDataFrame, colName, fileName, showPercent = FALS
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ QUALITY) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -749,7 +755,7 @@ plotBootHistPop_Q <-function(popDataFrame, colName, fileName, showPercent = FALS
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(. ~ QUALITY) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -775,7 +781,7 @@ plotBootHistPop_IQ <-function(popDataFrame, colName, fileName, showPercent = FAL
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ QUALITY) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -789,7 +795,7 @@ plotBootHistPop_IQ <-function(popDataFrame, colName, fileName, showPercent = FAL
 		print(
 			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
 			+ geom_density(alpha = 0.9)
-			+ scale_fill_manual(values=c("white","grey50")) 
+			+ #scale_fill_manual(values=c("white","grey50")) 
 			+ facet_grid(INTERACTIONS ~ QUALITY) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
@@ -1330,14 +1336,14 @@ expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
 
 
 
-#plotHists(expDataFrame)    # plots histograms
-doNormalityAnalysis(expDataFrame)
+plotHists(expDataFrame)    # plots histograms
+#doNormalityAnalysis(expDataFrame)
 
 
-#plotBoxPlotsManual(expDataFrame) # boxplots to show difference
-doKruskalWallis(expDataFrame)
+plotBoxPlotsManual(expDataFrame) # boxplots to show difference
+#doKruskalWallis(expDataFrame)
 doTrendAnalysis(expDataFrame)
-doNonParametricAnalysis(expDataFrame)
+#doNonParametricAnalysis(expDataFrame)
 
 #plotBootedStats(expDataFrame)
 

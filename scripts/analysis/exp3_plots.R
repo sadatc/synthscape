@@ -457,7 +457,7 @@ plotBoxPlot_I_Q <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 2.26,height = 2, family="CMU Serif")	  
+	  width = 2.29,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -508,7 +508,7 @@ plotBoxPlot_PM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 2.25,height = 2, family="CMU Serif")	  
+	  width = 2.29,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
@@ -561,7 +561,7 @@ plotBoxPlot_R <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 plotBoxPlot_T2S <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
-	  width = 2.26,height = 2, family="CMU Serif")	  
+	  width = 2.29,height = 2, family="CMU Serif")	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	
