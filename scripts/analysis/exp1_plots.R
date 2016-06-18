@@ -152,6 +152,22 @@ analyzeNormailtyPair <-function(interaction,measure,g,s) {
 
 
 
+analyzeNormailtyPerModel <-function(model,measure,g) {	
+	rMeasure <- measure
+	rGSampleSize <- length(g)
+	rGShapiro <- shapiro.test(g)
+
+	rGShapiroW <- rGShapiro$statistic[[1]]
+	rGShapiroP <- rGShapiro$p.value
+	
+	
+	result.frame <- data.frame(MODEL=model,MEASURE=measure,
+		G_SHAP_W=rGShapiroW, G_SHAP_P=pValueString(rGShapiroP))
+	
+	return(result.frame)
+}
+
+
 doNormalityAnalysisSubPop <- function(expDataFrame) {
 	
 
@@ -269,37 +285,25 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 	#distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="trail",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="trail",]
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="broadcast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="broadcast",]	
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="unicast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="unicast",]		
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
+	print(distTable)
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
 
+	
 
 	print("========== embodied ========")
 	distTable <- data.frame()
+	
 	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="embodied"   ,]
 	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="embodied"  ,]
+
 
 	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
 	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
@@ -309,30 +313,15 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 	#distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="trail",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="trail",]
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="broadcast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="broadcast",]	
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="unicast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="unicast",]		
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
+	print(distTable)
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
 
 
@@ -350,34 +339,241 @@ doNormalityAnalysisFullPop <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
 	#distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="trail",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="trail",]
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("trail","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
 	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="broadcast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="broadcast",]	
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("broadcast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
-	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="unicast",]
-	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="unicast",]		
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_MEAN",gdata$CAPTURES_MEAN,sdata$CAPTURES_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","CAPTURES_BEST_CASE",gdata$CAPTURES_BEST_CASE,sdata$CAPTURES_BEST_CASE))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RES_E2C_STEPS_MEAN",gdata$RES_E2C_STEPS_MEAN,sdata$RES_E2C_STEPS_MEAN))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_MOTION",gdata$RATE_MOTION,sdata$RATE_MOTION))
-	distTable <- rbind(distTable,analyzeNormailtyPair("unicast","RATE_COMMUNICATION",gdata$RATE_COMMUNICATION,sdata$RATE_COMMUNICATION))
-	
+	print(distTable)
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
+
+
+
+	print("========== models ========")
+	distTable <- data.frame()
+	
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","CAPTURES_MEAN",expDataFrame$CAPTURES_MEAN[expDataFrame$MODEL=="island"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RATE_MOTION",expDataFrame$RATE_MOTION[expDataFrame$MODEL=="island"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RATE_COMMUNICATION",expDataFrame$RATE_COMMUNICATION[expDataFrame$MODEL=="island"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RES_E2C_STEPS_MEAN",expDataFrame$RES_E2C_STEPS_MEAN[expDataFrame$MODEL=="island"]))
+	
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","CAPTURES_MEAN",expDataFrame$CAPTURES_MEAN[expDataFrame$MODEL=="embodied"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RATE_MOTION",expDataFrame$RATE_MOTION[expDataFrame$MODEL=="embodied"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RATE_COMMUNICATION",expDataFrame$RATE_COMMUNICATION[expDataFrame$MODEL=="embodied"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RES_E2C_STEPS_MEAN",expDataFrame$RES_E2C_STEPS_MEAN[expDataFrame$MODEL=="embodied"]))
+	
+
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","CAPTURES_MEAN",expDataFrame$CAPTURES_MEAN[expDataFrame$MODEL=="alife"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RATE_MOTION",expDataFrame$RATE_MOTION[expDataFrame$MODEL=="alife"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RATE_COMMUNICATION",expDataFrame$RATE_COMMUNICATION[expDataFrame$MODEL=="alife"]))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RES_E2C_STEPS_MEAN",expDataFrame$RES_E2C_STEPS_MEAN[expDataFrame$MODEL=="alife"]))
+	
+
+
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2)), include.rownames=FALSE))
+
 	
 }
 
+
+
+doNormalityAnalysisBooted <- function(expDataFrame) {
+	bootSize <- 5000
+
+	print("========== island ========")
+	distTable <- data.frame()
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="island"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="island"  ,]
+
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
+	
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	gv <- gdata$RATE_COMMUNICATION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_COMMUNICATION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gv,sv))
+
+
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
+	
+	
+
+	print("========== embodied ========")
+	distTable <- data.frame()
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="embodied"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="embodied"  ,]
+
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
+	
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	gv <- gdata$RATE_COMMUNICATION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_COMMUNICATION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gv,sv))
+
+
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
+
+
+	print("========== alife ========")
+	distTable <- data.frame()
+	gdataOrig <- expDataFrame[expDataFrame$SPECIES=="Hm"  & expDataFrame$MODEL=="alife"   ,]
+	sdataOrig <- expDataFrame[expDataFrame$SPECIES=="Ht" &  expDataFrame$MODEL=="alife"  ,]
+
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS=="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS=="none",]
+	
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("none","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	
+	gdata <- gdataOrig[gdataOrig$INTERACTIONS!="none",]
+	sdata <- sdataOrig[sdataOrig$INTERACTIONS!="none",]
+
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$CAPTURES_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","CAPTURES_MEAN",gv,sv))
+	
+
+	gv <- gdata$RATE_MOTION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_MOTION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_MOTION",gv,sv))
+
+	gv <- gdata$RES_E2C_STEPS_MEAN; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RES_E2C_STEPS_MEAN; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RES_E2C_STEPS_MEAN",gv,sv))
+
+
+	gv <- gdata$RATE_COMMUNICATION; gv <- bootMean(gv,bootSize)
+	sv <- gdata$RATE_COMMUNICATION; sv <- bootMean(sv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPair("interacting","RATE_COMMUNICATION",gv,sv))
+
+
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2,3,-2)), include.rownames=FALSE))
+
+
+
+
+
+
+	print("========== models ========")
+	distTable <- data.frame()
+
+
+	
+
+	gdataOrig <- expDataFrame[expDataFrame$MODEL=="island"   ,]
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","CAPTURES_MEAN",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RATE_MOTION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RATE_COMMUNICATION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("island","RES_E2C_STEPS_MEAN",gv))
+
+	gdataOrig <- expDataFrame[expDataFrame$MODEL=="embodied"   ,]
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","CAPTURES_MEAN",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RATE_MOTION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RATE_COMMUNICATION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("embodied","RES_E2C_STEPS_MEAN",gv))
+	
+	
+	gdataOrig <- expDataFrame[expDataFrame$MODEL=="alife"   ,]
+	gv <- gdata$CAPTURES_MEAN; gv <- bootMean(gv,bootSize)
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","CAPTURES_MEAN",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RATE_MOTION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RATE_COMMUNICATION",gv))
+	distTable <- rbind(distTable,analyzeNormailtyPerModel("alife","RES_E2C_STEPS_MEAN",gv))
+
+
+	print(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3,-2)), include.rownames=FALSE))
+
+	
+}
 
 
 
@@ -453,12 +649,13 @@ plotHistByModel <-function(model, dataFrame, colName, fileName, showPercent=FALS
 	}
 	dev.off()
 
+
 }
 
 plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPercent=FALSE) {
-	dataFrame <- dataFrame[dataFrame$MODEL==model,]	
+	#dataFrame <- dataFrame[dataFrame$MODEL==model,]	
 	
-	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Hm"] <-  "non-interacting homogenous"
+	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Hm"] <-  "none homogenous"
 
 	#levels(dataFrame$POPULATION)[levels(dataFrame$POPULATION)=="Ht"] <-  "interacting heterogenous"
 
@@ -469,9 +666,9 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="MODEL")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ ., labeller=label_parsed) +
+			facet_grid( MODEL ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -481,9 +678,9 @@ plotHistByModelSpecific <-function(model, dataFrame, colName, fileName, showPerc
 		)
 	} else {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="POPULATION")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="MODEL")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( POPULATION ~ ., labeller=label_parsed) +
+			facet_grid( MODEL ~ ., labeller=label_parsed) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -527,7 +724,7 @@ plotHists <- function(expDataFrame) {
 
 
 
-	expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none")  ,]
+	#expDataFrame <-  expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |  (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none")  ,]
 
 
 	plotHistByModelSpecific("island", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-island-cm.pdf", TRUE)
@@ -537,18 +734,18 @@ plotHists <- function(expDataFrame) {
 	plotHistByModelSpecific("island", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-island-rc.pdf")
 	
 	
-	plotHistByModelSpecific("embodied", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-cm.pdf", TRUE)
-	plotHistByModelSpecific("embodied", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-cb.pdf", TRUE)
-	plotHistByModelSpecific("embodied", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-e2c.pdf")
-	plotHistByModelSpecific("embodied", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-rm.pdf")
-	plotHistByModelSpecific("embodied", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-rc.pdf")
+	#plotHistByModelSpecific("embodied", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-cm.pdf", TRUE)
+	#plotHistByModelSpecific("embodied", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-cb.pdf", TRUE)
+	#plotHistByModelSpecific("embodied", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-e2c.pdf")
+	#plotHistByModelSpecific("embodied", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-rm.pdf")
+	#plotHistByModelSpecific("embodied", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-embodied-rc.pdf")
 	
 	
-	plotHistByModelSpecific("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-cm.pdf", TRUE)
-	plotHistByModelSpecific("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-cb.pdf", TRUE)
-	plotHistByModelSpecific("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-e2c.pdf")
-	plotHistByModelSpecific("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-rm.pdf")
-	plotHistByModelSpecific("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-rc.pdf")
+	#plotHistByModelSpecific("alife", expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-cm.pdf", TRUE)
+	#plotHistByModelSpecific("alife", expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-cb.pdf", TRUE)
+	#plotHistByModelSpecific("alife", expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-e2c.pdf")
+	#plotHistByModelSpecific("alife", expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-rm.pdf")
+	#plotHistByModelSpecific("alife", expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-hist-part-s-alife-rc.pdf")
 
 
 
@@ -573,9 +770,9 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
+			ggplot(dataFrame, aes_string(x="MODEL", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=MODEL), notch=globalNotchValue) +
+			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			#scale_fill_manual(values=c("white","grey50")) +
@@ -590,9 +787,9 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		)
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
-			facet_grid( MODEL ~ INTERACTIONS, labeller=label_parsed) +
+			ggplot(dataFrame, aes_string(x="MODEL", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=MODEL), notch=globalNotchValue) +
+			facet_grid( POPULATION ~ INTERACTIONS, labeller=label_parsed) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			#scale_fill_manual(values=c("white","grey50")) +
@@ -621,7 +818,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	if( showPercent==FALSE ) {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
@@ -633,7 +830,7 @@ plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=globalNotchValue) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=POPULATION), notch=globalNotchValue) +
 			facet_grid( ~ MODEL, labeller=label_parsed) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			ylab(yAxisLabel) +
@@ -654,15 +851,15 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 
 
 	pdf(fileName,  
-	  width = 2.3,height = 1.75, family="CMU Serif")	  
+	  width = 3.3,height = 1.8, family="CMU Serif")	  
 	  
 	  
 	yAxisLabel <- getMeasureShortName(colName)
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
+			ggplot(dataFrame, aes_string(x="MODEL", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 , aes(fill=MODEL), notch=showNotches) +
 			#facet_grid(  ~ MODEL , labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
@@ -677,8 +874,8 @@ plotBoxPlot <-function(dataFrame, colName, fileName, showPercent=FALSE, showNotc
 		)
 	} else {
 		print(
-			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
-			geom_boxplot(aes(fill=POPULATION), notch=showNotches) +
+			ggplot(dataFrame, aes_string(x="MODEL", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=MODEL), notch=showNotches) +
 			#facet_grid( ~ MODEL, labeller=label_parsed) +
 			#ylab(yAxisLabel) +
 			#xlab("Population") +
@@ -762,84 +959,28 @@ plotBoxPlots <- function(expDataFrame) {
 	plotBoxPlot_M_I(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-box-mi-rm.pdf")
 	plotBoxPlot_M_I(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-box-mi-rc.pdf")
 
-	
-	
-	# filter out island model
-
-	expDataFrame <-  expDataFrame[expDataFrame$MODEL!="island",]
-	
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none") ,]
 
 	
-	
-
-	# do box plots of overall (including interactions)
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-ea-part-box-rc.pdf")
-	
-	# do only island
-	expDataFrame <-  orig[orig$MODEL=="island",]
-	expDataFrame <- expDataFrame[(expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none") |
-	   (expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none") ,]
-
-	# do box plots by model 
-	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-cb.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-cm.pdf", TRUE)
-	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-e2c.pdf")
-	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-rm.pdf")
-	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-i-part-box-rc.pdf")
-	
-	# consider all models... just pdf vs pis
-	expDataFrame <-  orig
-
-	# show a comparison of the means...
-	print("comparing pg and ps...(non-parametric)")
-	compareMeans(expDataFrame,"CAPTURES_BEST_CASE")
-	compareMeans(expDataFrame,"CAPTURES_MEAN")
-	compareMeans(expDataFrame,"RES_E2C_STEPS_MEAN")
-	compareMeans(expDataFrame,"RATE_MOTION")
-	compareMeans(expDataFrame,"RATE_COMMUNICATION")
-	print("DONE comparing pg and ps...(non-parametric)")
-	
-	# do box plots of overall (including interactions)
 	plotBoxPlot(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-cb.pdf", TRUE)
 	plotBoxPlot(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-cm.pdf", TRUE)
 	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-e2c.pdf")
 	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rm.pdf")
 	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rc.pdf")
 	
+	
+	
+	
 
 
 }
 
 
-# Function turns the internal abbreviated values to full expansions and re-ordered
-# the values were abbreviated in data files to save space
-renameFactorValues <- function(dataFrame) {
-	
-	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
-	
-	dataFrame$MODEL <- factor(dataFrame$MODEL,c("island","embodied","alife"))
-	
-	
-	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
-	
-	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("none","trail","broadcast","unicast"))
-	
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("Hm","Ht"))
 
-	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("Hm","Ht"))
-	
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("Hm","Ht"))
-	
-	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("Hm","Ht"))
-	
-	return(dataFrame)
-}
+
+
+
+
+
 
 # this function:
 # 1. makes POPULATION a synonym for species
@@ -859,7 +1000,7 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$OBSTACLES <- factor(expDataFrame$OBSTACLES)
 	expDataFrame$DIFFICULTY <- factor(expDataFrame$DIFFICULTY)
 	
-	#expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
+	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
 	return(expDataFrame)
 }
@@ -946,13 +1087,20 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 
 	xAxisLabel <- getMeasureShortName(colName)
 
+
+
+
+
+
 	pdf(fileName,  
-	  width = 2.3,height = 1.75, family="CMU Serif")
+	  width = 6,height = 3, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="POPULATION")) 
-			+ geom_density(alpha = 0.9)
-			# + scale_fill_manual(values=c("white","grey50")) 
+			ggplot(popDataFrame, aes_string(colName, fill="MODEL")) 
+			#+ geom_density(alpha = 0.9)
+			+ geom_histogram(color="black", alpha = 0.85) 
+			+ facet_grid( POPULATION ~ INTERACTIONS) 
+			#+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -963,9 +1111,64 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 		)
 	} else {
 		print(
-			ggplot(popDataFrame, aes_string(colName, fill="POPULATION"))
-			+ geom_density(alpha = 0.9)
-			# + scale_fill_manual(values=c("white","grey50")) 
+			
+			ggplot(popDataFrame, aes_string(colName, fill="MODEL"))
+			#+ geom_density(alpha = 0.9)
+			+ geom_histogram(color="black", alpha = 0.85) 
+			+ facet_grid( POPULATION ~ INTERACTIONS) 
+			#+ scale_fill_manual(values=c("white","grey50")) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+
+
+	dev.off()
+}
+
+
+
+
+plotBootHist2PopOvl <-function(popDataFrame, colName, fileName, showPercent = FALSE) {
+
+	#print(popDataFrame)
+
+	#popDataFrame <- popDataFrame[popDataFrame$MODEL=="alife",]
+	xAxisLabel <- getMeasureShortName(colName)
+
+	pdf(fileName,  
+	  width = 3,height = 1.8, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(popDataFrame, aes_string(colName, fill="MODEL")) 
+			#+ geom_density(alpha = 0.9)
+			+ geom_histogram(color="black", alpha = 0.85) 
+			
+			#+ facet_grid( POPULATION ~ INTERACTIONS) 
+			#+ scale_fill_manual(values=c("white","grey50")) 
+			+ xlab(xAxisLabel) 
+			+ theme_bw()
+			+ theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 
+				axis.title.y = element_blank(),
+				axis.text.x = element_text(size=rel(0.7)),
+				axis.text.y = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			
+			ggplot(popDataFrame, aes_string(colName, fill="MODEL"))
+			#+ geom_density(alpha = 0.9)
+			+ geom_histogram(color="black", alpha = 0.85) 
+
+			#+ facet_grid( POPULATION ~ INTERACTIONS) 
+			#+ scale_fill_manual(values=c("white","grey50")) 
 			+ xlab(xAxisLabel) 
 			+ theme_bw()
 			+ theme(#text=element_text(family="CMUSerif-Roman"),
@@ -978,7 +1181,6 @@ plotBootHist2Pop <-function(popDataFrame, colName, fileName, showPercent = FALSE
 	}
 	dev.off()
 }
-
 
 #
 # performs t-tests
@@ -1045,74 +1247,545 @@ performTTest <-function(measure,s.v,g.v) {
 
 plotBootedStatsFull <- function(expDataFrame) {
 
+	bootDf <- data.frame()
+
 	# now we will bootstrap the measures
-bootSize <- 1000
+	bootSize <- 1000
 
-	expDataFrame <- expDataFrame[expDataFrame$MODEL!="island",]
-
-	ea.data.frame <-  expDataFrame
-
-	sg.data.frame <-  ea.data.frame
-
-	# extract data for s and g
-	s.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Ht",]
-	g.data.frame <- sg.data.frame[sg.data.frame$SPECIES=="Hm",]
-
-	# extract the measures
-	s.CAPTURES_BEST_CASE <- s.data.frame$CAPTURES_BEST_CASE
-	s.CAPTURES_MEAN <- s.data.frame$CAPTURES_MEAN
-	s.RES_E2C_STEPS_MEAN <- s.data.frame$RES_E2C_STEPS_MEAN
-	s.RATE_MOTION <- s.data.frame$RATE_MOTION
-	s.RATE_COMMUNICATION <- s.data.frame$RATE_COMMUNICATION
-
-	s.CAPTURES_BEST_CASE <- bootMean(s.CAPTURES_BEST_CASE,bootSize)
-	s.CAPTURES_MEAN <- bootMean(s.CAPTURES_MEAN,bootSize)
-	s.RES_E2C_STEPS_MEAN <- bootMean(s.RES_E2C_STEPS_MEAN,bootSize)
-	s.RATE_MOTION <- bootMean(s.RATE_MOTION,bootSize)
-	s.RATE_COMMUNICATION <- bootMean(s.RATE_COMMUNICATION,bootSize)
-
-	g.CAPTURES_BEST_CASE <- g.data.frame$CAPTURES_BEST_CASE
-	g.CAPTURES_MEAN <- g.data.frame$CAPTURES_MEAN
-	g.RES_E2C_STEPS_MEAN <- g.data.frame$RES_E2C_STEPS_MEAN
-	g.RATE_MOTION <- g.data.frame$RATE_MOTION
-	g.RATE_COMMUNICATION <- g.data.frame$RATE_COMMUNICATION
-
-	g.CAPTURES_BEST_CASE <- bootMean(g.CAPTURES_BEST_CASE,bootSize)
-	g.CAPTURES_MEAN <- bootMean(g.CAPTURES_MEAN,bootSize)
-	g.RES_E2C_STEPS_MEAN <- bootMean(g.RES_E2C_STEPS_MEAN,bootSize)
-	g.RATE_MOTION <- bootMean(g.RATE_MOTION,bootSize)
-	g.RATE_COMMUNICATION <- bootMean(g.RATE_COMMUNICATION,bootSize)
-
-	
-	s.popDataFrame <- data.frame(
-		CAPTURES_BEST_CASE=s.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=s.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=s.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=s.RATE_MOTION,
-		RATE_COMMUNICATION=s.RATE_COMMUNICATION,
-		POPULATION="Ht"
-	)
-
-
-	g.popDataFrame <- data.frame(
-		CAPTURES_BEST_CASE=g.CAPTURES_BEST_CASE,
-		CAPTURES_MEAN=g.CAPTURES_MEAN,
-		RES_E2C_STEPS_MEAN=g.RES_E2C_STEPS_MEAN,
-		RATE_MOTION=g.RATE_MOTION,
-		RATE_COMMUNICATION=g.RATE_COMMUNICATION,
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
 		POPULATION="Hm"
 	)
-	
-	popDataFrame <- rbind(g.popDataFrame,s.popDataFrame)
-	
-	
-	plotBootHist2Pop(popDataFrame,"CAPTURES_BEST_CASE","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cb.pdf", TRUE)
-	plotBootHist2Pop(popDataFrame,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cm.pdf", TRUE)
-	plotBootHist2Pop(popDataFrame,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-e2c.pdf")
-	plotBootHist2Pop(popDataFrame,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rm.pdf")
-	plotBootHist2Pop(popDataFrame,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rc.pdf")
+	bootDf <- rbind(bootDf,fragment)
 
 
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="none",			
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="interacting",			
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="none",
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+
+	plotBootHist2Pop(bootDf,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-bd-cm.pdf", TRUE)
+	plotBootHist2Pop(bootDf,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-bd-e2c.pdf")
+	plotBootHist2Pop(bootDf,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-bd-rm.pdf")
+	plotBootHist2Pop(bootDf,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-bd-rc.pdf")
+
+
+	
+	
+	
+
+}
+
+
+
+plotBootedStatsOverall <- function(expDataFrame) {
+
+	bootDf <- data.frame()
+
+	# now we will bootstrap the measures
+	bootSize <- 1000
+
+	df <- expDataFrame[expDataFrame$MODEL=="island", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION
+		
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+				
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION
+		
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+				
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION
+		
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+
+
+
+
+
+
+	
+	
+	plotBootHist2PopOvl(bootDf,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-cm.pdf", TRUE)
+	plotBootHist2PopOvl(bootDf,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-e2c.pdf")
+	plotBootHist2PopOvl(bootDf,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rm.pdf")
+	plotBootHist2PopOvl(bootDf,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-rc.pdf")
+	
+	
+	
+	
+
+}
+
+
+plotBootedStatsFull2 <- function(expDataFrame) {
+
+	bootDf <- data.frame()
+
+	# now we will bootstrap the measures
+	bootSize <- 1000
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="island" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="island",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+	plotBootHist2Pop(bootDf,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-i-cm.pdf", TRUE)
+	plotBootHist2Pop(bootDf,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-i-e2c.pdf")
+	plotBootHist2Pop(bootDf,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-i-rm.pdf")
+	plotBootHist2Pop(bootDf,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-i-rc.pdf")
+
+	bootDf <- data.frame()
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="none",			
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="interacting",			
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="embodied" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="embodied",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="none",
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="none" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="none",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Hm", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Hm"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+	df <- expDataFrame[expDataFrame$MODEL=="alife" & expDataFrame$INTERACTIONS=="interacting" & expDataFrame$POPULATION=="Ht", ]
+	df.CAPTURES_MEAN <- df$CAPTURES_MEAN; df.CAPTURES_MEAN <- bootMean(df.CAPTURES_MEAN,bootSize)
+	df.RES_E2C_STEPS_MEAN <- df$RES_E2C_STEPS_MEAN; df.RES_E2C_STEPS_MEAN <- bootMean(df.RES_E2C_STEPS_MEAN,bootSize)
+	df.RATE_MOTION <- df$RATE_MOTION; df.RATE_MOTION <- bootMean(df.RATE_MOTION,bootSize)
+	df.RATE_COMMUNICATION <- df$RATE_COMMUNICATION; df.RATE_COMMUNICATION <- bootMean(df.RATE_COMMUNICATION,bootSize)
+	fragment <- data.frame(
+		MODEL="alife",
+		INTERACTIONS="interacting",		
+		CAPTURES_MEAN=df.CAPTURES_MEAN,
+		RES_E2C_STEPS_MEAN=df.RES_E2C_STEPS_MEAN,
+		RATE_MOTION=df.RATE_MOTION,
+		RATE_COMMUNICATION=df.RATE_COMMUNICATION,
+		POPULATION="Ht"
+	)
+	bootDf <- rbind(bootDf,fragment)
+
+
+
+
+	plotBootHist2Pop(bootDf,"CAPTURES_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-ea-cm.pdf", TRUE)
+	plotBootHist2Pop(bootDf,"RES_E2C_STEPS_MEAN","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-ea-e2c.pdf")
+	plotBootHist2Pop(bootDf,"RATE_MOTION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-ea-rm.pdf")
+	plotBootHist2Pop(bootDf,"RATE_COMMUNICATION","/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-ea-rc.pdf")
+
+	stop()
 	
 	
 	#plotBoxPlot(popDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-boot-full-box-cb.pdf", TRUE, FALSE)
@@ -1137,13 +1810,12 @@ bootSize <- 1000
 }
 
 
-
 plotBootedStatsPartial <- function(expDataFrame) {
 
 	# now we will bootstrap the measures
 bootSize <- 1000
 
-	ea.data.frame <-  expDataFrame[expDataFrame$MODEL!="island",]
+	ea.data.frame <-  expDataFrame[expDataFrame$MODEL!="embodied",]
 
 	sg.data.frame <-  ea.data.frame[(ea.data.frame$SPECIES=="Hm" & ea.data.frame$INTERACTIONS=="none") |  (ea.data.frame$SPECIES=="Ht" & ea.data.frame$INTERACTIONS!="none")  ,]
 
@@ -1280,111 +1952,299 @@ nonParametricCompare <-function(measureName,dataFrame1, dataFrame2) {
 }
 
 
+parametricCompare3ovl <-function(measureName , dataFrame1, dataFrame2, dataFrame3) {
+
+
+
+	vecA <- dataFrame1[[measureName]]; meanA <- mean(vecA, na.rm=TRUE); vecA <- bootMean(vecA, 5000); vecA <- data.frame(measure=vecA,model="island")
+	vecB <- dataFrame2[[measureName]]; meanB <- mean(vecB, na.rm=TRUE); vecB <- bootMean(vecB, 5000); vecB <- data.frame(measure=vecB,model="embodied")
+	vecC <- dataFrame3[[measureName]]; meanC <- mean(vecC, na.rm=TRUE); vecC <- bootMean(vecC, 5000); vecC <- data.frame(measure=vecC,model="alife")
+	
+	df <- rbind(vecA,vecB,vecC)
+	
+
+	aovtest <- aov(measure ~ model, data=df)
+	print(summary(aovtest))
+	#print(summary(aovtest[[1]]$F[1]))
+	#stop()
+	r <- summary(aovtest)
+
+
+	aStat <- r[[1]]$F[1]
+	aDf <- r[[1]]$Df[1]
+	#stop()
+	aP <- r[[1]]$'Pr(>F)'[1]
+	
+
+	
+
+
+	result <- data.frame(
+		
+		MEASURE=measureName,						
+		meanIsland=meanA,
+		meanEmbodied=meanB,
+		meanALife=meanC,
+		aStat=aStat,
+		aDf=aDf,
+		aP=pValueString(aP)
+	)
+	
+
+	return(result)
+	
+
+	return(result)
+}
+
+nonParametricCompare3 <-function(interaction, population, measureName , dataFrame1, dataFrame2, dataFrame3) {
+
+	
+	
+	dataFrame1 <- dataFrame1[dataFrame1$POPULATION==population & dataFrame1$INTERACTIONS==interaction ,]
+	dataFrame2 <- dataFrame2[dataFrame2$POPULATION==population & dataFrame2$INTERACTIONS==interaction ,]
+	dataFrame3 <- dataFrame3[dataFrame3$POPULATION==population & dataFrame3$INTERACTIONS==interaction ,]
+
+
+	vecA <- dataFrame1[[measureName]]
+	vecB <- dataFrame2[[measureName]]
+	vecC <- dataFrame3[[measureName]]
+	
+	medianA <- median(vecA, na.rm=TRUE)
+	medianB <- median(vecB, na.rm=TRUE)
+	medianC <- median(vecC, na.rm=TRUE)
+
+	kwtest <- kruskal.test(list(vecA,vecB,vecC))
+
+
+	kwStat <- kwtest$statistic[[1]]
+	kwDf <- kwtest$parameter[[1]]
+	kwP <- as.double(kwtest$p.value)
+
+
+	result <- data.frame(
+		POPULATION=population,
+		INTERACTION = interaction,				
+		MEASURE=measureName,						
+		medianIsland=medianA,
+		medianEmbodied=medianB,
+		medianALife=medianC,
+		kwStat=kwStat,
+		kwDf=kwDf,
+		kwP=pValueString(kwP)
+	)
+	
+
+	return(result)
+}
+
+
+
+nonParametricCompare3ovl <-function( measureName , dataFrame1, dataFrame2, dataFrame3) {
+
+	
+
+	vecA <- dataFrame1[[measureName]]
+	vecB <- dataFrame2[[measureName]]
+	vecC <- dataFrame3[[measureName]]
+	
+	medianA <- median(vecA, na.rm=TRUE)
+	medianB <- median(vecB, na.rm=TRUE)
+	medianC <- median(vecC, na.rm=TRUE)
+
+	kwtest <- kruskal.test(list(vecA,vecB,vecC))
+
+
+	kwStat <- kwtest$statistic[[1]]
+	kwDf <- kwtest$parameter[[1]]
+	kwP <- as.double(kwtest$p.value)
+
+
+	result <- data.frame(
+		MEASURE=measureName,						
+		medianIsland=medianA,
+		medianEmbodied=medianB,
+		medianALife=medianC,
+		kwStat=kwStat,
+		kwDf=kwDf,
+		kwP=pValueString(kwP)
+	)
+	
+
+	return(result)
+}
+
+
+parametricCompare3 <-function(interaction, population, measureName , dataFrame1, dataFrame2, dataFrame3) {
+
+	
+	dataFrame1 <- dataFrame1[dataFrame1$POPULATION==population & dataFrame1$INTERACTIONS==interaction ,]
+	dataFrame2 <- dataFrame2[dataFrame2$POPULATION==population & dataFrame2$INTERACTIONS==interaction ,]
+	dataFrame3 <- dataFrame3[dataFrame3$POPULATION==population & dataFrame3$INTERACTIONS==interaction ,]
+
+
+	vecA <- dataFrame1[[measureName]]; meanA <- mean(vecA, na.rm=TRUE); vecA <- bootMean(vecA, 5000); vecA <- data.frame(measure=vecA,model="island")
+	vecB <- dataFrame2[[measureName]]; meanB <- mean(vecB, na.rm=TRUE); vecB <- bootMean(vecB, 5000); vecB <- data.frame(measure=vecB,model="embodied")
+	vecC <- dataFrame3[[measureName]]; meanC <- mean(vecC, na.rm=TRUE); vecC <- bootMean(vecC, 5000); vecC <- data.frame(measure=vecC,model="alife")
+	
+	df <- rbind(vecA,vecB,vecC)
+	
+
+	aovtest <- aov(measure ~ model, data=df)
+	print(summary(aovtest))
+	#print(summary(aovtest[[1]]$F[1]))
+	#stop()
+	r <- summary(aovtest)
+
+
+	aStat <- r[[1]]$F[1]
+	aDf <- r[[1]]$Df[1]
+	#stop()
+	aP <- r[[1]]$'Pr(>F)'[1]
+	
+
+	
+
+
+	result <- data.frame(
+		POPULATION=population,
+		INTERACTION = interaction,				
+		MEASURE=measureName,						
+		meanIsland=meanA,
+		meanEmbodied=meanB,
+		meanALife=meanC,
+		aStat=aStat,
+		aDf=aDf,
+		aP=pValueString(aP)
+	)
+	
+
+	return(result)
+}
 
 doNonParametricComparisons <- function(expDataFrame) {
 
 	distTable <- data.frame()
-	p("PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+	p("3 model broken down: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" ,]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" ,]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	data1 <- expDataFrame[expDataFrame$MODEL=="island" ,]
+	data2 <- expDataFrame[expDataFrame$MODEL=="embodied" ,]
+	data3 <- expDataFrame[expDataFrame$MODEL=="alife" ,]	
+
+	distTable <- rbind(distTable,nonParametricCompare3("none","Hm","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Hm","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Hm","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Hm","RES_E2C_STEPS_MEAN",data1, data2, data3))
 	
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Hm","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Hm","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Hm","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Hm","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+
+	distTable <- rbind(distTable,nonParametricCompare3("none","Ht","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Ht","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Ht","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("none","Ht","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Ht","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Ht","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Ht","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3("interacting","Ht","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+
+
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< PG vs PS: NON-PARAMETRIC COMPARE")
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-2,-2,-2,2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< 3 model broken down: NON-PARAMETRIC COMPARE")
 
-	#stop()
 
 
 	distTable <- data.frame()
-	p("ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+	p("3 model overall: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$MODEL=="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht"  & expDataFrame$MODEL=="island",]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	data1 <- expDataFrame[expDataFrame$MODEL=="island" ,]
+	data2 <- expDataFrame[expDataFrame$MODEL=="embodied" ,]
+	data3 <- expDataFrame[expDataFrame$MODEL=="alife" ,]	
+
+	distTable <- rbind(distTable,nonParametricCompare3ovl("CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3ovl("RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3ovl("RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,nonParametricCompare3ovl("RES_E2C_STEPS_MEAN",data1, data2, data3))
 	
+
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< 3 model overall: NON-PARAMETRIC COMPARE")
+
+
+
+}
+
+
+
+
+doParametricComparisonsBooted <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("3 model broken down: PARAMETRIC COMPARE >>>>>>")
+
+	data1 <- expDataFrame[expDataFrame$MODEL=="island" ,]
+	data2 <- expDataFrame[expDataFrame$MODEL=="embodied" ,]
+	data3 <- expDataFrame[expDataFrame$MODEL=="alife" ,]	
+
+	distTable <- rbind(distTable,parametricCompare3("none","Hm","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Hm","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Hm","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Hm","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+	distTable <- rbind(distTable,parametricCompare3("interacting","Hm","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Hm","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Hm","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Hm","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+
+	distTable <- rbind(distTable,parametricCompare3("none","Ht","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Ht","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Ht","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("none","Ht","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+	distTable <- rbind(distTable,parametricCompare3("interacting","Ht","CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Ht","RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Ht","RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3("interacting","Ht","RES_E2C_STEPS_MEAN",data1, data2, data3))
+	
+
+
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-2,-2,-2,2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< 3 model broken down: NON-PARAMETRIC COMPARE")
+
 
 
 	distTable <- data.frame()
-	p("NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE >>>>>>")
+	p("3 model overall: PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$MODEL!="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht"  & expDataFrame$MODEL!="island",]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
+	data1 <- expDataFrame[expDataFrame$MODEL=="island" ,]
+	data2 <- expDataFrame[expDataFrame$MODEL=="embodied" ,]
+	data3 <- expDataFrame[expDataFrame$MODEL=="alife" ,]	
+
+	distTable <- rbind(distTable,parametricCompare3ovl("CAPTURES_MEAN",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3ovl("RATE_MOTION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3ovl("RATE_COMMUNICATION",data1, data2, data3))
+	distTable <- rbind(distTable,parametricCompare3ovl("RES_E2C_STEPS_MEAN",data1, data2, data3))
 	
+
 	#distTable <- distTable[order(distTable$PRIMARY),]
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< NON-ISLAND PG vs PS: NON-PARAMETRIC COMPARE")
-
-	distTable <- data.frame()
-	p("PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
-
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none",]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
-	
-	#distTable <- distTable[order(distTable$PRIMARY),]
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< PNG vs PIS: NON-PARAMETRIC COMPARE")
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,2,0,0)), include.rownames=FALSE))
+	p("<<<<<<<<< 3 model overall: PARAMETRIC COMPARE")
 
 
-	distTable <- data.frame()
-	p("ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
 
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL=="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL=="island",]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
-	
-	#distTable <- distTable[order(distTable$PRIMARY),]
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
-
-
-	distTable <- data.frame()
-	p("NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE >>>>>>")
-
-	data1 <- expDataFrame[expDataFrame$SPECIES=="Hm" & expDataFrame$INTERACTIONS=="none" & expDataFrame$MODEL!="island",]
-	data2 <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS!="none" & expDataFrame$MODEL!="island",]	
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("CAPTURES_BEST_CASE",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RES_E2C_STEPS_MEAN",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_MOTION",data1, data2))
-	distTable <- rbind(distTable,nonParametricCompare("RATE_COMMUNICATION",data1, data2))
-	
-	#distTable <- distTable[order(distTable$PRIMARY),]
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,0,-3,-3)), include.rownames=FALSE))
-	p("<<<<<<<<< NON-ISLAND PNG vs PIS: NON-PARAMETRIC COMPARE")
-	
 }
 
 
@@ -1403,12 +2263,16 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 #plotHists(expDataFrame)    # plots histograms
 
 #doNormalityAnalysisFullPop(expDataFrame)
-#doNormalityAnalysisSubPop(expDataFrame)
-plotBoxPlots(expDataFrame) # boxplots to show difference
-#doNonParametricComparisons(expDataFrame)
+#doNormalityAnalysisBooted(expDataFrame)
+
+#plotBoxPlots(expDataFrame) # boxplots to show difference
+
+doNonParametricComparisons(expDataFrame)
 
 #plotBootedStatsFull(expDataFrame)
+#plotBootedStatsOverall(expDataFrame)
+#plotBootedStatsFull2(expDataFrame)
 #plotBootedStatsPartial(expDataFrame)
-
+#doParametricComparisonsBooted(expDataFrame)
 #plot the totals
 

@@ -1,4 +1,8 @@
 pValueString <- function(val) {
+	if(is.na(val)) {
+		return("NA")
+	}
+
 	result <- val
 
 	if(val < 0.05) {
@@ -25,11 +29,11 @@ p <- function(msg) {
 
 displayLatex <- function(xtableString) {
 	x <- capture.output(xtableString)
-	x <- sub("CAPTURES[\\]_MEAN","$M_{mean}$",x) 
+	x <- sub("CAPTURES[\\]_MEAN","$M_{captures}$",x) 
 	x <- sub("CAPTURES[\\]_BEST[\\]_CASE","$M_{best}$",x) 
 	x <- sub("RES[\\]_E2C[\\]_STEPS[\\]_MEAN","$M_{time}$",x) 
-	x <- sub("RATE[\\]_COMMUNICATION","$M_{comm}$",x) 
-	x <- sub("RATE[\\]_MOTION","$M_{dist}$",x) 
+	x <- sub("RATE[\\]_COMMUNICATION","$M_{messages}$",x) 
+	x <- sub("RATE[\\]_MOTION","$M_{distance}$",x) 
 	x <- sub("NUM[\\]_DETECTORS","$N_{d}$",x) 
 	x <- sub("NUM[\\]_EXTRACTORS","$N_{e}$",x) 
 	x <- sub("NUM[\\]_TRANSPORTERS","$N_{t}$",x) 
@@ -52,7 +56,7 @@ getMeasurePrettyName <- function(colName) {
 	result <- colName
 	
 	if(colName == "CAPTURES_MEAN") {
-		result <- expression(italic(M[mean]) ~ ":  Mean Captures (% of total)")
+		result <- expression(italic(M[captures]) ~ "(% of total)")
 	}
 
 	if(colName == "CAPTURES_BEST_CASE") {
@@ -60,15 +64,15 @@ getMeasurePrettyName <- function(colName) {
 	}
 
 	if(colName == "RES_E2C_STEPS_MEAN") {
-		result <- expression(italic(M[effort]) ~ ":  Mean Steps between Extraction & Capture")
+		result <- expression(italic(M[time]) )
 	}
 
 	if(colName == "RATE_COMMUNICATION") {
-		result <- expression(italic(M[comm]) ~ ":  Communication Instructions")
+		result <- expression(italic(M[messages]))
 	}
 
 	if(colName == "RATE_MOTION") {
-		result <- expression(italic(M[move]) ~ ":  Movement Instructions")
+		result <- expression(italic(M[distance]) )
 	}
 	
 	if(colName == "NUM_DETECTORS") {
@@ -96,7 +100,7 @@ getMeasureShortName <- function(colName) {
 	result <- colName
 	
 	if(colName == "CAPTURES_MEAN") {
-		result <- expression(italic(M[mean]) )
+		result <- expression(italic(M[captures]) )
 	}
 
 	if(colName == "CAPTURES_BEST_CASE") {
@@ -104,15 +108,15 @@ getMeasureShortName <- function(colName) {
 	}
 
 	if(colName == "RES_E2C_STEPS_MEAN") {
-		result <- expression(italic(M[effort]))
+		result <- expression(italic(M[time]))
 	}
 
 	if(colName == "RATE_COMMUNICATION") {
-		result <- expression(italic(M[comm]) )
+		result <- expression(italic(M[messages]) )
 	}
 
 	if(colName == "RATE_MOTION") {
-		result <- expression(italic(M[move]) )
+		result <- expression(italic(M[distance]) )
 	}
 	
 	if(colName == "NUM_DETECTORS") {
@@ -137,4 +141,33 @@ getMeasureShortName <- function(colName) {
 percentFormatter <- function(x) {
 	y <- paste(round(x*100),"%",sep="")
 	return(y)
+}
+
+# Function turns the internal abbreviated values to full expansions and re-ordered
+# the values were abbreviated in data files to save space
+renameFactorValues <- function(dataFrame) {
+	
+	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
+	
+	dataFrame$MODEL <- factor(dataFrame$MODEL,c("island","embodied","alife"))
+	
+	
+	dataFrame$INTERACTIONS_REAL <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
+	
+	dataFrame$INTERACTIONS_REAL <- factor(dataFrame$INTERACTIONS_REAL, c("none","trail","broadcast","unicast"))
+
+	
+	dataFrame$INTERACTIONS <- ifelse(dataFrame$INTERACTIONS_REAL=="none","none","interacting")
+	
+	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS,c("none","interacting"))	
+	
+	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("Hm","Ht"))
+
+	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("Hm","Ht"))
+	
+	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("Hm","Ht"))
+	
+	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("Hm","Ht"))
+	
+	return(dataFrame)
 }

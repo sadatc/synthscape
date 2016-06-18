@@ -628,29 +628,7 @@ plotBoxPlots <- function(expDataFrame) {
 }
 
 
-# Function turns the internal abbreviated values to full expansions and re-ordered
-# the values were abbreviated in data files to save space
-renameFactorValues <- function(dataFrame) {
-	
-	dataFrame$MODEL <- mapvalues(dataFrame$MODEL, from=c("a","e","i"), to=c("alife","embodied","island"))
-	
-	dataFrame$MODEL <- factor(dataFrame$MODEL,c("island","embodied","alife"))
-	
-	
-	dataFrame$INTERACTIONS <- mapvalues(dataFrame$INTERACTIONS, from=c("n","b","u","t"), to=c("none","broadcast","unicast","trail"))
-	
-	dataFrame$INTERACTIONS <- factor(dataFrame$INTERACTIONS, c("none","trail","broadcast","unicast"))
-	
-	dataFrame$SPECIES <- mapvalues(dataFrame$SPECIES, from=c("g","s"), to=c("homogenous","heterogenous"))
 
-	dataFrame$SPECIES <- factor(dataFrame$SPECIES, c("homogenous","heterogenous"))
-	
-	dataFrame$POPULATION <- mapvalues(dataFrame$POPULATION, from=c("g","s"), to=c("homogenous","heterogenous"))
-	
-	dataFrame$POPULATION <- factor(dataFrame$POPULATION, c("homogenous","heterogenous"))
-	
-	return(dataFrame)
-}
 
 # this function:
 # 1. makes POPULATION a synonym for species
@@ -1244,9 +1222,9 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	print(
 			ggplot(dataFrame, aes_string(x="GENERATION", y=colName)) +
 			xlim(0,300) +
-			geom_line(aes(color=POPULATION), size=0.35) +
+			geom_line(aes(color=MODEL), size=0.35) +
 			#scale_y_continuous(labels = percent_format()) +
-			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
+			facet_grid( POPULATION ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
 			guides(color=guide_legend(title="Population")) +
 			#scale_color_manual(values=c("grey60","black")) +	
@@ -1270,9 +1248,9 @@ plotTrendsMI <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 		print(
 			ggplot(dataFrame, aes_string(x="GENERATION", y=colName)) +
 			xlim(0,300) +
-			geom_line(aes(color=POPULATION), size=0.35) +
+			geom_line(aes(color=MODEL), size=0.35) +
 			scale_y_continuous(labels = percent_format()) +
-			facet_grid( MODEL ~ INTERACTIONS, scales="fixed") +
+			facet_grid( POPULATION ~ INTERACTIONS, scales="fixed") +
 			ylab(yAxisLabel) +
 			guides(color=guide_legend(title="Population")) +
 			#scale_color_manual(values=c("grey60","black")) +	
@@ -1313,7 +1291,7 @@ plotTrends <- function(expDataFrame) {
 
 
 #expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_mean_trends300_nonboot.csv")
-expDataFrame <- read.csv(file="/tmp/exp1_mean_trends300.csv")
+expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_mean_trends300.csv")
 
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots

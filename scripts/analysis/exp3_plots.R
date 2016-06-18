@@ -1742,7 +1742,6 @@ kruskalWallisTest <-function(groupName,measureName,groupByColParam,dataFrame) {
 	
 	
 	resultFrame <- data.frame(
-		EXTRACTED_RESOURCES = groupName,
 		MEASURE=measureName,
 		H_VALUE=kValue, 
 		D_FREEDOM=dFreedom, 
@@ -1770,9 +1769,15 @@ medianValues <-function(groupName,measureName,groupByColParam,dataFrame) {
 	result <- data.frame()
 
 
+	x <- unique(dataFrame[[groupByColParam]])
+	y <- c("mono","bi","tri","qua","poly","Hm")
+
+	
+	orderedGroup <- x[order(match(x,y))]
+	
 
 
-	for(group in unique(dataFrame[[groupByColParam]])) {
+	for(group in orderedGroup) {
 		#print(group)
 		data = selectFromDf(dataFrame,groupByColParam,group)
 		medianValue = median(data[[measureName]],na.rm=TRUE)
@@ -1829,7 +1834,71 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","POPULATION_MIX",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
+
+
+	p("MEDIAN 3_8 ANALYSIS >>>>>>")
+	p("RICHNESS")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","RICHNESS",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
+
+
+	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
+	p("RICHNESS")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","RICHNESS",expDataFrame))
+
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
+
+
+	p("MEDIAN 3_8 ANALYSIS >>>>>>")
+	p("T2SRATIO")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+
+
+
+	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
+	p("T2SRATIO")
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
+
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
+
 
 	
 
@@ -1865,40 +1934,10 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","POPULATION_MIX",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
 
 
-	p("MEDIAN 3_8 ANALYSIS >>>>>>")
-	p("RICHNESS")
-
-	distTable <- data.frame()
-	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
-	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","RICHNESS",expDataFrame))
-
-	distTable <- cast(distTable,MEASURE~PRIMARY)
-	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
-
-
-	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
-	p("RICHNESS")
-
-	distTable <- data.frame()
-	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","RICHNESS",expDataFrame))
-
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
-
-
+	
 
 	p("MEDIAN 4_8 ANALYSIS >>>>>>")
 	p("RICHNESS")
@@ -1929,41 +1968,11 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","RICHNESS",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
 
 
 
-	p("MEDIAN 3_8 ANALYSIS >>>>>>")
-	p("T2SRATIO")
-
-	distTable <- data.frame()
-	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
-	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
-
-	distTable <- cast(distTable,MEASURE~PRIMARY)
-	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
-
-
-
-	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
-	p("T2SRATIO")
-
-	distTable <- data.frame()
-	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_MEAN","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_BEST_CASE","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RES_E2C_STEPS_MEAN","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_COMMUNICATION","T2SRATIO",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","T2SRATIO",expDataFrame))
-
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
-
+	
 
 
 	p("MEDIAN 4_8 ANALYSIS >>>>>>")
@@ -1994,7 +2003,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("4_24","RATE_MOTION","T2SRATIO",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
 
 
 
@@ -2024,8 +2033,8 @@ expDataFrame <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTI
 #plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
-plotBoxPlots(expDataFrame) # boxplots to show difference
-#doKruskalWallis(expDataFrame)
+#plotBoxPlots(expDataFrame) # boxplots to show difference
+doKruskalWallis(expDataFrame)
 
 
 
