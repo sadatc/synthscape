@@ -892,7 +892,8 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 	
 	# round the T2SRATIO
-	expDataFrame$T2SRATIO <- round(expDataFrame$T2SRATIO,3)
+	
+	expDataFrame$T2SRATIO <- round(expDataFrame$T2SRATIO/(as.numeric(expDataFrame$COMPLEXITY)+2),3)
 
 	return(expDataFrame)
 }
@@ -1375,12 +1376,8 @@ analyzeNormailtyMeasure_PM <-function(groupName,colName,dataFrame) {
 	shap <- shapiro.test(data[[colName]])
 	WBi <- shap$statistic[[1]]
 	pValueBi <- pValueString(shap$p.value)
-	
-	#tri
-	data <- dataFrame[dataFrame$POPULATION_MIX=="tri",]
-	shap <- shapiro.test(data[[colName]])
-	WTri <- shap$statistic[[1]]
-	pValueTri <- pValueString(shap$p.value)
+
+
 	#poly
 	data <- dataFrame[dataFrame$POPULATION_MIX=="poly",]
 	shap <- shapiro.test(data[[colName]])
@@ -1389,28 +1386,28 @@ analyzeNormailtyMeasure_PM <-function(groupName,colName,dataFrame) {
 	
 	
 	result.frame <- data.frame(
-		EXTRACTED_RESOURCES=groupName,
+		
 		MEASURE=colName,
 		WMono=WMono,
 		pValueMono=pValueMono,
 		WBi=WBi,
 		pValueBi=pValueBi,
-		WTri=WTri,
-		pValueTri=pValueTri,
 		WPoly=WPoly,
 		pValuePoly=pValuePoly		
 	)
+
 	
 
 	if(groupName == "4_24") {
-		#qua
-		data <- dataFrame[dataFrame$POPULATION_MIX=="qua",]
+		#tri
+		data <- dataFrame[dataFrame$POPULATION_MIX=="tri",]
 		shap <- shapiro.test(data[[colName]])
-		WQua <- shap$statistic[[1]]
-		pValueQua <- pValueString(shap$p.value)
+		WTri <- shap$statistic[[1]]
+		pValueTri <- pValueString(shap$p.value)
+
 
 		result.frame <- data.frame(
-			EXTRACTED_RESOURCES=groupName,
+			
 			MEASURE=colName,
 			WMono=WMono,
 			pValueMono=pValueMono,
@@ -1418,8 +1415,6 @@ analyzeNormailtyMeasure_PM <-function(groupName,colName,dataFrame) {
 			pValueBi=pValueBi,
 			WTri=WTri,
 			pValueTri=pValueTri,
-			WQua=WQua,
-			pValueQua=pValueQua,	
 			WPoly=WPoly,
 			pValuePoly=pValuePoly
 				
@@ -1446,10 +1441,6 @@ analyzeNormailtyMeasure_R <-function(groupName,colName,dataFrame) {
 	
 	if(groupName == "3_8") {
 	
-		data <- dataFrame[dataFrame$RICHNESS==1,]	
-		shap <- shapiro.test(data[[colName]])
-		WR1 <- shap$statistic[[1]]
-		pValueR1 <- pValueString(shap$p.value)
 
 		data <- dataFrame[dataFrame$RICHNESS==3,]	
 		shap <- shapiro.test(data[[colName]])
@@ -1463,10 +1454,9 @@ analyzeNormailtyMeasure_R <-function(groupName,colName,dataFrame) {
 		pValueR7 <- pValueString(shap$p.value)
 		
 		result.frame <- data.frame(
-			EXTRACTED_RESOURCES=groupName,
+			
 			MEASURE=colName,
-			WR1=WR1,
-			pValueR1=pValueR1,
+			
 			WR3=WR3,
 			pValueR3=pValueR3,
 			WR7=WR7,
@@ -1479,10 +1469,7 @@ analyzeNormailtyMeasure_R <-function(groupName,colName,dataFrame) {
 
 	if(groupName == "4_24") {
 
-		data <- dataFrame[dataFrame$RICHNESS==1,]	
-		shap <- shapiro.test(data[[colName]])
-		WR1 <- shap$statistic[[1]]
-		pValueR1 <- pValueString(shap$p.value)
+
 
 		data <- dataFrame[dataFrame$RICHNESS==4,]	
 		shap <- shapiro.test(data[[colName]])
@@ -1504,10 +1491,9 @@ analyzeNormailtyMeasure_R <-function(groupName,colName,dataFrame) {
 		
 
 		result.frame <- data.frame(
-			EXTRACTED_RESOURCES=groupName,
+			
 			MEASURE=colName,
-			WR1=WR1,
-			pValueR1=pValueR1,
+			
 			WR4=WR4,
 			pValueR4=pValueR4,
 			WR6=WR6,
@@ -1549,23 +1535,17 @@ analyzeNormailtyMeasure_T2S <-function(groupName,colName,dataFrame) {
 
 		
 		
-		data <- dataFrame[dataFrame$T2SRATIO==3,]
-		shap <- shapiro.test(data[[colName]])
-		WR3 <- shap$statistic[[1]]
-		pValueR3 <- pValueString(shap$p.value)
-
 
 		result.frame <- data.frame(
-			EXTRACTED_RESOURCES=groupName,
+			
 			MEASURE=colName,
 			WR1=WR1,
 			pValueR1=pValueR1,
 			WR1_714=WR1_714,
 			pValueR1_714=pValueR1_714,
 			WR2=WR2,
-			pValueR2=pValueR2,
-			WR3=WR3,
-			pValueR3=pValueR3
+			pValueR2=pValueR2
+			
 		)
 
 
@@ -1595,21 +1575,17 @@ analyzeNormailtyMeasure_T2S <-function(groupName,colName,dataFrame) {
 		WR2_133 <- shap$statistic[[1]]
 		pValueR2_133 <- pValueString(shap$p.value)
 		
-
 		data <- dataFrame[dataFrame$T2SRATIO==3,]	
 		shap <- shapiro.test(data[[colName]])
 		WR3 <- shap$statistic[[1]]
 		pValueR3 <- pValueString(shap$p.value)
-		
-		data <- dataFrame[dataFrame$T2SRATIO==4,]	
-		shap <- shapiro.test(data[[colName]])
-		WR4 <- shap$statistic[[1]]
-		pValueR4 <- pValueString(shap$p.value)
+
+	
 		
 		
 
 		result.frame <- data.frame(
-			EXTRACTED_RESOURCES=groupName,
+			
 			MEASURE=colName,
 			WR1=WR1,
 			pValueR1=pValueR1,
@@ -1618,9 +1594,8 @@ analyzeNormailtyMeasure_T2S <-function(groupName,colName,dataFrame) {
 			WR2_133=WR2_133,
 			pValueR2_133=pValueR2_133,
 			WR3=WR3,
-			pValueR3=pValueR3,
-			WR4=WR4,
-			pValueR4=pValueR4
+			pValueR3=pValueR3
+
 		
 		)
 		return(result.frame)
@@ -1631,6 +1606,8 @@ analyzeNormailtyMeasure_T2S <-function(groupName,colName,dataFrame) {
 
 
 doNormalityAnalysis <- function(expDataFrame) {
+
+
 
 	distTable <- data.frame()
 
@@ -1644,7 +1621,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_PM("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1657,7 +1634,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_PM("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-MIX: NORMALITY TEST")
 
 	distTable <- data.frame()
@@ -1672,7 +1649,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_R("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1685,7 +1662,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_R("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< RICHNESS: NORMALITY TEST")
 
 	distTable <- data.frame()
@@ -1700,7 +1677,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_T2S("3_8","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	
 	
 
@@ -1713,7 +1690,7 @@ doNormalityAnalysis <- function(expDataFrame) {
 	distTable <- rbind(distTable,analyzeNormailtyMeasure_T2S("4_24","RATE_COMMUNICATION",data))
 
 	print(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,2,0,2,0,2,0)), include.rownames=FALSE))
 	p("<<<<<<<<< T2S: NORMALITY TEST")
 	
 }
@@ -1745,6 +1722,43 @@ kruskalWallisTest <-function(groupName,measureName,groupByColParam,dataFrame) {
 		MEASURE=measureName,
 		H_VALUE=kValue, 
 		D_FREEDOM=dFreedom, 
+		P_VALUE=pValueString(pValue))
+
+	
+	return(resultFrame)
+}
+
+kruskalWallisTest2 <-function(groupName,measureName,groupByColParam,dataFrame) {
+
+	library(pgirmess)
+
+	measureData <- dataFrame[[measureName]]
+	groupByCol <- dataFrame[[groupByColParam]]
+	N <- length(measureData)
+	
+	
+	
+
+	
+	#p(measureName)
+	wilcox <- wilcox.test(measureData ~ groupByCol, conf.int=TRUE)
+	
+
+	#kResult2 <- kruskalmc(measureData ~ groupByCol, cont="two-tailed")
+	
+	
+	#print(tResult)
+	#kValue <- kResult$statistic[[1]]
+	#dFreedom <- kResult$parameter[[1]]
+	#pValue <- as.double(kResult$p.value)
+
+	W <- wilcox$statistic[[1]]
+	pValue <- wilcox$p.value
+	
+	
+	resultFrame <- data.frame(
+		MEASURE=measureName,
+		W=W,  
 		P_VALUE=pValueString(pValue))
 
 	
@@ -1817,7 +1831,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
 
 	
 
@@ -1834,7 +1848,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","POPULATION_MIX",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 
 
 	p("MEDIAN 3_8 ANALYSIS >>>>>>")
@@ -1850,7 +1864,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2)), include.rownames=FALSE))
 
 
 	p("KRUSKAL-WALLIS 3_8 ANALYSIS >>>>>>")
@@ -1858,14 +1872,14 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- data.frame()
 	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RICHNESS_VARIATION=="3_8",]
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("3_8","RATE_MOTION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest2("3_8","CAPTURES_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest2("3_8","CAPTURES_BEST_CASE","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest2("3_8","RES_E2C_STEPS_MEAN","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest2("3_8","RATE_COMMUNICATION","RICHNESS",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTest2("3_8","RATE_MOTION","RICHNESS",expDataFrame))
 
 	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,2,0)), include.rownames=FALSE))
 
 
 	p("MEDIAN 3_8 ANALYSIS >>>>>>")
@@ -1881,7 +1895,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
 
 
 
@@ -1915,7 +1929,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
 
 
 
@@ -1952,7 +1966,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
 
 
 
@@ -1988,7 +2002,7 @@ doKruskalWallis <-function(expDataFrameOrig) {
 
 	distTable <- cast(distTable,MEASURE~PRIMARY)
 	displayLatex(distTable)
-	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2)), include.rownames=FALSE))
 
 
 	p("KRUSKAL-WALLIS 4_8 ANALYSIS >>>>>>")
@@ -2024,11 +2038,16 @@ expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp3/exp3_expe
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
+
+expDataFrame <- expDataFrame[(expDataFrame$RICHNESS_VARIATION=="3_8" & (expDataFrame$POPULATION_MIX=="mono" | expDataFrame$POPULATION_MIX=="bi" | expDataFrame$POPULATION_MIX=="poly")) | (expDataFrame$RICHNESS_VARIATION=="4_24" & (expDataFrame$POPULATION_MIX=="mono" | expDataFrame$POPULATION_MIX=="bi" | expDataFrame$POPULATION_MIX=="tri" | expDataFrame$POPULATION_MIX=="poly")), ]
+
 orig <- expDataFrame
 
 # only keep the heterogenous ones...
 expDataFrame <- expDataFrame[expDataFrame$SPECIES=="Ht" & expDataFrame$INTERACTIONS=="trail",]
 
+#print(summary(expDataFrame))
+#stop()
 
 #plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)

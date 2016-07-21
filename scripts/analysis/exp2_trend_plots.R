@@ -1326,8 +1326,8 @@ plotTrends <- function(expDataFrame) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
-#expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp1/exp1_mean_trends300_nonboot.csv")
-expDataFrame <- read.csv(file="/tmp/exp2_mean_trends300.csv")
+expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp2/exp2_mean_trends300.csv")
+#expDataFrame <- read.csv(file="/tmp/exp2_mean_trends300.csv")
 
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
 expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots

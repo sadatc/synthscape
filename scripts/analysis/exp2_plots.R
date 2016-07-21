@@ -1735,8 +1735,8 @@ nonParametricCompare1 <-function(groupByColParam,measureName,data) {
 	vecB <- data[data$SPECIES=="HtI",]
 	vecB <- vecB[[measureName]]
 	medianB = median(vecB, na.rm=TRUE)
-	print(vecB)
-	print(medianB)
+	#print(vecB)
+	#print(medianB)
 
 
 	#print(head(vecA))
@@ -1954,7 +1954,7 @@ doKruskalWallis <- function(expDataFrame) {
 	print(distTable)
 	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POPULATION: KRUSKAL-WALLIS")
-	stop()
+	
 
 
 	distTable <- data.frame()
@@ -1971,7 +1971,7 @@ doKruskalWallis <- function(expDataFrame) {
 	displayLatex(print(xtable(distTable, digits=c(0,0,2,0,0,2,0,0)), include.rownames=FALSE))
 	p("<<<<<<<<< POP-INTERACTION: KRUSKAL-WALLIS")
 
-	stop()
+	
 
 
 	distTable <- data.frame()
@@ -2358,12 +2358,12 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 
 
 # Using these...
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
-plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlots(expDataFrame) # boxplots to show difference
 
-#doKruskalWallis(expDataFrame)
+doKruskalWallis(expDataFrame)
 #doTrendTest(expDataFrame)
 #doNonParametricComparisons(expDataFrame)
 #plotBootedStats(expDataFrame)

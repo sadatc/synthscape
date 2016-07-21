@@ -759,6 +759,57 @@ plotHists <- function(expDataFrame) {
 
 
 
+plotBoxPlot_M_I_2 <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+
+	pdf(fileName,  
+	  width = 6,height = 3.5, family="CMU Serif")	  
+	yAxisLabel <- getMeasureShortName(colName)
+	
+	
+	
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=POPULATION), notch=globalNotchValue) +
+			facet_grid( . ~ INTERACTIONS, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			#scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() +
+			geom_line(size=0.1) +
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+				)
+		)
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="POPULATION", y=colName)) +
+			geom_boxplot(outlier.size=0.7, outlier.shape=21 ,aes(fill=POPULATION), notch=globalNotchValue) +
+			facet_grid( . ~ INTERACTIONS, labeller=label_parsed) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			#scale_fill_manual(values=c("white","grey50")) +
+			geom_line(size=0.1) +
+			theme_bw() + 			
+			theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="bottom", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+
+				)
+			+ scale_y_continuous(labels=percentFormatter)
+		)
+	}
+
+	dev.off()
+}
+
+
 plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	pdf(fileName,  
@@ -808,6 +859,8 @@ plotBoxPlot_M_I <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	dev.off()
 }
+
+
 
 plotBoxPlot_M <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
@@ -943,6 +996,15 @@ compareMeans <-function(d.f,measure) {
 }
 
 
+plotBoxPlotsExp4 <- function(expDataFrame) {
+	expDataFrame <- expDataFrame[expDataFrame$MODEL=="alife" & (expDataFrame$INTERACTIONS_REAL=="trail" | expDataFrame$INTERACTIONS_REAL=="none" )  ,] # only produce results for ALIFE
+	plotBoxPlot_M_I_2(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-div-int-cb.pdf", TRUE)
+	plotBoxPlot_M_I_2(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-div-int-cm.pdf", TRUE)
+	plotBoxPlot_M_I_2(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-div-int-e2c.pdf")
+	plotBoxPlot_M_I_2(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-div-int-rm.pdf")
+	plotBoxPlot_M_I_2(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4/e4-box-div-int-rc.pdf")
+	
+}
 
 plotBoxPlots <- function(expDataFrame) {
 	orig <- expDataFrame
@@ -966,9 +1028,8 @@ plotBoxPlots <- function(expDataFrame) {
 	plotBoxPlot(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-e2c.pdf")
 	plotBoxPlot(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rm.pdf")
 	plotBoxPlot(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp1/e1-full-box-rc.pdf")
-	
-	
-	
+
+
 	
 
 
@@ -2039,6 +2100,46 @@ nonParametricCompare3 <-function(interaction, population, measureName , dataFram
 }
 
 
+nonParametricCompareChap7 <-function(interaction, measureName , dataFrame) {
+
+	
+	
+	dataFrame1 <- dataFrame[dataFrame$POPULATION=="Hm" & dataFrame$INTERACTIONS==interaction ,]
+	dataFrame2 <- dataFrame[dataFrame$POPULATION=="Ht" & dataFrame$INTERACTIONS==interaction ,]
+	
+
+
+	vecA <- dataFrame1[[measureName]]
+	vecB <- dataFrame2[[measureName]]
+	
+	
+	medianA <- median(vecA, na.rm=TRUE)
+	medianB <- median(vecB, na.rm=TRUE)
+	
+	rWilcox <- wilcox.test(vecA,vecB)
+	rWilcoxW <- rWilcox$statistic[[1]]
+	rWilcoxP <- rWilcox$p.value
+
+
+
+	
+
+	result <- data.frame(
+		INTERACTION = interaction,				
+		MEASURE=measureName,						
+		medianHm=medianA,
+		medianHt=medianB,		
+		mwW=rWilcoxW,
+		mwP=pValueString(rWilcoxP)	
+	)
+	
+
+	return(result)
+}
+
+
+
+
 
 nonParametricCompare3ovl <-function( measureName , dataFrame1, dataFrame2, dataFrame3) {
 
@@ -2121,6 +2222,35 @@ parametricCompare3 <-function(interaction, population, measureName , dataFrame1,
 
 	return(result)
 }
+
+doNonParametricComparisonsChap7 <- function(expDataFrame) {
+
+	distTable <- data.frame()
+	p("Chap7: NON-PARAMETRIC COMPARE >>>>>>")
+
+	data3 <- expDataFrame[expDataFrame$MODEL=="alife" ,]	
+
+	distTable <- rbind(distTable,nonParametricCompareChap7("none","CAPTURES_MEAN", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("none","RATE_COMMUNICATION", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("none","RATE_MOTION", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("none","RES_E2C_STEPS_MEAN", data3))
+
+
+	distTable <- rbind(distTable,nonParametricCompareChap7("interacting","CAPTURES_MEAN", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("interacting","RATE_COMMUNICATION", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("interacting","RATE_MOTION", data3))
+	distTable <- rbind(distTable,nonParametricCompareChap7("interacting","RES_E2C_STEPS_MEAN", data3))
+
+	#distTable <- distTable[order(distTable$PRIMARY),]
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,-2,-2,2,0)), include.rownames=FALSE))
+	p("Chap7: NON-PARAMETRIC COMPARE")
+
+
+
+}
+
+
 
 doNonParametricComparisons <- function(expDataFrame) {
 
@@ -2266,8 +2396,11 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 #doNormalityAnalysisBooted(expDataFrame)
 
 #plotBoxPlots(expDataFrame) # boxplots to show difference
+#plotBoxPlotsExp4(expDataFrame)
 
-doNonParametricComparisons(expDataFrame)
+doNonParametricComparisonsChap7(expDataFrame)
+
+#doNonParametricComparisons(expDataFrame)
 
 #plotBootedStatsFull(expDataFrame)
 #plotBootedStatsOverall(expDataFrame)

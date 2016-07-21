@@ -233,12 +233,51 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 	
 	
 	pdf(fileName,  
-	  width = 6,height = 7, family="CMU Serif")
+	  width = 6,height = 8, family="CMU Serif")
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="SPECIFIC_POPULATION")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
+			facet_grid( SPECIFIC_POPULATION ~ .) +
+			xlab(xAxisLabel) +
+			#scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+				strip.text.y = element_text(size = rel(0.7)),
+			legend.position="none", 
+				axis.text.x = element_text(size=rel(0.7)))
+		)
+	} else {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="SPECIFIC_POPULATION")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( SPECIFIC_POPULATION ~ .) +
+			xlab(xAxisLabel) +
+			#scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
+			legend.position="none", 				
+				#axis.title.x = element_text(family="cmsy10"),
+				strip.text.y = element_text(size = rel(0.7)),
+				axis.text.x = element_text(size=rel(0.7)))
+			+ scale_x_continuous(labels=percentFormatter)
+		)
+	}
+	dev.off()
+
+}
+
+plotHistByIntResMix2 <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+
+	xAxisLabel <- getMeasurePrettyName(colName)
+	
+	dataFrame$E <- factor(dataFrame$E)
+	
+	pdf(fileName,  
+	  width = 4,height = 2.5, family="CMU Serif")
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame,aes_string(x=colName, fill="E")) +
+			geom_histogram(color="black", alpha = 0.85) +
+			facet_grid( E ~ .) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -247,9 +286,9 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 		)
 	} else {
 		print(
-			ggplot(dataFrame,aes_string(x=colName, fill="RESOURCE_UNIFORMITY")) +
+			ggplot(dataFrame,aes_string(x=colName, fill="E")) +
 			geom_histogram(color="black", alpha = 0.85) +
-			facet_grid( RATIO ~ RESOURCE_UNIFORMITY) +
+			facet_grid( E ~ .) +
 			xlab(xAxisLabel) +
 			#scale_fill_manual(values=c("white","grey50")) +
 			theme_bw() + theme(#text=element_text(family="CMUSerif-Roman"),
@@ -276,15 +315,21 @@ plotHistByIntResMix <-function(dataFrame, colName, fileName, showPercent=FALSE) 
 
 
 
-
 plotHists <- function(expDataFrame) {
 
-	plotHistByIntResMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-cm.pdf", TRUE)
-	plotHistByIntResMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-cb.pdf", TRUE)
-	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-e2c.pdf")
-	plotHistByIntResMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-rm.pdf")
-	plotHistByIntResMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-intresmix-rc.pdf")
+	plotHistByIntResMix( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-ratio-cm.pdf", TRUE)
+	plotHistByIntResMix( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-ratio-cb.pdf", TRUE)
+	plotHistByIntResMix( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-ratio-e2c.pdf")
+	plotHistByIntResMix( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-ratio-rm.pdf")
+	plotHistByIntResMix( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-ratio-rc.pdf")
 	
+
+
+	plotHistByIntResMix2( expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-e-cm.pdf", TRUE)
+	plotHistByIntResMix2( expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-e-cb.pdf", TRUE)
+	plotHistByIntResMix2( expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-e-e2c.pdf")
+	plotHistByIntResMix2( expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-e-rm.pdf")
+	plotHistByIntResMix2( expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-hist-e-rc.pdf")
 
 
 
@@ -307,7 +352,7 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	#ordered_ratios <- ordered_ratios[order(ordered_ratios$FMED),]
 	
-	ordered_ratios <- ordered_ratios[order(ordered_ratios$PMED),]
+	ordered_ratios <- ordered_ratios[order(ordered_ratios$FMED),]
 
 	
 	# this effectively replaces the existing 
@@ -322,10 +367,89 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	
 	if( showPercent==FALSE ) {
 		print(
-			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName, fill="RATIO")) +
+			geom_boxplot(aes(fill=RATIO), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
 			
 			facet_grid( . ~ RATIO) +
+			ylab(yAxisLabel) +
+			scale_fill_discrete("Population") +
+			#scale_fill_manual(values=c("white","grey50")) +
+			theme_bw() +
+			geom_line(size=0.1) +
+			theme(#text=element_text(family="CMUSerif-Roman"),
+				strip.text.x = element_text(size = rel(0.7)),
+			legend.position="none", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+				)
+		)
+
+	} else {
+		print(
+			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName, fill="RATIO")) +
+			geom_boxplot(aes(fill=RATIO), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
+			facet_grid(. ~ RATIO) +
+			ylab(yAxisLabel) +
+			scale_y_continuous(labels=percentFormatter)+
+			scale_fill_discrete("Population") +
+			#scale_fill_manual(values=c("white","grey50")) +
+			geom_line(size=0.1) +
+			theme_bw() + 			
+			theme(#text=element_text(family="CMUSerif-Roman"),
+				strip.text.x = element_text(size = rel(0.7)),
+			legend.position="none", 
+				axis.text.y = element_text(size=rel(0.7)),
+				axis.text.x = element_blank(),
+				axis.title.x = element_blank()
+
+				)
+		)
+	}
+
+	dev.off()
+}
+
+
+
+
+plotBoxPlot_EvenME <-function(dataFrame, colName, fileName, showPercent=FALSE) {
+	
+	ordered_ratios <- data.frame()
+	dataFrame$E <- factor(dataFrame$E)
+	for(ratio in unique(dataFrame$E)) {
+	
+		fmed <- dataFrame[dataFrame$E==ratio & dataFrame$RU=="f",]
+		fmed <- median(fmed[[colName]])
+	
+		pmed <- dataFrame[dataFrame$E==ratio & dataFrame$RU=="p",]
+		pmed <- median(pmed[[colName]])
+	
+		ordered_ratios <- rbind(ordered_ratios,data.frame(E=ratio,FMED=fmed,PMED=pmed))
+	}
+	
+	#ordered_ratios <- ordered_ratios[order(ordered_ratios$FMED),]
+	
+	ordered_ratios <- ordered_ratios[order(ordered_ratios$FMED),]
+
+	
+	# this effectively replaces the existing 
+	dataFrame$E <- factor(dataFrame$E,ordered_ratios$E)
+
+
+
+	pdf(fileName,  
+	  width = 4,height = 2.5, family="CMU Serif")	  
+	yAxisLabel <- getMeasureShortName(colName)
+	
+	
+	if( showPercent==FALSE ) {
+		print(
+			ggplot(dataFrame, aes_string( x="RESOURCE_UNIFORMITY",y=colName)) +
+			geom_boxplot(aes(fill=E), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			
+			facet_grid( . ~ E) +
 			ylab(yAxisLabel) +
 			scale_fill_discrete("Population") +
 			#scale_fill_manual(values=c("white","grey50")) +
@@ -342,9 +466,9 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 	} else {
 		print(
 			ggplot(dataFrame, aes_string(x="RESOURCE_UNIFORMITY", y=colName)) +
-			geom_boxplot(aes(fill=RESOURCE_UNIFORMITY), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
+			geom_boxplot(aes(fill=E), notch=globalNotchValue, outlier.size = NA, outlier.color = NA) +
 			
-			facet_grid(. ~ RATIO) +
+			facet_grid(. ~ E) +
 			ylab(yAxisLabel) +
 			scale_y_continuous(labels=percentFormatter)+
 			scale_fill_discrete("Population") +
@@ -363,7 +487,6 @@ plotBoxPlot_EvenM <-function(dataFrame, colName, fileName, showPercent=FALSE) {
 
 	dev.off()
 }
-
 
 
 plotBoxPlot_Even <-function(dataFrame, colName, fileName, showPercent=FALSE) {
@@ -528,15 +651,29 @@ plotBoxPlotsManual <- function(expDataFrame) {
 
 	# compare richness type vs performance
 
-	plotBoxPlot_EvenM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-cb.pdf", TRUE)
+	plotBoxPlot_EvenM(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-r-cb.pdf", TRUE)
 
-	plotBoxPlot_EvenM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-cm.pdf", TRUE)
+	plotBoxPlot_EvenM(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-r-cm.pdf", TRUE)
 
-	plotBoxPlot_EvenM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-e2c.pdf", FALSE)
+	plotBoxPlot_EvenM(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-r-e2c.pdf", FALSE)
 
-	plotBoxPlot_EvenM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-rm.pdf", FALSE)
+	plotBoxPlot_EvenM(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-r-rm.pdf", FALSE)
 
-	plotBoxPlot_EvenM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-rc.pdf", FALSE)
+	plotBoxPlot_EvenM(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-r-rc.pdf", FALSE)
+
+
+
+
+	plotBoxPlot_EvenME(expDataFrame,"CAPTURES_BEST_CASE", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-cb.pdf", TRUE)
+
+	plotBoxPlot_EvenME(expDataFrame,"CAPTURES_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-cm.pdf", TRUE)
+
+	plotBoxPlot_EvenME(expDataFrame,"RES_E2C_STEPS_MEAN", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-e2c.pdf", FALSE)
+
+	plotBoxPlot_EvenME(expDataFrame,"RATE_MOTION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-rm.pdf", FALSE)
+
+	plotBoxPlot_EvenME(expDataFrame,"RATE_COMMUNICATION", "/Users/sadat/Dropbox/research/dissertation/images/exp4.m/e4-box-e-rc.pdf", FALSE)
+
 
 
 }
@@ -588,6 +725,25 @@ renameFactorValues <- function(dataFrame) {
 	return(dataFrame)
 }
 
+
+normalizeString <- function(x) {
+	library(ppls)
+	x <- unlist(strsplit(gsub(":"," ",as.character(x)), split=" "))
+	y <- c(as.numeric(x[1]),as.numeric(x[2]),as.numeric(x[3]) )
+	
+	z <- round(normalize.vector(y), digits=2)
+	z <- paste0("(",paste(as.character(z), sep="' '", collapse=", "),")")
+	z <- gsub("0.",".",z)
+	#expDataFrame$RATIO < paste0("(",paste(as.character(round(normalize.vector(as.numeric(scan(textConnection(expDataFrame$RATIO), what="", sep=":"))),digits=3)), sep="' '", collapse=","),")")
+
+
+	#print(z)
+
+
+
+	#stop()
+	return(z)
+}
 # this function:
 # 1. makes POPULATION a synonym for species
 # 2. sets RES_E2C_STEPS_MEAN = RES_E2C_STEPS_MEAN * CAPTURES_MEAN
@@ -613,8 +769,34 @@ preProcessData <- function(expDataFrame) {
 	expDataFrame$SITES <- factor(expDataFrame$SITES)
 	expDataFrame$OBSTACLES <- factor(expDataFrame$OBSTACLES)
 	expDataFrame$DIFFICULTY <- factor(expDataFrame$DIFFICULTY)
+	
+	
+	
+	#expDataFrame$RATIO < paste0("(",paste(as.character(round(normalize.vector(as.numeric(scan(textConnection(expDataFrame$RATIO), what="", sep=":"))),digits=3)), sep="' '", collapse=","),")")
+	#print(expDataFrame$RATIO)
+	#stop()
+	#x <- c("3:2:1","1:2:3")
+	#print(sapply(x,normalizeString))
+	#print(gsub(":"," ",as.character(x)))
+	#stop()
+	#print(normalize.vector(as.numeric(unlist(strsplit((gsub(":"," ",as.character(x))), split=" ")))))
+	#stop()
+	expDataFrame$OLD_RATIO <- expDataFrame$RATIO
+	expDataFrame$OLD_RATIO <- factor(expDataFrame$OLD_RATIO)
+
+	counter <-1
+	for(theRatio in unique(expDataFrame$OLD_RATIO)) {
+		pop <- paste0("P", as.character(counter))
+		#print(pop)
+		expDataFrame$SPECIFIC_POPULATION[expDataFrame$OLD_RATIO == theRatio] <- pop
+		counter <- counter + 1
+	}
+	expDataFrame$SPECIFIC_POPULATION <- factor(expDataFrame$SPECIFIC_POPULATION)
+	expDataFrame$RATIO <- sapply(expDataFrame$RATIO,normalizeString)
 	expDataFrame$RATIO <- factor(expDataFrame$RATIO)
 
+
+#
 	
 	expDataFrame$RES_E2C_STEPS_MEAN <- (expDataFrame$RES_E2C_STEPS_MEAN*expDataFrame$CAPTURES_MEAN)
 
@@ -627,13 +809,40 @@ preProcessData <- function(expDataFrame) {
 	P3 <- expDataFrame$NUM_TRANSPORTERS/expDataFrame$TOT_POP
 
 	H <- -((P1*log(P1)) + (P2*log(P2)) + (P3*log(P3)) )
-	expDataFrame$E <- H/log(numSpecies)
+	expDataFrame$E <- round(H/log(numSpecies),digits=3)
 
 
 	return(expDataFrame)
 }
 
+computeEvenness3 <- function(detectors,extractors, transporters) {
+	total <- detectors+extractors+transporters
+	P1 <- detectors/total;
+	P2 <- extractors/total;
+	P3 <- transporters/total;
+	h <- -((P1*log(P1)) + (P2*log(P2)) + (P3*log(P3)) )
+	#print(h)
+	library(ppls)
+	ntc <- round(normalize.vector(c(P1,P2,P3)), digits=2)
+	evennes <- round(h/log(3), digits=3)
+	print(paste("E=",evennes))
+	print(paste("NTC=",ntc))
+}
 
+
+computeEvenness4 <- function(detectors,extractors, processors, transporters) {
+	total <- detectors+extractors+transporters
+	P1 <- detectors/total;
+	P2 <- extractors/total;
+	P3 <- processors/total;
+	P4 <- transporters/total;
+	h <- -((P1*log(P1)) + (P2*log(P2)) + (P3*log(P3))  + (P4*log(P4)) )
+	ntc <- round(normalize.vector(c(P1,P2,P3,P4)), digits=2)
+	library(ppls)
+	evennes <- round(h/log(4), digits=2)
+	print(paste("E=",evennes))
+	print(paste("NTC=",ntc))
+}
 
 plotBootHist <-function(bootSample, fileName) {
 
@@ -1067,22 +1276,13 @@ analyzeNormailtyMeasure <-function(measureName,data,ratio) {
 	pValueU <- shapU$p.value
 	
 	
-	vecP <- data[data$RU=="p",]
-	vecP <- vecP[[measureName]]
-	shapP <- shapiro.test(vecP)
-
-	WP <- shapP$statistic[[1]]
-	pValueP <- shapP$p.value
-	
 
 
 	result.frame <- data.frame(
 		RATIO=ratio,
 		MEASURE=measureName,
 		WU=WU,
-		PU=pValueString(pValueU),
-		WP=WP,
-		PP=pValueString(pValueP)
+		PU=pValueString(pValueU)
 	)
 
 	return(result.frame)
@@ -1090,7 +1290,79 @@ analyzeNormailtyMeasure <-function(measureName,data,ratio) {
 
 
 
+
+#
+# performs shapiro-wilk test and mann-whitney test
+# reports back a data.frame
+#
+justTable <-function(measureName,data,ratio) {
+
+	data <- data[data$OLD_RATIO == ratio,]
+	eVal1 <- data$RATIO
+	eVal2 <- data$E	
+	
+	
+
+
+	result.frame <- data.frame(
+		OLD_RATIO=ratio,
+		RATIO=eVal1[[1]],
+		MEASURE=eVal2[[1]]
+	)
+
+	return(result.frame)
+}
+
+
+analyzeNormailtyMeasureE <-function(measureName,data,ratio) {
+
+	data <- data[data$E == ratio,]
+	
+	vecU <- data[data$RU=="f",]
+	vecU <- vecU[[measureName]]
+	shapU <- shapiro.test(vecU)
+
+
+	WU <- shapU$statistic[[1]]
+	pValueU <- shapU$p.value
+	
+	
+
+
+	result.frame <- data.frame(
+		RATIO=ratio,
+		MEASURE=measureName,
+		WU=WU,
+		PU=pValueString(pValueU)
+	)
+
+	return(result.frame)
+}
+
+
 doNormalityAnalysis <- function(data) {
+
+
+	distTable <- data.frame()
+
+	p("Ratio to evenness table >>>>>>")
+
+	
+	for(ratio in unique(data$OLD_RATIO)) {
+		distTable <- rbind(distTable,justTable("CAPTURES_MEAN",data, ratio))
+		
+	}
+	print(distTable)
+
+	#displayLatex(xtable(distTable, digits=c(0,0,0,2,0,2,0), include.rownames=FALSE, print.results =FALSE))
+
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,3)), include.rownames=FALSE))
+	
+
+	p("<<<<<<<<< Ratio to evenness table TEST ")
+	
+
+
 
 
 	distTable <- data.frame()
@@ -1109,10 +1381,33 @@ doNormalityAnalysis <- function(data) {
 
 	#displayLatex(xtable(distTable, digits=c(0,0,0,2,0,2,0), include.rownames=FALSE, print.results =FALSE))
 
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0,2,0)), include.rownames=FALSE))
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
 	
 
-	p("<<<<<<<<< NORMALITY TEST")
+	p("<<<<<<<<< NORMALITY TEST ")
+
+
+	distTable <- data.frame()
+
+	p("NORMALITY TEST E >>>>>>")
+
+	data$E <- factor(data$E)
+	
+	for(ratio in unique(data$E)) {
+		distTable <- rbind(distTable,analyzeNormailtyMeasureE("CAPTURES_MEAN",data, ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasureE("CAPTURES_BEST_CASE",data, ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasureE("RES_E2C_STEPS_MEAN",data,ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasureE("RATE_COMMUNICATION",data,ratio))
+		distTable <- rbind(distTable,analyzeNormailtyMeasureE("RATE_MOTION",data,ratio))
+	}
+	print(distTable)
+
+	#displayLatex(xtable(distTable, digits=c(0,0,0,2,0,2,0), include.rownames=FALSE, print.results =FALSE))
+
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,0)), include.rownames=FALSE))
+	
+
+	p("<<<<<<<<< NORMALITY TEST E")
 	
 }
 
@@ -1144,13 +1439,170 @@ kruskalWallisTest <-function(measureName,dataFrame) {
 	return(resultFrame)
 }
 
+kruskalWallisTestE <-function(measureName,dataFrame) {
+
+	library(pgirmess)
+
+	measureData <- dataFrame[[measureName]]
+	dataFrame$E <- factor(dataFrame$E)
+	ratioData <- dataFrame$E
+	N <- length(measureData)
+	
+	
+	
+	#p(measureName)
+	kResult <- kruskal.test(measureData ~ ratioData)
+	kResult2 <- kruskalmc(measureData ~ ratioData, cont="two-tailed")
+	
+	#print(tResult)
+	kValue <- kResult$statistic[[1]]
+	dFreedom <- kResult$parameter[[1]]
+	pValue <- as.double(kResult$p.value)
+
+	
+	
+	resultFrame <- data.frame(MEASURE=measureName,
+		H_VALUE=kValue, D_FREEDOM=dFreedom, P_VALUE=pValueString(pValue))
+
+	
+	return(resultFrame)
+}
+
+selectFromDf <- function(dataFrame,columnName, columnValue) {
+	filterExpression <- paste0("dataFrame$",columnName," == '",columnValue, "'")	
+	
+	result <-data.frame()
+	result <- rbind(result,dataFrame[eval(parse(text=filterExpression),dataFrame),])
+	return(result)
+}
+
+medianValues <-function(groupName,measureName,groupByColParam,dataFrame) {
+
+	library(pgirmess)
+
+
+
+	result <- data.frame()
+
+	print(groupByColParam)
+	
+	x <- unique(dataFrame[[groupByColParam]])
+	
+	
+	y <- c("0.921","0.946","1.00")
+
+	
+	orderedGroup <- x[order(match(x,y))]
+	
+
+
+	for(group in orderedGroup) {
+		#print(group)
+		data = selectFromDf(dataFrame,groupByColParam,group)
+		medianValue = median(data[[measureName]],na.rm=TRUE)
+		#print(measureName)
+		#print(medianValue)
+		resultFrame <- data.frame(
+			PRIMARY = group,
+			MEASURE=measureName,
+			MEDIAN=medianValue 
+		)
+		result <- rbind(result,resultFrame)
+	}
+
+	#result <- as.data.frame(t(result))
+	#print(result)
+	#stop()
+	
+	return(result)
+}
+
+
+medianValuesR <-function(groupName,measureName,groupByColParam,dataFrame) {
+
+	library(pgirmess)
+
+
+
+	result <- data.frame()
+
+	print(groupByColParam)
+	
+	x <- unique(dataFrame[[groupByColParam]])
+	#print(x)
+	#stop()
+	
+	#y <- c("0.921","0.946","1.00")
+
+	
+	#orderedGroup <- x[order(match(x,y))]
+	
+orderedGroup <- x
+
+	for(group in orderedGroup) {
+		#print(group)
+		data = selectFromDf(dataFrame,groupByColParam,group)
+		medianValue = median(data[[measureName]],na.rm=TRUE)
+		#print(measureName)
+		#print(medianValue)
+		resultFrame <- data.frame(
+			PRIMARY = group,
+			MEASURE=measureName,
+			MEDIAN=medianValue 
+		)
+		result <- rbind(result,resultFrame)
+	}
+
+	#result <- as.data.frame(t(result))
+	#print(result)
+	#stop()
+	
+	return(result)
+}
+
+
 
 doKruskalWallis <-function(expDataFrameOrig) {
+
+	library(reshape)
+
+
+
+	p("MEDIAN E ANALYSIS >>>>>>")
+	
+
+	distTable <- data.frame()
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "f",]
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_MEAN","E",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","CAPTURES_BEST_CASE","E",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RES_E2C_STEPS_MEAN","E",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_COMMUNICATION","E",expDataFrame))
+	distTable <- rbind(distTable,medianValues("3_8","RATE_MOTION","E",expDataFrame))
+
+	distTable <- cast(distTable,MEASURE~PRIMARY)
+	displayLatex(distTable)
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< MEDIAN E ANALYSIS")
+	
+
+
+	distTable <- data.frame()
+	p("KRUSKAL-WALLIS E (f) ANALYSIS >>>>>>")
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "f",]
+	distTable <- rbind(distTable,kruskalWallisTestE("CAPTURES_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTestE("CAPTURES_BEST_CASE",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTestE("RES_E2C_STEPS_MEAN",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTestE("RATE_COMMUNICATION",expDataFrame))
+	distTable <- rbind(distTable,kruskalWallisTestE("RATE_MOTION",expDataFrame))
+	print(distTable)	
+	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< KRUSKAL-WALLIS E (f) TEST")
+
 
 
 
 	distTable <- data.frame()
-	p("KRUSKAL-WALLIS (f) ANALYSIS >>>>>>")
+	p("KRUSKAL-WALLIS (N) ANALYSIS >>>>>>")
 	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "f",]
 	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_MEAN",expDataFrame))
 	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_BEST_CASE",expDataFrame))
@@ -1159,19 +1611,27 @@ doKruskalWallis <-function(expDataFrameOrig) {
 	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
 	print(distTable)	
 	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
-	p("<<<<<<<<< KRUSKAL-WALLIS (f) TEST")
+	p("<<<<<<<<< KRUSKAL-WALLIS (N) TEST")	
+
+
+
+		p("MEDIAN N ANALYSIS >>>>>>")
+	
 
 	distTable <- data.frame()
-	p("KRUSKAL-WALLIS (p) ANALYSIS >>>>>>")
-	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "p",]
-	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_MEAN",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("CAPTURES_BEST_CASE",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("RES_E2C_STEPS_MEAN",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("RATE_COMMUNICATION",expDataFrame))
-	distTable <- rbind(distTable,kruskalWallisTest("RATE_MOTION",expDataFrame))
-	print(distTable)	
-	displayLatex(print(xtable(distTable, digits=c(0,0,0,2,-2)), include.rownames=FALSE))
-	p("<<<<<<<<< KRUSKAL-WALLIS (p) TEST")
+	expDataFrame <- expDataFrameOrig[expDataFrameOrig$RU == "f",]
+	distTable <- rbind(distTable,medianValuesR("3_8","CAPTURES_MEAN","RATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValuesR("3_8","CAPTURES_BEST_CASE","RATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValuesR("3_8","RES_E2C_STEPS_MEAN","RATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValuesR("3_8","RATE_COMMUNICATION","RATIO",expDataFrame))
+	distTable <- rbind(distTable,medianValuesR("3_8","RATE_MOTION","RATIO",expDataFrame))
+
+	distTable <- cast(distTable,PRIMARY~MEASURE)
+	displayLatex(distTable)
+	
+	displayLatex(print(xtable(distTable, digits=c(0,0,-2,-2,-2,-2,-2)), include.rownames=FALSE))
+	p("<<<<<<<<< MEDIAN N ANALYSIS")
+	stop()
 	
 }
 
@@ -1323,6 +1783,11 @@ doNonParametricAnalysis <-function(expDataFrame) {
 ##############################   MAIN PROCESS BEGINS ###############################
 
 
+computeEvenness3(3,5,1)
+#computeEvenness4(32,32,32,32)
+stop()
+
+
 expDataFrame <- read.csv(file="~/synthscape/scripts/analysis/data/exp4/exp4_man_experiments_mean_300.csv")
 
 expDataFrame <- preProcessData(expDataFrame)     # factorizes, as appropriate, adjusts E2C...
@@ -1331,18 +1796,18 @@ expDataFrame <- renameFactorValues(expDataFrame) # renames for nice plots
 orig <- expDataFrame
 
 # restricting to trail only
-expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail",]
+expDataFrame <- expDataFrame[expDataFrame$INTERACTIONS=="trail" & expDataFrame$RESOURCE_UNIFORMITY=="uniform resources",]
 
 
 
 
-plotHists(expDataFrame)    # plots histograms
+#plotHists(expDataFrame)    # plots histograms
 #doNormalityAnalysis(expDataFrame)
 
 
-plotBoxPlotsManual(expDataFrame) # boxplots to show difference
-#doKruskalWallis(expDataFrame)
-doTrendAnalysis(expDataFrame)
+#plotBoxPlotsManual(expDataFrame) # boxplots to show difference
+doKruskalWallis(expDataFrame)
+#doTrendAnalysis(expDataFrame)
 #doNonParametricAnalysis(expDataFrame)
 
 #plotBootedStats(expDataFrame)
