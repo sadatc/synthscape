@@ -81,7 +81,11 @@ public abstract class FieldPortrayal2D extends FieldPortrayal implements Portray
         they should just draw their own fields. */
     public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
         {
+    	try {
         hitOrDraw(graphics, info, null);
+    	} catch(NullPointerException ne) {
+    		
+    	}
         }
         
     /** Adds to the provided Bag LocationWrappers for any objects which
