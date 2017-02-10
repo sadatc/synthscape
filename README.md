@@ -1,6 +1,3 @@
 # synthscape
-Synthscape
-
-A machine learning engine using evolutionary computation approach -- specifically Genetic Programming.
-
-It integrates MASON and PushGP
+A Machine Learning engine using Evolutionary approach -- specifically Genetic Programming. More details can be found here:
+http://academicworks.cuny.edu/gc_etds/1607/
